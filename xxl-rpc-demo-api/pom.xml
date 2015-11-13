@@ -6,16 +6,12 @@
 		<artifactId>xxl-rpc</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>xxl-rpc-demo-comm</artifactId>
+	<artifactId>xxl-rpc-demo-api</artifactId>
+	<version>1.0.0</version>
+	<name>xxl-rpc-demo-api</name>
+	<packaging>jar</packaging>
 
 	<dependencies>
-		<!-- xxl-rpc-core -->
-		<dependency>
-			<groupId>com.xxl</groupId>
-			<artifactId>xxl-rpc-core</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		
 	</dependencies>
 
 </project>

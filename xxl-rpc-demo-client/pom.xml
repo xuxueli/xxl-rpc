@@ -113,11 +113,17 @@
 			<scope>provided</scope>
 		</dependency>
 		
-		<!-- xxl-rpc-demo-comm -->
+		<!-- xxl-rpc-core -->
 		<dependency>
 			<groupId>com.xxl</groupId>
-			<artifactId>xxl-rpc-demo-comm</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<artifactId>xxl-rpc-core</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<!-- xxl-rpc-demo-api -->
+		<dependency>
+			<groupId>com.xxl</groupId>
+			<artifactId>xxl-rpc-demo-api</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 		
 		
