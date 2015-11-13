@@ -1,5 +1,5 @@
 ## xxl-rpc
-分布式服务通讯
+分布式服务通讯框架xxl-rpc
 
 ## github地址
 https://github.com/xuxueli/xxl-rpc
