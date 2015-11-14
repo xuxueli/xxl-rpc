@@ -1,5 +1,6 @@
 package com.xxl.test;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +9,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.xxl.rpc.demo.model.User;
 import com.xxl.rpc.demo.service.IDemoService;
+import com.xxl.rpc.netcom.NetComClientProxy;
+import com.xxl.rpc.netcom.NetComServerFactory.NetComTypeEnum;
 import com.xxl.rpc.netcom.http.client.HttpProxy;
-import com.xxl.rpc.netcom.netty.client.NettyProxy;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:applicationcontext-*.xml")
@@ -27,12 +29,12 @@ public class Client {
 	public static void main(String[] args) throws Exception {
     	
     	IDemoService service1 = (IDemoService) new HttpProxy("http://localhost:8080/xxl-rpc-demo-server/xxl-rpc/demoService", IDemoService.class, "HESSIAN").getObject();
-    	IDemoService service2 = (IDemoService) new NettyProxy("127.0.0.1:9999", IDemoService.class, null, false, 1000 * 5).getObject();
+    	IDemoService service2 = (IDemoService) new NetComClientProxy(NetComTypeEnum.MINA.name(), "127.0.0.1:9999", null, IDemoService.class, false, 1000 * 5).getObject();
     	
     	long start = System.currentTimeMillis();
 		for (int i = 0; i < 100; i++) {
 			User user = service2.sayHi(new User("jack" + i, "i miss you, lucy."));
-			//System.out.println(i + "##" + BeanUtils.describe(user));
+			System.out.println(i + "##" + BeanUtils.describe(user));
 		}
 		long end = System.currentTimeMillis();
     	System.out.println("cost:" + (end - start));

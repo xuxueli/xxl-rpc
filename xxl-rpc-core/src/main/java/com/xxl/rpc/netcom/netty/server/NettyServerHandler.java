@@ -11,14 +11,14 @@ import net.sf.cglib.reflect.FastMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.xxl.rpc.netcom.netty.codec.NettyRequest;
-import com.xxl.rpc.netcom.netty.codec.NettyResponse;
+import com.xxl.rpc.netcom.common.codec.RpcRequest;
+import com.xxl.rpc.netcom.common.codec.RpcResponse;
 
 /**
  * rpc netty server handler
  * @author xuxueli 2015-10-29 20:07:37
  */
-public class NettyServerHandler extends SimpleChannelInboundHandler<NettyRequest> {
+public class NettyServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
     private static final Logger logger = LoggerFactory.getLogger(NettyServerHandler.class);
     
     /** rpc handler services */
@@ -28,8 +28,8 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<NettyRequest
     }
 
     @Override
-    public void channelRead0(final ChannelHandlerContext ctx, NettyRequest request) throws Exception {
-        NettyResponse response = new NettyResponse();
+    public void channelRead0(final ChannelHandlerContext ctx, RpcRequest request) throws Exception {
+        RpcResponse response = new RpcResponse();
         response.setRequestId(request.getRequestId());
         try {
             Object result = handle(request);
@@ -43,7 +43,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<NettyRequest
     /**
      * netty server handler request
      */
-    private Object handle(NettyRequest request) throws Throwable {
+    private Object handle(RpcRequest request) throws Throwable {
         String className = request.getClassName();
         Object serviceBean = serviceMap.get(className);
 

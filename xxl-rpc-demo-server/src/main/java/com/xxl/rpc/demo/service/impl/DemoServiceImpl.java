@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.xxl.rpc.demo.model.User;
 import com.xxl.rpc.demo.service.IDemoService;
-import com.xxl.rpc.netcom.netty.annotation.RpcService;
+import com.xxl.rpc.netcom.common.annotation.RpcService;
 
 @RpcService(IDemoService.class)
 @Service("demoService")

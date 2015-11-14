@@ -17,10 +17,11 @@
 	</bean>
 	
 	<!-- netty-rpc -->
-    <bean id="demoServiceNetty" class="com.xxl.rpc.netcom.netty.client.NettyProxy">
-		<property name="iface" value="com.xxl.rpc.demo.service.IDemoService" />
+    <bean id="demoServiceNetty" class="com.xxl.rpc.netcom.NetComClientProxy">
+    	<property name="netcom_type" value="MINA" />
     	<property name="serverAddress" value="127.0.0.1:9999" />
     	<property name="serialize" value="HESSIAN" />
+		<property name="iface" value="com.xxl.rpc.demo.service.IDemoService" />
 	</bean>
 
 </beans>

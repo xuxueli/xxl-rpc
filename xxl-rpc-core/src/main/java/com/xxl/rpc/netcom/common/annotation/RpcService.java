@@ -1,4 +1,4 @@
-package com.xxl.rpc.netcom.netty.annotation;
+package com.xxl.rpc.netcom.common.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

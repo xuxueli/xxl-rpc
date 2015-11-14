@@ -72,6 +72,14 @@
             <artifactId>netty-all</artifactId>
             <version>4.0.32.Final</version>
         </dependency>
+        
+		<!-- mina -->
+		<dependency>
+			<groupId>org.apache.mina</groupId>
+			<artifactId>mina-core</artifactId>
+			<version>2.0.9</version>
+		</dependency>
+		
         <!-- Protostuff -->
         <dependency>
             <groupId>com.dyuproject.protostuff</groupId>
@@ -89,12 +97,14 @@
             <artifactId>objenesis</artifactId>
             <version>2.1</version>
         </dependency>
+        
         <!-- ZooKeeper -->
         <dependency>
             <groupId>org.apache.zookeeper</groupId>
             <artifactId>zookeeper</artifactId>
             <version>3.4.6</version>
         </dependency>
+        
         <!-- Apache Commons Collections -->
         <dependency>
             <groupId>org.apache.commons</groupId>

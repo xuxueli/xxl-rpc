@@ -14,10 +14,10 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.xxl.rpc.netcom.common.codec.RpcRequest;
+import com.xxl.rpc.netcom.common.codec.RpcResponse;
 import com.xxl.rpc.netcom.netty.codec.NettyDecoder;
 import com.xxl.rpc.netcom.netty.codec.NettyEncoder;
-import com.xxl.rpc.netcom.netty.codec.NettyRequest;
-import com.xxl.rpc.netcom.netty.codec.NettyResponse;
 import com.xxl.rpc.registry.ZkServiceRegistry;
 import com.xxl.rpc.serialize.Serializer;
 
@@ -52,8 +52,8 @@ public class NettyServer {
 		                    @Override
 		                    public void initChannel(SocketChannel channel) throws Exception {
 		                        channel.pipeline()
-		                            .addLast(new NettyDecoder(NettyRequest.class, serializer))
-		                            .addLast(new NettyEncoder(NettyResponse.class, serializer))
+		                            .addLast(new NettyDecoder(RpcRequest.class, serializer))
+		                            .addLast(new NettyEncoder(RpcResponse.class, serializer))
 		                            .addLast(new NettyServerHandler(serviceMap));
 		                    }
 		                })
@@ -62,13 +62,12 @@ public class NettyServer {
 		                .option(ChannelOption.SO_REUSEADDR, true)
 		                .childOption(ChannelOption.SO_KEEPALIVE, true);
 		            ChannelFuture future = bootstrap.bind(port).sync();
-		            future.channel().closeFuture().sync();
-		            logger.info(">>>>>>>>>>> xxl-rpc netty server started on port {}", port);
-		            
 		            if (zookeeper_switch) {
 		            	ZkServiceRegistry.serviceRegistry.registerServices(port, serviceMap.keySet());
 		            	logger.info(">>>>>>>>>>>> xxl-rpc netty provider registry service success, serviceMap:{}", serviceMap);
 					}
+		            logger.info(">>>>>>>>>>> xxl-rpc netty server started on port {}", port);
+		            future.channel().closeFuture().sync();
 		        } catch (InterruptedException e) {
 					throw new IllegalArgumentException(e.getMessage(), e);
 				} finally {

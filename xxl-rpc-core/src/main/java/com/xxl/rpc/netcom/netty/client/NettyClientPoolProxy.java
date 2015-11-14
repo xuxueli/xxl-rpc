@@ -12,10 +12,10 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.xxl.rpc.netcom.common.codec.RpcRequest;
+import com.xxl.rpc.netcom.common.codec.RpcResponse;
 import com.xxl.rpc.netcom.netty.codec.NettyDecoder;
 import com.xxl.rpc.netcom.netty.codec.NettyEncoder;
-import com.xxl.rpc.netcom.netty.codec.NettyRequest;
-import com.xxl.rpc.netcom.netty.codec.NettyResponse;
 import com.xxl.rpc.serialize.Serializer;
 
 /**
@@ -34,8 +34,8 @@ public class NettyClientPoolProxy {
                 @Override
                 public void initChannel(SocketChannel channel) throws Exception {
                     channel.pipeline()
-                        .addLast(new NettyEncoder(NettyRequest.class, serializer))
-                        .addLast(new NettyDecoder(NettyResponse.class, serializer))
+                        .addLast(new NettyEncoder(RpcRequest.class, serializer))
+                        .addLast(new NettyDecoder(RpcResponse.class, serializer))
                         .addLast(new NettyClientHandler());
                 }
             })
@@ -65,7 +65,7 @@ public class NettyClientPoolProxy {
 		logger.info(">>>>>>>>> netty channel close.");
 	}
 	
-	public void send(NettyRequest request) throws Exception {
+	public void send(RpcRequest request) throws Exception {
     	this.channel.writeAndFlush(request).sync();
     }
 }

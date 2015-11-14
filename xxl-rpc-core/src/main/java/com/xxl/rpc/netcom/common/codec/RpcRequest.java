@@ -1,4 +1,4 @@
-package com.xxl.rpc.netcom.netty.codec;
+package com.xxl.rpc.netcom.common.codec;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -7,7 +7,7 @@ import java.util.Arrays;
  * request
  * @author xuxueli 2015-10-29 19:39:12
  */
-public class NettyRequest implements Serializable{
+public class RpcRequest implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private String requestId;

@@ -1,12 +1,9 @@
-package com.xxl.rpc.netcom.netty.client;
+package com.xxl.rpc.netcom.common.codec;
 
 import java.text.MessageFormat;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeoutException;
-
-import com.xxl.rpc.netcom.netty.codec.NettyRequest;
-import com.xxl.rpc.netcom.netty.codec.NettyResponse;
 
 /**
  * call back future, make netty-rpc synchronous on asynchronous model
@@ -16,24 +13,24 @@ import com.xxl.rpc.netcom.netty.codec.NettyResponse;
  * v2: Map isDone + ctx.writeAndFlush(response)
  * v3: Map synchronized wait + notifyAll
  */
-public class NettyClientCallbackFuture {
-	public static ConcurrentMap<String, NettyClientCallbackFuture> futurePool = new ConcurrentHashMap<String, NettyClientCallbackFuture>();	// 过期，失效
+public class RpcCallbackFuture {
+	public static ConcurrentMap<String, RpcCallbackFuture> futurePool = new ConcurrentHashMap<String, RpcCallbackFuture>();	// 过期，失效
 	
 	// net codec
-	private NettyRequest request;
-	private NettyResponse response;
+	private RpcRequest request;
+	private RpcResponse response;
 	// future lock
 	private boolean isDone = false;
 	private Object lock = new Object();
 	
-	public NettyClientCallbackFuture(NettyRequest request) {
+	public RpcCallbackFuture(RpcRequest request) {
 		this.request = request;
 		futurePool.put(request.getRequestId(), this);
 	}
-	public NettyResponse getResponse() {
+	public RpcResponse getResponse() {
 		return response;
 	}
-	public void setResponse(NettyResponse response) {
+	public void setResponse(RpcResponse response) {
 		this.response = response;
 		// notify future lock
 		synchronized (lock) {
@@ -42,7 +39,7 @@ public class NettyClientCallbackFuture {
 		}
 	}
 
-	public NettyResponse get(long timeoutMillis) throws InterruptedException, TimeoutException{
+	public RpcResponse get(long timeoutMillis) throws InterruptedException, TimeoutException{
 		if (!isDone) {
 			synchronized (lock) {
 				try {
@@ -55,9 +52,8 @@ public class NettyClientCallbackFuture {
 		}
 		
 		if (!isDone) {
-			throw new TimeoutException(MessageFormat.format(">>>>>>>>>>>> xxl-rpc, netty request timeout at:{}, request:{}", System.currentTimeMillis(), request.toString()));
+			throw new TimeoutException(MessageFormat.format(">>>>>>>>>>>> xxl-rpc, netty request timeout at:{0}, request:{1}", System.currentTimeMillis(), request.toString()));
 		}
 		return response;
 	}
-	
 }

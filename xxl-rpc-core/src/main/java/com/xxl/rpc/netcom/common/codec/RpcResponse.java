@@ -1,4 +1,4 @@
-package com.xxl.rpc.netcom.netty.codec;
+package com.xxl.rpc.netcom.common.codec;
 
 import java.io.Serializable;
 
@@ -6,7 +6,7 @@ import java.io.Serializable;
  * response
  * @author xuxueli 2015-10-29 19:39:54
  */
-public class NettyResponse implements Serializable{
+public class RpcResponse implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private String requestId;
