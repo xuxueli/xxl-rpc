@@ -11,7 +11,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import com.xxl.rpc.netcom.common.annotation.RpcService;
+import com.xxl.rpc.netcom.common.annotation.SkeletonService;
 import com.xxl.rpc.netcom.mina.server.MinaServer;
 import com.xxl.rpc.netcom.netty.server.NettyServer;
 import com.xxl.rpc.serialize.Serializer;
@@ -81,10 +81,10 @@ public class NetComServerFactory implements ApplicationContextAware, Initializin
 	private Map<String, Object> serviceMap = new HashMap<String, Object>();
 	private void initServiceMap(ApplicationContext applicationContext){
 		// init local rpc service map
-		Map<String, Object> serviceBeanMap = applicationContext.getBeansWithAnnotation(RpcService.class);
+		Map<String, Object> serviceBeanMap = applicationContext.getBeansWithAnnotation(SkeletonService.class);
         if (MapUtils.isNotEmpty(serviceBeanMap)) {
             for (Object serviceBean : serviceBeanMap.values()) {
-                String interfaceName = serviceBean.getClass().getAnnotation(RpcService.class).value().getName();
+                String interfaceName = serviceBean.getClass().getAnnotation(SkeletonService.class).stub().getName();
                 serviceMap.put(interfaceName, serviceBean);
             }
         }

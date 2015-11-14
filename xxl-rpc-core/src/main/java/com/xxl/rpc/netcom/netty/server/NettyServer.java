@@ -64,12 +64,12 @@ public class NettyServer {
 		            ChannelFuture future = bootstrap.bind(port).sync();
 		            if (zookeeper_switch) {
 		            	ZkServiceRegistry.serviceRegistry.registerServices(port, serviceMap.keySet());
-		            	logger.info(">>>>>>>>>>>> xxl-rpc netty provider registry service success, serviceMap:{}", serviceMap);
+		            	logger.info(">>>>>>>>>>>> xxl-rpc netty provider registry service success.");
 					}
-		            logger.info(">>>>>>>>>>> xxl-rpc netty server started on port {}", port);
+		            logger.info(">>>>>>>>>>> xxl-rpc netty server started on port:{}, serviceMap:{}", port, serviceMap);
 		            future.channel().closeFuture().sync();
 		        } catch (InterruptedException e) {
-					throw new IllegalArgumentException(e.getMessage(), e);
+		        	logger.error(">>>>>>>>>>> xxl-rpc mina server fail.", e);
 				} finally {
 		            workerGroup.shutdownGracefully();
 		            bossGroup.shutdownGracefully();

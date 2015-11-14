@@ -75,9 +75,9 @@ public class MinaServer {
 					acceptor.bind(new InetSocketAddress(port));
 					if (zookeeper_switch) {
 		            	ZkServiceRegistry.serviceRegistry.registerServices(port, serviceMap.keySet());
-		            	logger.info(">>>>>>>>>>>> xxl-rpc mina provider registry service success, serviceMap:{}", serviceMap);
+		            	logger.info(">>>>>>>>>>>> xxl-rpc mina provider registry service success.");
 					}
-					logger.info(">>>>>>>>>>> xxl-rpc mina server is running");
+					logger.info(">>>>>>>>>>> xxl-rpc mina server started on port:{}, serviceMap:{}", port, serviceMap);
 				} catch (IOException e) {
 					logger.error(">>>>>>>>>>> xxl-rpc mina server fail", e);
 					if (acceptor != null && acceptor.isActive()) {

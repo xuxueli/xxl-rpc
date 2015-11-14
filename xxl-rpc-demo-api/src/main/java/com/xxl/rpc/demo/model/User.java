@@ -7,11 +7,6 @@ public class User implements Serializable {
 	
 	private String userName;
 	private String word;
-
-	public User(String userName, String word){
-		this.userName = userName;
-		this.word = word;
-	}
 	
 	public String getUserName() {
 		return userName;

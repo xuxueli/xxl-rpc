@@ -22,7 +22,7 @@ public class Client {
     
     @Test
     public void demoServiceHttpTest() {
-    	System.out.println(demoServiceHttp.sayHi(new User("jack", "i miss you, lucy.")));
+    	System.out.println(demoServiceHttp.sayHi("jack"));
     }
 
     @SuppressWarnings("unused")
@@ -33,7 +33,7 @@ public class Client {
     	
     	long start = System.currentTimeMillis();
 		for (int i = 0; i < 100; i++) {
-			User user = service2.sayHi(new User("jack" + i, "i miss you, lucy."));
+			User user = service2.sayHi("jack");
 			System.out.println(i + "##" + BeanUtils.describe(user));
 		}
 		long end = System.currentTimeMillis();

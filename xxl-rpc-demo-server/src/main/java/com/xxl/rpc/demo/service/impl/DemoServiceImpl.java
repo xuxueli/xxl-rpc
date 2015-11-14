@@ -1,20 +1,21 @@
 package com.xxl.rpc.demo.service.impl;
 
-import java.text.MessageFormat;
-
 import org.springframework.stereotype.Service;
 
 import com.xxl.rpc.demo.model.User;
 import com.xxl.rpc.demo.service.IDemoService;
-import com.xxl.rpc.netcom.common.annotation.RpcService;
+import com.xxl.rpc.netcom.common.annotation.SkeletonService;
 
-@RpcService(IDemoService.class)
+@SkeletonService(stub=IDemoService.class)
 @Service("demoService")
 public class DemoServiceImpl implements IDemoService {
 	
 	@Override
-	public User sayHi(User user) {
-		return new User(user.getUserName(), MessageFormat.format("{0} say:{1}", user.getUserName(), user.getWord()));
+	public User sayHi(String name) {
+		User user = new User();
+		user.setUserName(name);
+		user.setWord("hi " + name + ", you are so beautiful.(" + System.currentTimeMillis() + ")");
+		return user;
 	}
 
 }
