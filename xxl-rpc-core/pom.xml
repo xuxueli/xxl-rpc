@@ -7,7 +7,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>xxl-rpc-core</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<name>xxl-rpc-core</name>
 	<packaging>jar</packaging>
 
