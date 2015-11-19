@@ -12,6 +12,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import com.xxl.rpc.netcom.common.annotation.SkeletonService;
+import com.xxl.rpc.netcom.jetty.server.JettyServer;
 import com.xxl.rpc.netcom.mina.server.MinaServer;
 import com.xxl.rpc.netcom.netty.server.NettyServer;
 import com.xxl.rpc.serialize.Serializer;
@@ -106,10 +107,12 @@ public class NetComServerFactory implements ApplicationContextAware, Initializin
 	 * net com type
 	 */
 	public enum NetComTypeEnum{
-		NETTY, MINA;
+		NETTY, MINA, JETTY;
 		public static NetComTypeEnum getInstance(String netcomTypeStr) {
 			if (netcomTypeStr != null && MINA.name().equals(netcomTypeStr.trim())) {
 				return MINA;
+			} else if (netcomTypeStr != null && JETTY.name().equals(netcomTypeStr.trim())) {
+				return JETTY;
 			} else {
 				return NETTY;
 			}
@@ -124,6 +127,9 @@ public class NetComServerFactory implements ApplicationContextAware, Initializin
 		if (netcom_type!=null && NetComTypeEnum.MINA.name().equals(netcom_type.trim())) {
 			netcom_type = NetComTypeEnum.MINA.name();
 			new MinaServer(serviceMap, serializer, port, zookeeper_switch).start();
+		} else if (netcom_type!=null && NetComTypeEnum.JETTY.name().equals(netcom_type.trim())) {
+			netcom_type = NetComTypeEnum.JETTY.name();
+			new JettyServer(serviceMap, serializer, port, zookeeper_switch).start();
 		} else {
 			netcom_type = NetComTypeEnum.NETTY.name();
 			new NettyServer(serviceMap, serializer, port, zookeeper_switch).start();

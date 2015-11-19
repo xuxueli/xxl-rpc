@@ -29,7 +29,7 @@ public class Client {
 	public static void main(String[] args) throws Exception {
     	
     	IDemoService service1 = (IDemoService) new HttpProxy("http://localhost:8080/xxl-rpc-demo-server/xxl-rpc/demoService", IDemoService.class, "HESSIAN").getObject();
-    	IDemoService service2 = (IDemoService) new NetComClientProxy(NetComTypeEnum.MINA.name(), "127.0.0.1:9999", null, IDemoService.class, false, 1000 * 5).getObject();
+    	IDemoService service2 = (IDemoService) new NetComClientProxy(NetComTypeEnum.JETTY.name(), "127.0.0.1:9999", null, IDemoService.class, false, 1000 * 5).getObject();
     	
     	long start = System.currentTimeMillis();
 		for (int i = 0; i < 100; i++) {

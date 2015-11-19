@@ -19,6 +19,7 @@ import com.xxl.rpc.netcom.mina.client.MinaClientPoolProxy;
 import com.xxl.rpc.netcom.netty.client.NettyClientPool;
 import com.xxl.rpc.netcom.netty.client.NettyClientPoolProxy;
 import com.xxl.rpc.serialize.Serializer;
+import com.xxl.rpc.util.HttpClientUtil;
 
 /**
  * rpc proxy
@@ -135,6 +136,11 @@ public class NetComClientProxy implements FactoryBean<Object> {
 								RpcCallbackFuture.futurePool.remove(request.getRequestId());
 								clientPool.returnObject(clientPoolProxy);
 							}
+							
+						} else if (netcomType == NetComTypeEnum.JETTY) {
+							byte[] requestBytes = serializer.serialize(request);
+							byte[] responseBytes = HttpClientUtil.postRequest("http://127.0.0.1:9999/", requestBytes);
+							response = (RpcResponse) serializer.deserialize(responseBytes, RpcResponse.class);
 							
 						} else {
 							// client pool	[tips03 : may save 35ms/100invoke if move it to constructor, but it is necessary. cause by ConcurrentHashMap.get]
