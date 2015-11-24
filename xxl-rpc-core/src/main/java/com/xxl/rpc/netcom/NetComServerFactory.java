@@ -11,9 +11,9 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
+import com.xxl.rpc.netcom.common.NetComEnum;
 import com.xxl.rpc.netcom.common.annotation.SkeletonService;
 import com.xxl.rpc.netcom.common.server.IServer;
-import com.xxl.rpc.netcom.common.server.IServer.NetComEnum;
 import com.xxl.rpc.serialize.Serializer;
 
 /**

@@ -2,9 +2,7 @@ package com.xxl.rpc.netcom.common.server;
 
 import java.util.Map;
 
-import com.xxl.rpc.netcom.jetty.server.JettyServer;
-import com.xxl.rpc.netcom.mina.server.MinaServer;
-import com.xxl.rpc.netcom.netty.server.NettyServer;
+import com.xxl.rpc.netcom.common.NetComEnum;
 import com.xxl.rpc.serialize.Serializer;
 
 /**
@@ -27,27 +25,6 @@ public abstract class IServer {
 	}
     
 	public abstract void start() throws Exception;
-
-	/**
-	 * 通讯方案
-	 */
-	public enum NetComEnum{
-		NETTY(NettyServer.class), 
-		MINA(MinaServer.class), 
-		JETTY(JettyServer.class);
-		public final Class<? extends IServer> serverClass;
-		private NetComEnum(Class<? extends IServer> serverClass){
-			this.serverClass = serverClass;
-		}
-		public static NetComEnum match(String name){
-			for (NetComEnum item : NetComEnum.values()) {
-				if (item.name().equals(name)) {
-					return item;
-				}
-			}
-			return null;
-		}
-	}
 	
 	/**
 	 * 
@@ -59,10 +36,7 @@ public abstract class IServer {
 	 * @return
 	 */
 	public static IServer getInstance(String netcom_type, Map<String, Object> serviceMap, int port, String serialize, boolean zookeeper_switch) {
-		NetComEnum netCom = NetComEnum.match(netcom_type);
-		if (netCom == null) {
-			netCom = NetComEnum.NETTY;
-		}
+		NetComEnum netCom = NetComEnum.match(netcom_type, NetComEnum.NETTY);
 		
 		IServer server = null;
 		try {

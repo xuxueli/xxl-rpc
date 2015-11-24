@@ -5,21 +5,15 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.UUID;
 
-import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.FactoryBean;
 
-import com.xxl.rpc.netcom.common.codec.RpcCallbackFuture;
+import com.xxl.rpc.netcom.common.NetComEnum;
+import com.xxl.rpc.netcom.common.client.IClient;
 import com.xxl.rpc.netcom.common.codec.RpcRequest;
 import com.xxl.rpc.netcom.common.codec.RpcResponse;
-import com.xxl.rpc.netcom.common.server.IServer.NetComEnum;
-import com.xxl.rpc.netcom.mina.client.MinaClientPool;
-import com.xxl.rpc.netcom.mina.client.MinaClientPoolProxy;
-import com.xxl.rpc.netcom.netty.client.NettyClientPool;
-import com.xxl.rpc.netcom.netty.client.NettyClientPoolProxy;
 import com.xxl.rpc.serialize.Serializer;
-import com.xxl.rpc.util.HttpClientUtil;
 
 /**
  * rpc proxy
@@ -30,21 +24,14 @@ public class NetComClientProxy implements FactoryBean<Object> {
 	// [tips01: save 30ms/100invoke. why why why??? with this logger, it can save lots of time.]
 	
 	// origin prop
+	private Class<?> iface;
 	private String netcom_type = NetComEnum.NETTY.name();
+	
+	private boolean zookeeper_switch;
 	private String serverAddress;
 	private String serialize = Serializer.SerializeType.HESSIAN.name();
-	private Class<?> iface;
-	private boolean zookeeper_switch;
 	private long timeoutMillis = 5000;
 	
-	// second prop	[tips02 : save 145ms/100invoke. Caused by hash method in HashMap.get invoked in every invoke ]
-	private NetComEnum netcomType;
-	private Serializer serializer;
-	
-	public NetComClientProxy() {
-		netcomType = NetComEnum.match(netcom_type);
-		serializer = Serializer.getInstance(serialize);
-	}
 	public NetComClientProxy(String netcom_type, String serverAddress, String serialize, Class<?> iface, boolean zookeeper_switch, long timeoutMillis) {
 		this.netcom_type = netcom_type;
 		this.serverAddress = serverAddress;
@@ -52,9 +39,6 @@ public class NetComClientProxy implements FactoryBean<Object> {
 		this.serialize = serialize;
 		this.zookeeper_switch = zookeeper_switch;
 		this.timeoutMillis = timeoutMillis;
-		
-		netcomType = NetComEnum.match(netcom_type);
-		serializer = Serializer.getInstance(serialize);
 	}
 	
 	public String getNetcom_type() {
@@ -101,8 +85,6 @@ public class NetComClientProxy implements FactoryBean<Object> {
 				new InvocationHandler() {
 					@Override
 					public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-						// response
-						RpcResponse response = null;
 						
 						// request
 						RpcRequest request = new RpcRequest();
@@ -113,63 +95,13 @@ public class NetComClientProxy implements FactoryBean<Object> {
 	                    request.setParameterTypes(method.getParameterTypes());
 	                    request.setParameters(args);
 	                    
-	                    if (netcomType == NetComEnum.MINA) {
-	                    	// client pool
-	                    	GenericObjectPool<MinaClientPoolProxy> clientPool = MinaClientPool.getPool(zookeeper_switch, serverAddress, request.getClassName(), serializer);
-	                    	// client proxt
-	                    	MinaClientPoolProxy clientPoolProxy = null;
-							try {
-								// future init
-								RpcCallbackFuture future = new RpcCallbackFuture(request);
-								RpcCallbackFuture.futurePool.put(request.getRequestId(), future);
-								
-								// rpc invoke
-								clientPoolProxy = clientPool.borrowObject();
-								clientPoolProxy.send(request);
-								
-								// future get
-								response = future.get(timeoutMillis);
-							} catch (Exception e) {
-								logger.error("", e);
-								throw e;
-							} finally{
-								RpcCallbackFuture.futurePool.remove(request.getRequestId());
-								clientPool.returnObject(clientPoolProxy);
-							}
-							
-						} else if (netcomType == NetComEnum.JETTY) {
-							byte[] requestBytes = serializer.serialize(request);
-							byte[] responseBytes = HttpClientUtil.postRequest("http://127.0.0.1:9999/", requestBytes);
-							response = (RpcResponse) serializer.deserialize(responseBytes, RpcResponse.class);
-							
-						} else {
-							// client pool	[tips03 : may save 35ms/100invoke if move it to constructor, but it is necessary. cause by ConcurrentHashMap.get]
-		                    GenericObjectPool<NettyClientPoolProxy> clientPool = NettyClientPool.getPool(zookeeper_switch, serverAddress, request.getClassName(), serializer);
-		                    
-		                    // client proxt
-		                    NettyClientPoolProxy clientPoolProxy = null;
-							try {
-								// future init	[tips04 : may save 20ms/100invoke if remove and wait for channel instead, but it is necessary. cause by ConcurrentHashMap.get]
-								RpcCallbackFuture future = new RpcCallbackFuture(request);
-								RpcCallbackFuture.futurePool.put(request.getRequestId(), future);
-								
-								// rpc invoke
-								clientPoolProxy = clientPool.borrowObject();
-								clientPoolProxy.send(request);
-								
-								// future get
-								response = future.get(timeoutMillis);
-							} catch (Exception e) {
-								logger.error("", e);
-								throw e;
-							} finally{
-								RpcCallbackFuture.futurePool.remove(request.getRequestId());
-								clientPool.returnObject(clientPoolProxy);
-							}
-						}
+	                    // send
+	                    IClient client = IClient.getInstance(netcom_type, zookeeper_switch, serverAddress, serialize, timeoutMillis);
+	                    RpcResponse response = client.send(request);
 	                    
 	                    // valid response
 						if (response == null) {
+							logger.error(">>>>>>>>>>> xxl-rpc netty response not found.");
 							throw new Exception(">>>>>>>>>>> xxl-rpc netty response not found.");
 						}
 	                    if (response.isError()) {
@@ -177,6 +109,7 @@ public class NetComClientProxy implements FactoryBean<Object> {
 	                    } else {
 	                        return response.getResult();
 	                    }
+	                   
 					}
 				});
 	}
