@@ -12,9 +12,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import com.xxl.rpc.netcom.common.annotation.SkeletonService;
-import com.xxl.rpc.netcom.jetty.server.JettyServer;
-import com.xxl.rpc.netcom.mina.server.MinaServer;
-import com.xxl.rpc.netcom.netty.server.NettyServer;
+import com.xxl.rpc.netcom.common.server.IServer;
+import com.xxl.rpc.netcom.common.server.IServer.NetComEnum;
 import com.xxl.rpc.serialize.Serializer;
 
 /**
@@ -26,7 +25,7 @@ import com.xxl.rpc.serialize.Serializer;
 public class NetComServerFactory implements ApplicationContextAware, InitializingBean {
 	private static final Logger logger = LoggerFactory.getLogger(NetComServerFactory.class);
 	
-	private String netcom_type = NetComTypeEnum.NETTY.name();
+	private String netcom_type = NetComEnum.NETTY.name();
 	private int port = 9999;
 	private String serialize = Serializer.SerializeType.HESSIAN.name();
 	private boolean provider_switch = true;
@@ -77,11 +76,10 @@ public class NetComServerFactory implements ApplicationContextAware, Initializin
 	}
 	
 	/**
-	 * local rpc service map
+	 * init local rpc service map
 	 */
 	private Map<String, Object> serviceMap = new HashMap<String, Object>();
 	private void initServiceMap(ApplicationContext applicationContext){
-		// init local rpc service map
 		Map<String, Object> serviceBeanMap = applicationContext.getBeansWithAnnotation(SkeletonService.class);
         if (MapUtils.isNotEmpty(serviceBeanMap)) {
             for (Object serviceBean : serviceBeanMap.values()) {
@@ -95,52 +93,13 @@ public class NetComServerFactory implements ApplicationContextAware, Initializin
 	public void afterPropertiesSet() throws Exception {
 		if (provider_switch) {
 			// init rpc provider
-			initProvider();
+			IServer server = IServer.getInstance(netcom_type, serviceMap, port, serialize, zookeeper_switch);
+			server.start();
+			logger.info(">>>>>>>>>>> xxl-mq provider is running, netcom_type:{}, port:{}, serialize:{}", netcom_type, port, serialize);
 		}
 		if (consumer_switch) {
 			// init rpc comsumer
-			initComsumer();
 		}
 	}
 	
-	/**
-	 * net com type
-	 */
-	public enum NetComTypeEnum{
-		NETTY, MINA, JETTY;
-		public static NetComTypeEnum getInstance(String netcomTypeStr) {
-			if (netcomTypeStr != null && MINA.name().equals(netcomTypeStr.trim())) {
-				return MINA;
-			} else if (netcomTypeStr != null && JETTY.name().equals(netcomTypeStr.trim())) {
-				return JETTY;
-			} else {
-				return NETTY;
-			}
-		}
-	}
-	
-	/**
-	 * init rpc provider
-	 */
-	private void initProvider() throws Exception {
-		Serializer serializer = Serializer.getInstance(serialize);
-		if (netcom_type!=null && NetComTypeEnum.MINA.name().equals(netcom_type.trim())) {
-			netcom_type = NetComTypeEnum.MINA.name();
-			new MinaServer(serviceMap, serializer, port, zookeeper_switch).start();
-		} else if (netcom_type!=null && NetComTypeEnum.JETTY.name().equals(netcom_type.trim())) {
-			netcom_type = NetComTypeEnum.JETTY.name();
-			new JettyServer(serviceMap, serializer, port, zookeeper_switch).start();
-		} else {
-			netcom_type = NetComTypeEnum.NETTY.name();
-			new NettyServer(serviceMap, serializer, port, zookeeper_switch).start();
-		}
-		logger.info(">>>>>>>>>>> xxl-mq provider is running, netcom_type:{}, port:{}, serializer:{}", netcom_type, port, serializer);
-	}
-	
-	/**
-	 * init rpc comsumer
-	 */
-	private void initComsumer(){
-		
-	}
 }

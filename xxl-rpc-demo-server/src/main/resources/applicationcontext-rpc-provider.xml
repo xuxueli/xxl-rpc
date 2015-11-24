@@ -15,7 +15,7 @@
 	<!-- netty-rpc server init -->
     <bean class="com.xxl.rpc.netcom.NetComServerFactory">
     	<property name="port" value="9999" />
-    	<property name="netcom_type" value="JETTY" />
+    	<property name="netcom_type" value="NETTY" />
     	<property name="serialize" value="HESSIAN" />
     	<property name="zookeeper_switch" value="false" />
     	<property name="provider_switch" value="true" />

@@ -10,10 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.FactoryBean;
 
-import com.xxl.rpc.netcom.NetComServerFactory.NetComTypeEnum;
 import com.xxl.rpc.netcom.common.codec.RpcCallbackFuture;
 import com.xxl.rpc.netcom.common.codec.RpcRequest;
 import com.xxl.rpc.netcom.common.codec.RpcResponse;
+import com.xxl.rpc.netcom.common.server.IServer.NetComEnum;
 import com.xxl.rpc.netcom.mina.client.MinaClientPool;
 import com.xxl.rpc.netcom.mina.client.MinaClientPoolProxy;
 import com.xxl.rpc.netcom.netty.client.NettyClientPool;
@@ -30,7 +30,7 @@ public class NetComClientProxy implements FactoryBean<Object> {
 	// [tips01: save 30ms/100invoke. why why why??? with this logger, it can save lots of time.]
 	
 	// origin prop
-	private String netcom_type = NetComTypeEnum.NETTY.name();
+	private String netcom_type = NetComEnum.NETTY.name();
 	private String serverAddress;
 	private String serialize = Serializer.SerializeType.HESSIAN.name();
 	private Class<?> iface;
@@ -38,11 +38,11 @@ public class NetComClientProxy implements FactoryBean<Object> {
 	private long timeoutMillis = 5000;
 	
 	// second prop	[tips02 : save 145ms/100invoke. Caused by hash method in HashMap.get invoked in every invoke ]
-	private NetComTypeEnum netcomType;
+	private NetComEnum netcomType;
 	private Serializer serializer;
 	
 	public NetComClientProxy() {
-		netcomType = NetComTypeEnum.getInstance(netcom_type);
+		netcomType = NetComEnum.match(netcom_type);
 		serializer = Serializer.getInstance(serialize);
 	}
 	public NetComClientProxy(String netcom_type, String serverAddress, String serialize, Class<?> iface, boolean zookeeper_switch, long timeoutMillis) {
@@ -53,7 +53,7 @@ public class NetComClientProxy implements FactoryBean<Object> {
 		this.zookeeper_switch = zookeeper_switch;
 		this.timeoutMillis = timeoutMillis;
 		
-		netcomType = NetComTypeEnum.getInstance(netcom_type);
+		netcomType = NetComEnum.match(netcom_type);
 		serializer = Serializer.getInstance(serialize);
 	}
 	
@@ -113,7 +113,7 @@ public class NetComClientProxy implements FactoryBean<Object> {
 	                    request.setParameterTypes(method.getParameterTypes());
 	                    request.setParameters(args);
 	                    
-	                    if (netcomType == NetComTypeEnum.MINA) {
+	                    if (netcomType == NetComEnum.MINA) {
 	                    	// client pool
 	                    	GenericObjectPool<MinaClientPoolProxy> clientPool = MinaClientPool.getPool(zookeeper_switch, serverAddress, request.getClassName(), serializer);
 	                    	// client proxt
@@ -137,7 +137,7 @@ public class NetComClientProxy implements FactoryBean<Object> {
 								clientPool.returnObject(clientPoolProxy);
 							}
 							
-						} else if (netcomType == NetComTypeEnum.JETTY) {
+						} else if (netcomType == NetComEnum.JETTY) {
 							byte[] requestBytes = serializer.serialize(request);
 							byte[] responseBytes = HttpClientUtil.postRequest("http://127.0.0.1:9999/", requestBytes);
 							response = (RpcResponse) serializer.deserialize(responseBytes, RpcResponse.class);

@@ -9,36 +9,24 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.xxl.rpc.netcom.common.codec.RpcRequest;
 import com.xxl.rpc.netcom.common.codec.RpcResponse;
+import com.xxl.rpc.netcom.common.server.IServer;
 import com.xxl.rpc.netcom.netty.codec.NettyDecoder;
 import com.xxl.rpc.netcom.netty.codec.NettyEncoder;
 import com.xxl.rpc.registry.ZkServiceRegistry;
-import com.xxl.rpc.serialize.Serializer;
 
 /**
  * netty rpc server
  * @author xuxueli 2015-10-29 18:17:14
  */
-public class NettyServer {
+public class NettyServer extends IServer {
     private static final Logger logger = LoggerFactory.getLogger(NettyServer.class);
     
-    private Map<String, Object> serviceMap;
-    private Serializer serializer;
-    private int port;
-    boolean zookeeper_switch;
-    public NettyServer(Map<String, Object> serviceMap, Serializer serializer, int port, boolean zookeeper_switch) {
-    	this.serviceMap = serviceMap;
-		this.serializer = serializer;
-		this.port = port;
-		this.zookeeper_switch = zookeeper_switch;
-	}
-
+    @Override
 	public void start() throws Exception {
     	new Thread(new Runnable() {
 			@Override

@@ -2,7 +2,6 @@ package com.xxl.rpc.netcom.mina.server;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.Map;
 import java.util.concurrent.Executors;
 
 import org.apache.mina.core.session.IdleStatus;
@@ -19,33 +18,21 @@ import org.slf4j.LoggerFactory;
 
 import com.xxl.rpc.netcom.common.codec.RpcRequest;
 import com.xxl.rpc.netcom.common.codec.RpcResponse;
+import com.xxl.rpc.netcom.common.server.IServer;
 import com.xxl.rpc.netcom.mina.codec.MinaDecoder;
 import com.xxl.rpc.netcom.mina.codec.MinaEncoder;
 import com.xxl.rpc.netcom.netty.server.NettyServer;
 import com.xxl.rpc.registry.ZkServiceRegistry;
-import com.xxl.rpc.serialize.Serializer;
 
 /**
  * mina rpc server
  * 
  * @author xuxueli 2015-11-14 17:22:09
  */
-public class MinaServer {
-	private static final Logger logger = LoggerFactory
-			.getLogger(NettyServer.class);
+public class MinaServer extends IServer {
+	private static final Logger logger = LoggerFactory.getLogger(NettyServer.class);
 
-	private Map<String, Object> serviceMap;
-	private int port;
-	private Serializer serializer;
-	boolean zookeeper_switch;
-
-	public MinaServer(Map<String, Object> serviceMap, Serializer serializer, int port, boolean zookeeper_switch) {
-		this.serviceMap = serviceMap;
-		this.serializer = serializer;
-		this.port = port;
-		this.zookeeper_switch = zookeeper_switch;
-	}
-
+	@Override
 	public void start() throws Exception {
 		new Thread(new Runnable() {
 			@Override

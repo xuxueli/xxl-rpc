@@ -1,7 +1,5 @@
 package com.xxl.rpc.netcom.jetty.server;
 
-import java.util.Map;
-
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
@@ -11,28 +9,17 @@ import org.eclipse.jetty.util.thread.ExecutorThreadPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.xxl.rpc.netcom.common.server.IServer;
 import com.xxl.rpc.registry.ZkServiceRegistry;
-import com.xxl.rpc.serialize.Serializer;
 
 /**
  * rpc jetty server
  * @author xuxueli 2015-11-19 22:29:03
  */
-public class JettyServer {
+public class JettyServer extends IServer {
 	private static final Logger logger = LoggerFactory.getLogger(JettyServer.class);
 
-	private Map<String, Object> serviceMap;
-	private int port;
-	private Serializer serializer;
-	boolean zookeeper_switch;
-
-	public JettyServer(Map<String, Object> serviceMap, Serializer serializer, int port, boolean zookeeper_switch) {
-		this.serviceMap = serviceMap;
-		this.serializer = serializer;
-		this.port = port;
-		this.zookeeper_switch = zookeeper_switch;
-	}
-	
+	@Override
 	public void start() throws Exception {
 		new Thread(new Runnable() {
 			@Override
