@@ -14,12 +14,19 @@ import com.xxl.rpc.demo.service.IDemoService;
 @RequestMapping("/")
 public class IndexController {
 	
-	@Resource
-	private IDemoService demoServiceHttp;
+	// client端和server端，必须同为NIO
 	@Resource
 	private IDemoService demoServiceNetty;
 	@Resource
 	private IDemoService demoServiceMina;
+	
+	// client端和server点，必须同为jetty
+	@Resource
+	private IDemoService demoServiceJetty;
+	
+	// client端和server点，必须同为servlet
+	@Resource
+	private IDemoService demoServiceServlet;
 
 	@RequestMapping("/{type}/{userName}/{word}")
 	@ResponseBody
@@ -32,9 +39,12 @@ public class IndexController {
 		} else if (type == 2) {
 			netCom = "mina";
 			user = demoServiceMina.sayHi(userName);
+		} else if (type == 3) {
+			netCom = "jetty";
+			user = demoServiceJetty.sayHi(userName);
 		} else {
 			netCom = "http";
-			user = demoServiceHttp.sayHi(userName);
+			user = demoServiceServlet.sayHi(userName);
 		}
 		return netCom + ":" + user.getWord();
 	}

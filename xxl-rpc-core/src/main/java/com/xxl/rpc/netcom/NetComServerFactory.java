@@ -3,7 +3,6 @@ package com.xxl.rpc.netcom;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.collections4.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -81,7 +80,7 @@ public class NetComServerFactory implements ApplicationContextAware, Initializin
 	private Map<String, Object> serviceMap = new HashMap<String, Object>();
 	private void initServiceMap(ApplicationContext applicationContext){
 		Map<String, Object> serviceBeanMap = applicationContext.getBeansWithAnnotation(SkeletonService.class);
-        if (MapUtils.isNotEmpty(serviceBeanMap)) {
+        if (serviceBeanMap!=null && serviceBeanMap.size()>0) {
             for (Object serviceBean : serviceBeanMap.values()) {
                 String interfaceName = serviceBean.getClass().getAnnotation(SkeletonService.class).stub().getName();
                 serviceMap.put(interfaceName, serviceBean);

@@ -32,6 +32,7 @@ public class NetComClientProxy implements FactoryBean<Object> {
 	private String serialize = Serializer.SerializeType.HESSIAN.name();
 	private long timeoutMillis = 5000;
 	
+	public NetComClientProxy(){	}
 	public NetComClientProxy(String netcom_type, String serverAddress, String serialize, Class<?> iface, boolean zookeeper_switch, long timeoutMillis) {
 		this.netcom_type = netcom_type;
 		this.serverAddress = serverAddress;

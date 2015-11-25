@@ -8,6 +8,7 @@ import com.xxl.rpc.netcom.mina.client.MinaClient;
 import com.xxl.rpc.netcom.mina.server.MinaServer;
 import com.xxl.rpc.netcom.netty.client.NettyClient;
 import com.xxl.rpc.netcom.netty.server.NettyServer;
+import com.xxl.rpc.netcom.servlet.client.ServletClient;
 
 /**
  * 通讯方案
@@ -17,7 +18,8 @@ public enum NetComEnum {
 
 	NETTY(NettyServer.class, NettyClient.class), 
 	MINA(MinaServer.class, MinaClient.class), 
-	JETTY(JettyServer.class, JettyClient.class);
+	JETTY(JettyServer.class, JettyClient.class),
+	SERVLET(null, ServletClient.class);
 
 	public final Class<? extends IServer> serverClass;
 	public final Class<? extends IClient> clientClass;

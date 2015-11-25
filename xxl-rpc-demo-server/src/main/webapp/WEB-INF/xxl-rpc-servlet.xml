@@ -7,7 +7,7 @@
            http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
 	<!-- httpclient-rpc -->
-	<bean name="/demoService" class="com.xxl.rpc.netcom.http.server.HttpServiceExporter">
+	<bean name="/demoService" class="com.xxl.rpc.netcom.servlet.server.HttpServiceExporter">
 		<property name="iface" value="com.xxl.rpc.demo.service.IDemoService" />
 		<property name="service" ref="demoService" />
 		<property name="serialize" value="HESSIAN" />

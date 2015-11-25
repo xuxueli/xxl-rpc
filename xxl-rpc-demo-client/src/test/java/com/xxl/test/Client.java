@@ -11,7 +11,6 @@ import com.xxl.rpc.demo.model.User;
 import com.xxl.rpc.demo.service.IDemoService;
 import com.xxl.rpc.netcom.NetComClientProxy;
 import com.xxl.rpc.netcom.common.NetComEnum;
-import com.xxl.rpc.netcom.http.client.HttpProxy;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:applicationcontext-*.xml")
@@ -28,8 +27,8 @@ public class Client {
     @SuppressWarnings("unused")
 	public static void main(String[] args) throws Exception {
     	
-    	IDemoService service1 = (IDemoService) new HttpProxy("http://localhost:8080/xxl-rpc-demo-server/xxl-rpc/demoService", IDemoService.class, "HESSIAN").getObject();
-    	IDemoService service2 = (IDemoService) new NetComClientProxy(NetComEnum.JETTY.name(), "127.0.0.1:9999", null, IDemoService.class, false, 1000 * 5).getObject();
+    	IDemoService service1 = (IDemoService) new NetComClientProxy(NetComEnum.SERVLET.name(), "http://localhost:8080/xxl-rpc-demo-server/xxl-rpc/demoService", "HESSIAN", IDemoService.class, false, 1000 * 5).getObject();
+    	IDemoService service2 = (IDemoService) new NetComClientProxy(NetComEnum.NETTY.name(), "127.0.0.1:9999", "HESSIAN", IDemoService.class, false, 1000 * 5).getObject();
     	
     	long start = System.currentTimeMillis();
 		for (int i = 0; i < 100; i++) {

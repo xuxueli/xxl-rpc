@@ -6,7 +6,6 @@ import java.net.UnknownHostException;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
@@ -60,7 +59,7 @@ public class ZkServiceRegistry {
      */
     public void registerServices(int port, Set<String> serviceList) {
     	// valid
-    	if (port < 1 || CollectionUtils.isEmpty(serviceList)) {
+    	if (port < 1 || (serviceList==null || serviceList.size()==0)) {
     		return;
     	}
     	String ip = null;

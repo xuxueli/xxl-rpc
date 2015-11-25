@@ -9,13 +9,6 @@
            http://www.springframework.org/schema/util 
            http://www.springframework.org/schema/util/spring-util.xsd">
 
-	<!-- httclient-rpc -->
-	<bean id="demoServiceHttp" class="com.xxl.rpc.netcom.http.client.HttpProxy">
-		<property name="iface" value="com.xxl.rpc.demo.service.IDemoService" />
-		<property name="serverAddress" value="http://localhost:8080/xxl-rpc-demo-server/xxl-rpc/demoService" />
-		<property name="serialize" value="HESSIAN" />
-	</bean>
-	
 	<!-- netty-rpc -->
     <bean id="demoServiceNetty" class="com.xxl.rpc.netcom.NetComClientProxy">
     	<property name="netcom_type" value="NETTY" />
@@ -30,6 +23,22 @@
     	<property name="serverAddress" value="127.0.0.1:9999" />
     	<property name="serialize" value="HESSIAN" />
 		<property name="iface" value="com.xxl.rpc.demo.service.IDemoService" />
+	</bean>
+	
+	<!-- mina-rpc -->
+    <bean id="demoServiceJetty" class="com.xxl.rpc.netcom.NetComClientProxy">
+    	<property name="netcom_type" value="JETTY" />
+    	<property name="serverAddress" value="127.0.0.1:9999" />
+    	<property name="serialize" value="HESSIAN" />
+		<property name="iface" value="com.xxl.rpc.demo.service.IDemoService" />
+	</bean>
+	
+	<!-- servlet-rpc -->
+	<bean id="demoServiceServlet" class="com.xxl.rpc.netcom.NetComClientProxy">
+		<property name="netcom_type" value="SERVLET" />
+		<property name="iface" value="com.xxl.rpc.demo.service.IDemoService" />
+		<property name="serverAddress" value="http://localhost:8080/xxl-rpc-demo-server/xxl-rpc/demoService" />
+		<property name="serialize" value="HESSIAN" />
 	</bean>
 
 </beans>
