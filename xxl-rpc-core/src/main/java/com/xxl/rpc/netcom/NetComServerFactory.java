@@ -94,7 +94,7 @@ public class NetComServerFactory implements ApplicationContextAware, Initializin
 			// init rpc provider
 			IServer server = IServer.getInstance(netcom_type, serviceMap, port, serialize, zookeeper_switch);
 			server.start();
-			logger.info(">>>>>>>>>>> xxl-mq provider is running, netcom_type:{}, port:{}, serialize:{}", netcom_type, port, serialize);
+			logger.info(">>>>>>>>>>> xxl-rpc provider is running, netcom_type:{}, port:{}, serialize:{}", netcom_type, port, serialize);
 		}
 		if (consumer_switch) {
 			// init rpc comsumer
