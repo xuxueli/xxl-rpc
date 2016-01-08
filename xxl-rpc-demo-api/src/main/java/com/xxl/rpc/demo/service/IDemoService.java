@@ -14,4 +14,13 @@ public interface IDemoService {
 		)
 	 */
 	public int updateParam(String key, String value);
+	
+	/**
+	 * 服务注册，测试
+	 * @param a
+	 * @param b
+	 * @return
+	 */
+	public int injectTest(int a, int b);
+	
 }
