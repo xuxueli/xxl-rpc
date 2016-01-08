@@ -2,6 +2,7 @@ package com.xxl.rpc.demo.service.impl;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,6 +10,7 @@ import com.xxl.rpc.demo.core.model.Param;
 import com.xxl.rpc.demo.dao.IParamDao;
 import com.xxl.rpc.demo.model.User;
 import com.xxl.rpc.demo.service.IDemoService;
+import com.xxl.rpc.demo.service.IInjectService;
 import com.xxl.rpc.netcom.common.annotation.SkeletonService;
 
 @SkeletonService(stub=IDemoService.class)
@@ -17,6 +19,8 @@ public class DemoServiceImpl implements IDemoService {
 	
 	@Resource
 	private IParamDao paramDao;
+	@Autowired
+	private IInjectService injectService;
 	
 	@Override
 	public User sayHi(String name) {
@@ -41,6 +45,11 @@ public class DemoServiceImpl implements IDemoService {
 			ret = 3/0;
 			return ret; 
 		}
+	}
+
+	@Override
+	public int injectTest(int a, int b) {
+		return injectService.test(a, b);
 	}
 
 }
