@@ -1,5 +1,11 @@
 package com.xxl.rpc.demo.core.model;
 
+/**
+	CREATE TABLE param (
+		`key`  varchar(255),
+		`value`  varchar(255)
+	)
+ */
 public class Param {
 	
 	private String key;

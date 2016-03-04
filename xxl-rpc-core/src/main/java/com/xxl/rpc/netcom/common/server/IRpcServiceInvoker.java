@@ -33,6 +33,7 @@ public abstract class IRpcServiceInvoker {
             
         	response.setResult(result);
         } catch (Throwable t) {
+        	t.printStackTrace();
         	response.setError(t);
         }
         
