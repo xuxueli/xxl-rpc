@@ -11,6 +11,7 @@
 		<module>xxl-rpc-demo-api</module>
 		<module>xxl-rpc-demo-client</module>
 		<module>xxl-rpc-demo-server</module>
+		<module>xxl-rpc-admin</module>
 	</modules>
 
 	<dependencies>
