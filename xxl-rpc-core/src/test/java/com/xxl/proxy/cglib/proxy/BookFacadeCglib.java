@@ -8,9 +8,6 @@ import net.sf.cglib.proxy.MethodProxy;
 
 /**
  * 使用cglib动态代理
- * 
- * @author student
- * 
  */
 public class BookFacadeCglib implements MethodInterceptor {
 	private Object target;
