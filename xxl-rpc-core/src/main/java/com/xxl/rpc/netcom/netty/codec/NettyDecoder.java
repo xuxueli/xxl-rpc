@@ -34,6 +34,7 @@ public class NettyDecoder extends ByteToMessageDecoder {
         }
         if (in.readableBytes() < dataLength) {
             in.resetReaderIndex();
+            return;	// fix 1024k buffer splice limix
         }
         byte[] data = new byte[dataLength];
         in.readBytes(data);
