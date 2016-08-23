@@ -4,9 +4,7 @@ import com.xxl.rpc.demo.api.IJettyDemoService;
 import com.xxl.rpc.demo.api.IMinaDemoService;
 import com.xxl.rpc.demo.api.INettyDemoService;
 import com.xxl.rpc.demo.api.IServletDemoService;
-import com.xxl.rpc.demo.api.dto.UserDto;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -28,13 +26,14 @@ public class IndexController {
 
 	@RequestMapping("/demo")
 	@ResponseBody
-	public List<UserDto> http(@PathVariable int type, @PathVariable String userName, @PathVariable String word) throws Exception {
+	public List<String> http() throws Exception {
+		String userName = "jack";
 
-		List<UserDto> list = new ArrayList<UserDto>();
-		list.add(nettyDemoService.sayHi(userName));
-		list.add(minaDemoService.sayHi(userName));
-		//list.add(jettyDemoService.sayHi(userName));
-		list.add(servletDemoService.sayHi(userName));
+		List<String> list = new ArrayList<String>();
+		list.add(nettyDemoService.sayHi(userName).toString());
+		list.add(minaDemoService.sayHi(userName).toString());
+		//list.add(jettyDemoService.sayHi(userName).toString());
+		list.add(servletDemoService.sayHi(userName).toString());
 
 		return list;
 	}

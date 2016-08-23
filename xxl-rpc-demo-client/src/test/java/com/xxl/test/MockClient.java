@@ -15,9 +15,9 @@ public class MockClient {
 	public static void main(String[] args) throws Exception {
 
 		INettyDemoService nettyService = (INettyDemoService) new NetComClientProxy(NetComEnum.NETTY.name(), "127.0.0.1:9999", "HESSIAN", INettyDemoService.class, false, 1000 * 5).getObject();
-		IMinaDemoService minaService = (IMinaDemoService) new NetComClientProxy(NetComEnum.NETTY.name(), "127.0.0.1:9999", "HESSIAN", IMinaDemoService.class, false, 1000 * 5).getObject();
+		IMinaDemoService minaService = (IMinaDemoService) new NetComClientProxy(NetComEnum.MINA.name(), "127.0.0.1:9999", "HESSIAN", IMinaDemoService.class, false, 1000 * 5).getObject();
 		IJettyDemoService jettyService = (IJettyDemoService) new NetComClientProxy(NetComEnum.JETTY.name(), "127.0.0.1:9999", "HESSIAN", IJettyDemoService.class, false, 1000 * 5).getObject();
-    	IServletDemoService servletService = (IServletDemoService) new NetComClientProxy(NetComEnum.SERVLET.name(), "http://localhost:8080/server/xxl-rpc/demoService", "HESSIAN", IServletDemoService.class, false, 1000 * 5).getObject();
+    	IServletDemoService servletService = (IServletDemoService) new NetComClientProxy(NetComEnum.SERVLET.name(), "http://localhost:8080/xxl-rpc-demo-server/xxl-rpc/demoService", "HESSIAN", IServletDemoService.class, false, 1000 * 5).getObject();
 
 
 		System.out.println(nettyService.sayHi("jack").toString());
