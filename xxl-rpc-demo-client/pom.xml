@@ -1,68 +1,27 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.xxl</groupId>
-	<version>0.0.1-SNAPSHOT</version>
+	<parent>
+		<groupId>com.xxl</groupId>
+		<artifactId>xxl-rpc</artifactId>
+		<version>${xxl.rpc.version}</version>
+	</parent>
 	<artifactId>xxl-rpc-demo-client</artifactId>
+	<version>${xxl.rpc.version}</version>
 	<packaging>war</packaging>
-
-	<properties>
-		<spring.version>3.2.13.RELEASE</spring.version>
-	</properties>
 
 	<dependencies>
 		<!-- springframe start -->
-		<!-- (级联spring:aopalliance + commons-logging + spring-aop/beans/context/core/expression/web/webmvc) -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context-support</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-orm</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<!-- springframe end -->
-		<!-- aspectjweaver (support spring) -->
-		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>aspectjweaver</artifactId>
-			<version>1.8.2</version>
-		</dependency>
-		<!-- jackson (support spring) -->
+		<!-- jackson (support spring restful) -->
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
 			<version>1.9.13</version>
-		</dependency>
-		<!-- commons-beanutils -->		
-		<dependency>
-			<groupId>commons-beanutils</groupId>
-			<artifactId>commons-beanutils</artifactId>
-			<version>1.8.0</version>
-		</dependency>
-		<!-- commons-collections -->
-		<dependency>
-			<groupId>commons-collections</groupId>
-			<artifactId>commons-collections</artifactId>
-			<version>3.2.1</version>
-		</dependency>
-		<!-- commons-lang -->
-		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>2.5</version>
 		</dependency>
 
 		<!-- slf4j (级联:log4j/slf4j-api) -->
@@ -70,25 +29,6 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.7.5</version>
-		</dependency>
-
-		<!-- freemarker -->
-		<dependency>
-			<groupId>org.freemarker</groupId>
-			<artifactId>freemarker</artifactId>
-			<version>2.3.20</version>
-		</dependency>
-
-		<!-- fileupload -->
-		<dependency>
-			<groupId>commons-fileupload</groupId>
-			<artifactId>commons-fileupload</artifactId>
-			<version>1.2.2</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.4</version>
 		</dependency>
 
 		<!-- junit -->
@@ -117,40 +57,15 @@
 		<dependency>
 			<groupId>com.xxl</groupId>
 			<artifactId>xxl-rpc-core</artifactId>
-			<version>1.0.3</version>
+			<version>${xxl.rpc.version}</version>
 		</dependency>
 		<!-- xxl-rpc-demo-api -->
 		<dependency>
 			<groupId>com.xxl</groupId>
 			<artifactId>xxl-rpc-demo-api</artifactId>
-			<version>1.0.0</version>
+			<version>${xxl.rpc.version}</version>
 		</dependency>
-		
-		
-	</dependencies>
 
-	<build>
-		<!-- 编译版本 -->
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-					<encoding>UTF8</encoding>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>2.2</version>
-				<configuration>
-					<archiveClasses>true</archiveClasses>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+	</dependencies>
 
 </project>

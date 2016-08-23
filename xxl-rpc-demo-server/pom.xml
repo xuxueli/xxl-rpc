@@ -1,14 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.xxl</groupId>
-	<version>0.0.1-SNAPSHOT</version>
+	<parent>
+		<groupId>com.xxl</groupId>
+		<artifactId>xxl-rpc</artifactId>
+		<version>${xxl.rpc.version}</version>
+	</parent>
 	<artifactId>xxl-rpc-demo-server</artifactId>
+	<version>${xxl.rpc.version}</version>
 	<packaging>war</packaging>
-
-	<properties>
-		<spring.version>3.2.13.RELEASE</spring.version>
-	</properties>
 
 	<dependencies>
 		<!-- springframe start -->
@@ -16,21 +16,6 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context-support</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-orm</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
 		<!-- springframe end -->
@@ -79,18 +64,6 @@
 			<version>2.3.20</version>
 		</dependency>
 
-		<!-- fileupload -->
-		<dependency>
-			<groupId>commons-fileupload</groupId>
-			<artifactId>commons-fileupload</artifactId>
-			<version>1.2.2</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.4</version>
-		</dependency>
-
 		<!-- junit -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -112,69 +85,20 @@
 			<version>2.1</version>
 			<scope>provided</scope>
 		</dependency>
-		
-		<!-- c3p0 -->
-		<dependency>
-			<groupId>c3p0</groupId>
-			<artifactId>c3p0</artifactId>
-			<version>0.9.1.2</version>
-		</dependency>
-		<!-- mybatis-spring -->
-		<dependency>
-			<groupId>org.mybatis</groupId>
-			<artifactId>mybatis-spring</artifactId>
-			<version>1.2.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mybatis</groupId>
-			<artifactId>mybatis</artifactId>
-			<version>3.2.8</version>
-		</dependency>
-		<!-- mysql-connector -->
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.29</version>
-		</dependency>
-		
+
 		<!-- xxl-rpc-core -->
 		<dependency>
 			<groupId>com.xxl</groupId>
 			<artifactId>xxl-rpc-core</artifactId>
-			<version>1.0.3</version>
+			<version>${xxl.rpc.version}</version>
 		</dependency>
 		<!-- xxl-rpc-demo-api -->
 		<dependency>
 			<groupId>com.xxl</groupId>
 			<artifactId>xxl-rpc-demo-api</artifactId>
-			<version>1.0.0</version>
+			<version>${xxl.rpc.version}</version>
 		</dependency>
-		
 
 	</dependencies>
-
-	<build>
-		<!-- 编译版本 -->
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-					<encoding>UTF8</encoding>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>2.2</version>
-				<configuration>
-					<archiveClasses>true</archiveClasses>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 
 </project>

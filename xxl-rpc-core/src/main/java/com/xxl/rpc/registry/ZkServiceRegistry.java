@@ -1,22 +1,16 @@
 package com.xxl.rpc.registry;
 
+import com.xxl.rpc.util.Environment;
+import org.apache.zookeeper.*;
+import org.apache.zookeeper.data.Stat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
-
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.WatchedEvent;
-import org.apache.zookeeper.Watcher;
-import org.apache.zookeeper.ZooDefs;
-import org.apache.zookeeper.ZooKeeper;
-import org.apache.zookeeper.data.Stat;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.xxl.rpc.util.Environment;
 
 /**
  * zookeeper service registry
@@ -31,7 +25,7 @@ public class ZkServiceRegistry {
     public ZkServiceRegistry() {
     	final CountDownLatch latch = new CountDownLatch(1);
         try {
-        	zooKeeper = new ZooKeeper(Environment.getZkserver(), 5000, new Watcher() {
+        	zooKeeper = new ZooKeeper(Environment.ZK_ADDRESS, 5000, new Watcher() {
                 public void process(WatchedEvent event) {
                     if (event.getState() == Event.KeeperState.SyncConnected) {
                         latch.countDown();

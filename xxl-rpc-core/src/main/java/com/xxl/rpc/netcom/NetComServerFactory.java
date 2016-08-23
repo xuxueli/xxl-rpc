@@ -1,8 +1,9 @@
 package com.xxl.rpc.netcom;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.xxl.rpc.netcom.common.NetComEnum;
+import com.xxl.rpc.netcom.common.annotation.XxlRpcService;
+import com.xxl.rpc.netcom.common.server.IServer;
+import com.xxl.rpc.serialize.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -10,10 +11,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import com.xxl.rpc.netcom.common.NetComEnum;
-import com.xxl.rpc.netcom.common.annotation.SkeletonService;
-import com.xxl.rpc.netcom.common.server.IServer;
-import com.xxl.rpc.serialize.Serializer;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * netcom init
@@ -79,10 +78,10 @@ public class NetComServerFactory implements ApplicationContextAware, Initializin
 	 */
 	private Map<String, Object> serviceMap = new HashMap<String, Object>();
 	private void initServiceMap(ApplicationContext applicationContext){
-		Map<String, Object> serviceBeanMap = applicationContext.getBeansWithAnnotation(SkeletonService.class);
+		Map<String, Object> serviceBeanMap = applicationContext.getBeansWithAnnotation(XxlRpcService.class);
         if (serviceBeanMap!=null && serviceBeanMap.size()>0) {
             for (Object serviceBean : serviceBeanMap.values()) {
-                String interfaceName = serviceBean.getClass().getAnnotation(SkeletonService.class).stub().getName();
+                String interfaceName = serviceBean.getClass().getAnnotation(XxlRpcService.class).value().getName();
                 serviceMap.put(interfaceName, serviceBean);
             }
         }

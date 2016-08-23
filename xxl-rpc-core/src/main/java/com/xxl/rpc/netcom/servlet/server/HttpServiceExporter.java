@@ -1,21 +1,19 @@
 package com.xxl.rpc.netcom.servlet.server;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.web.HttpRequestHandler;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
-import org.springframework.web.util.NestedServletException;
-
 import com.xxl.rpc.netcom.common.codec.RpcRequest;
 import com.xxl.rpc.netcom.common.codec.RpcResponse;
 import com.xxl.rpc.netcom.common.server.IRpcServiceInvoker;
 import com.xxl.rpc.serialize.Serializer;
 import com.xxl.rpc.util.HttpClientUtil;
+import org.springframework.web.HttpRequestHandler;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.util.NestedServletException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * export spring.service as xxl-prc.service 
@@ -30,10 +28,10 @@ import com.xxl.rpc.util.HttpClientUtil;
 		<servlet-name>xxl-rpc</servlet-name>
 		<url-pattern>/xxl-rpc/*</url-pattern>
 	</servlet-mapping>
-	
+
 	<bean name="/demoService" class="com.xxl.rpc.netcom.servlet.server.HttpServiceExporter">
-		<property name="iface" value="com.xxl.rpc.demo.service.IDemoService" />
-		<property name="service" ref="demoService" />
+		<property name="iface" value="com.xxl.rpc.demo.api.IDemoService" />
+		<property name="service" ref="servletDemoService" />
 		<property name="serialize" value="HESSIAN" />
 	</bean>
 	

@@ -4,11 +4,10 @@
 	<parent>
 		<groupId>com.xxl</groupId>
 		<artifactId>xxl-rpc</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>${xxl.rpc.version}</version>
 	</parent>
 	<artifactId>xxl-rpc-core</artifactId>
-	<version>1.0.3</version>
-	<name>xxl-rpc-core</name>
+	<version>${xxl.rpc.version}</version>
 	<packaging>jar</packaging>
 
 	<dependencies>

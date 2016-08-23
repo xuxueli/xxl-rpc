@@ -1,26 +1,16 @@
 package com.xxl.rpc.registry;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.CountDownLatch;
-
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.WatchedEvent;
-import org.apache.zookeeper.Watcher;
-import org.apache.zookeeper.ZooDefs;
-import org.apache.zookeeper.ZooKeeper;
+import com.xxl.rpc.util.Environment;
+import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.xxl.rpc.util.Environment;
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * zookeeper service discovery
@@ -34,7 +24,7 @@ public class ZkServiceDiscovery implements Watcher {
     public ZkServiceDiscovery() {
     	final CountDownLatch latch = new CountDownLatch(1);
         try {
-        	zooKeeper = new ZooKeeper(Environment.getZkserver(), 5000, new Watcher() {
+        	zooKeeper = new ZooKeeper(Environment.ZK_ADDRESS, 5000, new Watcher() {
                 public void process(WatchedEvent event) {
                     if (event.getState() == Event.KeeperState.SyncConnected) {
                         latch.countDown();

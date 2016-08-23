@@ -35,7 +35,7 @@ public class ZkServiceUtils implements Watcher {
     public ZkServiceUtils() {
     	final CountDownLatch latch = new CountDownLatch(1);
         try {
-        	zooKeeper = new ZooKeeper(Environment.getZkserver(), 5000, new Watcher() {
+        	zooKeeper = new ZooKeeper(Environment.ZK_ADDRESS, 5000, new Watcher() {
                 public void process(WatchedEvent event) {
                     if (event.getState() == Event.KeeperState.SyncConnected) {
                         latch.countDown();

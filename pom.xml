@@ -3,19 +3,21 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.xxl</groupId>
 	<artifactId>xxl-rpc</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>${xxl.rpc.version}</version>
 	<packaging>pom</packaging>
 
 	<modules>
 		<module>xxl-rpc-core</module>
+		<module>xxl-rpc-admin</module>
 		<module>xxl-rpc-demo-api</module>
 		<module>xxl-rpc-demo-client</module>
 		<module>xxl-rpc-demo-server</module>
-		<module>xxl-rpc-admin</module>
 	</modules>
 
-	<dependencies>
-	</dependencies>
+	<properties>
+		<xxl.rpc.version>1.1.0</xxl.rpc.version>
+		<spring.version>3.2.13.RELEASE</spring.version>
+	</properties>
 
 	<build>
 		<plugins>
@@ -27,6 +29,14 @@
 					<source>1.6</source>
 					<target>1.6</target>
 					<encoding>UTF8</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<archiveClasses>true</archiveClasses>
 				</configuration>
 			</plugin>
 		</plugins>
