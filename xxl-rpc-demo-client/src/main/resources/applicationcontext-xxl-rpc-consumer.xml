@@ -8,31 +8,31 @@
 
 	<!-- netty-rpc (需要服务端通讯模式: NETTY/MINA) -->
     <bean id="nettyDemoService" class="com.xxl.rpc.netcom.NetComClientProxy">
-    	<property name="netcom_type" value="NETTY" />
-    	<property name="serverAddress" value="127.0.0.1:9999" />
+    	<property name="netcom" value="NETTY" />
+    	<property name="serverAddress" value="127.0.0.1:7080" />
     	<property name="serialize" value="HESSIAN" />
 		<property name="iface" value="com.xxl.rpc.demo.api.INettyDemoService" />
 	</bean>
 	
 	<!-- mina-rpc (需要服务端通讯模式: NETTY/MINA) -->
     <bean id="minaDemoService" class="com.xxl.rpc.netcom.NetComClientProxy">
-    	<property name="netcom_type" value="MINA" />
-    	<property name="serverAddress" value="127.0.0.1:9999" />
+    	<property name="netcom" value="MINA" />
+    	<property name="serverAddress" value="127.0.0.1:7080" />
     	<property name="serialize" value="HESSIAN" />
 		<property name="iface" value="com.xxl.rpc.demo.api.IMinaDemoService" />
 	</bean>
 	
 	<!-- jetty-rpc (// 需要Server端通讯模型改为Jetty) -->
     <bean id="jettyDemoService" class="com.xxl.rpc.netcom.NetComClientProxy">
-    	<property name="netcom_type" value="JETTY" />
-    	<property name="serverAddress" value="127.0.0.1:9999" />
+    	<property name="netcom" value="JETTY" />
+    	<property name="serverAddress" value="127.0.0.1:7080" />
     	<property name="serialize" value="HESSIAN" />
 		<property name="iface" value="com.xxl.rpc.demo.api.IJettyDemoService" />
 	</bean>
 	
 	<!-- servlet-rpc (需要服务端特殊配置: SERVLET) -->
 	<bean id="servletDemoService" class="com.xxl.rpc.netcom.NetComClientProxy">
-		<property name="netcom_type" value="SERVLET" />
+		<property name="netcom" value="SERVLET" />
 		<property name="iface" value="com.xxl.rpc.demo.api.IServletDemoService" />
 		<property name="serverAddress" value="http://127.0.0.1:8080/xxl-rpc-demo-server/xxl-rpc/demoService" />
 		<property name="serialize" value="HESSIAN" />

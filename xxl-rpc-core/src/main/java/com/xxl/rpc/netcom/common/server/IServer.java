@@ -1,9 +1,9 @@
 package com.xxl.rpc.netcom.common.server;
 
-import java.util.Map;
-
 import com.xxl.rpc.netcom.common.NetComEnum;
 import com.xxl.rpc.serialize.Serializer;
+
+import java.util.Map;
 
 /**
  * i server
@@ -28,15 +28,15 @@ public abstract class IServer {
 	
 	/**
 	 * 
-	 * @param netcom_type		net-com type
-	 * @param serviceMap		config
-	 * @param port				config
-	 * @param serialize			config
-	 * @param zookeeper_switch	config
+	 * @param netcom
+	 * @param serviceMap
+	 * @param port
+	 * @param serialize
+	 * @param zookeeper_switch
 	 * @return
 	 */
-	public static IServer getInstance(String netcom_type, Map<String, Object> serviceMap, int port, String serialize, boolean zookeeper_switch) {
-		NetComEnum netCom = NetComEnum.match(netcom_type, NetComEnum.NETTY);
+	public static IServer getInstance(String netcom, Map<String, Object> serviceMap, int port, String serialize, boolean zookeeper_switch) {
+		NetComEnum netCom = NetComEnum.match(netcom, NetComEnum.NETTY);
 		
 		IServer server = null;
 		try {

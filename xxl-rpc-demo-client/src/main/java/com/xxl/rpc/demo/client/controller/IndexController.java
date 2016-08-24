@@ -24,7 +24,7 @@ public class IndexController {
 	@Resource
 	private IServletDemoService servletDemoService;
 
-	@RequestMapping("/demo")
+	@RequestMapping("")
 	@ResponseBody
 	public List<String> http() throws Exception {
 		String userName = "jack";

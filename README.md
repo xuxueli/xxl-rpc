@@ -29,3 +29,4 @@ git.osc地址：http://git.oschina.net/xuxueli0323/xxl-rpc
     - servlet方式rpc,抛弃
 - 4、服务管理中心,重构
     - 注册服务列表和查看, 注册节点移除
+- 5、NIO=7080、Jetty=7070

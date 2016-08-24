@@ -19,7 +19,7 @@ public class NettyClient extends IClient {
 	@Override
 	public RpcResponse send(RpcRequest request) throws Exception {
 		// client pool	[tips03 : may save 35ms/100invoke if move it to constructor, but it is necessary. cause by ConcurrentHashMap.get]
-        GenericObjectPool<NettyClientPoolProxy> clientPool = NettyClientPool.getPool(zookeeper_switch, serverAddress, request.getClassName(), serializer);
+        GenericObjectPool<NettyClientPoolProxy> clientPool = NettyClientPool.getPool(serverAddress, request.getClassName(), serializer);
         
         // client proxt
         NettyClientPoolProxy clientPoolProxy = null;

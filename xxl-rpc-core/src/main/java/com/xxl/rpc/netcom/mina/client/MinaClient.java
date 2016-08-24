@@ -19,7 +19,7 @@ public class MinaClient extends IClient {
 	@Override
 	public RpcResponse send(RpcRequest request) throws Exception {
 		// client pool
-    	GenericObjectPool<MinaClientPoolProxy> clientPool = MinaClientPool.getPool(zookeeper_switch, serverAddress, request.getClassName(), serializer);
+    	GenericObjectPool<MinaClientPoolProxy> clientPool = MinaClientPool.getPool(serverAddress, request.getClassName(), serializer);
     	// client proxy
     	MinaClientPoolProxy clientPoolProxy = null;
 		try {

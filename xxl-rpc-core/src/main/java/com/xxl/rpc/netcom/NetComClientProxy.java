@@ -1,19 +1,18 @@
 package com.xxl.rpc.netcom;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.UUID;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.FactoryBean;
-
 import com.xxl.rpc.netcom.common.NetComEnum;
 import com.xxl.rpc.netcom.common.client.IClient;
 import com.xxl.rpc.netcom.common.codec.RpcRequest;
 import com.xxl.rpc.netcom.common.codec.RpcResponse;
 import com.xxl.rpc.serialize.Serializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.FactoryBean;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.UUID;
 
 /**
  * rpc proxy
@@ -22,31 +21,28 @@ import com.xxl.rpc.serialize.Serializer;
 public class NetComClientProxy implements FactoryBean<Object> {
 	private static final Logger logger = LoggerFactory.getLogger(NetComClientProxy.class);	 
 	// [tips01: save 30ms/100invoke. why why why??? with this logger, it can save lots of time.]
-	
+
 	// origin prop
-	private Class<?> iface;
-	private String netcom_type = NetComEnum.NETTY.name();
-	
-	private boolean zookeeper_switch;
+	private String netcom = NetComEnum.NETTY.name();
 	private String serverAddress;
 	private String serialize = Serializer.SerializeType.HESSIAN.name();
+	private Class<?> iface;
 	private long timeoutMillis = 5000;
 	
 	public NetComClientProxy(){	}
-	public NetComClientProxy(String netcom_type, String serverAddress, String serialize, Class<?> iface, boolean zookeeper_switch, long timeoutMillis) {
-		this.netcom_type = netcom_type;
+	public NetComClientProxy(String netcom_type, String serverAddress, String serialize, Class<?> iface, long timeoutMillis) {
+		this.netcom = netcom_type;
 		this.serverAddress = serverAddress;
 		this.iface = iface;
 		this.serialize = serialize;
-		this.zookeeper_switch = zookeeper_switch;
 		this.timeoutMillis = timeoutMillis;
 	}
 	
-	public String getNetcom_type() {
-		return netcom_type;
+	public String getNetcom() {
+		return netcom;
 	}
-	public void setNetcom_type(String netcom_type) {
-		this.netcom_type = netcom_type;
+	public void setNetcom(String netcom) {
+		this.netcom = netcom;
 	}
 	public String getServerAddress() {
 		return serverAddress;
@@ -65,12 +61,6 @@ public class NetComClientProxy implements FactoryBean<Object> {
 	}
 	public void setSerialize(String serialize) {
 		this.serialize = serialize;
-	}
-	public boolean isZookeeper_switch() {
-		return zookeeper_switch;
-	}
-	public void setZookeeper_switch(boolean zookeeper_switch) {
-		this.zookeeper_switch = zookeeper_switch;
 	}
 	public long getTimeoutMillis() {
 		return timeoutMillis;
@@ -97,7 +87,7 @@ public class NetComClientProxy implements FactoryBean<Object> {
 	                    request.setParameters(args);
 	                    
 	                    // send
-	                    IClient client = IClient.getInstance(netcom_type, zookeeper_switch, serverAddress, serialize, timeoutMillis);
+	                    IClient client = IClient.getInstance(netcom, serverAddress, serialize, timeoutMillis);
 	                    RpcResponse response = client.send(request);
 	                    
 	                    // valid response

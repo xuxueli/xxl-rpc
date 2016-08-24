@@ -12,27 +12,25 @@ import com.xxl.rpc.serialize.Serializer;
 public abstract class IClient {
 	
 	// init config
-	protected boolean zookeeper_switch;
 	protected String serverAddress;
 	protected Serializer serializer;
 	protected long timeoutMillis;
 	
-	private void initConfig(boolean zookeeper_switch, String serverAddress, String serialize, long timeoutMillis) {
+	private void initConfig(String serverAddress, String serialize, long timeoutMillis) {
 		this.serverAddress = serverAddress;
 		this.serializer = Serializer.getInstance(serialize);
-		this.zookeeper_switch = zookeeper_switch;
 		this.timeoutMillis = timeoutMillis;
 	}
 	
 	public abstract RpcResponse send(RpcRequest request) throws Exception;
 	
-	public static IClient getInstance(String netcom_type, boolean zookeeper_switch, String serverAddress, String serialize, long timeoutMillis){
+	public static IClient getInstance(String netcom_type, String serverAddress, String serialize, long timeoutMillis){
 		NetComEnum netCom = NetComEnum.match(netcom_type, NetComEnum.NETTY);
 		
 		IClient client = null;
 		try {
 			client = netCom.clientClass.newInstance();
-			client.initConfig(zookeeper_switch, serverAddress, serialize, timeoutMillis);
+			client.initConfig(serverAddress, serialize, timeoutMillis);
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {

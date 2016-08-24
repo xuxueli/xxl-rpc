@@ -1,11 +1,10 @@
 package com.xxl.rpc.netcom.netty.client;
 
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.apache.commons.pool2.impl.GenericObjectPool;
-
 import com.xxl.rpc.registry.ZkServiceDiscovery;
 import com.xxl.rpc.serialize.Serializer;
+import org.apache.commons.pool2.impl.GenericObjectPool;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * connect pool
@@ -26,9 +25,9 @@ public class NettyClientPool {
 
 	// serverAddress : [NettyClientPoolProxy01, NettyClientPoolProxy02]
 	private static ConcurrentHashMap<String, NettyClientPool> clientPoolMap = new ConcurrentHashMap<String, NettyClientPool>();
-	public static GenericObjectPool<NettyClientPoolProxy> getPool(boolean zookeeper_switch, String serverAddress, String className, Serializer serializer)
+	public static GenericObjectPool<NettyClientPoolProxy> getPool(String serverAddress, String className, Serializer serializer)
 			throws Exception {
-		if (zookeeper_switch) {
+		if (serverAddress==null || serverAddress.trim().length()==0) {
 			serverAddress = ZkServiceDiscovery.zkServiceDiscovery.discover(className);
 		}
 		NettyClientPool clientPool = clientPoolMap.get(serverAddress);

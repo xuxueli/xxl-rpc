@@ -15,7 +15,7 @@ public class JettyClient extends IClient {
 	@Override
 	public RpcResponse send(RpcRequest request) throws Exception {
 		
-		if (zookeeper_switch) {
+		if (serverAddress==null || serverAddress.trim().length()==0) {
 			serverAddress = ZkServiceDiscovery.zkServiceDiscovery.discover(request.getClassName());
 		}
 		
