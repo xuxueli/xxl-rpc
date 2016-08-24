@@ -19,22 +19,25 @@ import java.io.OutputStream;
  * export spring.service as xxl-prc.service 
  * @author xuxueli 2015-9-29 14:35:21
  * 
- * 	<servlet>
-		<servlet-name>xxl-rpc</servlet-name>
-		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>xxl-rpc</servlet-name>
-		<url-pattern>/xxl-rpc/*</url-pattern>
-	</servlet-mapping>
-
-	<bean name="/demoService" class="com.xxl.rpc.netcom.servlet.server.HttpServiceExporter">
-		<property name="iface" value="com.xxl.rpc.demo.api.IDemoService" />
-		<property name="service" ref="servletDemoService" />
-		<property name="serialize" value="HESSIAN" />
-	</bean>
-	
+ * 	<code>
+		<!-- SERVLET RPC, 服务端配置(类似Hessian B-RPC) -->
+		<!-- web.xml 配置 -->
+		<servlet>
+			<servlet-name>xxl-rpc</servlet-name>
+			<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+			<load-on-startup>1</load-on-startup>
+		</servlet>
+		<servlet-mapping>
+			<servlet-name>xxl-rpc</servlet-name>
+			<url-pattern>/xxl-rpc/*</url-pattern>
+		</servlet-mapping>
+		<!-- xxl-rpc-servlet.xml 配置 -->
+		<bean name="/demoService" class="com.xxl.rpc.netcom.servlet.server.HttpServiceExporter">
+			<property name="iface" value="com.xxl.rpc.demo.api.IServletDemoService" />
+			<property name="service" ref="servletDemoService" />
+			<property name="serialize" value="HESSIAN" />
+		</bean>
+	</code>
  */
 public class HttpServiceExporter implements HttpRequestHandler {
 	
