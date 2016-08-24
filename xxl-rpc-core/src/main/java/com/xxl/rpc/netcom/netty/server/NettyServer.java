@@ -1,5 +1,12 @@
 package com.xxl.rpc.netcom.netty.server;
 
+import com.xxl.rpc.netcom.common.codec.RpcRequest;
+import com.xxl.rpc.netcom.common.codec.RpcResponse;
+import com.xxl.rpc.netcom.common.server.IServer;
+import com.xxl.rpc.netcom.netty.codec.NettyDecoder;
+import com.xxl.rpc.netcom.netty.codec.NettyEncoder;
+import com.xxl.rpc.registry.ZkServiceRegistry;
+import com.xxl.rpc.serialize.Serializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -8,16 +15,10 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.xxl.rpc.netcom.common.codec.RpcRequest;
-import com.xxl.rpc.netcom.common.codec.RpcResponse;
-import com.xxl.rpc.netcom.common.server.IServer;
-import com.xxl.rpc.netcom.netty.codec.NettyDecoder;
-import com.xxl.rpc.netcom.netty.codec.NettyEncoder;
-import com.xxl.rpc.registry.ZkServiceRegistry;
+import java.util.Map;
 
 /**
  * netty rpc server
@@ -27,7 +28,7 @@ public class NettyServer extends IServer {
     private static final Logger logger = LoggerFactory.getLogger(NettyServer.class);
     
     @Override
-	public void start() throws Exception {
+	public void start(final int port, final Serializer serializer, final Map<String, Object> serviceMap, final boolean zookeeper_switch) throws Exception {
     	new Thread(new Runnable() {
 			@Override
 			public void run() {

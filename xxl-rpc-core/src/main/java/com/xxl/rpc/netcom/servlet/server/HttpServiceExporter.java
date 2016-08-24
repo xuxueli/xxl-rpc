@@ -35,7 +35,7 @@ import java.io.OutputStream;
 		<bean name="/demoService" class="com.xxl.rpc.netcom.servlet.server.HttpServiceExporter">
 			<property name="iface" value="com.xxl.rpc.demo.api.IServletDemoService" />
 			<property name="service" ref="servletDemoService" />
-			<property name="serialize" value="HESSIAN" />
+			<property name="serializer" value="HESSIAN" />
 		</bean>
 	</code>
  */
@@ -43,7 +43,7 @@ public class HttpServiceExporter implements HttpRequestHandler {
 	
 	private Class<?> iface;
 	private Object service;
-	private String serialize;
+	private Serializer serializer = Serializer.SerializeEnum.HESSIAN.serializer;
 	public Class<?> getIface() {
 		return iface;
 	}
@@ -56,11 +56,11 @@ public class HttpServiceExporter implements HttpRequestHandler {
 	public void setService(Object service) {
 		this.service = service;
 	}
-	public String getSerialize() {
-		return serialize;
+	public void setSerializer(String serializer) {
+		this.serializer = Serializer.SerializeEnum.match(serializer, Serializer.SerializeEnum.HESSIAN).serializer;
 	}
-	public void setSerialize(String serialize) {
-		this.serialize = serialize;
+	public Serializer getSerializer() {
+		return serializer;
 	}
 	
 	@Override
@@ -84,8 +84,7 @@ public class HttpServiceExporter implements HttpRequestHandler {
 		
 		try {
 			// serializer
-	        Serializer serializer = Serializer.getInstance(serialize);
-	        
+
 	        // deserialize request
 			byte[] requestBytes = HttpClientUtil.readBytes(request);
 	        RpcRequest rpcRequest = (RpcRequest) serializer.deserialize(requestBytes, RpcRequest.class);
@@ -94,7 +93,7 @@ public class HttpServiceExporter implements HttpRequestHandler {
 	        Object serviceBean = service;
 	        RpcResponse rpcResponse = IRpcServiceInvoker.invokeService(rpcRequest, serviceBean);
 	        
-	        // serialize response
+	        // serializer response
 	        byte[] responseBytes = serializer.serialize(rpcResponse);
 	        
 	        // write response

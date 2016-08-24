@@ -18,7 +18,7 @@ public abstract class IClient {
 	
 	private void initConfig(String serverAddress, String serialize, long timeoutMillis) {
 		this.serverAddress = serverAddress;
-		this.serializer = Serializer.getInstance(serialize);
+		this.serializer = Serializer.SerializeEnum.match(serialize, Serializer.SerializeEnum.HESSIAN).serializer;
 		this.timeoutMillis = timeoutMillis;
 	}
 	

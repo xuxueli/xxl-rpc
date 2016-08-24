@@ -25,7 +25,7 @@ public class NetComClientProxy implements FactoryBean<Object> {
 	// origin prop
 	private String netcom = NetComEnum.NETTY.name();
 	private String serverAddress;
-	private String serialize = Serializer.SerializeType.HESSIAN.name();
+	private String serializer = Serializer.SerializeEnum.HESSIAN.name();
 	private Class<?> iface;
 	private long timeoutMillis = 5000;
 	
@@ -34,7 +34,7 @@ public class NetComClientProxy implements FactoryBean<Object> {
 		this.netcom = netcom_type;
 		this.serverAddress = serverAddress;
 		this.iface = iface;
-		this.serialize = serialize;
+		this.serializer = serialize;
 		this.timeoutMillis = timeoutMillis;
 	}
 	
@@ -56,11 +56,11 @@ public class NetComClientProxy implements FactoryBean<Object> {
 	public void setIface(Class<?> iface) {
 		this.iface = iface;
 	}
-	public String getSerialize() {
-		return serialize;
+	public String getSerializer() {
+		return serializer;
 	}
-	public void setSerialize(String serialize) {
-		this.serialize = serialize;
+	public void setSerializer(String serializer) {
+		this.serializer = serializer;
 	}
 	public long getTimeoutMillis() {
 		return timeoutMillis;
@@ -87,7 +87,7 @@ public class NetComClientProxy implements FactoryBean<Object> {
 	                    request.setParameters(args);
 	                    
 	                    // send
-	                    IClient client = IClient.getInstance(netcom, serverAddress, serialize, timeoutMillis);
+	                    IClient client = IClient.getInstance(netcom, serverAddress, serializer, timeoutMillis);
 	                    RpcResponse response = client.send(request);
 	                    
 	                    // valid response

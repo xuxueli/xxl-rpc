@@ -22,37 +22,46 @@ import java.util.Map;
  */
 public class NetComServerFactory implements ApplicationContextAware, InitializingBean {
 	private static final Logger logger = LoggerFactory.getLogger(NetComServerFactory.class);
-	
-	private String netcom = NetComEnum.NETTY.name();
-	private int port = 9999;
-	private String serialize = Serializer.SerializeType.HESSIAN.name();
+
+	// ---------------------- server config ----------------------
+	private int port = 7080;
+	private int http_port = 7070;
+	private NetComEnum netcom = NetComEnum.NETTY;
+	private Serializer serializer = Serializer.SerializeEnum.HESSIAN.serializer;
 	private boolean zookeeper_switch = false;
 
-	public String getNetcom() {
-		return netcom;
-	}
-	public void setNetcom(String netcom) {
-		this.netcom = netcom;
+	public void setPort(int port) {
+		this.port = port;
 	}
 	public int getPort() {
 		return port;
 	}
-	public void setPort(int port) {
-		this.port = port;
+	public void setHttp_port(int http_port) {
+		this.http_port = http_port;
 	}
-	public String getSerialize() {
-		return serialize;
+	public int getHttp_port() {
+		return http_port;
 	}
-	public void setSerialize(String serialize) {
-		this.serialize = serialize;
+	public void setNetcom(String netcom) {
+		this.netcom = NetComEnum.match(netcom, NetComEnum.NETTY);
 	}
-	public boolean isZookeeper_switch() {
-		return zookeeper_switch;
+	public NetComEnum getNetcom() {
+		return netcom;
+	}
+	public void setSerializer(String serializer) {
+		this.serializer = Serializer.SerializeEnum.match(serializer, Serializer.SerializeEnum.HESSIAN).serializer;
+	}
+	public Serializer getSerializer() {
+		return serializer;
 	}
 	public void setZookeeper_switch(boolean zookeeper_switch) {
 		this.zookeeper_switch = zookeeper_switch;
 	}
+	public boolean isZookeeper_switch() {
+		return zookeeper_switch;
+	}
 
+	// ---------------------- server init ----------------------
 	/**
 	 * init local rpc service map
 	 */
@@ -74,9 +83,14 @@ public class NetComServerFactory implements ApplicationContextAware, Initializin
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		// init rpc provider
-		IServer server = IServer.getInstance(netcom, serviceMap, port, serialize, zookeeper_switch);
-		server.start();
-		logger.info(">>>>>>>>>>> xxl-rpc provider is running, netcom:{}, port:{}, serialize:{}", netcom, port, serialize);
+		IServer server = netcom.serverClass.newInstance();
+		server.start(port, serializer, serviceMap, zookeeper_switch);
+		logger.info(">>>>>>>>>>> xxl-rpc provider is running: {}", this);
+
+		// init rpc-http provider
+		IServer httpserver = NetComEnum.JETTY.serverClass.newInstance();
+		server.start(http_port, serializer, serviceMap, zookeeper_switch);
+		logger.info(">>>>>>>>>>> xxl-rpc provider(http) is running");
 	}
 	
 }

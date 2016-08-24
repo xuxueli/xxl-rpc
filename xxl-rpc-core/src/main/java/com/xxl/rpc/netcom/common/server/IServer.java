@@ -1,7 +1,8 @@
 package com.xxl.rpc.netcom.common.server;
 
-import com.xxl.rpc.netcom.common.NetComEnum;
 import com.xxl.rpc.serialize.Serializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
@@ -10,45 +11,8 @@ import java.util.Map;
  * @author xuxueli 2015-11-24 20:59:49
  */
 public abstract class IServer {
-	
-	// init config
-	protected Map<String, Object> serviceMap;
-	protected Serializer serializer;
-	protected int port;
-	protected boolean zookeeper_switch;
-	
-    public void initConfig(Map<String, Object> serviceMap, String serialize, int port, boolean zookeeper_switch) {
-    	this.serviceMap = serviceMap;
-    	this.serializer = Serializer.getInstance(serialize);
-		this.port = port;
-		this.zookeeper_switch = zookeeper_switch;
-	}
-    
-	public abstract void start() throws Exception;
-	
-	/**
-	 * 
-	 * @param netcom
-	 * @param serviceMap
-	 * @param port
-	 * @param serialize
-	 * @param zookeeper_switch
-	 * @return
-	 */
-	public static IServer getInstance(String netcom, Map<String, Object> serviceMap, int port, String serialize, boolean zookeeper_switch) {
-		NetComEnum netCom = NetComEnum.match(netcom, NetComEnum.NETTY);
-		
-		IServer server = null;
-		try {
-			server = netCom.serverClass.newInstance();
-			server.initConfig(serviceMap, serialize, port, zookeeper_switch);
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}
-		
-		return server;
-	}
-	
+	private static final Logger logger = LoggerFactory.getLogger(IServer.class);
+
+	public abstract void start(final int port, final Serializer serializer, final Map<String, Object> serviceMap, final boolean zookeeper_switch) throws Exception;
+
 }

@@ -14,7 +14,7 @@
     <bean class="com.xxl.rpc.netcom.NetComServerFactory">
     	<property name="port" value="7080" />
     	<property name="netcom" value="NETTY" />
-    	<property name="serialize" value="HESSIAN" />
+    	<property name="serializer" value="HESSIAN" />
     	<property name="zookeeper_switch" value="false" />
     </bean>
 

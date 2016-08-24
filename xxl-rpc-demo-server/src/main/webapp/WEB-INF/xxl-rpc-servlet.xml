@@ -8,7 +8,7 @@
 	<bean name="/demoService" class="com.xxl.rpc.netcom.servlet.server.HttpServiceExporter">
 		<property name="iface" value="com.xxl.rpc.demo.api.IServletDemoService" />
 		<property name="service" ref="servletDemoService" />
-		<property name="serialize" value="HESSIAN" />
+		<property name="serializer" value="HESSIAN" />
 	</bean>
 
 </beans>

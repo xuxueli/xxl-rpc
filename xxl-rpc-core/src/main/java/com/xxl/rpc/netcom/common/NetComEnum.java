@@ -25,7 +25,7 @@ public enum NetComEnum {
 	public final Class<? extends IClient> clientClass;
 
 	private NetComEnum(Class<? extends IServer> serverClass,
-			Class<? extends IClient> clientClass) {
+					   Class<? extends IClient> clientClass) {
 		this.serverClass = serverClass;
 		this.clientClass = clientClass;
 	}
