@@ -27,19 +27,22 @@ public class MinaClientPool {
 	private static ConcurrentHashMap<String, MinaClientPool> clientPoolMap = new ConcurrentHashMap<String, MinaClientPool>();
 	public static GenericObjectPool<MinaClientPoolProxy> getPool(String serverAddress, String className, Serializer serializer)
 			throws Exception {
+
+		// valid serverAddress
 		if (serverAddress==null || serverAddress.trim().length()==0) {
 			serverAddress = ZkServiceDiscovery.zkServiceDiscovery.discover(className);
 		}
-		MinaClientPool clientPool = clientPoolMap.get(serverAddress);
-
-		if (clientPool != null) {
-			return clientPool.getPool();
-		}
-
 		if (serverAddress == null || serverAddress.trim().length() == 0) {
 			throw new IllegalArgumentException(">>>>>>>>>>>> serverAddress is null");
 		}
 
+		// get from pool
+		MinaClientPool clientPool = clientPoolMap.get(serverAddress);
+		if (clientPool != null) {
+			return clientPool.getPool();
+		}
+
+		// init pool
 		String[] array = serverAddress.split(":");
 		String host = array[0];
 		int port = Integer.parseInt(array[1]);

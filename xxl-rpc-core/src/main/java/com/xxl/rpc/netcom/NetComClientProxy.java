@@ -8,6 +8,7 @@ import com.xxl.rpc.serialize.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.beans.factory.InitializingBean;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -18,37 +19,48 @@ import java.util.UUID;
  * rpc proxy
  * @author xuxueli 2015-10-29 20:18:32
  */
-public class NetComClientProxy implements FactoryBean<Object> {
+public class NetComClientProxy implements FactoryBean<Object>, InitializingBean {
 	private static final Logger logger = LoggerFactory.getLogger(NetComClientProxy.class);	 
 	// [tips01: save 30ms/100invoke. why why why??? with this logger, it can save lots of time.]
 
-	// origin prop
-	private String netcom = NetComEnum.NETTY.name();
+	// ---------------------- config ----------------------
 	private String serverAddress;
-	private String serializer = Serializer.SerializeEnum.HESSIAN.name();
+	private NetComEnum netcom = NetComEnum.NETTY;
+	private Serializer serializer = Serializer.SerializeEnum.HESSIAN.serializer;
 	private Class<?> iface;
 	private long timeoutMillis = 5000;
 	
 	public NetComClientProxy(){	}
-	public NetComClientProxy(String netcom_type, String serverAddress, String serialize, Class<?> iface, long timeoutMillis) {
-		this.netcom = netcom_type;
-		this.serverAddress = serverAddress;
-		this.iface = iface;
-		this.serializer = serialize;
-		this.timeoutMillis = timeoutMillis;
+	public NetComClientProxy(String serverAddress, String netcom, String serializer, Class<?> iface, long timeoutMillis) {
+		this.setServerAddress(serverAddress);
+		this.setNetcom(netcom);
+		this.setSerializer(serializer);
+		this.setIface(iface);
+		this.setTimeoutMillis(timeoutMillis);
+		try {
+			this.afterPropertiesSet();
+		} catch (Exception e) {
+			logger.error("", e);
+		}
 	}
-	
-	public String getNetcom() {
-		return netcom;
-	}
-	public void setNetcom(String netcom) {
-		this.netcom = netcom;
-	}
+
 	public String getServerAddress() {
 		return serverAddress;
 	}
 	public void setServerAddress(String serverAddress) {
 		this.serverAddress = serverAddress;
+	}
+	public void setNetcom(String netcom) {
+		this.netcom = NetComEnum.match(netcom, NetComEnum.NETTY);
+	}
+	public NetComEnum getNetcom() {
+		return netcom;
+	}
+	public void setSerializer(String serializer) {
+		this.serializer = Serializer.SerializeEnum.match(serializer, Serializer.SerializeEnum.HESSIAN).serializer;
+	}
+	public Serializer getSerializer() {
+		return serializer;
 	}
 	public Class<?> getIface() {
 		return iface;
@@ -56,17 +68,19 @@ public class NetComClientProxy implements FactoryBean<Object> {
 	public void setIface(Class<?> iface) {
 		this.iface = iface;
 	}
-	public String getSerializer() {
-		return serializer;
-	}
-	public void setSerializer(String serializer) {
-		this.serializer = serializer;
-	}
 	public long getTimeoutMillis() {
 		return timeoutMillis;
 	}
 	public void setTimeoutMillis(long timeoutMillis) {
 		this.timeoutMillis = timeoutMillis;
+	}
+
+	// ---------------------- init client, operate ----------------------
+	IClient client = null;
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		client = netcom.clientClass.newInstance();
+		client.init(serverAddress, serializer, timeoutMillis);
 	}
 
 	@Override
@@ -87,7 +101,6 @@ public class NetComClientProxy implements FactoryBean<Object> {
 	                    request.setParameters(args);
 	                    
 	                    // send
-	                    IClient client = IClient.getInstance(netcom, serverAddress, serializer, timeoutMillis);
 	                    RpcResponse response = client.send(request);
 	                    
 	                    // valid response
@@ -112,5 +125,5 @@ public class NetComClientProxy implements FactoryBean<Object> {
 	public boolean isSingleton() {
 		return false;
 	}
-	
+
 }

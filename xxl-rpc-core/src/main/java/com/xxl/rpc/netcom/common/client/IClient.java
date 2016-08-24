@@ -1,6 +1,5 @@
 package com.xxl.rpc.netcom.common.client;
 
-import com.xxl.rpc.netcom.common.NetComEnum;
 import com.xxl.rpc.netcom.common.codec.RpcRequest;
 import com.xxl.rpc.netcom.common.codec.RpcResponse;
 import com.xxl.rpc.serialize.Serializer;
@@ -11,33 +10,19 @@ import com.xxl.rpc.serialize.Serializer;
  */
 public abstract class IClient {
 	
-	// init config
+	// ---------------------- config ----------------------
 	protected String serverAddress;
 	protected Serializer serializer;
 	protected long timeoutMillis;
 	
-	private void initConfig(String serverAddress, String serialize, long timeoutMillis) {
+	public void init(String serverAddress, Serializer serializer, long timeoutMillis) {
 		this.serverAddress = serverAddress;
-		this.serializer = Serializer.SerializeEnum.match(serialize, Serializer.SerializeEnum.HESSIAN).serializer;
+		this.serializer = serializer;
 		this.timeoutMillis = timeoutMillis;
 	}
-	
+
+    // ---------------------- operate ----------------------
+
 	public abstract RpcResponse send(RpcRequest request) throws Exception;
-	
-	public static IClient getInstance(String netcom_type, String serverAddress, String serialize, long timeoutMillis){
-		NetComEnum netCom = NetComEnum.match(netcom_type, NetComEnum.NETTY);
-		
-		IClient client = null;
-		try {
-			client = netCom.clientClass.newInstance();
-			client.initConfig(serverAddress, serialize, timeoutMillis);
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}
-		
-		return client;
-	}
-	
+
 }
