@@ -45,7 +45,7 @@ public class JettyServer extends IServer {
 					server.join();
 					
 					if (zookeeper_switch) {
-		            	ZkServiceRegistry.serviceRegistry.registerServices(port, serviceMap.keySet());
+		            	ZkServiceRegistry.registerServices(port, serviceMap.keySet());
 		            	logger.info(">>>>>>>>>>>> xxl-rpc mina provider registry service success.");
 					}
 					logger.info(">>>>>>>>>>> xxl-rpc mina server started on port:{}, serviceMap:{}", port, serviceMap);

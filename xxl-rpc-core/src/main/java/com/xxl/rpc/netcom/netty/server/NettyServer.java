@@ -15,6 +15,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import org.apache.zookeeper.KeeperException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,13 +53,15 @@ public class NettyServer extends IServer {
 		                .childOption(ChannelOption.SO_KEEPALIVE, true);
 		            ChannelFuture future = bootstrap.bind(port).sync();
 		            if (zookeeper_switch) {
-		            	ZkServiceRegistry.serviceRegistry.registerServices(port, serviceMap.keySet());
+		            	ZkServiceRegistry.registerServices(port, serviceMap.keySet());
 		            	logger.info(">>>>>>>>>>>> xxl-rpc netty provider registry service success.");
 					}
 		            logger.info(">>>>>>>>>>> xxl-rpc netty server started on port:{}, serviceMap:{}", port, serviceMap);
 		            future.channel().closeFuture().sync();
 		        } catch (InterruptedException e) {
 		        	logger.error(">>>>>>>>>>> xxl-rpc mina server fail.", e);
+				} catch (KeeperException e) {
+					logger.error(">>>>>>>>>>> xxl-rpc mina server fail.", e);
 				} finally {
 		            workerGroup.shutdownGracefully();
 		            bossGroup.shutdownGracefully();

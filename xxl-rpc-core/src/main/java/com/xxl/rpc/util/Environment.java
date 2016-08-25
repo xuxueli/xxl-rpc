@@ -7,6 +7,13 @@ import java.util.Properties;
  * @author xuxueli 2015-8-28 10:37:43
  */
 public class Environment {
+
+
+	/**
+	 * rpc service address on zookeeper, servicePath : /xxl-rpc/interfaceName/serverAddress(ip01:port9999)
+     */
+	public static final String ZK_SERVICES_PATH = "/xxl-rpc";
+
 	/**
 	 * zk config file
 	 */

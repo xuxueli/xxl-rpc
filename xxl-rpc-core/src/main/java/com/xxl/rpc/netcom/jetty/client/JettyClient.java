@@ -16,7 +16,7 @@ public class JettyClient extends IClient {
 	public RpcResponse send(RpcRequest request) throws Exception {
 		
 		if (serverAddress==null || serverAddress.trim().length()==0) {
-			serverAddress = ZkServiceDiscovery.zkServiceDiscovery.discover(request.getClassName());
+			serverAddress = ZkServiceDiscovery.discover(request.getClassName());
 		}
 		
 		byte[] requestBytes = serializer.serialize(request);

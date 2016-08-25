@@ -30,7 +30,7 @@ public class MinaClientPool {
 
 		// valid serverAddress
 		if (serverAddress==null || serverAddress.trim().length()==0) {
-			serverAddress = ZkServiceDiscovery.zkServiceDiscovery.discover(className);
+			serverAddress = ZkServiceDiscovery.discover(className);
 		}
 		if (serverAddress == null || serverAddress.trim().length() == 0) {
 			throw new IllegalArgumentException(">>>>>>>>>>>> serverAddress is null");

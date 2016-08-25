@@ -9,7 +9,7 @@
 	<!-- netty-rpc (需要服务端通讯模式: NETTY/MINA) -->
     <bean id="nettyDemoService" class="com.xxl.rpc.netcom.NetComClientProxy">
     	<property name="netcom" value="NETTY" />
-    	<property name="serverAddress" value="127.0.0.1:7080" />
+    	<!--<property name="serverAddress" value="127.0.0.1:7080" />-->
     	<property name="serializer" value="HESSIAN" />
 		<property name="iface" value="com.xxl.rpc.demo.api.INettyDemoService" />
 	</bean>

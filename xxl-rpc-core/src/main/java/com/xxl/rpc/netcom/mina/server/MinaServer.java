@@ -17,6 +17,7 @@ import org.apache.mina.filter.codec.ProtocolEncoder;
 import org.apache.mina.filter.executor.ExecutorFilter;
 import org.apache.mina.transport.socket.SocketSessionConfig;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
+import org.apache.zookeeper.KeeperException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +63,7 @@ public class MinaServer extends IServer {
 					
 					acceptor.bind(new InetSocketAddress(port));
 					if (zookeeper_switch) {
-		            	ZkServiceRegistry.serviceRegistry.registerServices(port, serviceMap.keySet());
+		            	ZkServiceRegistry.registerServices(port, serviceMap.keySet());
 		            	logger.info(">>>>>>>>>>>> xxl-rpc mina provider registry service success.");
 					}
 					logger.info(">>>>>>>>>>> xxl-rpc mina server started on port:{}, serviceMap:{}", port, serviceMap);
@@ -72,6 +73,10 @@ public class MinaServer extends IServer {
 						acceptor.unbind();
 						acceptor.dispose();
 					}
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				} catch (KeeperException e) {
+					e.printStackTrace();
 				}
 			}
 		}).start();

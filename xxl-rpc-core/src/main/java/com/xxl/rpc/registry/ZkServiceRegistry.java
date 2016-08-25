@@ -10,7 +10,8 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Set;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * zookeeper service registry
@@ -18,44 +19,70 @@ import java.util.concurrent.CountDownLatch;
  */
 public class ZkServiceRegistry {
     private static final Logger logger = LoggerFactory.getLogger(ZkServiceRegistry.class);
-    
-    public static ZkServiceRegistry serviceRegistry = new ZkServiceRegistry();
-    
-    private ZooKeeper zooKeeper = null;
-    public ZkServiceRegistry() {
-    	final CountDownLatch latch = new CountDownLatch(1);
-        try {
-        	zooKeeper = new ZooKeeper(Environment.ZK_ADDRESS, 5000, new Watcher() {
-                public void process(WatchedEvent event) {
-                    if (event.getState() == Event.KeeperState.SyncConnected) {
-                        latch.countDown();
-                    }
-                }
-            });
-            latch.await();
-            logger.info(">>>>>>>>> xxl-mq provider connnect zookeeper success.");
-            // init base
-            Stat stat = this.zooKeeper.exists(Constant.ZK_SERVICES_REGISTRY, true);
-			if (stat == null) {
-				zooKeeper.create(Constant.ZK_SERVICES_REGISTRY, new byte[]{}, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+
+	// ------------------------------ zookeeper client ------------------------------
+	private static ZooKeeper zooKeeper;
+	private static ReentrantLock INSTANCE_INIT_LOCK = new ReentrantLock(true);
+
+	private static ZooKeeper getInstance(){
+		if (zooKeeper==null) {
+			try {
+				if (INSTANCE_INIT_LOCK.tryLock(2, TimeUnit.SECONDS)) {
+					/*final CountDownLatch countDownLatch = new CountDownLatch(1);
+					countDownLatch.countDown();
+					countDownLatch.await();*/
+					zooKeeper = new ZooKeeper(Environment.ZK_ADDRESS, 30000, new Watcher() {
+						@Override
+						public void process(WatchedEvent event) {
+							// session expire, close old and create new
+							if (event.getState() == Event.KeeperState.Expired) {
+								try {
+									zooKeeper.close();
+								} catch (InterruptedException e) {
+									logger.error("", e);
+								}
+								zooKeeper = null;
+							}
+							// add One-time trigger, ZooKeeper的Watcher是一次性的，用过了需要再注册
+							try {
+								String znodePath = event.getPath();
+								if (znodePath != null) {
+									zooKeeper.exists(znodePath, true);
+								}
+							} catch (KeeperException e) {
+								logger.error("", e);
+							} catch (InterruptedException e) {
+								logger.error("", e);
+							}
+						}
+					});
+
+					logger.info(">>>>>>>>> xxl-rpc zookeeper connnect success.");
+				}
+			} catch (InterruptedException e) {
+				logger.error("", e);
+			} catch (IOException e) {
+				logger.error("", e);
 			}
-        } catch (IOException e) {
-        	logger.error("", e);
-        } catch (InterruptedException e) {
-        	logger.error("", e);
-        } catch (KeeperException e) {
-        	logger.error("", e);
 		}
+		if (zooKeeper == null) {
+			throw new NullPointerException(">>>>>>>>>>> xxl-rpc, zookeeper connect fail.");
+		}
+		return zooKeeper;
 	}
-    
+
+	// ------------------------------ register service ------------------------------
     /**
      * register service
      */
-    public void registerServices(int port, Set<String> serviceList) {
+    public static void registerServices(int port, Set<String> serviceList) throws KeeperException, InterruptedException {
+
     	// valid
     	if (port < 1 || (serviceList==null || serviceList.size()==0)) {
     		return;
     	}
+
+    	// init address: ip : port
     	String ip = null;
 		try {
 			ip = InetAddress.getLocalHost().getHostAddress();
@@ -65,28 +92,35 @@ public class ZkServiceRegistry {
 		if (ip == null) {
 			return;
 		}
-		// register
 		String serverAddress = ip + ":" + port;
-		for (String interfaceName : serviceList) {
-			try {
-				// init servicePath prefix : servicePath : xxl-rpc/interfaceName/serverAddress(ip01:port9999)
-				String ifacePath = Constant.ZK_SERVICES_REGISTRY.concat("/").concat(interfaceName);
-				String addressPath = Constant.ZK_SERVICES_REGISTRY.concat("/").concat(interfaceName).concat("/").concat(serverAddress);
-				// parent path must be persistent
-				if (this.zooKeeper.exists(ifacePath, true) == null) {
-					zooKeeper.create(ifacePath, new byte[]{}, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-				}
-				// register service path
-				String path = zooKeeper.create(addressPath, serverAddress.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
-	            logger.info(">>>>>>>>>>> xxl-rpc register service on zookeeper success, "
-	            		+ "interfaceName:{}, serverAddress:{}, path:{}", interfaceName, serverAddress, path);
-	            
-	        } catch (KeeperException e) {
-	        	logger.error("", e);
-	        } catch (InterruptedException e) {
-	        	logger.error("", e);
-	        }
+
+		// base path
+		Stat stat = getInstance().exists(Environment.ZK_SERVICES_PATH, true);
+		if (stat == null) {
+			getInstance().create(Environment.ZK_SERVICES_PATH, new byte[]{}, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
 		}
+
+		// register
+		for (String interfaceName : serviceList) {
+
+			// init servicePath prefix : servicePath : xxl-rpc/interfaceName/serverAddress(ip01:port9999)
+			String ifacePath = Environment.ZK_SERVICES_PATH.concat("/").concat(interfaceName);
+			String addressPath = Environment.ZK_SERVICES_PATH.concat("/").concat(interfaceName).concat("/").concat(serverAddress);
+
+			// ifacePath(parent) path must be PERSISTENT
+			Stat ifacePathStat = getInstance().exists(ifacePath, true);
+			if (ifacePathStat == null) {
+				getInstance().create(ifacePath, new byte[]{}, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+			}
+
+			// register service path must be EPHEMERAL
+			Stat addreddStat = getInstance().exists(addressPath, true);
+			if (addreddStat == null) {
+				String path = getInstance().create(addressPath, serverAddress.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
+			}
+			logger.info(">>>>>>>>>>> xxl-rpc register service on zookeeper success, interfaceName:{}, serverAddress:{}, addressPath:{}", interfaceName, serverAddress, addressPath);
+		}
+
     }
     
 }
