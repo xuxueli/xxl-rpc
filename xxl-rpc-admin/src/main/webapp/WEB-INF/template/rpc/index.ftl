@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-  	<title>服务中心</title>
+  	<title>服务治理中心</title>
   	<#import "/common/common.macro.ftl" as netCommon>
 	<@netCommon.commonStyle />
 	<!-- DataTables -->
   	<link rel="stylesheet" href="${request.contextPath}/static/adminlte/plugins/datatables/dataTables.bootstrap.css">
   	
 </head>
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-blue sidebar-mini <#if cookieMap?exists && "off" == cookieMap["adminlte_settings"].value >sidebar-collapse</#if>">
 <div class="wrapper">
 	<!-- header -->
 	<@netCommon.commonHeader />
@@ -19,7 +19,7 @@
 	<div class="content-wrapper">
 		<!-- Content Header (Page header) -->
 		<section class="content-header">
-			<h1>服务管理<small>服务中心</small></h1>
+			<h1>服务管理<small></small></h1>
 			<ol class="breadcrumb">
 				<li><a><i class="fa fa-dashboard"></i>服务管理</a></li>
 				<li class="active">服务中心</li>
@@ -72,7 +72,6 @@
 </div>
 
 <@netCommon.commonScript />
-<@netCommon.comAlert />
 <!-- DataTables -->
 <script src="${request.contextPath}/static/adminlte/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="${request.contextPath}/static/adminlte/plugins/datatables/dataTables.bootstrap.min.js"></script>
