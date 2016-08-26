@@ -17,14 +17,12 @@ import com.xxl.rpc.netcom.servlet.client.ServletClient;
 public enum NetComEnum {
 
 	NETTY(NettyServer.class, NettyClient.class), 
-	MINA(MinaServer.class, MinaClient.class), 
-	JETTY(JettyServer.class, JettyClient.class),
-	SERVLET(null, ServletClient.class);
+	MINA(MinaServer.class, MinaClient.class);
 
 	public final Class<? extends IServer> serverClass;
 	public final Class<? extends IClient> clientClass;
 
-	private NetComEnum(Class<? extends IServer> serverClass,
+	NetComEnum(Class<? extends IServer> serverClass,
 					   Class<? extends IClient> clientClass) {
 		this.serverClass = serverClass;
 		this.clientClass = clientClass;
@@ -37,6 +35,23 @@ public enum NetComEnum {
 			}
 		}
 		return defaultEnum;
+	}
+
+	/**
+	 * plugin通讯方案
+      */
+	public enum PluginEnum{
+		JETTY(JettyServer.class, JettyClient.class),
+		SERVLET(null, ServletClient.class);
+
+		public final Class<? extends IServer> serverClass;
+		public final Class<? extends IClient> clientClass;
+
+		PluginEnum(Class<? extends IServer> serverClass,
+						   Class<? extends IClient> clientClass) {
+			this.serverClass = serverClass;
+			this.clientClass = clientClass;
+		}
 	}
 
 }
