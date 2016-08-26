@@ -1,8 +1,8 @@
 package com.xxl.rpc.netcom.jetty.server;
 
+import com.xxl.rpc.netcom.NetComServerFactory;
 import com.xxl.rpc.netcom.common.codec.RpcRequest;
 import com.xxl.rpc.netcom.common.codec.RpcResponse;
-import com.xxl.rpc.netcom.common.server.IRpcServiceInvoker;
 import com.xxl.rpc.serialize.Serializer;
 import com.xxl.rpc.util.HttpClientUtil;
 import org.eclipse.jetty.server.Request;
@@ -13,18 +13,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Map;
 
 /**
  * jetty handler
  * @author xuxueli 2015-11-19 22:32:36
  */
 public class JettyServerHandler extends AbstractHandler {
-	
-	private Map<String, Object> serviceMap;
+
 	private Serializer serializer;
-	public JettyServerHandler(Map<String, Object> serviceMap, Serializer serializer) {
-		this.serviceMap = serviceMap;
+	public JettyServerHandler(Serializer serializer) {
 		this.serializer = serializer;
 	}
 
@@ -36,9 +33,8 @@ public class JettyServerHandler extends AbstractHandler {
 		RpcRequest rpcRequest = (RpcRequest) serializer.deserialize(requestBytes, RpcRequest.class);
 		
 		// invoke
-        Object serviceBean = serviceMap.get(rpcRequest.getClassName());
-        RpcResponse rpcResponse = IRpcServiceInvoker.invokeService(rpcRequest, serviceBean);
-        
+        RpcResponse rpcResponse = NetComServerFactory.invokeService(rpcRequest, null);
+
         // serialize response
         byte[] responseBytes = serializer.serialize(rpcResponse);
 		

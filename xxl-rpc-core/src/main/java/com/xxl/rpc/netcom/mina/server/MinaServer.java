@@ -6,7 +6,6 @@ import com.xxl.rpc.netcom.common.server.IServer;
 import com.xxl.rpc.netcom.mina.codec.MinaDecoder;
 import com.xxl.rpc.netcom.mina.codec.MinaEncoder;
 import com.xxl.rpc.netcom.netty.server.NettyServer;
-import com.xxl.rpc.registry.ZkServiceRegistry;
 import com.xxl.rpc.serialize.Serializer;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
@@ -17,13 +16,11 @@ import org.apache.mina.filter.codec.ProtocolEncoder;
 import org.apache.mina.filter.executor.ExecutorFilter;
 import org.apache.mina.transport.socket.SocketSessionConfig;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
-import org.apache.zookeeper.KeeperException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.Map;
 import java.util.concurrent.Executors;
 
 /**
@@ -35,7 +32,7 @@ public class MinaServer extends IServer {
 	private static final Logger logger = LoggerFactory.getLogger(NettyServer.class);
 
 	@Override
-	public void start(final int port, final Serializer serializer, final Map<String, Object> serviceMap, final boolean zookeeper_switch) throws Exception {
+	public void start(final int port, final Serializer serializer) throws Exception {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -52,7 +49,7 @@ public class MinaServer extends IServer {
 							return new MinaDecoder(RpcRequest.class, serializer);
 						}
 					}));
-					acceptor.setHandler(new MinaServerHandler(serviceMap));
+					acceptor.setHandler(new MinaServerHandler());
 					
 					SocketSessionConfig config = (SocketSessionConfig) acceptor.getSessionConfig();
 					config.setReuseAddress(true);
@@ -62,21 +59,13 @@ public class MinaServer extends IServer {
 					config.setIdleTime(IdleStatus.BOTH_IDLE, 10);
 					
 					acceptor.bind(new InetSocketAddress(port));
-					if (zookeeper_switch) {
-		            	ZkServiceRegistry.registerServices(port, serviceMap.keySet());
-		            	logger.info(">>>>>>>>>>>> xxl-rpc mina provider registry service success.");
-					}
-					logger.info(">>>>>>>>>>> xxl-rpc mina server started on port:{}, serviceMap:{}", port, serviceMap);
+					logger.info(">>>>>>>>>>> xxl-rpc server start success, netcon={}, port={}", MinaServer.class.getName(), port);
 				} catch (IOException e) {
-					logger.error(">>>>>>>>>>> xxl-rpc mina server fail", e);
+					logger.error("", e);
 					if (acceptor != null && acceptor.isActive()) {
 						acceptor.unbind();
 						acceptor.dispose();
 					}
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				} catch (KeeperException e) {
-					e.printStackTrace();
 				}
 			}
 		}).start();

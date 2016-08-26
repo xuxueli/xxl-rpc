@@ -1,8 +1,8 @@
 package com.xxl.rpc.netcom.servlet.server;
 
+import com.xxl.rpc.netcom.NetComServerFactory;
 import com.xxl.rpc.netcom.common.codec.RpcRequest;
 import com.xxl.rpc.netcom.common.codec.RpcResponse;
-import com.xxl.rpc.netcom.common.server.IRpcServiceInvoker;
 import com.xxl.rpc.serialize.Serializer;
 import com.xxl.rpc.util.HttpClientUtil;
 import org.springframework.web.HttpRequestHandler;
@@ -83,15 +83,13 @@ public class HttpServiceExporter implements HttpRequestHandler {
 		}
 		
 		try {
-			// serializer
-
 	        // deserialize request
 			byte[] requestBytes = HttpClientUtil.readBytes(request);
 	        RpcRequest rpcRequest = (RpcRequest) serializer.deserialize(requestBytes, RpcRequest.class);
 	        
 	        // invoke
 	        Object serviceBean = service;
-	        RpcResponse rpcResponse = IRpcServiceInvoker.invokeService(rpcRequest, serviceBean);
+	        RpcResponse rpcResponse = NetComServerFactory.invokeService(rpcRequest, serviceBean);
 	        
 	        // serializer response
 	        byte[] responseBytes = serializer.serialize(rpcResponse);

@@ -2,8 +2,13 @@ package com.xxl.rpc.netcom;
 
 import com.xxl.rpc.netcom.common.NetComEnum;
 import com.xxl.rpc.netcom.common.annotation.XxlRpcService;
+import com.xxl.rpc.netcom.common.codec.RpcRequest;
+import com.xxl.rpc.netcom.common.codec.RpcResponse;
 import com.xxl.rpc.netcom.common.server.IServer;
+import com.xxl.rpc.registry.ZkServiceRegistry;
 import com.xxl.rpc.serialize.Serializer;
+import net.sf.cglib.reflect.FastClass;
+import net.sf.cglib.reflect.FastMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -53,7 +58,41 @@ public class NetComServerFactory implements ApplicationContextAware, Initializin
 	/**
 	 * init local rpc service map
 	 */
-	private Map<String, Object> serviceMap = new HashMap<String, Object>();
+	private static Map<String, Object> serviceMap = new HashMap<String, Object>();
+	public static RpcResponse invokeService(RpcRequest request, Object serviceBean) {
+		if (serviceBean==null) {
+			serviceBean = serviceMap.get(request.getClassName());
+		}
+		if (serviceBean == null) {
+			// TODO
+		}
+
+		RpcResponse response = new RpcResponse();
+		response.setRequestId(request.getRequestId());
+
+		try {
+			Class<?> serviceClass = serviceBean.getClass();
+			String methodName = request.getMethodName();
+			Class<?>[] parameterTypes = request.getParameterTypes();
+			Object[] parameters = request.getParameters();
+
+            /*Method method = serviceClass.getMethod(methodName, parameterTypes);
+            method.setAccessible(true);
+            return method.invoke(serviceBean, parameters);*/
+
+			FastClass serviceFastClass = FastClass.create(serviceClass);
+			FastMethod serviceFastMethod = serviceFastClass.getMethod(methodName, parameterTypes);
+
+			Object result = serviceFastMethod.invoke(serviceBean, parameters);
+
+			response.setResult(result);
+		} catch (Throwable t) {
+			t.printStackTrace();
+			response.setError(t);
+		}
+
+		return response;
+	}
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -72,13 +111,16 @@ public class NetComServerFactory implements ApplicationContextAware, Initializin
 	public void afterPropertiesSet() throws Exception {
 		// init rpc provider
 		IServer server = netcom.serverClass.newInstance();
-		server.start(port, serializer, serviceMap, zookeeper_switch);
-		logger.info(">>>>>>>>>>> xxl-rpc provider (tpc) is running: {}", this);
+		server.start(port, serializer);
 
 		// init rpc-http provider
 		IServer httpserver = NetComEnum.Plugin.JETTY.serverClass.newInstance();
-		server.start(http_port, serializer, serviceMap, zookeeper_switch);
-		logger.info(">>>>>>>>>>> xxl-rpc provider (http) is running");
+		server.start(http_port, serializer);
+
+		if (zookeeper_switch) {
+			ZkServiceRegistry.registerServices(port, serviceMap.keySet());
+		}
+
 	}
 	
 }
