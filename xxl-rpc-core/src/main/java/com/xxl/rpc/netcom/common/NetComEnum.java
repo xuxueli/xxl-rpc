@@ -40,15 +40,15 @@ public enum NetComEnum {
 	/**
 	 * plugin通讯方案
       */
-	public enum PluginEnum{
+	public enum Plugin {
 		JETTY(JettyServer.class, JettyClient.class),
 		SERVLET(null, ServletClient.class);
 
 		public final Class<? extends IServer> serverClass;
 		public final Class<? extends IClient> clientClass;
 
-		PluginEnum(Class<? extends IServer> serverClass,
-						   Class<? extends IClient> clientClass) {
+		Plugin(Class<? extends IServer> serverClass,
+			   Class<? extends IClient> clientClass) {
 			this.serverClass = serverClass;
 			this.clientClass = clientClass;
 		}

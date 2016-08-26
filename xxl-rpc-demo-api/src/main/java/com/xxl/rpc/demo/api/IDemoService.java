@@ -3,9 +3,9 @@ package com.xxl.rpc.demo.api;
 import com.xxl.rpc.demo.api.dto.UserDto;
 
 /**
- * Servlet 方式 Demo
+ * Mina 方式 Demo
  */
-public interface IServletDemoService {
+public interface IDemoService {
 
 	public UserDto sayHi(String name);
 

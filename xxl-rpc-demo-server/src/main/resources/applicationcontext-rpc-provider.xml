@@ -9,12 +9,20 @@
 
 	<context:component-scan base-package="com.xxl.rpc.demo.service.impl" />
 	
-	<!-- netty-rpc server init -->
+	<!--
+		Provider 端配置:
+		……………………………………………………………………………………………………………………
+		port			 : (可选) TCP通讯端口7080
+		http_port		 : (可选) HTTP通讯端口,默认7070
+		netcom			 : (可选) TCP通讯方案,默认NETTY, 可选范围: NETTY、MINA
+		serializer		 : (可选) 序列化方案,默认HESSIAN, 可选范围: HESSIAN、PROTOSTUFF、JSON
+		zookeeper_switch : (可选) 是否启动Zookeeper注册中心, 默认false, 可选范围: true、false
+	-->
     <bean class="com.xxl.rpc.netcom.NetComServerFactory">
     	<property name="port" value="7080" />
     	<property name="netcom" value="NETTY" />
     	<property name="serializer" value="HESSIAN" />
-    	<property name="zookeeper_switch" value="true" />
+    	<property name="zookeeper_switch" value="false" />
     </bean>
 
 </beans>

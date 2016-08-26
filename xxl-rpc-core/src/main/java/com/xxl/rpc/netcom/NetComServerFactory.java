@@ -33,20 +33,11 @@ public class NetComServerFactory implements ApplicationContextAware, Initializin
 	public void setPort(int port) {
 		this.port = port;
 	}
-	public int getPort() {
-		return port;
-	}
 	public void setHttp_port(int http_port) {
 		this.http_port = http_port;
 	}
-	public int getHttp_port() {
-		return http_port;
-	}
 	public void setNetcom(String netcom) {
 		this.netcom = NetComEnum.match(netcom, NetComEnum.NETTY);
-	}
-	public NetComEnum getNetcom() {
-		return netcom;
 	}
 	public void setSerializer(String serializer) {
 		this.serializer = Serializer.SerializeEnum.match(serializer, Serializer.SerializeEnum.HESSIAN).serializer;
@@ -56,9 +47,6 @@ public class NetComServerFactory implements ApplicationContextAware, Initializin
 	}
 	public void setZookeeper_switch(boolean zookeeper_switch) {
 		this.zookeeper_switch = zookeeper_switch;
-	}
-	public boolean isZookeeper_switch() {
-		return zookeeper_switch;
 	}
 
 	// ---------------------- server init ----------------------
@@ -85,12 +73,12 @@ public class NetComServerFactory implements ApplicationContextAware, Initializin
 		// init rpc provider
 		IServer server = netcom.serverClass.newInstance();
 		server.start(port, serializer, serviceMap, zookeeper_switch);
-		logger.info(">>>>>>>>>>> xxl-rpc provider is running: {}", this);
+		logger.info(">>>>>>>>>>> xxl-rpc provider (tpc) is running: {}", this);
 
 		// init rpc-http provider
-		IServer httpserver = NetComEnum.JETTY.serverClass.newInstance();
+		IServer httpserver = NetComEnum.Plugin.JETTY.serverClass.newInstance();
 		server.start(http_port, serializer, serviceMap, zookeeper_switch);
-		logger.info(">>>>>>>>>>> xxl-rpc provider(http) is running");
+		logger.info(">>>>>>>>>>> xxl-rpc provider (http) is running");
 	}
 	
 }

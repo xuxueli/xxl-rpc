@@ -1,30 +1,19 @@
 package com.xxl.test;
 
-import com.xxl.rpc.demo.api.IJettyDemoService;
-import com.xxl.rpc.demo.api.IMinaDemoService;
-import com.xxl.rpc.demo.api.INettyDemoService;
-import com.xxl.rpc.demo.api.IServletDemoService;
+import com.xxl.rpc.demo.api.IDemoService;
 import com.xxl.rpc.netcom.NetComClientProxy;
 import com.xxl.rpc.netcom.common.NetComEnum;
 
 /**
  * 客户端模拟, 四种RPC方案
  */
-public class MockClient {
+public class MockTcpClient {
 
 	public static void main(String[] args) throws Exception {
 
-		INettyDemoService nettyService = (INettyDemoService) new NetComClientProxy("127.0.0.1:7080", NetComEnum.NETTY.name(), "HESSIAN", INettyDemoService.class, 1000 * 5).getObject();
-		IMinaDemoService minaService = (IMinaDemoService) new NetComClientProxy("127.0.0.1:7080", NetComEnum.MINA.name(), "HESSIAN", IMinaDemoService.class, 1000 * 5).getObject();
-		IJettyDemoService jettyService = (IJettyDemoService) new NetComClientProxy("127.0.0.1:7080", NetComEnum.JETTY.name(), "HESSIAN", IJettyDemoService.class, 1000 * 5).getObject();
-    	IServletDemoService servletService = (IServletDemoService) new NetComClientProxy("http://localhost:8080/xxl-rpc-demo-server/xxl-rpc/demoService", NetComEnum.SERVLET.name(), "HESSIAN", IServletDemoService.class, 1000 * 5).getObject();
+		IDemoService tcpService = (IDemoService) new NetComClientProxy("127.0.0.1:7080", NetComEnum.MINA.name(), "HESSIAN", IDemoService.class, 1000 * 5).getObject();
 
-
-		System.out.println(nettyService.sayHi("jack").toString());
-		System.out.println(minaService.sayHi("jack").toString());
-		//System.out.println(jettyService.sayHi("jack").toString());	// 需要Server端通讯模型改为Jetty
-		System.out.println(servletService.sayHi("jack").toString());
-
+		System.out.println(tcpService.sayHi("jack").toString());
 
     	/*long start = System.currentTimeMillis();
 		for (int i = 0; i < 100; i++) {

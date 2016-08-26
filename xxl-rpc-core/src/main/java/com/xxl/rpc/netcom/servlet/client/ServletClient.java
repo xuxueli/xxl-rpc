@@ -17,6 +17,8 @@ import com.xxl.rpc.util.HttpClientUtil;
 			<property name="serverAddress" value="http://127.0.0.1:8080/xxl-rpc-demo-server/xxl-rpc/demoService" />
 			<property name="serialize" value="HESSIAN" />
 		</bean>
+		或者:
+		IServletDemoService servletService = (IServletDemoService) new NetComClientProxy("http://localhost:8080/xxl-rpc-demo-server/xxl-rpc/demoService", NetComEnum.SERVLET.name(), "HESSIAN", IServletDemoService.class, 1000 * 5).getObject();
  * </code>
  *
  */

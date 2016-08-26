@@ -17,6 +17,16 @@ import java.util.Map;
 /**
  * rpc jetty server
  * @author xuxueli 2015-11-19 22:29:03
+ *
+ * 	<code>
+		<!-- JETTY RPC, 服务端配置(类似Hessian B-RPC, +注册功能) -->
+		<bean class="com.xxl.rpc.netcom.NetComServerFactory">
+			<property name="port" value="7080" />
+			<property name="netcom" value="JETTY" />
+			<property name="serializer" value="HESSIAN" />
+			<property name="zookeeper_switch" value="false" />
+		</bean>
+ * 	</code>
  */
 public class JettyServer extends IServer {
 	private static final Logger logger = LoggerFactory.getLogger(JettyServer.class);
