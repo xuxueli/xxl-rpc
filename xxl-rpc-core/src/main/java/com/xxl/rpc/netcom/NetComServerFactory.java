@@ -42,7 +42,7 @@ public class NetComServerFactory implements ApplicationContextAware, Initializin
 		this.http_port = http_port;
 	}
 	public void setNetcom(String netcom) {
-		this.netcom = NetComEnum.match(netcom, NetComEnum.NETTY);
+		this.netcom = NetComEnum.autoMatch(netcom, NetComEnum.NETTY);
 	}
 	public void setSerializer(String serializer) {
 		this.serializer = Serializer.SerializeEnum.match(serializer, Serializer.SerializeEnum.HESSIAN).serializer;
@@ -114,8 +114,8 @@ public class NetComServerFactory implements ApplicationContextAware, Initializin
 		server.start(port, serializer);
 
 		// init rpc-http provider
-		IServer httpserver = NetComEnum.Plugin.JETTY.serverClass.newInstance();
-		server.start(http_port, serializer);
+		IServer httpserver = NetComEnum.JETTY.serverClass.newInstance();
+		httpserver.start(http_port, serializer);
 
 		if (zookeeper_switch) {
 			ZkServiceRegistry.registerServices(port, serviceMap.keySet());

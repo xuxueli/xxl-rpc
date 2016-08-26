@@ -31,10 +31,10 @@ public class NetComClientProxy implements FactoryBean<Object>, InitializingBean 
 	private long timeoutMillis = 5000;
 	
 	public NetComClientProxy(){	}
-	public NetComClientProxy(String serverAddress, String netcom, String serializer, Class<?> iface, long timeoutMillis) {
+	public NetComClientProxy(String serverAddress, NetComEnum netcom, Serializer serializer, Class<?> iface, long timeoutMillis) {
 		this.setServerAddress(serverAddress);
-		this.setNetcom(netcom);
-		this.setSerializer(serializer);
+		this.netcom = netcom;
+		this.serializer = serializer;
 		this.setIface(iface);
 		this.setTimeoutMillis(timeoutMillis);
 		try {
@@ -44,32 +44,17 @@ public class NetComClientProxy implements FactoryBean<Object>, InitializingBean 
 		}
 	}
 
-	public String getServerAddress() {
-		return serverAddress;
-	}
 	public void setServerAddress(String serverAddress) {
 		this.serverAddress = serverAddress;
 	}
 	public void setNetcom(String netcom) {
-		this.netcom = NetComEnum.match(netcom, NetComEnum.NETTY);
-	}
-	public NetComEnum getNetcom() {
-		return netcom;
+		this.netcom = NetComEnum.autoMatch(netcom, NetComEnum.NETTY);
 	}
 	public void setSerializer(String serializer) {
 		this.serializer = Serializer.SerializeEnum.match(serializer, Serializer.SerializeEnum.HESSIAN).serializer;
 	}
-	public Serializer getSerializer() {
-		return serializer;
-	}
-	public Class<?> getIface() {
-		return iface;
-	}
 	public void setIface(Class<?> iface) {
 		this.iface = iface;
-	}
-	public long getTimeoutMillis() {
-		return timeoutMillis;
 	}
 	public void setTimeoutMillis(long timeoutMillis) {
 		this.timeoutMillis = timeoutMillis;

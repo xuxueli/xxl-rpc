@@ -16,42 +16,28 @@ import com.xxl.rpc.netcom.servlet.client.ServletClient;
  */
 public enum NetComEnum {
 
-	NETTY(NettyServer.class, NettyClient.class), 
-	MINA(MinaServer.class, MinaClient.class);
+	NETTY(NettyServer.class, NettyClient.class, true),
+	MINA(MinaServer.class, MinaClient.class, true),
+	JETTY(JettyServer.class, JettyClient.class, false),
+	SERVLET(null, ServletClient.class, false);
 
 	public final Class<? extends IServer> serverClass;
 	public final Class<? extends IClient> clientClass;
+	public final boolean autoMatch;
 
-	NetComEnum(Class<? extends IServer> serverClass,
-					   Class<? extends IClient> clientClass) {
+	NetComEnum(Class<? extends IServer> serverClass, Class<? extends IClient> clientClass, boolean prefer) {
 		this.serverClass = serverClass;
 		this.clientClass = clientClass;
+		this.autoMatch = prefer;
 	}
 
-	public static NetComEnum match(String name, NetComEnum defaultEnum) {
+	public static NetComEnum autoMatch(String name, NetComEnum defaultEnum) {
 		for (NetComEnum item : NetComEnum.values()) {
-			if (item.name().equals(name)) {
+			if (item.autoMatch && item.name().equals(name)) {
 				return item;
 			}
 		}
 		return defaultEnum;
-	}
-
-	/**
-	 * plugin通讯方案
-      */
-	public enum Plugin {
-		JETTY(JettyServer.class, JettyClient.class),
-		SERVLET(null, ServletClient.class);
-
-		public final Class<? extends IServer> serverClass;
-		public final Class<? extends IClient> clientClass;
-
-		Plugin(Class<? extends IServer> serverClass,
-			   Class<? extends IClient> clientClass) {
-			this.serverClass = serverClass;
-			this.clientClass = clientClass;
-		}
 	}
 
 }
