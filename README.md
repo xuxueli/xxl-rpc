@@ -136,6 +136,15 @@ XXL-RPC支持两种方式设置远程服务地址：
 ![输入图片说明](https://static.oschina.net/uploads/img/201608/26201131_MDbk.png "在这里输入图片标题")
 
 #### 3.3 项目中使用XXL-RPC（以示例项目xxl-rpc-example为例讲解）
+
+##### 配置Zookeeper地址（如果不开启服务注册功能，可忽略）
+
+    在磁盘地址创建配置文件“/data/webapps/xxl-conf.properties”，配置内容如下：
+    ```
+    // zookeeper集群时，多个地址用逗号分隔
+    zkserver=127.0.0.1:2181
+    ```
+
 ##### 1、开发“公共API接口”（参考xxl-rpc-example-api）
 - 1、开发一个API接口
 
@@ -165,7 +174,7 @@ zookeeper_switch |  (可选) 是否启动Zookeeper注册中心, 默认false, 可
 - 3、开发“provider服务实现类”，实现api接口的功能
     ```
         // XXL-RPC中远程服务，通过@XxlRpcService的方式进行识别，value值为服务API接口类。同时，因为需要将该服务托管给Spring维护，所以示例中类上要加上@Service注解（通过XML方式配置的服务，可以忽略该注解）。
-        // 因此：实力中服务实现类上需要加以下两个注解。
+        // 因此：示例中服务实现类上需要加以下两个注解。
         @XxlRpcService(IDemoService.class)
         @Service
     ```
