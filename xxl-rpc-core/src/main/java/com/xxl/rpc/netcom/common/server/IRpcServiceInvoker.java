@@ -17,6 +17,11 @@ public abstract class IRpcServiceInvoker {
     	response.setRequestId(request.getRequestId());
 		
         try {
+
+            if (serviceBean == null) {
+                // TODO
+            }
+
         	Class<?> serviceClass = serviceBean.getClass();
             String methodName = request.getMethodName();
             Class<?>[] parameterTypes = request.getParameterTypes();
