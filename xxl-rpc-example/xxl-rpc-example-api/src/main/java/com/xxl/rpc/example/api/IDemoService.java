@@ -3,7 +3,7 @@ package com.xxl.rpc.example.api;
 import com.xxl.rpc.example.api.dto.UserDto;
 
 /**
- * Mina 方式 Demo
+ * Demo API
  */
 public interface IDemoService {
 

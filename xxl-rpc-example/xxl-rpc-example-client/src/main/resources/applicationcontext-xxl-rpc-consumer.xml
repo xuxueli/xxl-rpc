@@ -8,7 +8,7 @@
 	<!--
 		Consumer 端配置:
 		……………………………………………………………………………………………………………………
-		serverAddress	: (可选) 服务Provider地址, 为空则自动启动Zookeeper注册中心并匹配服务;
+		serverAddress	: (可选) 服务Provider地址, 为空则开启Zookeeper注册中心, 从注册中心动态发现服务, 否则将使用改定的固定地址;
 		netcom			: (可选) TCP通讯方案,默认NETTY, 可选范围: NETTY、MINA
 		serializer		: (可选) 序列化方案,默认HESSIAN, 可选范围: HESSIAN、PROTOSTUFF、JSON
 		iface			: (必选) 服务对应的api接口;
