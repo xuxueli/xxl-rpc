@@ -15,8 +15,8 @@ public class MinaClientPool {
 	private GenericObjectPool<MinaClientPoolProxy> pool;
 	public MinaClientPool(String host, int port, Serializer serializer) {
 		pool = new GenericObjectPool<MinaClientPoolProxy>(new MinaClientPoolFactory(host, port, serializer));
-		//pool.setTestOnBorrow(true);
-		//pool.setMaxTotal(20);
+		pool.setTestOnBorrow(true);
+		pool.setMaxTotal(2);
 	}
 	
 	public GenericObjectPool<MinaClientPoolProxy> getPool(){

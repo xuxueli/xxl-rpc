@@ -15,8 +15,8 @@ public class NettyClientPool {
 	private GenericObjectPool<NettyClientPoolProxy> pool;
 	public NettyClientPool(String host, int port, Serializer serializer) {
 		pool = new GenericObjectPool<NettyClientPoolProxy>(new NettyClientPoolFactory(host, port, serializer));
-		//pool.setTestOnBorrow(true);
-		//pool.setMaxTotal(20);
+		pool.setTestOnBorrow(true);
+		pool.setMaxTotal(2);
 	}
 	
 	public GenericObjectPool<NettyClientPoolProxy> getPool(){
