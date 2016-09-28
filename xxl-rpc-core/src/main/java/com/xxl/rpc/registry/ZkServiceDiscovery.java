@@ -28,42 +28,46 @@ public class ZkServiceDiscovery {
 		if (zooKeeper==null) {
 			try {
 				if (INSTANCE_INIT_LOCK.tryLock(2, TimeUnit.SECONDS)) {
-					/*final CountDownLatch countDownLatch = new CountDownLatch(1);
-					countDownLatch.countDown();
-					countDownLatch.await();*/
-					zooKeeper = new ZooKeeper(Environment.ZK_ADDRESS, 30000, new Watcher() {
-						@Override
-						public void process(WatchedEvent event) {
-							// session expire, close old and create new
-							if (event.getState() == Event.KeeperState.Expired) {
+					try {
+						/*final CountDownLatch countDownLatch = new CountDownLatch(1);
+						countDownLatch.countDown();
+						countDownLatch.await();*/
+						zooKeeper = new ZooKeeper(Environment.ZK_ADDRESS, 30000, new Watcher() {
+							@Override
+							public void process(WatchedEvent event) {
+								// session expire, close old and create new
+								if (event.getState() == Event.KeeperState.Expired) {
+									try {
+										zooKeeper.close();
+									} catch (InterruptedException e) {
+										logger.error("", e);
+									}
+									zooKeeper = null;
+								}
+								// add One-time trigger, ZooKeeper的Watcher是一次性的，用过了需要再注册
 								try {
-									zooKeeper.close();
+									String znodePath = event.getPath();
+									if (znodePath != null) {
+										zooKeeper.exists(znodePath, true);
+									}
+								} catch (KeeperException e) {
+									logger.error("", e);
 								} catch (InterruptedException e) {
 									logger.error("", e);
 								}
-								zooKeeper = null;
-							}
-							// add One-time trigger, ZooKeeper的Watcher是一次性的，用过了需要再注册
-							try {
-								String znodePath = event.getPath();
-								if (znodePath != null) {
-									zooKeeper.exists(znodePath, true);
+
+								// refresh service address
+								if (event.getType() == Event.EventType.NodeChildrenChanged || event.getState() == Event.KeeperState.SyncConnected) {
+									freshServiceAddress();
 								}
-							} catch (KeeperException e) {
-								logger.error("", e);
-							} catch (InterruptedException e) {
-								logger.error("", e);
+
 							}
+						});
 
-							// refresh service address
-							if (event.getType() == Event.EventType.NodeChildrenChanged || event.getState() == Event.KeeperState.SyncConnected) {
-								freshServiceAddress();
-							}
-
-						}
-					});
-
-					logger.info(">>>>>>>>> xxl-rpc zookeeper connnect success.");
+						logger.info(">>>>>>>>> xxl-rpc zookeeper connnect success.");
+					} finally {
+						INSTANCE_INIT_LOCK.unlock();
+					}
 				}
 			} catch (InterruptedException e) {
 				logger.error("", e);
