@@ -131,9 +131,10 @@ public class ZkServiceRegistry {
 
 			// register service path must be EPHEMERAL
 			Stat addreddStat = getInstance().exists(addressPath, true);
-			if (addreddStat == null) {
-				String path = getInstance().create(addressPath, serverAddress.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
+			if (addreddStat != null) {
+				getInstance().delete(addressPath, -1);
 			}
+			String path = getInstance().create(addressPath, serverAddress.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
 			logger.info(">>>>>>>>>>> xxl-rpc register service on zookeeper success, interfaceName:{}, serverAddress:{}, addressPath:{}", interfaceName, serverAddress, addressPath);
 		}
 
