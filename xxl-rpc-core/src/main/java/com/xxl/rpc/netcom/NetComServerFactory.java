@@ -12,6 +12,7 @@ import net.sf.cglib.reflect.FastMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -25,7 +26,7 @@ import java.util.Map;
  *
  * <bean class="com.xxl.rpc.netcom.NetComFactory" />
  */
-public class NetComServerFactory implements ApplicationContextAware, InitializingBean {
+public class NetComServerFactory implements ApplicationContextAware, InitializingBean,DisposableBean {
 	private static final Logger logger = LoggerFactory.getLogger(NetComServerFactory.class);
 
 	// ---------------------- server config ----------------------
@@ -107,14 +108,16 @@ public class NetComServerFactory implements ApplicationContextAware, Initializin
 
 	}
 
+	private IServer server;
+	private IServer httpserver;
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		// init rpc provider
-		IServer server = netcom.serverClass.newInstance();
+		server = netcom.serverClass.newInstance();
 		server.start(port, serializer);
 
 		// init rpc-http provider
-		IServer httpserver = NetComEnum.JETTY.serverClass.newInstance();
+		httpserver = NetComEnum.JETTY.serverClass.newInstance();
 		httpserver.start(http_port, serializer);
 
 		if (zookeeper_switch) {
@@ -122,5 +125,15 @@ public class NetComServerFactory implements ApplicationContextAware, Initializin
 		}
 
 	}
-	
+
+	@Override
+	public void destroy() throws Exception {
+		if (zookeeper_switch) {
+			ZkServiceRegistry.destory();
+		}
+
+		server.destroy();
+		httpserver.destroy();
+	}
+
 }

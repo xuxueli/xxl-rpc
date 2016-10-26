@@ -76,6 +76,17 @@ public class ZkServiceRegistry {
 		return zooKeeper;
 	}
 
+	public static void destory(){
+		if (zooKeeper != null) {
+			try {
+				zooKeeper.close();
+			} catch (InterruptedException e) {
+				logger.error("", e);
+			}
+		}
+
+	}
+
 	// ------------------------------ register service ------------------------------
     /**
      * register service

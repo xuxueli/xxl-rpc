@@ -31,9 +31,11 @@ import java.util.concurrent.Executors;
 public class MinaServer extends IServer {
 	private static final Logger logger = LoggerFactory.getLogger(NettyServer.class);
 
+	private Thread thread;
+
 	@Override
 	public void start(final int port, final Serializer serializer) throws Exception {
-		new Thread(new Runnable() {
+        thread = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				NioSocketAcceptor acceptor = new NioSocketAcceptor();
@@ -68,8 +70,16 @@ public class MinaServer extends IServer {
 					}
 				}
 			}
-		}).start();
+		});
+        thread.setDaemon(true);
+        thread.start();
 
 	}
+
+    @Override
+    public void destroy() throws Exception {
+		thread.interrupt();
+        logger.info(">>>>>>>>>>> xxl-rpc server destroy success, netcon={}", MinaServer.class.getName());
+    }
 
 }

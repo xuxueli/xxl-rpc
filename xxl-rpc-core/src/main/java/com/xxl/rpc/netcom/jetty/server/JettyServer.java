@@ -28,12 +28,14 @@ import org.slf4j.LoggerFactory;
 public class JettyServer extends IServer {
 	private static final Logger logger = LoggerFactory.getLogger(JettyServer.class);
 
+	private Server server;
+
 	@Override
 	public void start(final int port, final Serializer serializer) throws Exception {
-		new Thread(new Runnable() {
+		Thread thread = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				Server server = new Server();
+				server = new Server();
 				server.setThreadPool(new ExecutorThreadPool(200, 200, 30000));	// 非阻塞
 				
 				// connector
@@ -53,8 +55,24 @@ public class JettyServer extends IServer {
 					server.join();
 				} catch (Exception e) {
 					logger.error("", e);
+				} finally {
+					server.destroy();
 				}
 			}
-		}).start();
+		});
+		thread.setDaemon(true);
+		thread.start();
+	}
+
+	@Override
+	public void destroy() throws Exception {
+		if (server != null) {
+			try {
+				server.destroy();
+			} catch (Exception e) {
+				logger.error("", e);
+			}
+		}
+		logger.info(">>>>>>>>>>> xxl-rpc server destroy success, netcon={}", JettyServer.class.getName());
 	}
 }
