@@ -48,6 +48,8 @@ public class HttpClientUtil {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+
+			// 注意：此处异常需要反序列化后返回，或者将异常直接抛出
 		} finally {
 			httpPost.releaseConnection();
 			try {
