@@ -33,7 +33,7 @@ XXL-RPC是一个分布式服务通讯框架，提供稳定高性能的RPC远程�
 #### 1.4 下载
 源码地址 (将会在两个git仓库同步发布最新代码)
 - [github地址](https://github.com/xuxueli/xxl-rpc)
-- [git.osc地址](http://git.oschina.net/xuxueli0323/xxl-rpc)
+- [gitee地址](http://gitee.com/xuxueli0323/xxl-rpc)
 
 博客地址
 - [oschina地址](http://my.oschina.net/xuxueli/blog/738279)
