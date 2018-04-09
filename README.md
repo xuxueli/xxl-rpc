@@ -51,7 +51,7 @@ XXL-RPC是一个分布式服务通讯框架，提供稳定高性能的RPC远程�
 ## 二、系统设计
 
 #### 2.1 系统架构图
-![输入图片说明](https://static.oschina.net/uploads/img/201608/26161518_DNq6.png "在这里输入图片标题")
+![输入图片说明](https://raw.githubusercontent.com/xuxueli/xxl-rpc/master/doc/images/img_DNq6.png "在这里输入图片标题")
 
 
 架构图模块解读:
@@ -74,7 +74,7 @@ XXL-RPC是一个分布式服务通讯框架，提供稳定高性能的RPC远程�
 - 5、monitor：服务监控中心：统计服务调用次数、QPS和健康情况（规划中...）；
 
 #### 2.4 RPC工作原理剖析
-![输入图片说明](https://static.oschina.net/uploads/img/201608/26162040_XEVY.png "在这里输入图片标题")
+![输入图片说明](https://raw.githubusercontent.com/xuxueli/xxl-rpc/master/doc/images/img_XEVY.png "在这里输入图片标题")
 
 概念：
 - 1、serialization：序列化，通讯数据需要经过序列化，从而支持在网络中传输；
@@ -92,12 +92,12 @@ RPC通讯，可大致划分为四个步骤，可参考上图进行理解：
 - 4、consumer接收响应：consumer接受到相应数据后，首先会deserialization获取原始数据，然后根据stub生成调用返回结果，返回给请求调用处。结束。
 
 #### 2.5 TCP通讯模型
-![输入图片说明](https://static.oschina.net/uploads/img/201608/26162328_b1IX.png "在这里输入图片标题")
+![输入图片说明](https://raw.githubusercontent.com/xuxueli/xxl-rpc/master/doc/images/img_b1IX.png "在这里输入图片标题")
 
 consumer和provider采用NIO方式通讯，可选NETTY或MINA方案，高吞吐高并发；但是仅仅依靠单个TCP连接进行数据传输存在瓶颈和风险，因此XXL-RPC在consumer端自身实现了内部连接池，consumer和provider之间为了一个连接池，当尽情底层通讯是会取出一条TCP连接进行通讯（可参考上图）。
 
 #### 2.6 sync-over-async
-![输入图片说明](https://static.oschina.net/uploads/img/201608/26162406_pMtS.png "在这里输入图片标题")
+![输入图片说明](https://raw.githubusercontent.com/xuxueli/xxl-rpc/master/doc/images/img_pMtS.png "在这里输入图片标题")
 
 XXL-RPC采用NIO进行底层通讯，但是NIO是异步通讯模型，调用线程并不会阻塞获取调用结果，因此，XXL-RPC实现了在异步通讯模型上的同步调用，即“sync-over-async”，实现原理如下，可参考上图进行理解：
 
@@ -107,7 +107,7 @@ XXL-RPC采用NIO进行底层通讯，但是NIO是异步通讯模型，调用线�
 - 4、调度线程被唤醒，返回异步响应的请求数据。
 
 #### 2.7 注册中心
-![输入图片说明](https://static.oschina.net/uploads/img/201608/26162441_m3Ma.png "在这里输入图片标题")
+![输入图片说明](https://raw.githubusercontent.com/xuxueli/xxl-rpc/master/doc/images/img_m3Ma.png "在这里输入图片标题")
 
 原理：        
 XXL-RPC中每个服务在zookeeper中对应一个节点，如图"iface name"节点，该服务的每一个provider机器对应"iface name"节点下的一个子节点，如图中"192.168.0.1:9999"、"192.168.0.2:9999"和"192.168.0.3:9999"，子节点类型为zookeeper的EPHMERAL类型，该类型节点有个特点，当机器和zookeeper集群断掉连接后节点将会被移除。consumer底层可以从zookeeper获取到可提供服务的provider集群地址列表，从而可以向其中一个机器发起RPC调用。
@@ -121,7 +121,7 @@ XXL-RPC支持两种方式设置远程服务地址：
 - 1、zookeeper集群（可选，如果不开启服务注册功能，可忽略）；
 - 2、编译项目
 
-![输入图片说明](https://static.oschina.net/uploads/img/201608/26191137_ZUd7.png "在这里输入图片标题")
+![输入图片说明](https://raw.githubusercontent.com/xuxueli/xxl-rpc/master/doc/images/img_ZUd7.png "在这里输入图片标题")
 
 源码目录介绍：
 - /doc
@@ -145,7 +145,7 @@ XXL-RPC支持两种方式设置远程服务地址：
     ```
 - 2、配置登录账号密码：
 
-![输入图片说明](https://static.oschina.net/uploads/img/201608/26201131_MDbk.png "在这里输入图片标题")
+![输入图片说明](https://raw.githubusercontent.com/xuxueli/xxl-rpc/master/doc/images/img_MDbk.png "在这里输入图片标题")
 
 #### 3.3 项目中使用XXL-RPC（以示例项目xxl-rpc-example为例讲解）
 
@@ -160,16 +160,16 @@ XXL-RPC支持两种方式设置远程服务地址：
 ##### 1、开发“公共API接口”（参考xxl-rpc-example-api）
 - 1、开发一个API接口
 
-![输入图片说明](https://static.oschina.net/uploads/img/201608/26203550_XsDP.png "在这里输入图片标题")
+![输入图片说明](https://raw.githubusercontent.com/xuxueli/xxl-rpc/master/doc/images/img_XsDP.png "在这里输入图片标题")
 
 - 2、开发一个API接口所需要的DTO对象，注意需要实现序列化接口
 
-![输入图片说明](https://static.oschina.net/uploads/img/201608/26203550_XsDP.png "在这里输入图片标题")
+![输入图片说明](https://raw.githubusercontent.com/xuxueli/xxl-rpc/master/doc/images/img_XsDP.png "在这里输入图片标题")
 
 ##### 2、开发“服务提供方”（参考xxl-rpc-example-server）
 - 1、配置maven依赖：XXL-RPC核心依赖 + 公共API接口依赖
 
-![输入图片说明](https://static.oschina.net/uploads/img/201608/26204911_92fr.png "在这里输入图片标题")
+![输入图片说明](https://raw.githubusercontent.com/xuxueli/xxl-rpc/master/doc/images/img_92fr.png "在这里输入图片标题")
 
 - 2、配置“RPC服务工厂” + 配置服务扫描包路径
 
@@ -181,7 +181,7 @@ netcom |  (可选) TCP通讯方案,默认NETTY, 可选范围: NETTY、MINA
 serializer | (可选) 序列化方案,默认HESSIAN, 可选范围: HESSIAN、PROTOSTUFF、JSON
 zookeeper_switch |  (可选) 是否启动Zookeeper注册中心, 默认false, 可选范围: true、false。如果不启动注册中心，服务工厂将不会向注册中心中注册服务。
 
-![输入图片说明](https://static.oschina.net/uploads/img/201608/26205854_9StD.png "在这里输入图片标题")
+![输入图片说明](https://raw.githubusercontent.com/xuxueli/xxl-rpc/master/doc/images/img_9StD.png "在这里输入图片标题")
 
 - 3、开发“provider服务实现类”，实现api接口的功能
     ```
@@ -191,12 +191,12 @@ zookeeper_switch |  (可选) 是否启动Zookeeper注册中心, 默认false, 可
         @Service
     ```
 
-![输入图片说明](https://static.oschina.net/uploads/img/201608/26210203_D0Rr.png "在这里输入图片标题")
+![输入图片说明](https://raw.githubusercontent.com/xuxueli/xxl-rpc/master/doc/images/img_D0Rr.png "在这里输入图片标题")
 
 ##### 3、开发“服务消费方”（参考xxl-rpc-example-client）
 - 1、配置maven依赖：XXL-RPC核心依赖 + 公共API接口依赖
 
-![输入图片说明](https://static.oschina.net/uploads/img/201608/26211323_Cc12.png "在这里输入图片标题")
+![输入图片说明](https://raw.githubusercontent.com/xuxueli/xxl-rpc/master/doc/images/img_Cc12.png "在这里输入图片标题")
 
 - 2、消费方consumer，远程服务配置
 
@@ -207,24 +207,24 @@ netcom |  (可选) TCP通讯方案,默认NETTY, 可选范围: NETTY、MINA
 serializer | (可选) 序列化方案,默认HESSIAN, 可选范围: HESSIAN、PROTOSTUFF、JSON
 iface | (必选) 服务对应的api接口;
 
-![输入图片说明](https://static.oschina.net/uploads/img/201608/26211554_vkA9.png "在这里输入图片标题")
+![输入图片说明](https://raw.githubusercontent.com/xuxueli/xxl-rpc/master/doc/images/img_vkA9.png "在这里输入图片标题")
 
 ##### 3、测试
 
 测试代码如下，访问该Controller地址即可进行测试（http://localhost:8080/xxl-rpc-example-client/）：
 
-![输入图片说明](https://static.oschina.net/uploads/img/201608/26212621_JeRY.png "在这里输入图片标题")
+![输入图片说明](https://raw.githubusercontent.com/xuxueli/xxl-rpc/master/doc/images/img_JeRY.png "在这里输入图片标题")
 
 代码中将上面配置的消费方consumer远程服务注入到测试Controller中使用，调用该服务，查看看是否正常。如果正常，说明xxl-rpc-example-client项目通过XXL-RPC调用了项目xxl-rpc-example-server中的服务，夸JVM进行了一次RPC通讯。
 
 ##### 4、API方式创建“消费方consumer”，调用远程服务（可参考上文“consumer参数配置”）
 - 1、TCP方式：
 
-![输入图片说明](https://static.oschina.net/uploads/img/201608/26213901_INv2.png "在这里输入图片标题")
+![输入图片说明](https://raw.githubusercontent.com/xuxueli/xxl-rpc/master/doc/images/img_INv2.png "在这里输入图片标题")
 
 - 2、HTTP方式：
 
-![输入图片说明](https://static.oschina.net/uploads/img/201608/26213958_f0Lh.png "在这里输入图片标题")
+![输入图片说明](https://raw.githubusercontent.com/xuxueli/xxl-rpc/master/doc/images/img_f0Lh.png "在这里输入图片标题")
 
 ## 四、版本更新日志
 #### 4.1 版本V1.1 新特性
