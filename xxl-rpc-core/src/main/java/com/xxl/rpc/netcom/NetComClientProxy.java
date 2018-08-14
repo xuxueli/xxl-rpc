@@ -44,6 +44,13 @@ public class NetComClientProxy implements FactoryBean<Object>, InitializingBean 
 		}
 	}
 
+	/**
+	 *	public static <T> ClientProxy ClientProxy<T> getFuture(Class<T> type) {
+	 *		<T> ClientProxy proxy = (<T>) new ClientProxy();
+	 *		return proxy;
+	 *	}
+	 */
+
 	public void setServerAddress(String serverAddress) {
 		this.serverAddress = serverAddress;
 	}
