@@ -1,6 +1,5 @@
 package com.xxl.rpc.admin.core.util;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
@@ -141,7 +140,7 @@ public class ZkServiceUtils {
 			Stat stat = getInstance().exists(znodePath, true);
 			if (stat != null) {
 				List<String> childPath = getInstance().getChildren(znodePath, true);
-				if (CollectionUtils.isNotEmpty(childPath)) {
+				if (childPath!=null && childPath.size()>0) {
 					for (String path : childPath) {
 						getInstance().delete(znodePath+"/"+path, -1);
 					}

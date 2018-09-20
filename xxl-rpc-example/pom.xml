@@ -4,10 +4,9 @@
 	<parent>
 		<groupId>com.xxl</groupId>
 		<artifactId>xxl-rpc</artifactId>
-		<version>${xxl.rpc.version}</version>
+		<version>1.2.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>xxl-rpc-example</artifactId>
-	<version>${xxl.rpc.version}</version>
 	<packaging>pom</packaging>
 
 	<modules>

@@ -4,7 +4,7 @@ import com.xxl.rpc.admin.controller.annotation.PermessionLimit;
 import com.xxl.rpc.admin.controller.interceptor.PermissionInterceptor;
 import com.xxl.rpc.admin.core.result.ReturnT;
 import com.xxl.rpc.admin.core.util.PropertiesUtil;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;

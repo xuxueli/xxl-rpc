@@ -241,7 +241,7 @@ iface | (必选) 服务对应的api接口;
 ![输入图片说明](https://raw.githubusercontent.com/xuxueli/xxl-rpc/master/doc/images/img_f0Lh.png "在这里输入图片标题")
 
 ## 四、版本更新日志
-### 4.1 版本V1.1 新特性
+### 4.1 版本 v1.1 新特性
 - 1、快速接入：接入步骤非常简洁，两分钟即可上手；
 - 2、服务透明：系统完整的封装了底层通信细节，开发时调用远程服务就像调用本地服务，在提供远程调用能力时不损失本地调用的语义简洁性；
 - 3、注册中心（可选）：支持使用zookeeper作为服务注册中心，服务注册并动态发现。同时，也可以不使用注册中心，直接指定服务提供方机器地址进行RPC通讯；
@@ -253,11 +253,37 @@ iface | (必选) 服务对应的api接口;
 - 9、服务监控：可在线监控服务调用统计信息以及服务健康状况等（计划中）；
 - 10、解决1+1问题：传统分布式通讯一般通过nginx或f5做集群服务的流量负载均衡，如hessian，每次请求在到达目标服务机器之前都需要经过负载均衡机器，即1+1，这将会把流量放大一倍。而XXL-RPC将会从消费方至服务提供方建立TCP长连接，每次请求直达目标机器，从而可以避免上述问题；
 
-### 4.2 版本V1.2 [迭代中]
+### 4.2 版本 v1.2.0 [迭代中]
 - 1、[迭代中]包名重构；
+    - serialize
+        serializer
+        - impl
+            - hessian
+            - protostuff
+            - json
+    - registry
+        service registry
+        service discovery
+        - zk
+        - common
+    - remoting
+        server-factory      (provider)
+        server-reference    (consumer)
+        - annotation
+        - codec
+        - netcom
+            client
+            server
+                - netty
+                - mina
+                - jetty
+                - servlet
+        - sync(sync-over-async)/future/oneway/callback/
+    - admin
+    
 - 2、[迭代中]模块化划分；
 - 3、[迭代中]ZK注册中心重构，不依赖配置文件，通过代码初始化；
-- 4、[迭代中]各模块提供默认选型，备选项需要单独依赖进入；
+- 4、[迭代中]各模块提供默认选型，备选项需要单独依赖进入；最小精简选型组合 "netty + hessian"
 
 ### TODO
 - 目前使用 iface 接口包名进行服务注册, 新增属性 registry-key 用来服务注册,便于接口复用,如果为空则默认使用 iface 接口包名; zookeeper-switch 改为 registry-switch;

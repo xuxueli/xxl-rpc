@@ -2,7 +2,7 @@
     <img src="https://raw.githubusercontent.com/xuxueli/xxl-job/master/doc/images/xxl-logo.jpg" width="150">
     <h3 align="center">XXL-RPC</h3>
     <p align="center">
-        XXL-RPC, A distributed service communication RPC framework.
+        XXL-RPC, A high performance, distributed RPC framework.
         <br>
         <a href="http://www.xuxueli.com/xxl-rpc/"><strong>-- Home Page --</strong></a>
         <br>
