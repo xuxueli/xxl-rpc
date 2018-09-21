@@ -1,5 +1,6 @@
 package com.xxl.rpc.serialize;
 
+import com.xxl.rpc.serialize.impl.Hessian1Serializer;
 import com.xxl.rpc.serialize.impl.HessianSerializer;
 import com.xxl.rpc.serialize.impl.JacksonSerializer;
 import com.xxl.rpc.serialize.impl.ProtostuffSerializer;
@@ -21,6 +22,7 @@ public abstract class Serializer {
 	
 	public enum SerializeEnum {
 		HESSIAN(new HessianSerializer()),
+		HESSIAN1(new Hessian1Serializer()),
 		PROTOSTUFF(new ProtostuffSerializer()),
 		JSON(new JacksonSerializer());
 
