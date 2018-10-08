@@ -12,6 +12,8 @@ public class RpcRequest implements Serializable{
 	
 	private String requestId;
 	private long createMillisTime;
+	private String accessToken;
+
     private String className;
     private String methodName;
     private Class<?>[] parameterTypes;
@@ -53,14 +55,25 @@ public class RpcRequest implements Serializable{
 	public void setParameters(Object[] parameters) {
 		this.parameters = parameters;
 	}
-	
+
+	public String getAccessToken() {
+		return accessToken;
+	}
+
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
+	}
+
 	@Override
 	public String toString() {
-		return "NettyRequest [requestId=" + requestId + ", createMillisTime="
-				+ createMillisTime + ", className=" + className
-				+ ", methodName=" + methodName + ", parameterTypes="
-				+ Arrays.toString(parameterTypes) + ", parameters="
-				+ Arrays.toString(parameters) + "]";
+		return "RpcRequest{" +
+				"requestId='" + requestId + '\'' +
+				", createMillisTime=" + createMillisTime +
+				", accessToken='" + accessToken + '\'' +
+				", className='" + className + '\'' +
+				", methodName='" + methodName + '\'' +
+				", parameterTypes=" + Arrays.toString(parameterTypes) +
+				", parameters=" + Arrays.toString(parameters) +
+				'}';
 	}
-	
 }

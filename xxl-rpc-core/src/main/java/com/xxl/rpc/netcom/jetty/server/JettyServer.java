@@ -29,18 +29,22 @@ public class JettyServer extends IServer {
 	private static final Logger logger = LoggerFactory.getLogger(JettyServer.class);
 
 	private Server server;
+	private Thread thread;
 
 	@Override
 	public void start(final int port, final Serializer serializer) throws Exception {
-		Thread thread = new Thread(new Runnable() {
+		thread = new Thread(new Runnable() {
 			@Override
 			public void run() {
 
 				// The Server
-				server = new Server(new ExecutorThreadPool(32, 256, 60L * 1000));  // 非阻塞
+				server = new Server(new ExecutorThreadPool(1000));
 
 				// HTTP connector
 				ServerConnector connector = new ServerConnector(server);
+				/*if (ip!=null && ip.trim().length()>0) {	// TODO, support set registry ip、and bind ip
+					//connector.setHost(ip);	// The network interface this connector binds to as an IP address or a hostname.  If null or 0.0.0.0, then bind to all interfaces.
+				}*/
 				connector.setPort(port);
 				server.setConnectors(new Connector[]{connector});
 
@@ -52,27 +56,36 @@ public class JettyServer extends IServer {
 				try {
 					server.start();
 					logger.info(">>>>>>>>>>> xxl-rpc server start success, netcon={}, port={}", JettyServer.class.getName(), port);
+
+					// TODO, registry move to here, shoud be later server init
+
 					server.join();
 				} catch (Exception e) {
 					logger.error("", e);
 				} finally {
-					server.destroy();
+					//server.destroy();
 				}
 			}
 		});
-		thread.setDaemon(true);
+		thread.setDaemon(true);	// daemon, service jvm, user thread leave >>> daemon leave >>> jvm leave
 		thread.start();
 	}
 
 	@Override
 	public void destroy() throws Exception {
-		if (server != null) {
+		// destroy server
+		if (server!=null && server.isRunning()) {
 			try {
+				server.stop();
 				server.destroy();
 			} catch (Exception e) {
-				logger.error("", e);
+				logger.error(e.getMessage(), e);
 			}
 		}
+		if (thread!=null && thread.isAlive()) {
+			thread.interrupt();
+		}
+
 		logger.info(">>>>>>>>>>> xxl-rpc server destroy success, netcon={}", JettyServer.class.getName());
 	}
 }

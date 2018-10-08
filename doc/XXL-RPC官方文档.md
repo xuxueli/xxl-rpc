@@ -284,6 +284,7 @@ iface | (必选) 服务对应的api接口;
 - 2、[迭代中]模块化划分；
 - 3、[迭代中]ZK注册中心重构，不依赖配置文件，通过代码初始化；
 - 4、[迭代中]各模块提供默认选型，备选项需要单独依赖进入；最小精简选型组合 "netty + hessian"
+- 5、服务AccessToken鉴权；
 
 ### TODO
 - 目前使用 iface 接口包名进行服务注册, 新增属性 registry-key 用来服务注册,便于接口复用,如果为空则默认使用 iface 接口包名; zookeeper-switch 改为 registry-switch;

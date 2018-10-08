@@ -30,9 +30,25 @@ public class JettyClient extends IClient {
 		if (serverAddress==null || serverAddress.trim().length()==0) {
 			serverAddress = ZkServiceDiscovery.discover(request.getClassName());
 		}
-		
+
+		// reqURL
+		String reqURL = serverAddress;
+		if (reqURL!=null && reqURL.toLowerCase().indexOf("http")==-1) {
+			reqURL = "http://" + serverAddress + "/";	// IP:PORT, need parse to url
+		}
+
+		// serialize request
 		byte[] requestBytes = serializer.serialize(request);
-		byte[] responseBytes = HttpClientUtil.postRequest("http://" + serverAddress + "/", requestBytes);
+
+		// remote invoke
+		byte[] responseBytes = HttpClientUtil.postRequest(reqURL, requestBytes);
+		if (responseBytes == null || responseBytes.length==0) {
+			RpcResponse rpcResponse = new RpcResponse();
+			rpcResponse.setError(new RuntimeException("Network request fail, RpcResponse byte[] is null"));
+			return rpcResponse;
+		}
+
+		// deserialize response
 		return (RpcResponse) serializer.deserialize(responseBytes, RpcResponse.class);
 		
 	}

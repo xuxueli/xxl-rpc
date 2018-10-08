@@ -29,14 +29,16 @@ public class NetComClientProxy implements FactoryBean<Object>, InitializingBean 
 	private Serializer serializer = Serializer.SerializeEnum.HESSIAN.serializer;
 	private Class<?> iface;
 	private long timeoutMillis = 5000;
+	private String accessToken;
 	
 	public NetComClientProxy(){	}
-	public NetComClientProxy(String serverAddress, NetComEnum netcom, Serializer serializer, Class<?> iface, long timeoutMillis) {
+	public NetComClientProxy(String serverAddress, NetComEnum netcom, Serializer serializer, Class<?> iface, long timeoutMillis, String accessToken) {
 		this.setServerAddress(serverAddress);
 		this.netcom = netcom;
 		this.serializer = serializer;
 		this.setIface(iface);
 		this.setTimeoutMillis(timeoutMillis);
+		this.setAccessToken(accessToken);
 		try {
 			this.afterPropertiesSet();
 		} catch (Exception e) {
@@ -66,6 +68,9 @@ public class NetComClientProxy implements FactoryBean<Object>, InitializingBean 
 	public void setTimeoutMillis(long timeoutMillis) {
 		this.timeoutMillis = timeoutMillis;
 	}
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
+	}
 
 	// ---------------------- init client, operate ----------------------
 	IClient client = null;
@@ -87,13 +92,20 @@ public class NetComClientProxy implements FactoryBean<Object>, InitializingBean 
 						RpcRequest request = new RpcRequest();
 	                    request.setRequestId(UUID.randomUUID().toString());
 	                    request.setCreateMillisTime(System.currentTimeMillis());
+	                    request.setAccessToken(accessToken);
 	                    request.setClassName(method.getDeclaringClass().getName());
 	                    request.setMethodName(method.getName());
 	                    request.setParameterTypes(method.getParameterTypes());
 	                    request.setParameters(args);
 	                    
 	                    // send
-	                    RpcResponse response = client.send(request);
+	                    RpcResponse response = null;
+	                    try {
+							response = client.send(request);
+						} catch (Throwable throwable) {
+							response = new RpcResponse();
+							response.setError(throwable);
+						}
 	                    
 	                    // valid response
 						if (response == null) {

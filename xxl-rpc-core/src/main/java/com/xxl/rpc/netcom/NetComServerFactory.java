@@ -35,6 +35,7 @@ public class NetComServerFactory implements ApplicationContextAware, Initializin
 	private NetComEnum netcom = NetComEnum.NETTY;
 	private Serializer serializer = Serializer.SerializeEnum.HESSIAN.serializer;
 	private boolean zookeeper_switch = false;
+	private static String accessToken;	// TODO，优化为Iface级别鉴权
 
 	public void setPort(int port) {
 		this.port = port;
@@ -54,6 +55,9 @@ public class NetComServerFactory implements ApplicationContextAware, Initializin
 	public void setZookeeper_switch(boolean zookeeper_switch) {
 		this.zookeeper_switch = zookeeper_switch;
 	}
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
+	}
 
 	// ---------------------- server init ----------------------
 	/**
@@ -70,6 +74,15 @@ public class NetComServerFactory implements ApplicationContextAware, Initializin
 
 		RpcResponse response = new RpcResponse();
 		response.setRequestId(request.getRequestId());
+
+		if (System.currentTimeMillis() - request.getCreateMillisTime() > 180000) {
+			response.setResult(new RuntimeException("The timestamp difference between admin and executor exceeds the limit."));
+			return response;
+		}
+		if (accessToken!=null && accessToken.trim().length()>0 && !accessToken.trim().equals(request.getAccessToken())) {
+			response.setResult(new RuntimeException("The access token[" + request.getAccessToken() + "] is wrong."));
+			return response;
+		}
 
 		try {
 			Class<?> serviceClass = serviceBean.getClass();

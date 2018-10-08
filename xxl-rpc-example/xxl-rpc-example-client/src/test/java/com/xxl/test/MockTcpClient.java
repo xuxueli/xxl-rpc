@@ -12,7 +12,7 @@ public class MockTcpClient {
 
 	public static void main(String[] args) throws Exception {
 
-		IDemoService tcpService = (IDemoService) new NetComClientProxy("127.0.0.1:7080", NetComEnum.NETTY, Serializer.SerializeEnum.HESSIAN.serializer, IDemoService.class, 1000 * 5).getObject();
+		IDemoService tcpService = (IDemoService) new NetComClientProxy("127.0.0.1:7080", NetComEnum.NETTY, Serializer.SerializeEnum.HESSIAN.serializer, IDemoService.class, 1000 * 5, null).getObject();
 
 		System.out.println(tcpService.sayHi("jack").toString());
 

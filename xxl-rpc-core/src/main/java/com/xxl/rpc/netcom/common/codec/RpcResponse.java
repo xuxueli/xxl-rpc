@@ -10,7 +10,7 @@ public class RpcResponse implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private String requestId;
-    private Throwable error;
+    private Throwable error;    // TODO，考虑改为了 String 类型
     private Object result;
 
     public boolean isError() {
