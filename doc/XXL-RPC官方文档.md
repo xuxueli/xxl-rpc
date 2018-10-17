@@ -258,7 +258,7 @@ iface | (必选) 服务对应的api接口;
     - serialize
         serializer
         - impl
-            - hessian
+            - hessian（default）
             - protostuff
             - json
     - registry

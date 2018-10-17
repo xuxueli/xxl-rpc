@@ -41,7 +41,7 @@ public abstract class Serializer {
 	}
 
 	public static void main(String[] args) {
-		Serializer serializer = SerializeEnum.match("HESSIAN", null).serializer;
+		Serializer serializer = SerializeEnum.match("PROTOSTUFF", null).serializer;
 		System.out.println(serializer);
 		try {
 			Map<String, String> map = new HashMap<String, String>();
