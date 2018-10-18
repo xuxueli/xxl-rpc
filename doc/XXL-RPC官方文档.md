@@ -152,7 +152,7 @@ XXL-RPC支持两种方式设置远程服务地址：
 
 - 1、配置Zookeeper地址：
 
-    在磁盘地址创建配置文件“/data/webapps/xxl-conf.properties”，配置内容如下：
+    在磁盘地址创建配置文件“/data/webapps/xxl-rpc.properties”，配置内容如下：
     ```
     // zookeeper集群时，多个地址用逗号分隔
     zkserver=127.0.0.1:2181
@@ -165,7 +165,7 @@ XXL-RPC支持两种方式设置远程服务地址：
 
 #### 3.3.1 配置Zookeeper地址（如果不开启服务注册功能，可忽略）
 
-    在磁盘地址创建配置文件“/data/webapps/xxl-conf.properties”，配置内容如下：
+    在磁盘地址创建配置文件“/data/webapps/xxl-rpc.properties”，配置内容如下：
     ```
     // zookeeper集群时，多个地址用逗号分隔
     zkserver=127.0.0.1:2181

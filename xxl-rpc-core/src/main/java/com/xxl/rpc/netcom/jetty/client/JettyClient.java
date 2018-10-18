@@ -3,7 +3,7 @@ package com.xxl.rpc.netcom.jetty.client;
 import com.xxl.rpc.netcom.common.client.IClient;
 import com.xxl.rpc.netcom.common.codec.RpcRequest;
 import com.xxl.rpc.netcom.common.codec.RpcResponse;
-import com.xxl.rpc.registry.ZkServiceDiscovery;
+//import com.xxl.rpc.registry.ZkServiceDiscovery;
 import com.xxl.rpc.util.HttpClientUtil;
 
 /**
@@ -28,7 +28,8 @@ public class JettyClient extends IClient {
 	public RpcResponse send(RpcRequest request) throws Exception {
 		
 		if (serverAddress==null || serverAddress.trim().length()==0) {
-			serverAddress = ZkServiceDiscovery.discover(request.getClassName());
+			//serverAddress = ZkServiceDiscovery.discover(request.getClassName());
+			// TODO
 		}
 
 		// reqURL

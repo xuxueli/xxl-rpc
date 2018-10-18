@@ -17,7 +17,7 @@ public class Environment {
 	/**
 	 * zk config file
 	 */
-	private static final String ZK_ADDRESS_FILE = "/data/webapps/xxl-conf.properties";
+	private static final String ZK_ADDRESS_FILE = "/data/webapps/xxl-rpc.properties";
 
 	/**
 	 * zk address

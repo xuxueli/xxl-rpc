@@ -1,6 +1,5 @@
 package com.xxl.rpc.netcom.mina.client;
 
-import com.xxl.rpc.registry.ZkServiceDiscovery;
 import com.xxl.rpc.serialize.Serializer;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 
@@ -30,7 +29,9 @@ public class MinaClientPool {
 
 		// valid serverAddress
 		if (serverAddress==null || serverAddress.trim().length()==0) {
-			serverAddress = ZkServiceDiscovery.discover(className);
+			//serverAddress = ZkServiceDiscovery.discover(className);
+
+			// TODO
 		}
 		if (serverAddress == null || serverAddress.trim().length() == 0) {
 			throw new IllegalArgumentException(">>>>>>>>>>>> serverAddress is null");

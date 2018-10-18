@@ -5,7 +5,6 @@ import com.xxl.rpc.netcom.common.annotation.XxlRpcService;
 import com.xxl.rpc.netcom.common.codec.RpcRequest;
 import com.xxl.rpc.netcom.common.codec.RpcResponse;
 import com.xxl.rpc.netcom.common.server.IServer;
-import com.xxl.rpc.registry.ZkServiceRegistry;
 import com.xxl.rpc.serialize.Serializer;
 import net.sf.cglib.reflect.FastClass;
 import net.sf.cglib.reflect.FastMethod;
@@ -134,7 +133,9 @@ public class NetComServerFactory implements ApplicationContextAware, Initializin
 		httpserver.start(http_port, serializer);
 
 		if (zookeeper_switch) {
-			ZkServiceRegistry.registerServices(port, serviceMap.keySet());
+			// ZkServiceRegistry.registerServices(port, serviceMap.keySet());
+
+			// TODO，service registry
 		}
 
 	}
@@ -142,7 +143,7 @@ public class NetComServerFactory implements ApplicationContextAware, Initializin
 	@Override
 	public void destroy() throws Exception {
 		if (zookeeper_switch) {
-			ZkServiceRegistry.destory();
+			// ZkServiceRegistry.destory();
 		}
 
 		server.destroy();

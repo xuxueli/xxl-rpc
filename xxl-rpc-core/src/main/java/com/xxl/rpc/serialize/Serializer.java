@@ -5,9 +5,6 @@ import com.xxl.rpc.serialize.impl.HessianSerializer;
 import com.xxl.rpc.serialize.impl.JacksonSerializer;
 import com.xxl.rpc.serialize.impl.ProtostuffSerializer;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * 序列化器
  * Tips：模板方法模式：
@@ -40,17 +37,4 @@ public abstract class Serializer {
 		}
 	}
 
-	public static void main(String[] args) {
-		Serializer serializer = SerializeEnum.match("PROTOSTUFF", null).serializer;
-		System.out.println(serializer);
-		try {
-			Map<String, String> map = new HashMap<String, String>();
-			map.put("aaa", "111");
-			map.put("bbb", "222");
-			System.out.println(serializer.deserialize(serializer.serialize("ddddddd"), String.class));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
 }
