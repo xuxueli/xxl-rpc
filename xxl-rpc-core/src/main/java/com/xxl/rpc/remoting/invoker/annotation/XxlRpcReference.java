@@ -12,9 +12,15 @@ import java.lang.annotation.*;
 @Inherited
 public @interface XxlRpcReference {
 
-    /**
-     * @return
-     */
-    String version();
+    String netType() default "";
+    String serialize() default "";
+    String address() default "";
+    String accessToken() default "";
+
+    //Class<?> iface;
+    String version() default "";
+
+    long timeout() default -1;
+    String callType() default "";
 
 }

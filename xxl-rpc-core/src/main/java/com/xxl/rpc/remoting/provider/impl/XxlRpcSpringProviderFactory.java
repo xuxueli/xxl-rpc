@@ -117,7 +117,7 @@ public class XxlRpcSpringProviderFactory extends XxlRpcProviderFactory implement
             }
         }
 
-        // TODO，addServices
+        // TODO，addServices by api + prop
 
     }
 

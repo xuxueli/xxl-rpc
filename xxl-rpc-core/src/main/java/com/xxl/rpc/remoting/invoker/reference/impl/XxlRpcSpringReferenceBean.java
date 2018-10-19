@@ -1,6 +1,5 @@
 package com.xxl.rpc.remoting.invoker.reference.impl;
 
-import com.xxl.rpc.registry.ServiceRegistry;
 import com.xxl.rpc.remoting.invoker.reference.XxlRpcReferenceBean;
 import com.xxl.rpc.remoting.net.NetEnum;
 import com.xxl.rpc.remoting.net.params.CallType;
@@ -29,7 +28,6 @@ public class XxlRpcSpringReferenceBean extends XxlRpcReferenceBean implements Fa
     private long timeout = 5000;	// million
     private String callType;
 
-    private ServiceRegistry serviceRegistry;
 
     // set
     public void setNetType(String netType) {
@@ -64,22 +62,21 @@ public class XxlRpcSpringReferenceBean extends XxlRpcReferenceBean implements Fa
         this.callType = callType;
     }
 
-    public void setServiceRegistry(ServiceRegistry serviceRegistry) {
-        this.serviceRegistry = serviceRegistry;
-    }
 
     // util
     private void prepareConfig() throws Exception {
+
         // prepare config
-        NetEnum netTypeEnum = NetEnum.autoMatch(netType, NetEnum.JETTY);
-        Serializer serializer = Serializer.SerializeEnum.match(serialize, Serializer.SerializeEnum.HESSIAN).serializer;
-        CallType callTypeEnum = CallType.match(callType, CallType.SYNC);
+        NetEnum netTypeEnum = NetEnum.autoMatch(netType, null);
+        Serializer.SerializeEnum serializeEnum = Serializer.SerializeEnum.match(serialize, null);
+        Serializer serializer = serializeEnum!=null?serializeEnum.serializer:null;
+        CallType callTypeEnum = CallType.match(callType, null);
         if (timeout < 0) {
-            timeout = 0;
+            timeout = 200;
         }
 
         // init config
-        super.initConfig(netTypeEnum, serializer, address, accessToken, iface, version, timeout, callTypeEnum, serviceRegistry);
+        super.initConfig(netTypeEnum, serializer, address, accessToken, iface, version, timeout, callTypeEnum);
     }
 
     // ---------------------- util ----------------------

@@ -25,7 +25,7 @@ public class NettyClient extends Client {
 		try {
 			// future set	[tips04 : may save 20ms/100invoke if remove and wait for channel instead, but it is necessary. cause by ConcurrentHashMap.get]
 			RpcCallbackFuture future = new RpcCallbackFuture(xxlRpcRequest);
-			RpcCallbackFuture.futurePool.put(xxlRpcRequest.getRequestId(), future);
+			XxlRpcInvokerFactory.setInvokerFuture(xxlRpcRequest.getRequestId(), future);
 
 			// proxy borrow
 			clientPoolProxy = clientPool.borrowObject();
@@ -40,7 +40,7 @@ public class NettyClient extends Client {
 		} finally{
 
 			// future remove
-			RpcCallbackFuture.futurePool.remove(xxlRpcRequest.getRequestId());
+			XxlRpcInvokerFactory.removeInvokerFuture(xxlRpcRequest.getRequestId());
 
 			// proxy return
 			if (clientPoolProxy != null) {

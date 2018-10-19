@@ -26,7 +26,7 @@ public class MinaClient extends Client {
 		try {
 			// future set
 			RpcCallbackFuture future = new RpcCallbackFuture(xxlRpcRequest);
-			RpcCallbackFuture.futurePool.put(xxlRpcRequest.getRequestId(), future);
+			XxlRpcInvokerFactory.setInvokerFuture(xxlRpcRequest.getRequestId(), future);
 			
 			// proxy borrow
 			clientPoolProxy = clientPool.borrowObject();
@@ -41,7 +41,7 @@ public class MinaClient extends Client {
 		} finally{
 
 			// future remove
-			RpcCallbackFuture.futurePool.remove(xxlRpcRequest.getRequestId());
+			XxlRpcInvokerFactory.removeInvokerFuture(xxlRpcRequest.getRequestId());
 
 			// proxy return
 			if (clientPoolProxy != null) {

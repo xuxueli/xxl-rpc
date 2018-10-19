@@ -1,8 +1,6 @@
 package com.xxl.rpc.remoting.net.params;
 
 import java.text.MessageFormat;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -14,19 +12,21 @@ import java.util.concurrent.TimeoutException;
  * v3: Map synchronized wait + notifyAll
  */
 public class RpcCallbackFuture {
-	public static ConcurrentMap<String, RpcCallbackFuture> futurePool = new ConcurrentHashMap<String, RpcCallbackFuture>();	// 过期，失效
-	
+
 	// net codec
 	private XxlRpcRequest xxlRpcRequest;
 	private XxlRpcResponse xxlRpcResponse;
+
 	// future lock
 	private boolean isDone = false;
 	private Object lock = new Object();
-	
+
+
 	public RpcCallbackFuture(XxlRpcRequest xxlRpcRequest) {
 		this.xxlRpcRequest = xxlRpcRequest;
-		futurePool.put(xxlRpcRequest.getRequestId(), this);
 	}
+
+
 	public XxlRpcResponse getXxlRpcResponse() {
 		return xxlRpcResponse;
 	}
@@ -56,4 +56,5 @@ public class RpcCallbackFuture {
 		}
 		return xxlRpcResponse;
 	}
+
 }

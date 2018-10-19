@@ -1,6 +1,6 @@
 package com.xxl.rpc.remoting.invoker.reference;
 
-import com.xxl.rpc.registry.ServiceRegistry;
+import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.net.Client;
 import com.xxl.rpc.remoting.net.NetEnum;
 import com.xxl.rpc.remoting.net.params.CallType;
@@ -31,7 +31,7 @@ public class XxlRpcReferenceBean {
 
 	// ---------------------- config ----------------------
 
-	private NetEnum netcom = NetEnum.NETTY;
+	private NetEnum netType;
 	private Serializer serializer;
 	private String address;
 	private String accessToken;
@@ -42,34 +42,19 @@ public class XxlRpcReferenceBean {
 	private long timeout = 5000;	// million
 	private CallType callType;
 
-	private ServiceRegistry serviceRegistry;
 
 	public XxlRpcReferenceBean(){	}
 
-	public XxlRpcReferenceBean(NetEnum netcom,
-							   Serializer serializer,
-							   String address,
-							   String accessToken,
-							   Class<?> iface,
-							   String version,
-							   long timeout,
-							   CallType callType,
-							   ServiceRegistry serviceRegistry) throws Exception {
-
-		initConfig(netcom, serializer, address, accessToken, iface, version, timeout, callType, serviceRegistry);
-	}
-
-	public void initConfig(NetEnum netcom,
+	public void initConfig(NetEnum netType,
 						   Serializer serializer,
 						   String address,
 						   String accessToken,
 						   Class<?> iface,
 						   String version,
 						   long timeout,
-						   CallType callType,
-						   ServiceRegistry serviceRegistry) throws Exception {
+						   CallType callType) throws Exception {
 
-		this.netcom = netcom;
+		this.netType = netType;
 		this.serializer = serializer;
 		this.address = address;
 		this.accessToken = accessToken;
@@ -77,6 +62,17 @@ public class XxlRpcReferenceBean {
 		this.version = version;
 		this.timeout = timeout;
 		this.callType = callType;
+
+		// default
+		if (this.netType == null) {
+			this.netType = NetEnum.JETTY;
+		}
+		if (this.serializer == null) {
+			this.serializer = Serializer.SerializeEnum.HESSIAN.serializer;
+		}
+		if (this.callType == null) {
+			this.callType = CallType.SYNC;
+		}
 
 		// init Client
 		initClient();
@@ -95,7 +91,7 @@ public class XxlRpcReferenceBean {
 	Client client = null;
 
 	private void initClient() throws Exception {
-		client = netcom.clientClass.newInstance();
+		client = netType.clientClass.newInstance();
 		client.init(this);
 	}
 
@@ -108,9 +104,9 @@ public class XxlRpcReferenceBean {
 			return addressItem;
 		}
 
-		if (serviceRegistry != null) {
+		if (XxlRpcInvokerFactory.getServiceRegistry() != null) {
 			String serviceKey = XxlRpcProviderFactory.makeServiceKey(iface.getName(), version);
-			TreeSet<String> addressSet = serviceRegistry.discovery(serviceKey);
+			TreeSet<String> addressSet = XxlRpcInvokerFactory.getServiceRegistry().discovery(serviceKey);
 			if (addressSet.size() > 0) {
 				addressItem = new ArrayList<String>(addressSet).get(new Random().nextInt(addressSet.size()));
 			}

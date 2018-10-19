@@ -1,12 +1,12 @@
 package com.xxl.rpc.remoting.net.impl.mina.client;
 
+import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
+import com.xxl.rpc.remoting.net.params.RpcCallbackFuture;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.xxl.rpc.remoting.net.params.RpcCallbackFuture;
 
 /**
  * rpc mina handler
@@ -24,9 +24,9 @@ public class MinaClientHandler extends IoHandlerAdapter {
 	@Override
 	public void messageReceived(IoSession session, Object message) throws Exception {
 		XxlRpcResponse xxlRpcResponse = (XxlRpcResponse) message;
-		RpcCallbackFuture future = RpcCallbackFuture.futurePool.get(xxlRpcResponse.getRequestId());
+
+		RpcCallbackFuture future = XxlRpcInvokerFactory.getInvokerFuture(xxlRpcResponse.getRequestId());
 		future.setXxlRpcResponse(xxlRpcResponse);
-		RpcCallbackFuture.futurePool.put(xxlRpcResponse.getRequestId(), future);
 	}
 
 }
