@@ -108,11 +108,16 @@ public class IpUtil {
 
 	/**
 	 * get ip:port
+	 *
 	 * @param port
 	 * @return
 	 */
 	public static String getIpPort(int port){
 		String ip = getIp();
+		return getIpPort(ip, port);
+	}
+
+	public static String getIpPort(String ip, int port){
 		if (ip==null) {
 			return null;
 		}

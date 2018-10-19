@@ -18,7 +18,7 @@
 		serializer		 : (可选) 序列化方案,默认HESSIAN, 可选范围: HESSIAN、PROTOSTUFF、JSON
 		zookeeper_switch : (可选) 是否启动Zookeeper注册中心, 默认false, 可选范围: true、false。如果不启动注册中心，服务工厂将不会向注册中心中注册服务。
 	-->
-    <bean class="com.xxl.rpc.netcom.NetComServerFactory">
+    <bean class="com.xxl.rpc.remoting.provider.XxlRpcProviderFactory">
     	<property name="port" value="7080" />
     	<property name="netcom" value="NETTY" />
     	<property name="serializer" value="HESSIAN" />

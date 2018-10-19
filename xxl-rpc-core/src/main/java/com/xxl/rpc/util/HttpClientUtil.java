@@ -2,12 +2,15 @@ package com.xxl.rpc.util;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -15,29 +18,35 @@ import java.io.InputStream;
 
 /**
  * httpclient util
+ *
  * @author xuxueli 2015-10-31 19:50:41
  */
 public class HttpClientUtil {
+	private static Logger logger = LoggerFactory.getLogger(HttpClientUtil.class);
 
 	/**
 	 * post request
 	 */
-	public static byte[] postRequest(String reqURL, byte[] date) {
+	public static byte[] postRequest(String reqURL, byte[] data, long timeout) throws Exception {
 		byte[] responseBytes = null;
-		
+
 		HttpPost httpPost = new HttpPost(reqURL);
-		CloseableHttpClient httpClient = HttpClients.createDefault();
+		CloseableHttpClient httpClient = HttpClients.custom().disableAutomaticRetries().build();	// disable retry
+
 		try {
-			// init post
-			/*if (params != null && !params.isEmpty()) {
-				List<NameValuePair> formParams = new ArrayList<NameValuePair>();
-				for (Map.Entry<String, String> entry : params.entrySet()) {
-					formParams.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
-				}
-				httpPost.setEntity(new UrlEncodedFormEntity(formParams, "UTF-8"));
-			}*/
-			if (date != null) {
-				httpPost.setEntity(new ByteArrayEntity(date, ContentType.DEFAULT_BINARY));
+
+			// timeout
+			RequestConfig requestConfig = RequestConfig.custom()
+					.setConnectionRequestTimeout((int)timeout)
+					.setSocketTimeout((int)timeout)
+					.setConnectTimeout((int)timeout)
+					.build();
+
+			httpPost.setConfig(requestConfig);
+
+			// data
+			if (data != null) {
+				httpPost.setEntity(new ByteArrayEntity(data, ContentType.DEFAULT_BINARY));
 			}
 			// do post
 			HttpResponse response = httpClient.execute(httpPost);
@@ -47,15 +56,13 @@ public class HttpClientUtil {
 				EntityUtils.consume(entity);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-
-			// 注意：此处异常需要反序列化后返回，或者将异常直接抛出
+			throw e;
 		} finally {
 			httpPost.releaseConnection();
 			try {
 				httpClient.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 			}
 		}
 		return responseBytes;
@@ -63,6 +70,7 @@ public class HttpClientUtil {
 	
 	/**
 	 * read bytes from http request
+	 *
 	 * @param request
 	 * @return
 	 * @throws IOException 
@@ -85,7 +93,7 @@ public class HttpClientUtil {
 				}
 				return message;
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 			}
 		}
 		return new byte[] {};

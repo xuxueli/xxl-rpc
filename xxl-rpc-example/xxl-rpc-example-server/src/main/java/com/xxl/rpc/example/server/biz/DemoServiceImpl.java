@@ -2,12 +2,12 @@ package com.xxl.rpc.example.server.biz;
 
 import com.xxl.rpc.example.api.IDemoService;
 import com.xxl.rpc.example.api.dto.UserDto;
-import com.xxl.rpc.netcom.common.annotation.XxlRpcService;
+import com.xxl.rpc.remoting.provider.annotation.XxlRpcProvider;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
 
-@XxlRpcService(IDemoService.class)
+@XxlRpcProvider
 @Service
 public class DemoServiceImpl implements IDemoService {
 

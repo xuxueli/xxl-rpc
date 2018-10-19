@@ -12,7 +12,6 @@
 
 	<modules>
 		<module>xxl-rpc-core</module>
-		<module>xxl-rpc-admin</module>
 		<module>xxl-rpc-example</module>
 	</modules>
 
@@ -45,8 +44,6 @@
 		<httpclient.version>4.5.6</httpclient.version>
 
 		<commons-pool2.version>2.6.0</commons-pool2.version>
-
-		<cglib.version>3.2.8</cglib.version>
 
 		<protostuff.version>1.6.0</protostuff.version>
 		<objenesis.version>2.6</objenesis.version>

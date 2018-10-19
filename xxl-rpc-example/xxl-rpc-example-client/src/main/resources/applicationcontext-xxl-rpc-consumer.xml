@@ -14,7 +14,7 @@
 		iface			: (必选) 服务对应的api接口;
 	-->
 	<!-- netty-rpc (需要服务端通讯模式: NETTY/MINA) -->
-	<bean id="demoService" class="com.xxl.rpc.netcom.NetComClientProxy">
+	<bean id="demoService" class="com.xxl.rpc.remoting.invoker.reference.XxlRpcReferenceBean">
 		<property name="serverAddress" value="127.0.0.1:7080" />
 		<property name="netcom" value="NETTY" />
 		<property name="serializer" value="HESSIAN" />

@@ -114,13 +114,6 @@
 			<version>${commons-pool2.version}</version>
 		</dependency>
 
-		<!-- cglib(support iface proxy) -->
-        <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib</artifactId>
-            <version>${cglib.version}</version>
-        </dependency>
-        
 		<!-- servlet -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
