@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * xxl-rpc invoker factory
+ * xxl-rpc invoker factory, init service-registry
  *
  * @author xuxueli 2018-10-19
  */

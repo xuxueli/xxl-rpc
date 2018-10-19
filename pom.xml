@@ -12,7 +12,7 @@
 
 	<modules>
 		<module>xxl-rpc-core</module>
-		<module>xxl-rpc-example</module>
+		<module>xxl-rpc-samples</module>
 	</modules>
 
 	<properties>
@@ -50,6 +50,7 @@
 
 		<hessian.version>4.0.51</hessian.version>
 
+        <spring-boot.version>1.5.16.RELEASE</spring-boot.version>
 	</properties>
 
 	<build>

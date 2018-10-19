@@ -16,7 +16,7 @@ import java.lang.reflect.Field;
 import java.util.Map;
 
 /**
- * xxl-rpc invoker factory (for spring)
+ * xxl-rpc invoker factory, init service-registry and spring-bean by annotation (for spring)
  *
  * @author xuxueli 2018-10-19
  */

@@ -20,7 +20,7 @@ import java.util.TreeSet;
 import java.util.UUID;
 
 /**
- * rpc reference bean, proxy
+ * rpc reference bean, use by api
  *
  * @author xuxueli 2015-10-29 20:18:32
  */

@@ -79,68 +79,72 @@
         </dependency>
 
 
-		<!-- ********************** other ********************** -->
+		<!-- ********************** net (jetty default) ********************** -->
 
-        <!-- netty -->
-		<dependency>
-			<groupId>io.netty</groupId>
-			<artifactId>netty-all</artifactId>
-			<version>${netty.version}</version>
-		</dependency>
-		<!-- mina -->
-		<dependency>
-			<groupId>org.apache.mina</groupId>
-			<artifactId>mina-core</artifactId>
-			<version>2.0.19</version>
-		</dependency>
-		<!-- jetty -->
+		<!-- jetty (httpclient + servlet-api) -->
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
 			<version>${jetty-server.version}</version>
 		</dependency>
-
-		<!-- httpclient(support jetty client) -->
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 			<version>${httpclient.version}</version>
 		</dependency>
-
-		<!-- commons-pool2(support netty/mina client) -->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-pool2</artifactId>
-			<version>${commons-pool2.version}</version>
-		</dependency>
-
-		<!-- servlet -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<version>${javax.servlet-api.version}</version>
 		</dependency>
-		<dependency>
+		<!--<dependency>
 			<groupId>javax.servlet.jsp</groupId>
 			<artifactId>javax.servlet.jsp-api</artifactId>
 			<version>${javax.servlet.jsp-api.version}</version>
+		</dependency>-->
+
+		<!-- netty (commons-pool2) -->
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+			<version>${netty.version}</version>
+			<scope>provided</scope>
 		</dependency>
-		
+		<!-- mina (commons-pool2) -->
+		<dependency>
+			<groupId>org.apache.mina</groupId>
+			<artifactId>mina-core</artifactId>
+			<version>2.0.19</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- commons-pool2 -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-pool2</artifactId>
+			<version>${commons-pool2.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- ********************** other ********************** -->
+
 		<!-- spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
 			<version>${spring.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.version}</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
-			<version>${spring.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 	</dependencies>
