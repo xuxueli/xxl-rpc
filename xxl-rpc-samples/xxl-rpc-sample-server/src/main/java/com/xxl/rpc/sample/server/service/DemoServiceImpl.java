@@ -1,4 +1,4 @@
-package com.xxl.rpc.sample.server.impl;
+package com.xxl.rpc.sample.server.service;
 
 import com.xxl.rpc.example.api.DemoService;
 import com.xxl.rpc.example.api.dto.UserDTO;
@@ -7,6 +7,9 @@ import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
 
+/**
+ * @author xuxueli
+ */
 @XxlRpcProvider
 @Service
 public class DemoServiceImpl implements DemoService {
