@@ -25,7 +25,7 @@ public class XxlRpcSpringReferenceBean implements FactoryBean<Object>, Initializ
     private Class<?> iface;
     private String version;
 
-    private long timeout = 50;	                    // million
+    private long timeout = 1000;	                    // million
     private String callType = CallType.SYNC.name();
 
 

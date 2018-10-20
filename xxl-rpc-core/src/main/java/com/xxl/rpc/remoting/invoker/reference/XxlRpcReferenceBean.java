@@ -42,7 +42,7 @@ public class XxlRpcReferenceBean {
 	private Class<?> iface;
 	private String version;
 
-	private long timeout = 5000;	// million
+	private long timeout;
 	private CallType callType;
 
 

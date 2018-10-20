@@ -24,7 +24,7 @@ public @interface XxlRpcReference {
     //Class<?> iface;
     String version() default "";
 
-    long timeout() default 50;
+    long timeout() default 1000;
     CallType callType() default CallType.SYNC;
 
 }

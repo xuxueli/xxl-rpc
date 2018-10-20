@@ -106,7 +106,7 @@ public class XxlRpcSpringInvokerFactory extends InstantiationAwareBeanPostProces
                     field.setAccessible(true);
                     field.set(bean, serviceProxy);
 
-                    logger.info(">>>>>>>>>>> xxl-rpc, invoker factory init reference bean success. serviceKey = {}, bean.field = {}",
+                    logger.info(">>>>>>>>>>> xxl-rpc, invoker factory init reference bean success. serviceKey = {}, bean.field = {}.{}",
                             XxlRpcProviderFactory.makeServiceKey(iface.getName(), rpcReference.version()), beanName, field.getName());
                 }
             }
