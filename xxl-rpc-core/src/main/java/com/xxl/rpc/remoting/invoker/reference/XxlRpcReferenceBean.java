@@ -43,16 +43,14 @@ public class XxlRpcReferenceBean {
 	private CallType callType;
 
 
-	public XxlRpcReferenceBean(){	}
-
-	public void initConfig(NetEnum netType,
+	public XxlRpcReferenceBean(NetEnum netType,
 						   Serializer serializer,
 						   String address,
 						   String accessToken,
 						   Class<?> iface,
 						   String version,
 						   long timeout,
-						   CallType callType) throws Exception {
+						   CallType callType) {
 
 		this.netType = netType;
 		this.serializer = serializer;
@@ -79,9 +77,13 @@ public class XxlRpcReferenceBean {
 
 	Client client = null;
 
-	private void initClient() throws Exception {
-		client = netType.clientClass.newInstance();
-		client.init(this);
+	private void initClient() {
+		try {
+			client = netType.clientClass.newInstance();
+			client.init(this);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 
@@ -103,7 +105,7 @@ public class XxlRpcReferenceBean {
 		return addressItem;
 	}
 
-	public Object getObject() throws Exception {
+	public Object getObject() {
 		return Proxy.newProxyInstance(Thread.currentThread()
 				.getContextClassLoader(), new Class[] { iface },
 				new InvocationHandler() {

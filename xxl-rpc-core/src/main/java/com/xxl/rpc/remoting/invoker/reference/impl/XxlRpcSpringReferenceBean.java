@@ -12,7 +12,7 @@ import org.springframework.beans.factory.InitializingBean;
  *
  * @author xuxueli 2015-10-29 20:18:32
  */
-public class XxlRpcSpringReferenceBean extends XxlRpcReferenceBean implements FactoryBean<Object>, InitializingBean {
+public class XxlRpcSpringReferenceBean implements FactoryBean<Object>, InitializingBean {
 
 
     // ---------------------- config ----------------------
@@ -63,8 +63,10 @@ public class XxlRpcSpringReferenceBean extends XxlRpcReferenceBean implements Fa
     }
 
 
-    // util
-    private void prepareConfig() throws Exception {
+    // ---------------------- init ----------------------
+
+    private XxlRpcReferenceBean xxlRpcReferenceBean;
+    private void init() {
 
         // prepare config
         NetEnum netTypeEnum = NetEnum.autoMatch(netType, null);
@@ -76,25 +78,24 @@ public class XxlRpcSpringReferenceBean extends XxlRpcReferenceBean implements Fa
         }
 
         // init config
-        super.initConfig(netTypeEnum, serializer, address, accessToken, iface, version, timeout, callTypeEnum);
+        xxlRpcReferenceBean = new XxlRpcReferenceBean(netTypeEnum, serializer, address, accessToken, iface, version, timeout, callTypeEnum);
     }
 
     // ---------------------- util ----------------------
 
     @Override
-    public void afterPropertiesSet() throws Exception {
-        prepareConfig();
+    public void afterPropertiesSet() {
+        init();
     }
 
-
     @Override
-    public Object getObject() throws Exception {
-        return super.getObject();
+    public Object getObject() {
+        return xxlRpcReferenceBean.getObject();
     }
 
     @Override
     public Class<?> getObjectType() {
-        return super.getObjectType();
+        return xxlRpcReferenceBean.getObjectType();
     }
 
     @Override

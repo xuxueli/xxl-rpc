@@ -3,7 +3,7 @@ package com.xxl.rpc.remoting.provider.impl;
 import com.xxl.rpc.registry.ServiceRegistry;
 import com.xxl.rpc.remoting.net.NetEnum;
 import com.xxl.rpc.remoting.provider.XxlRpcProviderFactory;
-import com.xxl.rpc.remoting.provider.annotation.XxlRpcProvider;
+import com.xxl.rpc.remoting.provider.annotation.XxlRpcService;
 import com.xxl.rpc.serialize.Serializer;
 import com.xxl.rpc.util.IpUtil;
 import com.xxl.rpc.util.NetUtil;
@@ -101,18 +101,18 @@ public class XxlRpcSpringProviderFactory extends XxlRpcProviderFactory implement
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 
-        Map<String, Object> serviceBeanMap = applicationContext.getBeansWithAnnotation(XxlRpcProvider.class);
+        Map<String, Object> serviceBeanMap = applicationContext.getBeansWithAnnotation(XxlRpcService.class);
         if (serviceBeanMap!=null && serviceBeanMap.size()>0) {
             for (Object serviceBean : serviceBeanMap.values()) {
                 // valid
                 if (serviceBean.getClass().getInterfaces().length ==0) {
-                    throw new RuntimeException("xxl-rpc, service(XxlRpcProvider) must inherit interface.");
+                    throw new RuntimeException("xxl-rpc, service(XxlRpcService) must inherit interface.");
                 }
                 // add service
-                XxlRpcProvider xxlRpcProvider = serviceBean.getClass().getAnnotation(XxlRpcProvider.class);
+                XxlRpcService xxlRpcService = serviceBean.getClass().getAnnotation(XxlRpcService.class);
 
                 String iface = serviceBean.getClass().getInterfaces()[0].getName();
-                String version = xxlRpcProvider.version();
+                String version = xxlRpcService.version();
 
                 super.addService(iface, version, serviceBean);
             }

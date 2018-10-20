@@ -3,7 +3,7 @@ package com.xxl.rpc.remoting.invoker.impl;
 import com.xxl.rpc.registry.ServiceRegistry;
 import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.invoker.annotation.XxlRpcReference;
-import com.xxl.rpc.remoting.invoker.reference.impl.XxlRpcSpringReferenceBean;
+import com.xxl.rpc.remoting.invoker.reference.XxlRpcReferenceBean;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -52,8 +52,6 @@ public class XxlRpcSpringInvokerFactory extends InstantiationAwareBeanPostProces
                 }
             }
         }
-
-
     }
 
 
@@ -78,24 +76,31 @@ public class XxlRpcSpringInvokerFactory extends InstantiationAwareBeanPostProces
             @Override
             public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
                 if (field.isAnnotationPresent(XxlRpcReference.class)) {
+                    // valid
+                    Class iface = field.getType();
+                    if (!iface.isInterface()) {
+                        throw new RuntimeException("xxl-rpc, reference(XxlRpcReference) must be interface.");
+                    }
+
                     XxlRpcReference rpcReference = field.getAnnotation(XxlRpcReference.class);
 
                     // init reference bean
-                    XxlRpcSpringReferenceBean referenceBean = new XxlRpcSpringReferenceBean();
+                    XxlRpcReferenceBean referenceBean = new XxlRpcReferenceBean(
+                            rpcReference.netType(),
+                            rpcReference.serializer().getSerializer(),
+                            rpcReference.address(),
+                            rpcReference.accessToken(),
+                            iface,
+                            rpcReference.version(),
+                            rpcReference.timeout(),
+                            rpcReference.callType()
+                    );
 
-                    referenceBean.setNetType(rpcReference.netType());
-                    referenceBean.setSerialize(rpcReference.serialize());
-                    referenceBean.setAddress(rpcReference.address());
-                    referenceBean.setAccessToken(rpcReference.accessToken());
-                    referenceBean.setIface(field.getDeclaringClass());
-                    referenceBean.setVersion(rpcReference.version());
-                    referenceBean.setTimeout(rpcReference.timeout());
-                    referenceBean.setCallType(rpcReference.callType());
-
+                    Object serviceProxy = referenceBean.getObject();
 
                     // set bean
                     field.setAccessible(true);
-                    field.set(bean, referenceBean);
+                    field.set(bean, serviceProxy);
                 }
             }
         });
