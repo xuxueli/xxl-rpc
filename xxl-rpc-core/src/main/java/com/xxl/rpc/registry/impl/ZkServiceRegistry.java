@@ -153,7 +153,7 @@ public class ZkServiceRegistry extends ServiceRegistry {
         refreshThread.setDaemon(true);
         refreshThread.start();
 
-        logger.info(">>>>>>>>>> xxl-rpc, XxlConfZkConf init success. [env={}]", env);
+        logger.info(">>>>>>>>>> xxl-rpc, ZkServiceRegistry init success. [env={}]", env);
     }
 
     @Override

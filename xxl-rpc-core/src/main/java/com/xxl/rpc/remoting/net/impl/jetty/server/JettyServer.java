@@ -47,11 +47,11 @@ public class JettyServer extends Server {
 					server.start();
 
 					onStarted();
-					logger.info(">>>>>>>>>>> xxl-rpc server start success, netcon={}, port={}", JettyServer.class.getName(), xxlRpcProviderFactory.getPort());
+					logger.info(">>>>>>>>>>> xxl-rpc remoting server start success, netcon={}, port={}", JettyServer.class.getName(), xxlRpcProviderFactory.getPort());
 
 					server.join();
 				} catch (Exception e) {
-					logger.error(">>>>>>>>>>> xxl-rpc server start error.", e);
+					logger.error(">>>>>>>>>>> xxl-rpc remoting server start error.", e);
 				} finally {
 					try {
 						server.stop();
@@ -84,6 +84,6 @@ public class JettyServer extends Server {
 		}
 
 		onStoped();
-		logger.info(">>>>>>>>>>> xxl-rpc server destroy success.");
+		logger.info(">>>>>>>>>>> xxl-rpc remoting server destroy success.");
 	}
 }

@@ -15,24 +15,22 @@ import com.xxl.rpc.remoting.net.impl.netty.server.NettyServer;
 public enum NetEnum {
 
 
-	NETTY(NettyServer.class, NettyClient.class, true),
-	MINA(MinaServer.class, MinaClient.class, true),
-	JETTY(JettyServer.class, JettyClient.class, false);
+	NETTY(NettyServer.class, NettyClient.class),
+	MINA(MinaServer.class, MinaClient.class),
+	JETTY(JettyServer.class, JettyClient.class);
 
 
 	public final Class<? extends Server> serverClass;
 	public final Class<? extends Client> clientClass;
-	public final boolean autoMatch;
 
-	NetEnum(Class<? extends Server> serverClass, Class<? extends Client> clientClass, boolean prefer) {
+	NetEnum(Class<? extends Server> serverClass, Class<? extends Client> clientClass) {
 		this.serverClass = serverClass;
 		this.clientClass = clientClass;
-		this.autoMatch = prefer;
 	}
 
 	public static NetEnum autoMatch(String name, NetEnum defaultEnum) {
 		for (NetEnum item : NetEnum.values()) {
-			if (item.autoMatch && item.name().equals(name)) {
+			if (item.name().equals(name)) {
 				return item;
 			}
 		}

@@ -17,16 +17,16 @@ public class XxlRpcSpringReferenceBean extends XxlRpcReferenceBean implements Fa
 
     // ---------------------- config ----------------------
 
-    private String netType;
-    private String serialize;
+    private String netType = NetEnum.JETTY.name();
+    private String serialize = Serializer.SerializeEnum.HESSIAN.name();
     private String address;
     private String accessToken;
 
     private Class<?> iface;
     private String version;
 
-    private long timeout = 5000;	// million
-    private String callType;
+    private long timeout = 5000;	                    // million
+    private String callType = CallType.SYNC.name();
 
 
     // set
@@ -69,10 +69,10 @@ public class XxlRpcSpringReferenceBean extends XxlRpcReferenceBean implements Fa
         // prepare config
         NetEnum netTypeEnum = NetEnum.autoMatch(netType, null);
         Serializer.SerializeEnum serializeEnum = Serializer.SerializeEnum.match(serialize, null);
-        Serializer serializer = serializeEnum!=null?serializeEnum.serializer:null;
+        Serializer serializer = serializeEnum!=null?serializeEnum.getSerializer():null;
         CallType callTypeEnum = CallType.match(callType, null);
-        if (timeout < 0) {
-            timeout = 200;
+        if (timeout <= 0) {
+            timeout = 10;
         }
 
         // init config

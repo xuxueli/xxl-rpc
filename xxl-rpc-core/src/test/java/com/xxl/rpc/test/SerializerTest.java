@@ -11,7 +11,7 @@ import java.util.Map;
 public class SerializerTest {
 
     public static void main(String[] args) {
-        Serializer serializer = Serializer.SerializeEnum.match("PROTOSTUFF", null).serializer;
+        Serializer serializer = Serializer.SerializeEnum.match("PROTOSTUFF", null).getSerializer();
         System.out.println(serializer);
         try {
             Map<String, String> map = new HashMap<String, String>();

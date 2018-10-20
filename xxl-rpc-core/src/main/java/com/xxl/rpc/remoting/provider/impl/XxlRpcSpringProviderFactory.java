@@ -24,15 +24,15 @@ public class XxlRpcSpringProviderFactory extends XxlRpcProviderFactory implement
 
     // ---------------------- config ----------------------
 
-    private String netType;
-    private String serialize;
+    private String netType = NetEnum.JETTY.name();
+    private String serialize = Serializer.SerializeEnum.HESSIAN.name();
 
-    private String ip;					        // for registry
-    private int port;       			        // default port
+    private String ip = IpUtil.getIp();		        // for registry
+    private int port = 7080;       			        // default port
     private String accessToken;
 
-    private String serviceRegistry;                                         // enum
-    private Class<? extends ServiceRegistry> serviceRegistryClass;          // class.forname
+    private String serviceRegistry = ServiceRegistry.ServiceRegistryEnum.LOCAL.name();       // enum
+    private Class<? extends ServiceRegistry> serviceRegistryClass;                          // class.forname
     private Map<String, String> serviceRegistryParam;
 
 
@@ -74,14 +74,10 @@ public class XxlRpcSpringProviderFactory extends XxlRpcProviderFactory implement
     private void prepareConfig(){
 
         // prepare config
-        NetEnum netTypeEnum = NetEnum.autoMatch(netType, NetEnum.JETTY);
-        Serializer serializer = Serializer.SerializeEnum.match(serialize, Serializer.SerializeEnum.HESSIAN).serializer;
-        if (ip==null || ip.trim().length()==0) {
-            ip = IpUtil.getIp();
-        }
-        if (port < 1) {
-            port = 7080;
-        }
+        NetEnum netTypeEnum = NetEnum.autoMatch(netType, null);
+        Serializer.SerializeEnum serializeEnum = Serializer.SerializeEnum.match(serialize, null);
+        Serializer serializer = serializeEnum!=null?serializeEnum.getSerializer():null;
+
         if (NetUtil.isPortUsed(port)) {
             throw new RuntimeException("xxl-rpc provider port["+ port +"] is used.");
         }
@@ -108,9 +104,14 @@ public class XxlRpcSpringProviderFactory extends XxlRpcProviderFactory implement
         Map<String, Object> serviceBeanMap = applicationContext.getBeansWithAnnotation(XxlRpcProvider.class);
         if (serviceBeanMap!=null && serviceBeanMap.size()>0) {
             for (Object serviceBean : serviceBeanMap.values()) {
+                // valid
+                if (serviceBean.getClass().getInterfaces().length ==0) {
+                    throw new RuntimeException("xxl-rpc, service(XxlRpcProvider) must inherit interface.");
+                }
+                // add service
                 XxlRpcProvider xxlRpcProvider = serviceBean.getClass().getAnnotation(XxlRpcProvider.class);
 
-                String iface = serviceBean.getClass().getName();
+                String iface = serviceBean.getClass().getInterfaces()[0].getName();
                 String version = xxlRpcProvider.version();
 
                 super.addService(iface, version, serviceBean);

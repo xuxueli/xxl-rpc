@@ -63,17 +63,6 @@ public class XxlRpcReferenceBean {
 		this.timeout = timeout;
 		this.callType = callType;
 
-		// default
-		if (this.netType == null) {
-			this.netType = NetEnum.JETTY;
-		}
-		if (this.serializer == null) {
-			this.serializer = Serializer.SerializeEnum.HESSIAN.serializer;
-		}
-		if (this.callType == null) {
-			this.callType = CallType.SYNC;
-		}
-
 		// init Client
 		initClient();
 	}

@@ -7,10 +7,12 @@ package com.xxl.rpc.util;
  */
 public class Environment {
 
+	// env
+	public static final String ENV = "env";
+
 	// zk service registry, param
 	public static final String ZK_ADDRESS = "zkaddress";	// like "ip1:port,ip2:port,ip3:port"
 	public static final String ZK_DIGEST = "zkdigest";
-	public static final String ENV = "env";
 
 }
 

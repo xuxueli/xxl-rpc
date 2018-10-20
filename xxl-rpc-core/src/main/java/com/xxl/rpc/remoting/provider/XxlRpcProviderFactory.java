@@ -38,18 +38,6 @@ public class XxlRpcProviderFactory {
 
 	public XxlRpcProviderFactory() {
 	}
-	public XxlRpcProviderFactory(NetEnum netType,
-								 Serializer serializer,
-								 String ip,
-								 int port,
-								 String accessToken,
-								 Class<? extends ServiceRegistry> serviceRegistryClass,
-								 Map<String, String> serviceRegistryParam
-						  ) {
-
-		initConfig(netType, serializer, ip, port, accessToken, serviceRegistryClass, serviceRegistryParam);
-	}
-
 	public void initConfig(NetEnum netType,
 						  Serializer serializer,
 						  String ip,
