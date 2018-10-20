@@ -257,6 +257,11 @@ public class XxlZkClient {
 	public Map<String, String> getChildPathData(String path){
 		Map<String, String> allData = new HashMap<String, String>();
 		try {
+			Stat stat = getClient().exists(path, true);
+			if (stat == null) {
+				return allData;	// no such node
+			}
+
 			List<String> childNodes = getClient().getChildren(path, true);
 			if (childNodes!=null && childNodes.size()>0) {
 				for (String childNode : childNodes) {
