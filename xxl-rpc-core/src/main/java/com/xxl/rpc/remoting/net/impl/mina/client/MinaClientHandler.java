@@ -25,8 +25,10 @@ public class MinaClientHandler extends IoHandlerAdapter {
 	public void messageReceived(IoSession session, Object message) throws Exception {
 		XxlRpcResponse xxlRpcResponse = (XxlRpcResponse) message;
 
-		XxlRpcFutureResponse future = XxlRpcInvokerFactory.getInvokerFuture(xxlRpcResponse.getRequestId());
-		future.setXxlRpcResponse(xxlRpcResponse);
+		XxlRpcFutureResponse futureResponse = XxlRpcInvokerFactory.getInvokerFuture(xxlRpcResponse.getRequestId());
+		if (futureResponse != null) {
+			futureResponse.setXxlRpcResponse(xxlRpcResponse);
+		}
 	}
 
 }

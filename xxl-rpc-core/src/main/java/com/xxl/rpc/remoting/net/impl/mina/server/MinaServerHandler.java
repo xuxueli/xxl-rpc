@@ -40,7 +40,6 @@ public class MinaServerHandler extends IoHandlerAdapter {
 
 		// error response, TODO
 
-
 		logger.error(">>>>>>>>>>> xxl-rpc provider mina server caught exception", cause);
 		session.closeNow();
 	}

@@ -37,8 +37,15 @@ public abstract class Client {
 	 */
 	public abstract void asyncSend(String address, XxlRpcRequest xxlRpcRequest) throws Exception;
 
-
-	public XxlRpcResponse send(String address, XxlRpcRequest xxlRpcRequest) throws Exception {
+	/**
+	 * sync send
+	 *
+	 * @param address
+	 * @param xxlRpcRequest
+	 * @return
+	 * @throws Exception
+	 */
+	public XxlRpcResponse syncSend(String address, XxlRpcRequest xxlRpcRequest) throws Exception {
 		try {
 			// future set
 			XxlRpcFutureResponse futureResponse = new XxlRpcFutureResponse(xxlRpcRequest);

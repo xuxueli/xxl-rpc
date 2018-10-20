@@ -138,24 +138,35 @@ public class XxlRpcReferenceBean {
 	                    xxlRpcRequest.setParameters(args);
 	                    
 	                    // send
-	                    XxlRpcResponse xxlRpcResponse = null;
-	                    try {
-							xxlRpcResponse = client.send(address, xxlRpcRequest);
-						} catch (Throwable throwable) {
-							xxlRpcResponse = new XxlRpcResponse();
-							xxlRpcResponse.setErrorMsg(ThrowableUtil.toString(throwable));
+						if (CallType.SYNC == callType) {
+							XxlRpcResponse xxlRpcResponse = null;
+							try {
+								xxlRpcResponse = client.syncSend(address, xxlRpcRequest);
+							} catch (Throwable throwable) {
+								xxlRpcResponse = new XxlRpcResponse();
+								xxlRpcResponse.setErrorMsg(ThrowableUtil.toString(throwable));
+							}
+
+							// valid xxlRpcResponse
+							if (xxlRpcResponse == null) {
+								throw new XxlRpcException("xxl-rpc xxlRpcResponse not found.");
+							}
+							if (xxlRpcResponse.getErrorMsg() != null) {
+								throw new XxlRpcException(xxlRpcResponse.getErrorMsg());
+							} else {
+								return xxlRpcResponse.getResult();
+							}
+						} else if (CallType.ONEWAY == callType) {
+							client.asyncSend(address, xxlRpcRequest);
+						} else if (CallType.FUTURE == callType) {
+							// TODO
+						} else if (CallType.CALLBACK == callType) {
+							// TODO
+						} else {
+							throw new XxlRpcException("xxl-rpc callType["+ callType +"] invalid");
 						}
-	                    
-	                    // valid xxlRpcResponse
-						if (xxlRpcResponse == null) {
-							throw new XxlRpcException("xxl-rpc xxlRpcResponse not found.");
-						}
-	                    if (xxlRpcResponse.getErrorMsg() != null) {
-	                        throw new XxlRpcException(xxlRpcResponse.getErrorMsg());
-	                    } else {
-	                        return xxlRpcResponse.getResult();
-	                    }
-	                   
+
+						return null;
 					}
 				});
 	}
