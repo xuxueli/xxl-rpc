@@ -51,7 +51,6 @@ public class XxlRpcFutureResponse {
 				try {
 					lock.wait(timeoutMillis);
 				} catch (InterruptedException e) {
-					e.printStackTrace();
 					throw e;
 				}
 			}

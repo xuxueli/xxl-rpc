@@ -4,6 +4,7 @@ import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.net.Client;
 import com.xxl.rpc.remoting.net.NetEnum;
 import com.xxl.rpc.remoting.net.params.CallType;
+import com.xxl.rpc.remoting.net.params.XxlRpcFutureResponse;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import com.xxl.rpc.remoting.provider.XxlRpcProviderFactory;
@@ -139,25 +140,29 @@ public class XxlRpcReferenceBean {
 	                    
 	                    // send
 						if (CallType.SYNC == callType) {
-							XxlRpcResponse xxlRpcResponse = null;
 							try {
-								xxlRpcResponse = client.syncSend(address, xxlRpcRequest);
-							} catch (Throwable throwable) {
-								xxlRpcResponse = new XxlRpcResponse();
-								xxlRpcResponse.setErrorMsg(ThrowableUtil.toString(throwable));
-							}
+								// future set
+								XxlRpcFutureResponse futureResponse = new XxlRpcFutureResponse(xxlRpcRequest);
+								XxlRpcInvokerFactory.setInvokerFuture(xxlRpcRequest.getRequestId(), futureResponse);
 
-							// valid xxlRpcResponse
-							if (xxlRpcResponse == null) {
-								throw new XxlRpcException("xxl-rpc xxlRpcResponse not found.");
-							}
-							if (xxlRpcResponse.getErrorMsg() != null) {
-								throw new XxlRpcException(xxlRpcResponse.getErrorMsg());
-							} else {
+								// do invoke
+								client.asyncSend(address, xxlRpcRequest);
+
+								// future get
+								XxlRpcResponse xxlRpcResponse = futureResponse.get(timeout);
+								if (xxlRpcResponse.getErrorMsg() != null) {
+									throw new XxlRpcException(xxlRpcResponse.getErrorMsg());
+								}
 								return xxlRpcResponse.getResult();
+							} catch (Exception e) {
+								throw new XxlRpcException(e);
+							} finally{
+								// future remove
+								XxlRpcInvokerFactory.removeInvokerFuture(xxlRpcRequest.getRequestId());
 							}
 						} else if (CallType.ONEWAY == callType) {
 							client.asyncSend(address, xxlRpcRequest);
+							return null;
 						} else if (CallType.FUTURE == callType) {
 							// TODO
 						} else if (CallType.CALLBACK == callType) {

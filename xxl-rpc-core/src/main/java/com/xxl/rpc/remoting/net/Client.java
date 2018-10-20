@@ -37,33 +37,4 @@ public abstract class Client {
 	 */
 	public abstract void asyncSend(String address, XxlRpcRequest xxlRpcRequest) throws Exception;
 
-	/**
-	 * sync send
-	 *
-	 * @param address
-	 * @param xxlRpcRequest
-	 * @return
-	 * @throws Exception
-	 */
-	public XxlRpcResponse syncSend(String address, XxlRpcRequest xxlRpcRequest) throws Exception {
-		try {
-			// future set
-			XxlRpcFutureResponse futureResponse = new XxlRpcFutureResponse(xxlRpcRequest);
-			XxlRpcInvokerFactory.setInvokerFuture(xxlRpcRequest.getRequestId(), futureResponse);
-
-			// do invoke
-			asyncSend(address, xxlRpcRequest);
-
-			// future get
-			return futureResponse.get(xxlRpcReferenceBean.getTimeout());
-		} catch (Exception e) {
-			throw e;
-		} finally{
-			// future remove
-			XxlRpcInvokerFactory.removeInvokerFuture(xxlRpcRequest.getRequestId());
-		}
-	}
-
-
-
 }
