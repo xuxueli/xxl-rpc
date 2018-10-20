@@ -23,6 +23,7 @@ public class IndexController {
 		try {
 			return demoService.sayHi(name);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return new UserDTO(null, e.getMessage());
 		}
 	}

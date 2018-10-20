@@ -201,8 +201,7 @@ public class ZkServiceRegistry extends ServiceRegistry {
                     existValues.addAll(childPathData.keySet());
                 }
             }
-            logger.info(">>>>>>>>>> xxl-rpc, refresh discovery data success.");
-            logger.debug(">>>>>>>>>> xxl-rpc, discoveryData = {}", discoveryData);
+            logger.info(">>>>>>>>>> xxl-rpc, refresh discovery data success, discoveryData = {}", discoveryData);
         }
     }
 

@@ -6,6 +6,7 @@ import com.xxl.rpc.remoting.provider.annotation.XxlRpcService;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
+import java.util.Random;
 
 /**
  * @author xuxueli
@@ -20,7 +21,7 @@ public class DemoServiceImpl implements DemoService {
 		String word = MessageFormat.format("Hi {0}, from {1} as {2}",
 				name, DemoServiceImpl.class.getName(), System.currentTimeMillis());
 
-		System.out.println(1/System.currentTimeMillis()%2);
+		if (new Random().nextBoolean()) throw new RuntimeException("test exception.");
 
 		return new UserDTO(name, word);
 	}

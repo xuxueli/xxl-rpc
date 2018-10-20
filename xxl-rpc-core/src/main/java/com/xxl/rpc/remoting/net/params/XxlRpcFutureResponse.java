@@ -56,7 +56,7 @@ public class XxlRpcFutureResponse {
 		}
 		
 		if (!isDone) {
-			throw new TimeoutException(MessageFormat.format(">>>>>>>>>>>> xxl-rpc, request timeout at:{0}, XxlRpcRequest:{1}", System.currentTimeMillis(), xxlRpcRequest.toString()));
+			throw new TimeoutException(">>>>>>>>>>>> xxl-rpc, request timeout at:"+ System.currentTimeMillis() +", XxlRpcRequest:" + xxlRpcRequest.toString());
 		}
 		return xxlRpcResponse;
 	}
