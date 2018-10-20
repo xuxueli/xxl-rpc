@@ -5,6 +5,7 @@ import com.xxl.rpc.remoting.net.Client;
 import com.xxl.rpc.remoting.net.params.XxlRpcFutureResponse;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
+import com.xxl.rpc.util.XxlRpcException;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.client.api.Result;
@@ -65,18 +66,18 @@ public class JettyClient extends Client {
 
 				// valid status
 				if (result.isFailed()) {
-					throw new RuntimeException("xxl-rpc remoting request fail, " + result.getResponseFailure().getMessage());
+					throw new XxlRpcException("xxl-rpc remoting request fail, " + result.getResponseFailure().getMessage());
 				}
 
 				// valid HttpStatus
 				if (result.getResponse().getStatus() != HttpStatus.OK_200) {
-					throw new RuntimeException("xxl-rpc remoting request fail, http HttpStatus["+ result.getResponse().getStatus() +"] invalid.");
+					throw new XxlRpcException("xxl-rpc remoting request fail, http HttpStatus["+ result.getResponse().getStatus() +"] invalid.");
 				}
 
 				// valid response bytes
 				byte[] responseBytes = getContent();
 				if (responseBytes == null || responseBytes.length==0) {
-					throw new RuntimeException("xxl-rpc remoting request fail, response bytes is empty.");
+					throw new XxlRpcException("xxl-rpc remoting request fail, response bytes is empty.");
 				}
 
 				// deserialize response

@@ -1,5 +1,7 @@
 package com.xxl.rpc.remoting.net.params;
 
+import com.xxl.rpc.util.XxlRpcException;
+
 import java.text.MessageFormat;
 import java.util.concurrent.TimeoutException;
 
@@ -56,7 +58,7 @@ public class XxlRpcFutureResponse {
 		}
 		
 		if (!isDone) {
-			throw new TimeoutException(">>>>>>>>>>>> xxl-rpc, request timeout at:"+ System.currentTimeMillis() +", XxlRpcRequest:" + xxlRpcRequest.toString());
+			throw new XxlRpcException("xxl-rpc, request timeout at:"+ System.currentTimeMillis() +", XxlRpcRequest:" + xxlRpcRequest.toString());
 		}
 		return xxlRpcResponse;
 	}

@@ -37,7 +37,7 @@ public class NetUtil {
                 portTmp--;
             }
         }
-        throw new IllegalStateException("no available port.");
+        throw new XxlRpcException("no available port.");
     }
 
     /**

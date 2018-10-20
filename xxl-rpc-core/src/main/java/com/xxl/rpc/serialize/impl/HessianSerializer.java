@@ -3,6 +3,7 @@ package com.xxl.rpc.serialize.impl;
 import com.caucho.hessian.io.Hessian2Input;
 import com.caucho.hessian.io.Hessian2Output;
 import com.xxl.rpc.serialize.Serializer;
+import com.xxl.rpc.util.XxlRpcException;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -24,17 +25,17 @@ public class HessianSerializer extends Serializer {
 			byte[] result = os.toByteArray();
 			return result;
 		} catch (IOException e) {
-			throw new IllegalStateException(e.getMessage(), e);
+			throw new XxlRpcException(e.getMessage(), e);
 		} finally {
 			try {
 				ho.close();
 			} catch (IOException e) {
-				throw new IllegalStateException(e.getMessage(), e);
+				throw new XxlRpcException(e.getMessage(), e);
 			}
 			try {
 				os.close();
 			} catch (IOException e) {
-				throw new IllegalStateException(e.getMessage(), e);
+				throw new XxlRpcException(e.getMessage(), e);
 			}
 		}
 
@@ -48,17 +49,17 @@ public class HessianSerializer extends Serializer {
 			Object result = hi.readObject();
 			return result;
 		} catch (IOException e) {
-			throw new IllegalStateException(e.getMessage(), e);
+			throw new XxlRpcException(e.getMessage(), e);
 		} finally {
 			try {
 				hi.close();
 			} catch (Exception e) {
-				throw new IllegalStateException(e.getMessage(), e);
+				throw new XxlRpcException(e.getMessage(), e);
 			}
 			try {
 				is.close();
 			} catch (IOException e) {
-				throw new IllegalStateException(e.getMessage(), e);
+				throw new XxlRpcException(e.getMessage(), e);
 			}
 		}
 	}

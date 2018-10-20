@@ -82,7 +82,7 @@ public class XxlZkClient {
 			}
 		}
 		if (zooKeeper == null) {
-			throw new RuntimeException("XxlZkClient.zooKeeper is null.");
+			throw new XxlRpcException("XxlZkClient.zooKeeper is null.");
 		}
 		return zooKeeper;
 	}
@@ -130,7 +130,7 @@ public class XxlZkClient {
 			}
 			return getClient().exists(path, true);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new XxlRpcException(e);
 		}
 	}
 
@@ -149,7 +149,7 @@ public class XxlZkClient {
 				logger.info(">>>>>>>>>> zookeeper node path not found :{}", path);
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new XxlRpcException(e);
 		}
 	}
 
@@ -169,7 +169,7 @@ public class XxlZkClient {
 			}
 			return getClient().setData(path, data.getBytes("UTF-8"), stat.getVersion());
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new XxlRpcException(e);
 		}
 	}
 
@@ -194,7 +194,7 @@ public class XxlZkClient {
 			}
 			return znodeValue;
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new XxlRpcException(e);
 		}
 	}
 
@@ -229,7 +229,7 @@ public class XxlZkClient {
 
 			getClient().create(childNodePath, childNodeData.getBytes("UTF-8"), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new XxlRpcException(e);
 		}
 	}
 
@@ -245,7 +245,7 @@ public class XxlZkClient {
 			String childNodePath = path.concat("/").concat(childNode);
 			deletePath(childNodePath, false);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new XxlRpcException(e);
 		}
 	}
 
@@ -275,7 +275,7 @@ public class XxlZkClient {
 			}
 			return allData;
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new XxlRpcException(e);
 		}
 	}
 

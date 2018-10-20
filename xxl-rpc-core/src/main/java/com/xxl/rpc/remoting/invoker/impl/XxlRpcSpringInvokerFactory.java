@@ -5,6 +5,7 @@ import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.invoker.annotation.XxlRpcReference;
 import com.xxl.rpc.remoting.invoker.reference.XxlRpcReferenceBean;
 import com.xxl.rpc.remoting.provider.XxlRpcProviderFactory;
+import com.xxl.rpc.util.XxlRpcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -82,7 +83,7 @@ public class XxlRpcSpringInvokerFactory extends InstantiationAwareBeanPostProces
                     // valid
                     Class iface = field.getType();
                     if (!iface.isInterface()) {
-                        throw new RuntimeException("xxl-rpc, reference(XxlRpcReference) must be interface.");
+                        throw new XxlRpcException("xxl-rpc, reference(XxlRpcReference) must be interface.");
                     }
 
                     XxlRpcReference rpcReference = field.getAnnotation(XxlRpcReference.class);

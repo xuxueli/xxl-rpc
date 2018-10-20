@@ -2,6 +2,7 @@ package com.xxl.rpc.registry.impl;
 
 import com.xxl.rpc.registry.ServiceRegistry;
 import com.xxl.rpc.util.Environment;
+import com.xxl.rpc.util.XxlRpcException;
 import com.xxl.rpc.util.XxlZkClient;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
@@ -76,12 +77,12 @@ public class ZkServiceRegistry extends ServiceRegistry {
 
         // valid
         if (zkaddress==null || zkaddress.trim().length()==0) {
-            throw new RuntimeException("xxl-rpc zkaddress can not be empty");
+            throw new XxlRpcException("xxl-rpc zkaddress can not be empty");
         }
 
         // init zkpath
         if (env==null || env.trim().length()==0) {
-            throw new RuntimeException("xxl-rpc env can not be empty");
+            throw new XxlRpcException("xxl-rpc env can not be empty");
         }
 
         zkEnvPath = zkBasePath.concat("/").concat(env);

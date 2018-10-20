@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xxl.rpc.serialize.Serializer;
+import com.xxl.rpc.util.XxlRpcException;
 
 /**
  * Jackson工具类
@@ -23,7 +24,7 @@ public class JacksonSerializer extends Serializer {
 		try {
 			return objectMapper.writeValueAsBytes(obj);
 		} catch (JsonProcessingException e) {
-			throw new IllegalStateException(e.getMessage(), e);
+			throw new XxlRpcException(e.getMessage(), e);
 		}
 	}
 
@@ -33,11 +34,11 @@ public class JacksonSerializer extends Serializer {
 		try {
 			return objectMapper.readValue(bytes, clazz);
 		} catch (JsonParseException e) {
-			throw new IllegalStateException(e.getMessage(), e);
+			throw new XxlRpcException(e.getMessage(), e);
 		} catch (JsonMappingException e) {
-			throw new IllegalStateException(e.getMessage(), e);
+			throw new XxlRpcException(e.getMessage(), e);
 		} catch (IOException e) {
-			throw new IllegalStateException(e.getMessage(), e);
+			throw new XxlRpcException(e.getMessage(), e);
 		}
 	}
 

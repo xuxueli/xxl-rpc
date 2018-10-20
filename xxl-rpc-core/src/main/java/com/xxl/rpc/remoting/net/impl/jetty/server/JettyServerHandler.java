@@ -3,6 +3,7 @@ package com.xxl.rpc.remoting.net.impl.jetty.server;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import com.xxl.rpc.remoting.provider.XxlRpcProviderFactory;
+import com.xxl.rpc.util.XxlRpcException;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.slf4j.Logger;
@@ -65,7 +66,7 @@ public class JettyServerHandler extends AbstractHandler {
 		// deserialize request
 		byte[] requestBytes = readBytes(request);
 		if (requestBytes == null || requestBytes.length==0) {
-			throw new RuntimeException("XxlRpcRequest byte[] is null");
+			throw new XxlRpcException("XxlRpcRequest byte[] is null");
 		}
 		XxlRpcRequest rpcXxlRpcRequest = (XxlRpcRequest) xxlRpcProviderFactory.getSerializer().deserialize(requestBytes, XxlRpcRequest.class);
 		return rpcXxlRpcRequest;

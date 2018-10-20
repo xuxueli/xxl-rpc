@@ -9,6 +9,7 @@ import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import com.xxl.rpc.remoting.provider.XxlRpcProviderFactory;
 import com.xxl.rpc.serialize.Serializer;
 import com.xxl.rpc.util.ThrowableUtil;
+import com.xxl.rpc.util.XxlRpcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,7 +84,7 @@ public class XxlRpcReferenceBean {
 			client = netType.clientClass.newInstance();
 			client.init(this);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new XxlRpcException(e);
 		}
 	}
 
@@ -117,13 +118,13 @@ public class XxlRpcReferenceBean {
 						// filter method like "Object.toString()"
 						if (Object.class.getName().equals(className)) {
 							logger.info(">>>>>>>>>>> xxl-rpc proxy class-method not support [{}.{}]", className, method.getName());
-							throw new RuntimeException("xxl-rpc proxy class-method not support");
+							throw new XxlRpcException("xxl-rpc proxy class-method not support");
 						}
 
 						// address
 						String address = routeAddress();
 						if (address==null || address.trim().length()==0) {
-							throw new RuntimeException("xxl-rpc reference bean["+ className +"] address empty");
+							throw new XxlRpcException("xxl-rpc reference bean["+ className +"] address empty");
 						}
 
 						// request
@@ -147,11 +148,10 @@ public class XxlRpcReferenceBean {
 	                    
 	                    // valid xxlRpcResponse
 						if (xxlRpcResponse == null) {
-							logger.error(">>>>>>>>>>> xxl-rpc netty xxlRpcResponse not found.");
-							throw new Exception(">>>>>>>>>>> xxl-rpc netty xxlRpcResponse not found.");
+							throw new XxlRpcException("xxl-rpc xxlRpcResponse not found.");
 						}
 	                    if (xxlRpcResponse.getErrorMsg() != null) {
-	                        throw new RuntimeException(xxlRpcResponse.getErrorMsg());
+	                        throw new XxlRpcException(xxlRpcResponse.getErrorMsg());
 	                    } else {
 	                        return xxlRpcResponse.getResult();
 	                    }

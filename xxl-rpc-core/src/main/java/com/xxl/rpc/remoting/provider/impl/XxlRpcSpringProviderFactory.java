@@ -7,6 +7,7 @@ import com.xxl.rpc.remoting.provider.annotation.XxlRpcService;
 import com.xxl.rpc.serialize.Serializer;
 import com.xxl.rpc.util.IpUtil;
 import com.xxl.rpc.util.NetUtil;
+import com.xxl.rpc.util.XxlRpcException;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -79,7 +80,7 @@ public class XxlRpcSpringProviderFactory extends XxlRpcProviderFactory implement
         Serializer serializer = serializeEnum!=null?serializeEnum.getSerializer():null;
 
         if (NetUtil.isPortUsed(port)) {
-            throw new RuntimeException("xxl-rpc provider port["+ port +"] is used.");
+            throw new XxlRpcException("xxl-rpc provider port["+ port +"] is used.");
         }
 
         if (serviceRegistryClass == null) {
@@ -106,7 +107,7 @@ public class XxlRpcSpringProviderFactory extends XxlRpcProviderFactory implement
             for (Object serviceBean : serviceBeanMap.values()) {
                 // valid
                 if (serviceBean.getClass().getInterfaces().length ==0) {
-                    throw new RuntimeException("xxl-rpc, service(XxlRpcService) must inherit interface.");
+                    throw new XxlRpcException("xxl-rpc, service(XxlRpcService) must inherit interface.");
                 }
                 // add service
                 XxlRpcService xxlRpcService = serviceBean.getClass().getAnnotation(XxlRpcService.class);

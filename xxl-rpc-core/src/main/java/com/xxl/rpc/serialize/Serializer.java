@@ -4,6 +4,7 @@ import com.xxl.rpc.serialize.impl.Hessian1Serializer;
 import com.xxl.rpc.serialize.impl.HessianSerializer;
 import com.xxl.rpc.serialize.impl.JacksonSerializer;
 import com.xxl.rpc.serialize.impl.ProtostuffSerializer;
+import com.xxl.rpc.util.XxlRpcException;
 
 /**
  * serializer
@@ -34,7 +35,7 @@ public abstract class Serializer {
 			try {
 				return serializerClass.newInstance();
 			} catch (Exception e) {
-				throw new RuntimeException(e);
+				throw new XxlRpcException(e);
 			}
 		}
 

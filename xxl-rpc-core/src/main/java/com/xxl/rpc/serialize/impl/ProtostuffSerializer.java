@@ -1,6 +1,7 @@
 package com.xxl.rpc.serialize.impl;
 
 import com.xxl.rpc.serialize.Serializer;
+import com.xxl.rpc.util.XxlRpcException;
 import io.protostuff.LinkedBuffer;
 import io.protostuff.ProtostuffIOUtil;
 import io.protostuff.Schema;
@@ -41,7 +42,7 @@ public class ProtostuffSerializer extends Serializer {
             Schema<T> schema = getSchema(cls);
             return ProtostuffIOUtil.toByteArray(obj, schema, buffer);
         } catch (Exception e) {
-            throw new IllegalStateException(e.getMessage(), e);
+            throw new XxlRpcException(e.getMessage(), e);
         } finally {
             buffer.clear();
         }
@@ -55,7 +56,7 @@ public class ProtostuffSerializer extends Serializer {
             ProtostuffIOUtil.mergeFrom(bytes, message, schema);
             return message;
         } catch (Exception e) {
-            throw new IllegalStateException(e.getMessage(), e);
+            throw new XxlRpcException(e.getMessage(), e);
         }
 	}
     
