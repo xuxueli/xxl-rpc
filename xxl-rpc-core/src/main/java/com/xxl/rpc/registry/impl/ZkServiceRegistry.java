@@ -219,8 +219,7 @@ public class ZkServiceRegistry extends ServiceRegistry {
                     xxlZkClient.setChildPathData(path, value, "");
                 }
             }
-            logger.info(">>>>>>>>>> xxl-rpc, refresh registry data success." + registryData);
-            logger.debug(">>>>>>>>>> xxl-rpc, registryData = {}", registryData);
+            logger.info(">>>>>>>>>> xxl-rpc, refresh registry data success, registryData = {}", registryData);
         }
     }
 
@@ -239,6 +238,7 @@ public class ZkServiceRegistry extends ServiceRegistry {
         String path = keyToPath(key);
         xxlZkClient.setChildPathData(path, value, "");
 
+        logger.info(">>>>>>>>>> xxl-rpc, registry success, key = {}, value = {}", key, value);
         return true;
     }
 

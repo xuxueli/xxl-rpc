@@ -115,7 +115,7 @@ public class XxlRpcReferenceBean {
 
 						// filter method like "Object.toString()"
 						if (Object.class.getName().equals(className)) {
-							logger.error(">>>>>>>>>>> xxl-rpc proxy class-method not support [{}.{}]", method.getDeclaringClass().getName(), method.getName());
+							logger.info(">>>>>>>>>>> xxl-rpc proxy class-method not support [{}.{}]", className, method.getName());
 							throw new RuntimeException("xxl-rpc proxy class-method not support");
 						}
 

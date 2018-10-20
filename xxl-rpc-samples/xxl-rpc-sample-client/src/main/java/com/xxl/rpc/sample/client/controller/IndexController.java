@@ -19,8 +19,12 @@ public class IndexController {
 	@RequestMapping("")
 	@ResponseBody
 	public UserDTO http(String name) {
-		return demoService.sayHi(name);
+
+		try {
+			return demoService.sayHi(name);
+		} catch (Exception e) {
+			return new UserDTO(null, e.getMessage());
+		}
 	}
 
-	
 }
