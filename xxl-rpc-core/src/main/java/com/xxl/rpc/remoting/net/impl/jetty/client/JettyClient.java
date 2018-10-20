@@ -8,6 +8,7 @@ import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.client.util.BytesContentProvider;
 import org.eclipse.jetty.http.HttpMethod;
+import org.eclipse.jetty.http.HttpStatus;
 
 import java.util.concurrent.TimeUnit;
 
@@ -28,16 +29,11 @@ public class JettyClient extends Client {
 			address = "http://" + address + "/";	// IP:PORT, need parse to url
 		}
 
-		// serialize xxlRpcRequest
+		// serialize request
 		byte[] requestBytes = xxlRpcReferenceBean.getSerializer().serialize(xxlRpcRequest);
 
 		// remote invoke
 		byte[] responseBytes = postRequest(address, requestBytes, xxlRpcReferenceBean.getTimeout());
-		if (responseBytes == null || responseBytes.length==0) {
-			XxlRpcResponse xxlRpcResponse = new XxlRpcResponse();
-			xxlRpcResponse.setErrorMsg("Network xxlRpcRequest fail, XxlRpcResponse byte[] is null");
-			return xxlRpcResponse;
-		}
 
 		// deserialize response
 		return (XxlRpcResponse) xxlRpcReferenceBean.getSerializer().deserialize(responseBytes, XxlRpcResponse.class);
@@ -48,8 +44,7 @@ public class JettyClient extends Client {
 	/**
 	 * post request
 	 */
-	public static byte[] postRequest(String reqURL, byte[] data, long timeout) throws Exception {
-		byte[] responseBytes = null;
+	private static byte[] postRequest(String reqURL, byte[] data, long timeout) throws Exception {
 
 		// httpclient
 		HttpClient httpClient = new HttpClient();
@@ -64,9 +59,16 @@ public class JettyClient extends Client {
 
 		// invoke
 		ContentResponse response = request.send();
+		if (response.getStatus() != HttpStatus.OK_200) {
+			throw new RuntimeException("xxl-rpc remoting request fail, http HttpStatus["+ response.getStatus() +"] invalid.");
+		}
 
 		// result
-		responseBytes = response.getContent();
+		byte[] responseBytes = response.getContent();
+		if (responseBytes == null || responseBytes.length==0) {
+			throw new RuntimeException("xxl-rpc remoting request fail, response bytes is empty.");
+		}
+
 		return responseBytes;
 	}
 
