@@ -151,6 +151,7 @@ public class ZkServiceRegistry extends ServiceRegistry {
                 logger.info(">>>>>>>>>> xxl-rpc, refresh thread stoped.");
             }
         });
+        refreshThread.setName("xxl-rpc, ZkServiceRegistry refresh thread.");
         refreshThread.setDaemon(true);
         refreshThread.start();
 
