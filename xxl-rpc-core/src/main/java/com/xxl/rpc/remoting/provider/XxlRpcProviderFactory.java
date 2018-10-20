@@ -146,6 +146,8 @@ public class XxlRpcProviderFactory {
 	public void addService(String iface, String version, Object serviceBean){
 		String serviceKey = makeServiceKey(iface, version);
 		serviceData.put(serviceKey, serviceBean);
+
+		logger.info(">>>>>>>>>>> xxl-rpc, provider factory add service success. serviceKey = {}, serviceBean = {}", serviceKey, serviceBean.getClass());
 	}
 
 	/**

@@ -85,7 +85,7 @@ public class MinaPooledClient extends ClientPooled {
 			if (this.ioSession.isConnected()) {
 				ioSession.getCloseFuture().awaitUninterruptibly();
 			}
-			this.ioSession.close(true);
+			this.ioSession.closeNow();
 			this.ioSession = null;
 		}
 		if (this.connector != null) {

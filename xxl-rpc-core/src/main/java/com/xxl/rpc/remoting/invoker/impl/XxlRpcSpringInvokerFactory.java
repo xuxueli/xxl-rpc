@@ -4,6 +4,9 @@ import com.xxl.rpc.registry.ServiceRegistry;
 import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.invoker.annotation.XxlRpcReference;
 import com.xxl.rpc.remoting.invoker.reference.XxlRpcReferenceBean;
+import com.xxl.rpc.remoting.provider.XxlRpcProviderFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -21,7 +24,7 @@ import java.util.Map;
  * @author xuxueli 2018-10-19
  */
 public class XxlRpcSpringInvokerFactory extends InstantiationAwareBeanPostProcessorAdapter implements InitializingBean,DisposableBean, BeanFactoryAware {
-
+    private Logger logger = LoggerFactory.getLogger(XxlRpcSpringInvokerFactory.class);
 
     // ---------------------- config ----------------------
 
@@ -101,6 +104,9 @@ public class XxlRpcSpringInvokerFactory extends InstantiationAwareBeanPostProces
                     // set bean
                     field.setAccessible(true);
                     field.set(bean, serviceProxy);
+
+                    logger.info(">>>>>>>>>>> xxl-rpc, invoker factory init reference bean success. serviceKey = {}, bean.field = {}",
+                            XxlRpcProviderFactory.makeServiceKey(iface.getName(), rpcReference.version()), beanName, field.getName());
                 }
             }
         });

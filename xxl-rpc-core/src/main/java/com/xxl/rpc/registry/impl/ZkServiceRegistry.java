@@ -246,7 +246,7 @@ public class ZkServiceRegistry extends ServiceRegistry {
     public boolean remove(String key, String value) {
 
         TreeSet<String> values = discoveryData.get(key);
-        if (value != null) {
+        if (values != null) {
             values.remove(value);
         }
         String path = keyToPath(key);

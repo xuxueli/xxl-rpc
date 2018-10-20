@@ -75,7 +75,7 @@ public class XxlRpcInvokerFactory {
         int port = Integer.parseInt(array[1]);
 
         // set pool
-        clientPool = new GenericObjectPool(new ClientPoolFactory(host, port, serializer, clientPoolImpl));
+        clientPool = new GenericObjectPool<ClientPooled>(new ClientPoolFactory(host, port, serializer, clientPoolImpl));
         clientPool.setTestOnBorrow(true);
         clientPool.setMaxTotal(2);
 
