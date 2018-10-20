@@ -20,7 +20,7 @@ public class DemoServiceImpl implements DemoService {
 		String word = MessageFormat.format("Hi {0}, from {1} as {2}",
 				name, DemoServiceImpl.class.getName(), System.currentTimeMillis());
 
-		System.out.println(1/System.currentTimeMillis()/2);
+		System.out.println(1/System.currentTimeMillis()%2);
 
 		return new UserDTO(name, word);
 	}

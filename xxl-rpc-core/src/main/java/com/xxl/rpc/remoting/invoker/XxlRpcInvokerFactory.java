@@ -1,7 +1,7 @@
 package com.xxl.rpc.remoting.invoker;
 
 import com.xxl.rpc.registry.ServiceRegistry;
-import com.xxl.rpc.remoting.net.params.RpcCallbackFuture;
+import com.xxl.rpc.remoting.net.params.XxlRpcFutureResponse;
 import com.xxl.rpc.remoting.net.pool.ClientPoolFactory;
 import com.xxl.rpc.remoting.net.pool.ClientPooled;
 import com.xxl.rpc.serialize.Serializer;
@@ -59,8 +59,7 @@ public class XxlRpcInvokerFactory {
 
     // ---------------------- client pool (static) ----------------------
 
-    private static ConcurrentHashMap<String, GenericObjectPool<ClientPooled>> clientPoolMap =
-            new ConcurrentHashMap<String, GenericObjectPool<ClientPooled>>();
+    private static ConcurrentHashMap<String, GenericObjectPool<ClientPooled>> clientPoolMap = new ConcurrentHashMap<String, GenericObjectPool<ClientPooled>>();
     public static GenericObjectPool<ClientPooled> getPool(String address, Serializer serializer, Class<? extends ClientPooled> clientPoolImpl) throws Exception {
 
         // get pool
@@ -87,16 +86,16 @@ public class XxlRpcInvokerFactory {
 
     // ---------------------- future pool (static) ----------------------
 
-    public static ConcurrentMap<String, RpcCallbackFuture> futurePool = new ConcurrentHashMap<String, RpcCallbackFuture>();
+    private static ConcurrentMap<String, XxlRpcFutureResponse> futureResponsePool = new ConcurrentHashMap<String, XxlRpcFutureResponse>();
 
-    public static void setInvokerFuture(String key, RpcCallbackFuture future){
-        futurePool.put(key, future);
+    public static void setInvokerFuture(String requestId, XxlRpcFutureResponse futureResponse){
+        futureResponsePool.put(requestId, futureResponse);
     }
-    public static void removeInvokerFuture(String key){
-        futurePool.remove(key);
+    public static void removeInvokerFuture(String requestId){
+        futureResponsePool.remove(requestId);
     }
-    public static RpcCallbackFuture getInvokerFuture(String key){
-        return futurePool.get(key);
+    public static XxlRpcFutureResponse getInvokerFuture(String requestId){
+        return futureResponsePool.get(requestId);
     }
 
 

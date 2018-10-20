@@ -11,7 +11,7 @@ import java.util.concurrent.TimeoutException;
  * v2: Map isDone + ctx.writeAndFlush(xxlRpcResponse)
  * v3: Map synchronized wait + notifyAll
  */
-public class RpcCallbackFuture {
+public class XxlRpcFutureResponse {
 
 	// net codec
 	private XxlRpcRequest xxlRpcRequest;
@@ -22,14 +22,18 @@ public class RpcCallbackFuture {
 	private Object lock = new Object();
 
 
-	public RpcCallbackFuture(XxlRpcRequest xxlRpcRequest) {
+	public XxlRpcFutureResponse(XxlRpcRequest xxlRpcRequest) {
 		this.xxlRpcRequest = xxlRpcRequest;
 	}
 
 
+	public XxlRpcRequest getXxlRpcRequest() {
+		return xxlRpcRequest;
+	}
 	public XxlRpcResponse getXxlRpcResponse() {
 		return xxlRpcResponse;
 	}
+
 	public void setXxlRpcResponse(XxlRpcResponse xxlRpcResponse) {
 		this.xxlRpcResponse = xxlRpcResponse;
 		// notify future lock
@@ -52,7 +56,7 @@ public class RpcCallbackFuture {
 		}
 		
 		if (!isDone) {
-			throw new TimeoutException(MessageFormat.format(">>>>>>>>>>>> xxl-rpc, netty xxlRpcRequest timeout at:{0}, xxlRpcRequest:{1}", System.currentTimeMillis(), xxlRpcRequest.toString()));
+			throw new TimeoutException(MessageFormat.format(">>>>>>>>>>>> xxl-rpc, request timeout at:{0}, XxlRpcRequest:{1}", System.currentTimeMillis(), xxlRpcRequest.toString()));
 		}
 		return xxlRpcResponse;
 	}
