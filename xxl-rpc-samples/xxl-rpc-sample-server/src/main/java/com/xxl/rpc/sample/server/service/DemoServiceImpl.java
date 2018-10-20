@@ -21,7 +21,7 @@ public class DemoServiceImpl implements DemoService {
 		String word = MessageFormat.format("Hi {0}, from {1} as {2}",
 				name, DemoServiceImpl.class.getName(), System.currentTimeMillis());
 
-		if (new Random().nextBoolean()) throw new RuntimeException("test exception.");
+		if ("error".equalsIgnoreCase(name)) throw new RuntimeException("test exception.");
 
 		return new UserDTO(name, word);
 	}
