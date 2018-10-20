@@ -158,7 +158,7 @@ public class XxlRpcProviderFactory {
 	 */
 	public XxlRpcResponse invokeService(XxlRpcRequest xxlRpcRequest) {
 
-		// xxlRpcResponse
+		//  make response
 		XxlRpcResponse xxlRpcResponse = new XxlRpcResponse();
 		xxlRpcResponse.setRequestId(xxlRpcRequest.getRequestId());
 
@@ -166,6 +166,7 @@ public class XxlRpcProviderFactory {
 		String serviceKey = makeServiceKey(xxlRpcRequest.getClassName(), xxlRpcRequest.getVersion());
 		Object serviceBean = serviceData.get(serviceKey);
 
+		// valid
 		if (serviceBean == null) {
 			xxlRpcResponse.setResult(new RuntimeException("The ServiceBean["+ serviceKey +"] not found."));
 			return xxlRpcResponse;
@@ -180,6 +181,7 @@ public class XxlRpcProviderFactory {
 			return xxlRpcResponse;
 		}
 
+		// invoke
 		try {
 			Class<?> serviceClass = serviceBean.getClass();
 			String methodName = xxlRpcRequest.getMethodName();

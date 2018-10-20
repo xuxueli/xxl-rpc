@@ -25,8 +25,8 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<XxlRpcReques
 
     @Override
     public void channelRead0(final ChannelHandlerContext ctx, XxlRpcRequest xxlRpcRequest) throws Exception {
-    	
-    	// invoke
+
+        // invoke + response
         XxlRpcResponse xxlRpcResponse = xxlRpcProviderFactory.invokeService(xxlRpcRequest);
     	
         ctx.writeAndFlush(xxlRpcResponse);

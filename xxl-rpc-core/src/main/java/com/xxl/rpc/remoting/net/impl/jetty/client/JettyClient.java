@@ -3,7 +3,13 @@ package com.xxl.rpc.remoting.net.impl.jetty.client;
 import com.xxl.rpc.remoting.net.Client;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
-import com.xxl.rpc.util.HttpClientUtil;
+import org.eclipse.jetty.client.HttpClient;
+import org.eclipse.jetty.client.api.ContentResponse;
+import org.eclipse.jetty.client.api.Request;
+import org.eclipse.jetty.client.util.BytesContentProvider;
+import org.eclipse.jetty.http.HttpMethod;
+
+import java.util.concurrent.TimeUnit;
 
 //import com.xxl.rpc.registry.ZkServiceDiscovery;
 
@@ -26,7 +32,7 @@ public class JettyClient extends Client {
 		byte[] requestBytes = xxlRpcReferenceBean.getSerializer().serialize(xxlRpcRequest);
 
 		// remote invoke
-		byte[] responseBytes = HttpClientUtil.postRequest(address, requestBytes, xxlRpcReferenceBean.getTimeout());
+		byte[] responseBytes = postRequest(address, requestBytes, xxlRpcReferenceBean.getTimeout());
 		if (responseBytes == null || responseBytes.length==0) {
 			XxlRpcResponse xxlRpcResponse = new XxlRpcResponse();
 			xxlRpcResponse.setError(new RuntimeException("Network xxlRpcRequest fail, XxlRpcResponse byte[] is null"));
@@ -37,5 +43,32 @@ public class JettyClient extends Client {
 		return (XxlRpcResponse) xxlRpcReferenceBean.getSerializer().deserialize(responseBytes, XxlRpcResponse.class);
 		
 	}
+
+
+	/**
+	 * post request
+	 */
+	public static byte[] postRequest(String reqURL, byte[] data, long timeout) throws Exception {
+		byte[] responseBytes = null;
+
+		// httpclient
+		HttpClient httpClient = new HttpClient();
+		httpClient.setFollowRedirects(false);	// Configure HttpClient, for example:
+		httpClient.start();						// Start HttpClient
+
+		// request
+		Request request = httpClient.newRequest(reqURL);
+		request.method(HttpMethod.POST);
+		request.timeout(timeout, TimeUnit.MILLISECONDS);
+		request.content(new BytesContentProvider(data));
+
+		// invoke
+		ContentResponse response = request.send();
+
+		// result
+		responseBytes = response.getContent();
+		return responseBytes;
+	}
+
 
 }

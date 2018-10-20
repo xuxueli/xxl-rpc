@@ -3,7 +3,6 @@ package com.xxl.rpc.remoting.net.impl.jetty.server;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import com.xxl.rpc.remoting.provider.XxlRpcProviderFactory;
-import com.xxl.rpc.util.HttpClientUtil;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.slf4j.Logger;
@@ -13,6 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
@@ -31,42 +31,75 @@ public class JettyServerHandler extends AbstractHandler {
 
 	@Override
 	public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		
-		// invoke
-		XxlRpcResponse rpcXxlRpcResponse = doInvoke(request);
 
-        // serialize response
-        byte[] responseBytes = xxlRpcProviderFactory.getSerializer().serialize(rpcXxlRpcResponse);
-		
+		// request
+		XxlRpcRequest xxlRpcRequest = parseRequest(request);
+
+		// invoke + response
+		XxlRpcResponse xxlRpcResponse = xxlRpcProviderFactory.invokeService(xxlRpcRequest);
+
+		writeResponse(baseRequest, response, xxlRpcResponse);
+	}
+
+	/**
+	 * write response
+	 */
+	private void writeResponse(Request baseRequest, HttpServletResponse response, XxlRpcResponse xxlRpcResponse) throws IOException {
+
+		// serialize response
+		byte[] responseBytes = xxlRpcProviderFactory.getSerializer().serialize(xxlRpcResponse);
+
 		response.setContentType("text/html;charset=utf-8");
 		response.setStatus(HttpServletResponse.SC_OK);
 		baseRequest.setHandled(true);
-		
+
 		OutputStream out = response.getOutputStream();
 		out.write(responseBytes);
 		out.flush();
-		
 	}
 
-	private XxlRpcResponse doInvoke(HttpServletRequest request) {
-		try {
-			// deserialize request
-			byte[] requestBytes = HttpClientUtil.readBytes(request);
-			if (requestBytes == null || requestBytes.length==0) {
-				throw new RuntimeException("XxlRpcRequest byte[] is null");
-			}
-			XxlRpcRequest rpcXxlRpcRequest = (XxlRpcRequest) xxlRpcProviderFactory.getSerializer().deserialize(requestBytes, XxlRpcRequest.class);
-
-			// invoke
-			XxlRpcResponse xxlRpcResponse = xxlRpcProviderFactory.invokeService(rpcXxlRpcRequest);
-			return xxlRpcResponse;
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-
-			XxlRpcResponse xxlRpcResponse = new XxlRpcResponse();
-			xxlRpcResponse.setError(e);
-			return xxlRpcResponse;
+	/**
+	 * parse request
+	 */
+	private XxlRpcRequest parseRequest(HttpServletRequest request) throws IOException {
+		// deserialize request
+		byte[] requestBytes = readBytes(request);
+		if (requestBytes == null || requestBytes.length==0) {
+			throw new RuntimeException("XxlRpcRequest byte[] is null");
 		}
+		XxlRpcRequest rpcXxlRpcRequest = (XxlRpcRequest) xxlRpcProviderFactory.getSerializer().deserialize(requestBytes, XxlRpcRequest.class);
+		return rpcXxlRpcRequest;
+	}
+
+	/**
+	 * read bytes from http request
+	 *
+	 * @param request
+	 * @return
+	 * @throws IOException
+	 */
+	public static final byte[] readBytes(HttpServletRequest request) throws IOException {
+		request.setCharacterEncoding("UTF-8");
+		int contentLen = request.getContentLength();
+		InputStream is = request.getInputStream();
+		if (contentLen > 0) {
+			int readLen = 0;
+			int readLengthThisTime = 0;
+			byte[] message = new byte[contentLen];
+			try {
+				while (readLen != contentLen) {
+					readLengthThisTime = is.read(message, readLen, contentLen - readLen);
+					if (readLengthThisTime == -1) {
+						break;
+					}
+					readLen += readLengthThisTime;
+				}
+				return message;
+			} catch (IOException e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
+		return new byte[] {};
 	}
 
 }

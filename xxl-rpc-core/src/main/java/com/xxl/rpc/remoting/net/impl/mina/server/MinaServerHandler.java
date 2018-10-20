@@ -23,12 +23,13 @@ public class MinaServerHandler extends IoHandlerAdapter {
 		this.xxlRpcProviderFactory = xxlRpcProviderFactory;
 	}
 
-
 	@Override
 	public void messageReceived(IoSession session, Object message) throws Exception {
+
+		// request
 		XxlRpcRequest xxlRpcRequest = (XxlRpcRequest) message;
 		
-		// invoke
+		// invoke + response
         XxlRpcResponse xxlRpcResponse = xxlRpcProviderFactory.invokeService(xxlRpcRequest);
         
         session.write(xxlRpcResponse);
@@ -36,6 +37,10 @@ public class MinaServerHandler extends IoHandlerAdapter {
 	
 	@Override
 	public void exceptionCaught(IoSession session, Throwable cause) throws Exception {
+
+		// error response, TODO
+
+
 		logger.error(">>>>>>>>>>> xxl-rpc provider mina server caught exception", cause);
 		session.closeNow();
 	}

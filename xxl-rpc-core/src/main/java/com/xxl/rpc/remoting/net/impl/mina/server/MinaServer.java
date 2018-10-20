@@ -60,7 +60,7 @@ public class MinaServer extends Server {
 					acceptor.bind(new InetSocketAddress(xxlRpcProviderFactory.getPort()));
 
 					onStarted();
-					logger.info(">>>>>>>>>>> xxl-rpc remoting server start success, netcon={}, port={}", MinaServer.class.getName(), xxlRpcProviderFactory.getPort());
+					logger.info(">>>>>>>>>>> xxl-rpc remoting server start success, nettype = {}, port = {}", MinaServer.class.getName(), xxlRpcProviderFactory.getPort());
 
 				} catch (Exception e) {
 					logger.error(">>>>>>>>>>> xxl-rpc remoting server start error.", e);

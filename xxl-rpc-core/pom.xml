@@ -81,22 +81,17 @@
 
 		<!-- ********************** net (jetty default) ********************** -->
 
-		<!-- jetty (httpclient + servlet-api) -->
+		<!-- jetty (javax.servlet-api:3.1.0;) -->
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
 			<version>${jetty-server.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<version>${httpclient.version}</version>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-client</artifactId>
+			<version>${jetty-server.version}</version>
 		</dependency>
-		<!--<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>${javax.servlet-api.version}</version>
-		</dependency>-->
 
 		<!-- netty (commons-pool2) -->
 		<dependency>

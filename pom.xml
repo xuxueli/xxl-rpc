@@ -25,32 +25,31 @@
 		<javax.servlet-api.version>3.1.0</javax.servlet-api.version>
 		<javax.servlet.jsp-api.version>2.3.3</javax.servlet.jsp-api.version>
 
-		<spring.version>4.3.19.RELEASE</spring.version>
-		<jackson.version>2.9.6</jackson.version>
 		<slf4j-api.version>1.7.25</slf4j-api.version>
-		<freemarker.version>2.3.28</freemarker.version>
 		<junit.version>4.12</junit.version>
 
-		<commons-collections4.version>4.2</commons-collections4.version>
-		<commons-lang3.version>3.8.1</commons-lang3.version>
-
-
-		<zookeeper.version>3.4.13</zookeeper.version>
 
 		<netty.version>4.1.29.Final</netty.version>
 		<mina.version>2.0.19</mina.version>
 		<jetty-server.version>9.2.26.v20180806</jetty-server.version>
 
-		<httpclient.version>4.5.6</httpclient.version>
-
 		<commons-pool2.version>2.6.0</commons-pool2.version>
+
+
+		<hessian.version>4.0.51</hessian.version>
 
 		<protostuff.version>1.6.0</protostuff.version>
 		<objenesis.version>2.6</objenesis.version>
 
-		<hessian.version>4.0.51</hessian.version>
+		<jackson.version>2.9.6</jackson.version>
 
-        <spring-boot.version>1.5.16.RELEASE</spring-boot.version>
+
+		<zookeeper.version>3.4.13</zookeeper.version>
+
+
+		<spring.version>4.3.19.RELEASE</spring.version>
+		<spring-boot.version>1.5.16.RELEASE</spring-boot.version>
+
 	</properties>
 
 	<build>
