@@ -35,7 +35,7 @@ public class JettyClient extends Client {
 		byte[] responseBytes = postRequest(address, requestBytes, xxlRpcReferenceBean.getTimeout());
 		if (responseBytes == null || responseBytes.length==0) {
 			XxlRpcResponse xxlRpcResponse = new XxlRpcResponse();
-			xxlRpcResponse.setError(new RuntimeException("Network xxlRpcRequest fail, XxlRpcResponse byte[] is null"));
+			xxlRpcResponse.setErrorMsg("Network xxlRpcRequest fail, XxlRpcResponse byte[] is null");
 			return xxlRpcResponse;
 		}
 

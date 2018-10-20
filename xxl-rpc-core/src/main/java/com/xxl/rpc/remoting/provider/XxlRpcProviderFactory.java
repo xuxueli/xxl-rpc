@@ -8,6 +8,7 @@ import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import com.xxl.rpc.serialize.Serializer;
 import com.xxl.rpc.util.IpUtil;
+import com.xxl.rpc.util.ThrowableUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -198,8 +199,8 @@ public class XxlRpcProviderFactory {
 
 			xxlRpcResponse.setResult(result);
 		} catch (Throwable t) {
-			t.printStackTrace();
-			xxlRpcResponse.setError(t);
+			logger.error("xxl-rpc provider invokeService error.", t);
+			xxlRpcResponse.setErrorMsg(ThrowableUtil.toString(t));
 		}
 
 		return xxlRpcResponse;

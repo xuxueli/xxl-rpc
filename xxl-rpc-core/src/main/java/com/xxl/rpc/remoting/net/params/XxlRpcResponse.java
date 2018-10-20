@@ -9,14 +9,12 @@ import java.io.Serializable;
  */
 public class XxlRpcResponse implements Serializable{
 	private static final long serialVersionUID = 42L;
-	
+
+
 	private String requestId;
-    private Throwable error;    // TODO，考虑改为了 String 类型
+    private String errorMsg;
     private Object result;
 
-    public boolean isError() {
-        return error != null;
-    }
 
     public String getRequestId() {
         return requestId;
@@ -26,12 +24,12 @@ public class XxlRpcResponse implements Serializable{
         this.requestId = requestId;
     }
 
-    public Throwable getError() {
-        return error;
+    public String getErrorMsg() {
+        return errorMsg;
     }
 
-    public void setError(Throwable error) {
-        this.error = error;
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
     }
 
     public Object getResult() {
@@ -42,10 +40,13 @@ public class XxlRpcResponse implements Serializable{
         this.result = result;
     }
 
-	@Override
-	public String toString() {
-		return "NettyResponse [requestId=" + requestId + ", error=" + error
-				+ ", result=" + result + "]";
-	}
-    
+    @Override
+    public String toString() {
+        return "XxlRpcResponse{" +
+                "requestId='" + requestId + '\'' +
+                ", errorMsg='" + errorMsg + '\'' +
+                ", result=" + result +
+                '}';
+    }
+
 }

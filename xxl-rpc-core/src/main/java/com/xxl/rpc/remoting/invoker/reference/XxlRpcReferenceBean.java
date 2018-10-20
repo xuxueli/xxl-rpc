@@ -8,6 +8,7 @@ import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import com.xxl.rpc.remoting.provider.XxlRpcProviderFactory;
 import com.xxl.rpc.serialize.Serializer;
+import com.xxl.rpc.util.ThrowableUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -141,7 +142,7 @@ public class XxlRpcReferenceBean {
 							xxlRpcResponse = client.send(address, xxlRpcRequest);
 						} catch (Throwable throwable) {
 							xxlRpcResponse = new XxlRpcResponse();
-							xxlRpcResponse.setError(throwable);
+							xxlRpcResponse.setErrorMsg(ThrowableUtil.toString(throwable));
 						}
 	                    
 	                    // valid xxlRpcResponse
@@ -149,8 +150,8 @@ public class XxlRpcReferenceBean {
 							logger.error(">>>>>>>>>>> xxl-rpc netty xxlRpcResponse not found.");
 							throw new Exception(">>>>>>>>>>> xxl-rpc netty xxlRpcResponse not found.");
 						}
-	                    if (xxlRpcResponse.isError()) {
-	                        throw xxlRpcResponse.getError();
+	                    if (xxlRpcResponse.getErrorMsg() != null) {
+	                        throw new RuntimeException(xxlRpcResponse.getErrorMsg());
 	                    } else {
 	                        return xxlRpcResponse.getResult();
 	                    }
