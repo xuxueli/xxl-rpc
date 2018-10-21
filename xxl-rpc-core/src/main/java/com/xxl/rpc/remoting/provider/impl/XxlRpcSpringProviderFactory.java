@@ -32,7 +32,6 @@ public class XxlRpcSpringProviderFactory extends XxlRpcProviderFactory implement
     private int port = 7080;       			        // default port
     private String accessToken;
 
-    private String serviceRegistry = ServiceRegistry.ServiceRegistryEnum.LOCAL.name();       // enum
     private Class<? extends ServiceRegistry> serviceRegistryClass;                          // class.forname
     private Map<String, String> serviceRegistryParam;
 
@@ -58,10 +57,6 @@ public class XxlRpcSpringProviderFactory extends XxlRpcProviderFactory implement
         this.accessToken = accessToken;
     }
 
-    public void setServiceRegistry(String serviceRegistry) {
-        this.serviceRegistry = serviceRegistry;
-    }
-
     public void setServiceRegistryClass(Class<? extends ServiceRegistry> serviceRegistryClass) {
         this.serviceRegistryClass = serviceRegistryClass;
     }
@@ -81,15 +76,6 @@ public class XxlRpcSpringProviderFactory extends XxlRpcProviderFactory implement
 
         if (NetUtil.isPortUsed(port)) {
             throw new XxlRpcException("xxl-rpc provider port["+ port +"] is used.");
-        }
-
-        if (serviceRegistryClass == null) {
-            if (serviceRegistry!=null && serviceRegistry.trim().length()>0) {
-                ServiceRegistry.ServiceRegistryEnum serviceRegistryEnum = ServiceRegistry.ServiceRegistryEnum.match(serviceRegistry, null);
-                if (serviceRegistryEnum !=null) {
-                    serviceRegistryClass = serviceRegistryEnum.serviceRegistryClass;
-                }
-            }
         }
 
         // init config

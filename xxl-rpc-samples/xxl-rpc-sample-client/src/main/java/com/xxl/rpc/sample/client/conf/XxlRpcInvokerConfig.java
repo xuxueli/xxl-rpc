@@ -1,6 +1,7 @@
 package com.xxl.rpc.sample.client.conf;
 
 import com.xxl.rpc.registry.ServiceRegistry;
+import com.xxl.rpc.registry.impl.ZkServiceRegistry;
 import com.xxl.rpc.remoting.invoker.impl.XxlRpcSpringInvokerFactory;
 import com.xxl.rpc.util.Environment;
 import org.slf4j.Logger;
@@ -34,11 +35,9 @@ public class XxlRpcInvokerConfig {
     @Bean
     public XxlRpcSpringInvokerFactory xxlJobExecutor() {
 
-        logger.info(">>>>>>>>>>> xxl-rpc invoker config init.");
         XxlRpcSpringInvokerFactory invokerFactory = new XxlRpcSpringInvokerFactory();
-
         if (zkaddress != null) {
-            invokerFactory.setServiceRegistry(ServiceRegistry.ServiceRegistryEnum.ZK.name());
+            invokerFactory.setServiceRegistryClass(ZkServiceRegistry.class);
             invokerFactory.setServiceRegistryParam(new HashMap<String, String>(){{
                 put(Environment.ZK_ADDRESS, zkaddress);
                 put(Environment.ZK_DIGEST, zkdigest);
@@ -46,6 +45,7 @@ public class XxlRpcInvokerConfig {
             }});
         }
 
+        logger.info(">>>>>>>>>>> xxl-rpc invoker config init success.");
         return invokerFactory;
     }
 

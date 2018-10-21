@@ -1,4 +1,4 @@
-package com.xxl.rpc.example.api.dto;
+package com.xxl.rpc.sample.api.dto;
 
 import java.io.Serializable;
 

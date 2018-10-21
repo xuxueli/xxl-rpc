@@ -69,6 +69,12 @@ public class ZkServiceRegistry extends ServiceRegistry {
 
     // ------------------------------ util ------------------------------
 
+    /**
+     * @param param
+     *      Environment.ZK_ADDRESS  ：zk address
+     *      Environment.ZK_DIGEST   ：zk didest
+     *      Environment.ENV         ：env
+     */
     @Override
     public void start(Map<String, String> param) {
         String zkaddress = param.get(Environment.ZK_ADDRESS);

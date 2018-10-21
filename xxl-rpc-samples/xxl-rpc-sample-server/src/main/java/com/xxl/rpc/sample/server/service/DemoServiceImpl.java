@@ -1,12 +1,11 @@
 package com.xxl.rpc.sample.server.service;
 
-import com.xxl.rpc.example.api.DemoService;
-import com.xxl.rpc.example.api.dto.UserDTO;
+import com.xxl.rpc.sample.api.DemoService;
+import com.xxl.rpc.sample.api.dto.UserDTO;
 import com.xxl.rpc.remoting.provider.annotation.XxlRpcService;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
-import java.util.Random;
 
 /**
  * @author xuxueli

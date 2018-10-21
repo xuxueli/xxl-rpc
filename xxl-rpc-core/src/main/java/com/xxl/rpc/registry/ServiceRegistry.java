@@ -58,23 +58,4 @@ public abstract class ServiceRegistry {
      */
     public abstract TreeSet<String> discovery(String key);
 
-
-    public enum ServiceRegistryEnum {
-        LOCAL(LocalServiceRegistry.class),
-        ZK(ZkServiceRegistry.class);
-
-        public final Class<? extends ServiceRegistry> serviceRegistryClass;
-        private ServiceRegistryEnum (Class<? extends ServiceRegistry> serviceRegistryClass) {
-            this.serviceRegistryClass = serviceRegistryClass;
-        }
-        public static ServiceRegistryEnum match(String name, ServiceRegistryEnum defaultServiceRegistry){
-            for (ServiceRegistryEnum item : ServiceRegistryEnum.values()) {
-                if (item.name().equals(name)) {
-                    return item;
-                }
-            }
-            return defaultServiceRegistry;
-        }
-    }
-
 }

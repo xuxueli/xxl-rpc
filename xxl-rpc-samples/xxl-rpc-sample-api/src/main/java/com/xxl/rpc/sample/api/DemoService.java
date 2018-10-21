@@ -1,6 +1,6 @@
-package com.xxl.rpc.example.api;
+package com.xxl.rpc.sample.api;
 
-import com.xxl.rpc.example.api.dto.UserDTO;
+import com.xxl.rpc.sample.api.dto.UserDTO;
 
 /**
  * Demo API

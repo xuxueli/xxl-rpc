@@ -1,6 +1,7 @@
 package com.xxl.rpc.test;
 
 import com.xxl.rpc.registry.ServiceRegistry;
+import com.xxl.rpc.registry.impl.ZkServiceRegistry;
 import com.xxl.rpc.util.Environment;
 
 import java.util.HashMap;
@@ -20,9 +21,7 @@ public class ServiceRegistryTest {
         param.put(Environment.ENV, "test");
 
 
-        Class<? extends ServiceRegistry> serviceRegistryClass = ServiceRegistry.ServiceRegistryEnum
-                .match(ServiceRegistry.ServiceRegistryEnum.ZK.name(), null)
-                .serviceRegistryClass;
+        Class<? extends ServiceRegistry> serviceRegistryClass = ZkServiceRegistry.class;
 
         ServiceRegistry serviceRegistry = serviceRegistryClass.newInstance();
         serviceRegistry.start(param);

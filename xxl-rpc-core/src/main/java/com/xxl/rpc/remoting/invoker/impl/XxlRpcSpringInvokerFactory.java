@@ -29,13 +29,9 @@ public class XxlRpcSpringInvokerFactory extends InstantiationAwareBeanPostProces
 
     // ---------------------- config ----------------------
 
-    private String serviceRegistry;                                         // enum
     private Class<? extends ServiceRegistry> serviceRegistryClass;          // class.forname
     private Map<String, String> serviceRegistryParam;
 
-    public void setServiceRegistry(String serviceRegistry) {
-        this.serviceRegistry = serviceRegistry;
-    }
 
     public void setServiceRegistryClass(Class<? extends ServiceRegistry> serviceRegistryClass) {
         this.serviceRegistryClass = serviceRegistryClass;
@@ -46,28 +42,12 @@ public class XxlRpcSpringInvokerFactory extends InstantiationAwareBeanPostProces
     }
 
 
-    // util
-    private void prepareConfig(){
-        if (serviceRegistryClass == null) {
-            if (serviceRegistry!=null && serviceRegistry.trim().length()>0) {
-                ServiceRegistry.ServiceRegistryEnum serviceRegistryEnum = ServiceRegistry.ServiceRegistryEnum.match(serviceRegistry, null);
-                if (serviceRegistryEnum !=null) {
-                    serviceRegistryClass = serviceRegistryEnum.serviceRegistryClass;
-                }
-            }
-        }
-    }
-
-
     // ---------------------- util ----------------------
-
 
     private XxlRpcInvokerFactory xxlRpcInvokerFactory;
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        this.prepareConfig();
-
         // start invoker factory
         xxlRpcInvokerFactory = new XxlRpcInvokerFactory(serviceRegistryClass, serviceRegistryParam);
         xxlRpcInvokerFactory.start();
