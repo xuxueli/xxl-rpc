@@ -47,11 +47,8 @@ public class JettyClient extends Client {
 		// serialize request
 		byte[] requestBytes = xxlRpcReferenceBean.getSerializer().serialize(xxlRpcRequest);
 
-
         // httpclient
-        HttpClient httpClient = new HttpClient();
-        httpClient.setFollowRedirects(false);	// Configure HttpClient, for example:
-        httpClient.start();						// Start HttpClient
+        HttpClient httpClient = XxlRpcInvokerFactory.getJettyHttpClient();
 
         // request
         Request request = httpClient.newRequest(reqURL);

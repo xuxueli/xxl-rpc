@@ -259,7 +259,8 @@ iface | (必选) 服务对应的api接口;
 - 3、ZK注册中心重构，不依赖配置文件，通过代码初始化；
 - 4、各模块提供默认选型，备选项需要单独依赖进入；最小精简选型组合 "jetty + hessian"
 - 5、服务AccessToken鉴权；
-- 6、【ING】支持多种请求方式，如：SYNC、ONEWAY、FUTURE、CALLBACK 等；
+- 6、支持HTTP异步请求，线程优化，统一通讯流程；
+- 7、【ING】支持多种请求方式，如：SYNC、ONEWAY、FUTURE、CALLBACK 等；
 
 ### TODO
 - 目前使用 iface 接口包名进行服务注册, 新增属性 registry-key 用来服务注册,便于接口复用,如果为空则默认使用 iface 接口包名; zookeeper-switch 改为 registry-switch;
