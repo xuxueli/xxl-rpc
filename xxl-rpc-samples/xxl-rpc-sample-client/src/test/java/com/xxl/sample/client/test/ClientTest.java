@@ -1,8 +1,8 @@
 package com.xxl.sample.client.test;
 
+import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.invoker.reference.XxlRpcReferenceBean;
 import com.xxl.rpc.remoting.net.NetEnum;
-import com.xxl.rpc.remoting.net.impl.jetty.client.JettyClient;
 import com.xxl.rpc.remoting.net.params.CallType;
 import com.xxl.rpc.sample.api.DemoService;
 import com.xxl.rpc.sample.api.dto.UserDTO;
@@ -20,6 +20,9 @@ public class ClientTest {
 
 		UserDTO userDTO = demoService.sayHi("jack");
 		System.out.println(userDTO.toString());
+
+		// stop invoker factory
+        new XxlRpcInvokerFactory().stop();
 
     	/*long start = System.currentTimeMillis();
 		for (int i = 0; i < 100; i++) {

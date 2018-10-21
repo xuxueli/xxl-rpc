@@ -51,5 +51,13 @@ public abstract class ClientPooled {
         clientPoolMap.put(address, clientPool);
         return clientPool;
     }
+    public static void stopPool(){
+        if (clientPoolMap.size() > 0) {
+            for (String key:clientPoolMap.keySet()) {
+                GenericObjectPool<ClientPooled> clientPool = clientPoolMap.get(key);
+                clientPool.close();
+            }
+        }
+    }
 
 }

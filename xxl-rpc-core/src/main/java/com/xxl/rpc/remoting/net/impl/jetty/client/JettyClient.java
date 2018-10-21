@@ -96,7 +96,7 @@ public class JettyClient extends Client {
 	 * @throws Exception
 	 */
 	private static HttpClient jettyHttpClient;
-	private synchronized static HttpClient getJettyHttpClient() throws Exception {
+	public synchronized static HttpClient getJettyHttpClient() throws Exception {
 		if (jettyHttpClient != null) {
 			return jettyHttpClient;
 		}
@@ -109,6 +109,12 @@ public class JettyClient extends Client {
 		jettyHttpClient.start();						            // start
 
 		return jettyHttpClient;
+	}
+
+	public static void stopJettyHttpClient() throws Exception {
+		if (jettyHttpClient != null) {
+			jettyHttpClient.stop();
+		}
 	}
 
 	/*@Override

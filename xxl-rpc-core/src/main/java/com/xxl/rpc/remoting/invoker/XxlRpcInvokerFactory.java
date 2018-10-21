@@ -1,6 +1,8 @@
 package com.xxl.rpc.remoting.invoker;
 
 import com.xxl.rpc.registry.ServiceRegistry;
+import com.xxl.rpc.remoting.net.impl.jetty.client.JettyClient;
+import com.xxl.rpc.remoting.net.pool.ClientPooled;
 
 import java.util.Map;
 
@@ -33,6 +35,9 @@ public class XxlRpcInvokerFactory {
             serviceRegistry = serviceRegistryClass.newInstance();
             serviceRegistry.start(serviceRegistryParam);
         }
+
+        // start jetty httpclient
+        JettyClient.getJettyHttpClient();
     }
 
     public void  stop() throws Exception {
@@ -40,6 +45,12 @@ public class XxlRpcInvokerFactory {
         if (serviceRegistry != null) {
             serviceRegistry.stop();
         }
+
+        // stop jetty client pool
+        JettyClient.stopJettyHttpClient();
+
+        // stop tcp client pool
+        ClientPooled.stopPool();
     }
 
     // ---------------------- service registry (static) ----------------------
