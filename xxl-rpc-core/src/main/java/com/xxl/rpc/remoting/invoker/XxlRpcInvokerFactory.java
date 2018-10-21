@@ -6,7 +6,6 @@ import com.xxl.rpc.remoting.net.pool.ClientPoolFactory;
 import com.xxl.rpc.remoting.net.pool.ClientPooled;
 import com.xxl.rpc.serialize.Serializer;
 import org.apache.commons.pool2.impl.GenericObjectPool;
-import org.eclipse.jetty.client.HttpClient;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,9 +40,6 @@ public class XxlRpcInvokerFactory {
             serviceRegistry = serviceRegistryClass.newInstance();
             serviceRegistry.start(serviceRegistryParam);
         }
-
-        // init jetty http client
-        getJettyHttpClient();
     }
 
     public void  stop() throws Exception {
@@ -51,9 +47,6 @@ public class XxlRpcInvokerFactory {
         if (serviceRegistry != null) {
             serviceRegistry.stop();
         }
-
-        //  stop jetty http client
-        stopJettyHttpClient();
     }
 
     // ---------------------- service registry (static) ----------------------
@@ -103,28 +96,6 @@ public class XxlRpcInvokerFactory {
     }
     public static XxlRpcFutureResponse getInvokerFuture(String requestId){
         return futureResponsePool.get(requestId);
-    }
-
-
-    // ---------------------- jetty client(static) ----------------------
-    private static HttpClient jettyHttpClient = null;
-    public static HttpClient getJettyHttpClient() throws Exception {
-        if (jettyHttpClient != null) {
-            return jettyHttpClient;
-        }
-
-        // httpclient init
-        jettyHttpClient = new HttpClient();
-        jettyHttpClient.setFollowRedirects(false);	                // Configure HttpClient, for example:
-        jettyHttpClient.setMaxConnectionsPerDestination(1000);	    // TODO, more config
-        jettyHttpClient.start();						            // Start HttpClient
-
-        return jettyHttpClient;
-    }
-    public static void stopJettyHttpClient() throws Exception {
-        if (jettyHttpClient != null) {
-            jettyHttpClient.stop();
-        }
     }
 
 }

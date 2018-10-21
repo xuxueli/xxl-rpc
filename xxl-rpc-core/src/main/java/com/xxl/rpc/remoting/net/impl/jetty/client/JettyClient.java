@@ -48,7 +48,7 @@ public class JettyClient extends Client {
 		byte[] requestBytes = xxlRpcReferenceBean.getSerializer().serialize(xxlRpcRequest);
 
         // httpclient
-        HttpClient httpClient = XxlRpcInvokerFactory.getJettyHttpClient();
+        HttpClient httpClient = getJettyHttpClient();
 
         // request
         Request request = httpClient.newRequest(reqURL);
@@ -89,6 +89,28 @@ public class JettyClient extends Client {
 			}
 		});
     }
+
+	/**
+	 * make jetty http client
+	 *
+	 * @return
+	 * @throws Exception
+	 */
+	private static HttpClient jettyHttpClient;
+	private synchronized static HttpClient getJettyHttpClient() throws Exception {
+		if (jettyHttpClient != null) {
+			return jettyHttpClient;
+		}
+
+		// init jettp httpclient
+		jettyHttpClient = new HttpClient();
+		jettyHttpClient.setFollowRedirects(false);	                // avoid redirect-302
+		//jettyHttpClient.setExecutor(new QueuedThreadPool(200));	// default maxThreads 200, minThreads 0
+		jettyHttpClient.setMaxConnectionsPerDestination(1000);	    // limit conn per desc
+		jettyHttpClient.start();						            // start
+
+		return jettyHttpClient;
+	}
 
 	/*@Override
 	public XxlRpcResponse send(String address, XxlRpcRequest xxlRpcRequest) throws Exception {
