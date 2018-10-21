@@ -46,8 +46,8 @@ public class JettyServer extends Server {
 				try {
 					server.start();
 
-					onStarted();
 					logger.info(">>>>>>>>>>> xxl-rpc remoting server start success, nettype = {}, port = {}", JettyServer.class.getName(), xxlRpcProviderFactory.getPort());
+					onStarted();
 
 					server.join();
 				} catch (Exception e) {
