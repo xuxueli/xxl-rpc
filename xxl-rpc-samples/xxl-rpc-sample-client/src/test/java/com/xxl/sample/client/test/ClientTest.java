@@ -1,13 +1,15 @@
-package com.xxl.test;
+package com.xxl.sample.client.test;
 
 import com.xxl.rpc.remoting.invoker.reference.XxlRpcReferenceBean;
 import com.xxl.rpc.remoting.net.NetEnum;
+import com.xxl.rpc.remoting.net.impl.jetty.client.JettyClient;
 import com.xxl.rpc.remoting.net.params.CallType;
 import com.xxl.rpc.sample.api.DemoService;
+import com.xxl.rpc.sample.api.dto.UserDTO;
 import com.xxl.rpc.serialize.Serializer;
 
 /**
- @author xuxueli
+ * @author xuxueli 2018-10-21 20:48:40
  */
 public class ClientTest {
 
@@ -16,7 +18,8 @@ public class ClientTest {
 		DemoService demoService = (DemoService) new XxlRpcReferenceBean(NetEnum.JETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(),
                 "127.0.0.1:7080", null, DemoService.class, null, 500, CallType.SYNC).getObject();
 
-		System.out.println(demoService.sayHi("jack").toString());
+		UserDTO userDTO = demoService.sayHi("jack");
+		System.out.println(userDTO.toString());
 
     	/*long start = System.currentTimeMillis();
 		for (int i = 0; i < 100; i++) {

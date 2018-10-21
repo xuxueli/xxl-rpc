@@ -1,6 +1,5 @@
 package com.xxl.rpc.remoting.net.impl.mina.client;
 
-import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.net.Client;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.pool.ClientPooled;
@@ -17,7 +16,7 @@ public class MinaClient extends Client {
 	public void asyncSend(String address, XxlRpcRequest xxlRpcRequest) throws Exception {
 
 		// client pool
-    	GenericObjectPool<ClientPooled> clientPool = XxlRpcInvokerFactory.getPool(address, xxlRpcReferenceBean.getSerializer(), MinaPooledClient.class);
+    	GenericObjectPool<ClientPooled> clientPool = ClientPooled.getPool(address, xxlRpcReferenceBean.getSerializer(), MinaPooledClient.class);
     	// client proxy
 		ClientPooled clientPoolProxy = null;
 

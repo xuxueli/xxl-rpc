@@ -9,7 +9,6 @@ import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import com.xxl.rpc.remoting.provider.XxlRpcProviderFactory;
 import com.xxl.rpc.serialize.Serializer;
-import com.xxl.rpc.util.ThrowableUtil;
 import com.xxl.rpc.util.XxlRpcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -143,7 +142,7 @@ public class XxlRpcReferenceBean {
 							try {
 								// future set
 								XxlRpcFutureResponse futureResponse = new XxlRpcFutureResponse(xxlRpcRequest);
-								XxlRpcInvokerFactory.setInvokerFuture(xxlRpcRequest.getRequestId(), futureResponse);
+								XxlRpcFutureResponse.setInvokerFuture(xxlRpcRequest.getRequestId(), futureResponse);
 
 								// do invoke
 								client.asyncSend(address, xxlRpcRequest);
@@ -158,7 +157,7 @@ public class XxlRpcReferenceBean {
 								throw new XxlRpcException(e);
 							} finally{
 								// future remove
-								XxlRpcInvokerFactory.removeInvokerFuture(xxlRpcRequest.getRequestId());
+								XxlRpcFutureResponse.removeInvokerFuture(xxlRpcRequest.getRequestId());
 							}
 						} else if (CallType.ONEWAY == callType) {
 							client.asyncSend(address, xxlRpcRequest);

@@ -1,6 +1,5 @@
 package com.xxl.rpc.remoting.net.impl.jetty.client;
 
-import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.net.Client;
 import com.xxl.rpc.remoting.net.params.XxlRpcFutureResponse;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
@@ -81,7 +80,7 @@ public class JettyClient extends Client {
 				XxlRpcResponse xxlRpcResponse = (XxlRpcResponse) xxlRpcReferenceBean.getSerializer().deserialize(responseBytes, XxlRpcResponse.class);
 
 				// wait response
-				XxlRpcFutureResponse futureResponse = XxlRpcInvokerFactory.getInvokerFuture(xxlRpcResponse.getRequestId());
+				XxlRpcFutureResponse futureResponse = XxlRpcFutureResponse.getInvokerFuture(xxlRpcResponse.getRequestId());
 				if (futureResponse != null) {
 					futureResponse.setXxlRpcResponse(xxlRpcResponse);
 				}

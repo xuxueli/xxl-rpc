@@ -3,6 +3,8 @@ package com.xxl.rpc.remoting.net.params;
 import com.xxl.rpc.util.XxlRpcException;
 
 import java.text.MessageFormat;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -61,5 +63,21 @@ public class XxlRpcFutureResponse {
 		}
 		return xxlRpcResponse;
 	}
+
+
+	// ---------------------- future pool (static) ----------------------
+
+	private static ConcurrentMap<String, XxlRpcFutureResponse> futureResponsePool = new ConcurrentHashMap<String, XxlRpcFutureResponse>();
+
+	public static void setInvokerFuture(String requestId, XxlRpcFutureResponse futureResponse){
+		futureResponsePool.put(requestId, futureResponse);
+	}
+	public static void removeInvokerFuture(String requestId){
+		futureResponsePool.remove(requestId);
+	}
+	public static XxlRpcFutureResponse getInvokerFuture(String requestId){
+		return futureResponsePool.get(requestId);
+	}
+
 
 }

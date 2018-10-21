@@ -1,6 +1,5 @@
 package com.xxl.rpc.remoting.net.impl.netty.client;
 
-import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.net.Client;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.pool.ClientPooled;
@@ -16,7 +15,7 @@ public class NettyClient extends Client {
 	public void asyncSend(String address, XxlRpcRequest xxlRpcRequest) throws Exception {
 
 		// client pool	[tips03 : may save 35ms/100invoke if move it to constructor, but it is necessary. cause by ConcurrentHashMap.get]
-		GenericObjectPool<ClientPooled> clientPool = XxlRpcInvokerFactory.getPool(address, xxlRpcReferenceBean.getSerializer(), NettyPooledClient.class);
+		GenericObjectPool<ClientPooled> clientPool = ClientPooled.getPool(address, xxlRpcReferenceBean.getSerializer(), NettyPooledClient.class);
         // client proxt
 		ClientPooled clientPoolProxy = null;
 

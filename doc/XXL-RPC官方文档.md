@@ -283,8 +283,35 @@ XXL-RPC 在 spring/springboot 环境可以快速方便的配置实用。但是�
 XXL-RPC 得益于优良的兼容性与模块化设计，不限制外部环境，可以运行在任何框架的Java代码中。
 
 - API方式创建“服务提供者”：文档待完善
+```
+// 参考代码位置：com.xxl.sample.server.test.ServerTest
 
+// init
+XxlRpcProviderFactory providerFactory = new XxlRpcProviderFactory();
+providerFactory.initConfig(NetEnum.JETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(), null, 7080, null, null, null);
+
+// add services
+providerFactory.addService(DemoService.class.getName(), null, new DemoServiceImpl());
+
+// start
+providerFactory.start();
+
+TimeUnit.MINUTES.sleep(5);
+
+// stop
+providerFactory.stop();
+```
 - API方式创建“服务消费者”：文档待完善
+
+```
+// 参考代码位置：com.xxl.sample.client.test.ClientTest
+
+DemoService demoService = (DemoService) new XxlRpcReferenceBean(NetEnum.JETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(),
+                "127.0.0.1:7080", null, DemoService.class, null, 500, CallType.SYNC).getObject();
+
+UserDTO userDTO = demoService.sayHi("jack");
+System.out.println(userDTO.toString());
+```
 
 
 ## 四、版本更新日志
