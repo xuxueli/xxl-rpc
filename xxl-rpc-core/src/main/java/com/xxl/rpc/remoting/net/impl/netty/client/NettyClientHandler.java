@@ -26,7 +26,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<XxlRpcRespon
 	protected void channelRead0(ChannelHandlerContext ctx, XxlRpcResponse xxlRpcResponse) throws Exception {
 		XxlRpcFutureResponse futureResponse = XxlRpcFutureResponse.getInvokerFuture(xxlRpcResponse.getRequestId());
 		if (futureResponse != null) {
-			futureResponse.setXxlRpcResponse(xxlRpcResponse);
+			futureResponse.setResponse(xxlRpcResponse);
 		}
 
 	}

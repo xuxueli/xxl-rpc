@@ -84,7 +84,7 @@ public class JettyClient extends Client {
 				// wait response
 				XxlRpcFutureResponse futureResponse = XxlRpcFutureResponse.getInvokerFuture(xxlRpcResponse.getRequestId());
 				if (futureResponse != null) {
-					futureResponse.setXxlRpcResponse(xxlRpcResponse);
+					futureResponse.setResponse(xxlRpcResponse);
 				}
 
 			}

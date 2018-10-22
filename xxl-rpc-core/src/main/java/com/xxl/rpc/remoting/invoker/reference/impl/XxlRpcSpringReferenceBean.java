@@ -2,7 +2,7 @@ package com.xxl.rpc.remoting.invoker.reference.impl;
 
 import com.xxl.rpc.remoting.invoker.reference.XxlRpcReferenceBean;
 import com.xxl.rpc.remoting.net.NetEnum;
-import com.xxl.rpc.remoting.net.params.CallType;
+import com.xxl.rpc.remoting.invoker.call.CallType;
 import com.xxl.rpc.serialize.Serializer;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;

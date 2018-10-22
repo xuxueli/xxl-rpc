@@ -1,4 +1,4 @@
-package com.xxl.rpc.remoting.net.params;
+package com.xxl.rpc.remoting.invoker.call;
 
 /**
  * rpc call type

@@ -3,7 +3,7 @@ package com.xxl.sample.client.test;
 import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.invoker.reference.XxlRpcReferenceBean;
 import com.xxl.rpc.remoting.net.NetEnum;
-import com.xxl.rpc.remoting.net.params.CallType;
+import com.xxl.rpc.remoting.invoker.call.CallType;
 import com.xxl.rpc.sample.api.DemoService;
 import com.xxl.rpc.sample.api.dto.UserDTO;
 import com.xxl.rpc.serialize.Serializer;

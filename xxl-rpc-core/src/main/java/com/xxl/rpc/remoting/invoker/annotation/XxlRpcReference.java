@@ -1,7 +1,7 @@
 package com.xxl.rpc.remoting.invoker.annotation;
 
 import com.xxl.rpc.remoting.net.NetEnum;
-import com.xxl.rpc.remoting.net.params.CallType;
+import com.xxl.rpc.remoting.invoker.call.CallType;
 import com.xxl.rpc.serialize.Serializer;
 
 import java.lang.annotation.*;

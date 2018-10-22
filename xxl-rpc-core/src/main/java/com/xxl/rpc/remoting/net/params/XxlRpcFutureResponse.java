@@ -2,66 +2,90 @@ package com.xxl.rpc.remoting.net.params;
 
 import com.xxl.rpc.util.XxlRpcException;
 
-import java.text.MessageFormat;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 
 /**
  * call back future, make netty-rpc synchronous on asynchronous model
  * @author xuxueli 2015-11-5 14:26:37
  * 
- * v1: Synchroniz + notifyAll + ctx.writeAndFlush(xxlRpcResponse).addListener(ChannelFutureListener.CLOSE);
- * v2: Map isDone + ctx.writeAndFlush(xxlRpcResponse)
+ * v1: Synchroniz + notifyAll + ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
+ * v2: Map done + ctx.writeAndFlush(response)
  * v3: Map synchronized wait + notifyAll
  */
-public class XxlRpcFutureResponse {
+public class XxlRpcFutureResponse implements Future<XxlRpcResponse> {
 
-	// net codec
-	private XxlRpcRequest xxlRpcRequest;
-	private XxlRpcResponse xxlRpcResponse;
+
+	// net data
+	private XxlRpcRequest request;
+	private XxlRpcResponse response;
 
 	// future lock
-	private boolean isDone = false;
+	private boolean done = false;
 	private Object lock = new Object();
 
 
-	public XxlRpcFutureResponse(XxlRpcRequest xxlRpcRequest) {
-		this.xxlRpcRequest = xxlRpcRequest;
+	public XxlRpcFutureResponse(XxlRpcRequest request) {
+		this.request = request;
 	}
 
 
-	public XxlRpcRequest getXxlRpcRequest() {
-		return xxlRpcRequest;
-	}
-	public XxlRpcResponse getXxlRpcResponse() {
-		return xxlRpcResponse;
-	}
-
-	public void setXxlRpcResponse(XxlRpcResponse xxlRpcResponse) {
-		this.xxlRpcResponse = xxlRpcResponse;
+	public void setResponse(XxlRpcResponse response) {
+		this.response = response;
 		// notify future lock
 		synchronized (lock) {
-			isDone = true;
+			done = true;
 			lock.notifyAll();
 		}
 	}
 
-	public XxlRpcResponse get(long timeoutMillis) throws InterruptedException, TimeoutException{
-		if (!isDone) {
+
+	@Override
+	public boolean cancel(boolean mayInterruptIfRunning) {
+		// TODO
+		return false;
+	}
+
+	@Override
+	public boolean isCancelled() {
+		// TODO
+		return false;
+	}
+
+	@Override
+	public boolean isDone() {
+		return done;
+	}
+
+	@Override
+	public XxlRpcResponse get() throws InterruptedException, ExecutionException {
+		try {
+			return get(-1, TimeUnit.MILLISECONDS);
+		} catch (TimeoutException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public XxlRpcResponse get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+		if (!done) {
 			synchronized (lock) {
 				try {
-					lock.wait(timeoutMillis);
+					if (timeout < 0) {
+						lock.wait();
+					} else {
+						long timeoutMillis = (TimeUnit.MILLISECONDS==unit)?timeout:TimeUnit.MILLISECONDS.convert(timeout , unit);
+						lock.wait(timeoutMillis);
+					}
 				} catch (InterruptedException e) {
 					throw e;
 				}
 			}
 		}
-		
-		if (!isDone) {
-			throw new XxlRpcException("xxl-rpc, request timeout at:"+ System.currentTimeMillis() +", XxlRpcRequest:" + xxlRpcRequest.toString());
+
+		if (!done) {
+			throw new XxlRpcException("xxl-rpc, request timeout at:"+ System.currentTimeMillis() +", request:" + request.toString());
 		}
-		return xxlRpcResponse;
+		return response;
 	}
 
 

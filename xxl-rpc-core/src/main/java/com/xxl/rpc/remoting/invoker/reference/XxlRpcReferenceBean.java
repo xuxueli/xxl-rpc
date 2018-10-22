@@ -3,7 +3,7 @@ package com.xxl.rpc.remoting.invoker.reference;
 import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.net.Client;
 import com.xxl.rpc.remoting.net.NetEnum;
-import com.xxl.rpc.remoting.net.params.CallType;
+import com.xxl.rpc.remoting.invoker.call.CallType;
 import com.xxl.rpc.remoting.net.params.XxlRpcFutureResponse;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.TreeSet;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * rpc reference bean, use by api
@@ -148,7 +149,7 @@ public class XxlRpcReferenceBean {
 								client.asyncSend(address, xxlRpcRequest);
 
 								// future get
-								XxlRpcResponse xxlRpcResponse = futureResponse.get(timeout);
+								XxlRpcResponse xxlRpcResponse = futureResponse.get(timeout, TimeUnit.MILLISECONDS);
 								if (xxlRpcResponse.getErrorMsg() != null) {
 									throw new XxlRpcException(xxlRpcResponse.getErrorMsg());
 								}
@@ -163,6 +164,9 @@ public class XxlRpcReferenceBean {
 							client.asyncSend(address, xxlRpcRequest);
 							return null;
 						} else if (CallType.FUTURE == callType) {
+
+
+
 							// TODO
 						} else if (CallType.CALLBACK == callType) {
 							// TODO
