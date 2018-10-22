@@ -39,8 +39,7 @@ public class ClientPoolFactory extends BasePooledObjectFactory<ClientPooled> {
 	}
 
 	@Override
-	public void destroyObject(PooledObject<ClientPooled> p)
-			throws Exception {
+	public void destroyObject(PooledObject<ClientPooled> p) throws Exception {
 		ClientPooled clientPooled = p.getObject();
 		clientPooled.close();
 	}

@@ -124,6 +124,15 @@ public class IpUtil {
 		return ip.concat(":").concat(String.valueOf(port));
 	}
 
+	public static Object[] parseIpPort(String address){
+		String[] array = address.split(":");
+
+		String host = array[0];
+		int port = Integer.parseInt(array[1]);
+
+		return new Object[]{host, port};
+	}
+
 	public static void main(String[] args) throws UnknownHostException {
 		System.out.println(getIp());
 		System.out.println(getIpPort(8080));

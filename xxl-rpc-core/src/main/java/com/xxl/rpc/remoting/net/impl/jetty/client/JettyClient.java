@@ -1,6 +1,8 @@
 package com.xxl.rpc.remoting.net.impl.jetty.client;
 
+import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.net.Client;
+import com.xxl.rpc.remoting.net.params.BaseCallback;
 import com.xxl.rpc.remoting.net.params.XxlRpcFutureResponse;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
@@ -108,13 +110,18 @@ public class JettyClient extends Client {
 		jettyHttpClient.setMaxConnectionsPerDestination(1000);	    // limit conn per desc
 		jettyHttpClient.start();						            // start
 
-		return jettyHttpClient;
-	}
+		// stop callback
+		XxlRpcInvokerFactory.addStopCallBack(new BaseCallback() {
+			@Override
+			public void run() throws Exception {
+				if (jettyHttpClient != null) {
+					jettyHttpClient.stop();
+					jettyHttpClient = null;
+				}
+			}
+		});
 
-	public static void stopJettyHttpClient() throws Exception {
-		if (jettyHttpClient != null) {
-			jettyHttpClient.stop();
-		}
+		return jettyHttpClient;
 	}
 
 	/*@Override

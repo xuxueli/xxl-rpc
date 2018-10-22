@@ -1,9 +1,10 @@
 package com.xxl.rpc.remoting.invoker;
 
 import com.xxl.rpc.registry.ServiceRegistry;
-import com.xxl.rpc.remoting.net.impl.jetty.client.JettyClient;
-import com.xxl.rpc.remoting.net.pool.ClientPooled;
+import com.xxl.rpc.remoting.net.params.BaseCallback;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,9 +36,6 @@ public class XxlRpcInvokerFactory {
             serviceRegistry = serviceRegistryClass.newInstance();
             serviceRegistry.start(serviceRegistryParam);
         }
-
-        // start jetty httpclient
-        JettyClient.getJettyHttpClient();
     }
 
     public void  stop() throws Exception {
@@ -46,18 +44,30 @@ public class XxlRpcInvokerFactory {
             serviceRegistry.stop();
         }
 
-        // stop jetty client pool
-        JettyClient.stopJettyHttpClient();
+        // stop callback
+        if (stopCallbackList.size() > 0) {
+            for (BaseCallback callback: stopCallbackList) {
+                callback.run();
+            }
+        }
 
-        // stop tcp client pool
-        ClientPooled.stopPool();
     }
+
 
     // ---------------------- service registry (static) ----------------------
 
     private static ServiceRegistry serviceRegistry;
+
     public static ServiceRegistry getServiceRegistry() {
         return serviceRegistry;
+    }
+
+
+    // ---------------------- service registry (static) ----------------------
+    private static List<BaseCallback> stopCallbackList = new ArrayList<BaseCallback>();     // JettyClient、ClientPooled
+
+    public static void addStopCallBack(BaseCallback callback){
+        stopCallbackList.add(callback);
     }
 
 

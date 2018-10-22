@@ -1,7 +1,10 @@
 package com.xxl.rpc.remoting.net.pool;
 
+import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
+import com.xxl.rpc.remoting.net.params.BaseCallback;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.serialize.Serializer;
+import com.xxl.rpc.util.IpUtil;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,8 +31,26 @@ public abstract class ClientPooled {
 
     // ---------------------- client pool map ----------------------
 
-    private static ConcurrentHashMap<String, GenericObjectPool<ClientPooled>> clientPoolMap = new ConcurrentHashMap<String, GenericObjectPool<ClientPooled>>();
+    private static ConcurrentHashMap<String, GenericObjectPool<ClientPooled>> clientPoolMap;
     public static GenericObjectPool<ClientPooled> getPool(String address, Serializer serializer, Class<? extends ClientPooled> clientPoolImpl) throws Exception {
+
+        if (clientPoolMap == null) {
+            // init
+            clientPoolMap = new ConcurrentHashMap<String, GenericObjectPool<ClientPooled>>();
+            // stop callback
+            XxlRpcInvokerFactory.addStopCallBack(new BaseCallback() {
+                @Override
+                public void run() throws Exception {
+                    if (clientPoolMap.size() > 0) {
+                        for (String key:clientPoolMap.keySet()) {
+                            GenericObjectPool<ClientPooled> clientPool = clientPoolMap.get(key);
+                            clientPool.close();
+                        }
+                        clientPoolMap.clear();
+                    }
+                }
+            });
+        }
 
         // get pool
         GenericObjectPool<ClientPooled> clientPool = clientPoolMap.get(address);
@@ -38,26 +59,18 @@ public abstract class ClientPooled {
         }
 
         // parse address
-        String[] array = address.split(":");
-        String host = array[0];
-        int port = Integer.parseInt(array[1]);
+        Object[] array = IpUtil.parseIpPort(address);
+        String host = (String) array[0];
+        int port = (int) array[1];
 
         // set pool
         clientPool = new GenericObjectPool<ClientPooled>(new ClientPoolFactory(host, port, serializer, clientPoolImpl));
         clientPool.setTestOnBorrow(true);
         clientPool.setMaxTotal(2);
 
-
         clientPoolMap.put(address, clientPool);
+
         return clientPool;
-    }
-    public static void stopPool(){
-        if (clientPoolMap.size() > 0) {
-            for (String key:clientPoolMap.keySet()) {
-                GenericObjectPool<ClientPooled> clientPool = clientPoolMap.get(key);
-                clientPool.close();
-            }
-        }
     }
 
 }
