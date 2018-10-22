@@ -28,6 +28,9 @@ public class XxlRpcFutureResponse implements Future<XxlRpcResponse> {
 		this.request = request;
 	}
 
+	public XxlRpcRequest getRequest() {
+		return request;
+	}
 
 	public void setResponse(XxlRpcResponse response) {
 		this.response = response;
@@ -86,21 +89,6 @@ public class XxlRpcFutureResponse implements Future<XxlRpcResponse> {
 			throw new XxlRpcException("xxl-rpc, request timeout at:"+ System.currentTimeMillis() +", request:" + request.toString());
 		}
 		return response;
-	}
-
-
-	// ---------------------- future pool (static) ----------------------
-
-	private static ConcurrentMap<String, XxlRpcFutureResponse> futureResponsePool = new ConcurrentHashMap<String, XxlRpcFutureResponse>();
-
-	public static void setInvokerFuture(String requestId, XxlRpcFutureResponse futureResponse){
-		futureResponsePool.put(requestId, futureResponse);
-	}
-	public static void removeInvokerFuture(String requestId){
-		futureResponsePool.remove(requestId);
-	}
-	public static XxlRpcFutureResponse getInvokerFuture(String requestId){
-		return futureResponsePool.get(requestId);
 	}
 
 

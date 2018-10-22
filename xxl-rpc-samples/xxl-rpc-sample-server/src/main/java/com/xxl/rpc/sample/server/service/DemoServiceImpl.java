@@ -3,6 +3,8 @@ package com.xxl.rpc.sample.server.service;
 import com.xxl.rpc.sample.api.DemoService;
 import com.xxl.rpc.sample.api.dto.UserDTO;
 import com.xxl.rpc.remoting.provider.annotation.XxlRpcService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
@@ -13,6 +15,7 @@ import java.text.MessageFormat;
 @XxlRpcService
 @Service
 public class DemoServiceImpl implements DemoService {
+	private static Logger logger = LoggerFactory.getLogger(DemoServiceImpl.class);
 
 	@Override
 	public UserDTO sayHi(String name) {
@@ -22,7 +25,10 @@ public class DemoServiceImpl implements DemoService {
 
 		if ("error".equalsIgnoreCase(name)) throw new RuntimeException("test exception.");
 
-		return new UserDTO(name, word);
+		UserDTO userDTO = new UserDTO(name, word);
+		logger.info(userDTO.toString());
+
+		return userDTO;
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.xxl.rpc.remoting.net.impl.netty.client;
 
 import com.xxl.rpc.remoting.net.params.XxlRpcFutureResponse;
+import com.xxl.rpc.remoting.net.params.XxlRpcFutureResponseFactory;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -24,7 +25,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<XxlRpcRespon
 
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, XxlRpcResponse xxlRpcResponse) throws Exception {
-		XxlRpcFutureResponse futureResponse = XxlRpcFutureResponse.getInvokerFuture(xxlRpcResponse.getRequestId());
+		XxlRpcFutureResponse futureResponse = XxlRpcFutureResponseFactory.getInvokerFuture(xxlRpcResponse.getRequestId());
 		if (futureResponse != null) {
 			futureResponse.setResponse(xxlRpcResponse);
 		}

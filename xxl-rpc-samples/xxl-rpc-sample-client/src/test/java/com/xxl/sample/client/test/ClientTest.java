@@ -1,6 +1,7 @@
 package com.xxl.sample.client.test;
 
 import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
+import com.xxl.rpc.remoting.invoker.call.XxlRpcInvokeFuture;
 import com.xxl.rpc.remoting.invoker.reference.XxlRpcReferenceBean;
 import com.xxl.rpc.remoting.net.NetEnum;
 import com.xxl.rpc.remoting.invoker.call.CallType;
@@ -8,6 +9,7 @@ import com.xxl.rpc.sample.api.DemoService;
 import com.xxl.rpc.sample.api.dto.UserDTO;
 import com.xxl.rpc.serialize.Serializer;
 
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -25,18 +27,20 @@ public class ClientTest {
 
 		// client test
 		DemoService demoService = (DemoService) new XxlRpcReferenceBean(NetEnum.JETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(),
-                "127.0.0.1:7080", null, DemoService.class, null, 500, CallType.SYNC).getObject();
+                "127.0.0.1:7080", null, DemoService.class, null, 500, CallType.FUTURE).getObject();
 
 		demoService.sayHi("jack" );
+		Future<UserDTO> invokeFuture = XxlRpcInvokeFuture.getFuture(UserDTO.class);
+		System.out.println(invokeFuture.get());
 
-		int count = 100;
+		/*int count = 100;
 		long start = System.currentTimeMillis();
 		for (int i = 0; i < count; i++) {
 			UserDTO userDTO = demoService.sayHi("jack"+i );
 			System.out.println(i + "##" + userDTO.toString());
 		}
 		long end = System.currentTimeMillis();
-    	System.out.println("run count:"+ count +", cost:" + (end - start));
+    	System.out.println("run count:"+ count +", cost:" + (end - start));*/
 
 
 

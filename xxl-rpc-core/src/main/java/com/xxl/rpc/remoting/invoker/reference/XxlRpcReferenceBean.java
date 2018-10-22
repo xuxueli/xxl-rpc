@@ -1,10 +1,12 @@
 package com.xxl.rpc.remoting.invoker.reference;
 
 import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
+import com.xxl.rpc.remoting.invoker.call.CallType;
+import com.xxl.rpc.remoting.invoker.call.XxlRpcInvokeFuture;
 import com.xxl.rpc.remoting.net.Client;
 import com.xxl.rpc.remoting.net.NetEnum;
-import com.xxl.rpc.remoting.invoker.call.CallType;
 import com.xxl.rpc.remoting.net.params.XxlRpcFutureResponse;
+import com.xxl.rpc.remoting.net.params.XxlRpcFutureResponseFactory;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import com.xxl.rpc.remoting.provider.XxlRpcProviderFactory;
@@ -143,7 +145,7 @@ public class XxlRpcReferenceBean {
 							try {
 								// future set
 								XxlRpcFutureResponse futureResponse = new XxlRpcFutureResponse(xxlRpcRequest);
-								XxlRpcFutureResponse.setInvokerFuture(xxlRpcRequest.getRequestId(), futureResponse);
+                                XxlRpcFutureResponseFactory.setInvokerFuture(xxlRpcRequest.getRequestId(), futureResponse);
 
 								// do invoke
 								client.asyncSend(address, xxlRpcRequest);
@@ -158,16 +160,26 @@ public class XxlRpcReferenceBean {
 								throw new XxlRpcException(e);
 							} finally{
 								// future remove
-								XxlRpcFutureResponse.removeInvokerFuture(xxlRpcRequest.getRequestId());
+                                XxlRpcFutureResponseFactory.removeInvokerFuture(xxlRpcRequest.getRequestId());
 							}
 						} else if (CallType.ONEWAY == callType) {
 							client.asyncSend(address, xxlRpcRequest);
 							return null;
 						} else if (CallType.FUTURE == callType) {
 
+                            try {
+                                // thread future set
+                                XxlRpcInvokeFuture invokeFuture = new XxlRpcInvokeFuture(new XxlRpcFutureResponse(xxlRpcRequest));
+                                XxlRpcInvokeFuture.setFuture(invokeFuture);
 
+                                // do invoke
+                                client.asyncSend(address, xxlRpcRequest);
 
-							// TODO
+                                return null;
+                            } catch (Exception e) {
+                                throw new XxlRpcException(e);
+                            }
+
 						} else if (CallType.CALLBACK == callType) {
 							// TODO
 						} else {

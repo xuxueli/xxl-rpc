@@ -2,10 +2,7 @@ package com.xxl.rpc.remoting.net.impl.jetty.client;
 
 import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.net.Client;
-import com.xxl.rpc.remoting.net.params.BaseCallback;
-import com.xxl.rpc.remoting.net.params.XxlRpcFutureResponse;
-import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
-import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
+import com.xxl.rpc.remoting.net.params.*;
 import com.xxl.rpc.util.XxlRpcException;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.Request;
@@ -82,7 +79,7 @@ public class JettyClient extends Client {
 				XxlRpcResponse xxlRpcResponse = (XxlRpcResponse) xxlRpcReferenceBean.getSerializer().deserialize(responseBytes, XxlRpcResponse.class);
 
 				// wait response
-				XxlRpcFutureResponse futureResponse = XxlRpcFutureResponse.getInvokerFuture(xxlRpcResponse.getRequestId());
+				XxlRpcFutureResponse futureResponse = XxlRpcFutureResponseFactory.getInvokerFuture(xxlRpcResponse.getRequestId());
 				if (futureResponse != null) {
 					futureResponse.setResponse(xxlRpcResponse);
 				}
