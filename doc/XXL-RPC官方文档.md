@@ -335,6 +335,7 @@ System.out.println(userDTO.toString());
 - 5、服务AccessToken鉴权；
 - 6、支持HTTP异步请求，线程优化，统一通讯流程；
 - 7、【ING】支持多种请求方式，如：SYNC、ONEWAY、FUTURE、CALLBACK 等；
+- 8、【ING】支持HTTP异步响应，至此底层remoting层通讯全异步化；
 
 ### TODO
 - 目前使用 iface 接口包名进行服务注册, 新增属性 registry-key 用来服务注册,便于接口复用,如果为空则默认使用 iface 接口包名; zookeeper-switch 改为 registry-switch;

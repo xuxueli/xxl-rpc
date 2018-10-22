@@ -8,6 +8,8 @@ import com.xxl.rpc.sample.api.DemoService;
 import com.xxl.rpc.sample.api.dto.UserDTO;
 import com.xxl.rpc.serialize.Serializer;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * @author xuxueli 2018-10-21 20:48:40
  */
@@ -37,6 +39,8 @@ public class ClientTest {
     	System.out.println("run count:"+ count +", cost:" + (end - start));
 
 
+
+		TimeUnit.SECONDS.sleep(2);
 
 		// stop invoker factory
 		invokerFactory.stop();
