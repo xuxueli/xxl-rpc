@@ -27,7 +27,7 @@ public class ServerTest {
         // start
         providerFactory.start();
 
-        TimeUnit.MINUTES.sleep(5);
+        TimeUnit.HOURS.sleep(1);
 
         // stop
         providerFactory.stop();

@@ -77,7 +77,7 @@ public class XxlRpcFutureResponse implements Future<XxlRpcResponse> {
 		try {
 			return get(-1, TimeUnit.MILLISECONDS);
 		} catch (TimeoutException e) {
-			throw new RuntimeException(e);
+			throw new XxlRpcException(e);
 		}
 	}
 

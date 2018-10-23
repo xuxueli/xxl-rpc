@@ -28,7 +28,8 @@ public class JettyServer extends Server {
 			public void run() {
 
 				// The Server
-				server = new org.eclipse.jetty.server.Server(new ExecutorThreadPool(1000));
+				server = new org.eclipse.jetty.server.Server(new ExecutorThreadPool(10000));
+				// TODO, thread config, change to async servlet
 
 				// HTTP connector
 				ServerConnector connector = new ServerConnector(server);

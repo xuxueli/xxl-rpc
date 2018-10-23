@@ -51,7 +51,7 @@ public class XxlRpcInvokeFuture implements Future {
         try {
             return get(-1, TimeUnit.MILLISECONDS);
         } catch (TimeoutException e) {
-            throw new RuntimeException(e);
+            throw new XxlRpcException(e);
         }
     }
 
@@ -59,7 +59,7 @@ public class XxlRpcInvokeFuture implements Future {
     public Object get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
         try {
             // future get
-            XxlRpcResponse xxlRpcResponse = futureResponse.get(timeout, TimeUnit.MILLISECONDS);
+            XxlRpcResponse xxlRpcResponse = futureResponse.get(timeout, unit);
             if (xxlRpcResponse.getErrorMsg() != null) {
                 throw new XxlRpcException(xxlRpcResponse.getErrorMsg());
             }

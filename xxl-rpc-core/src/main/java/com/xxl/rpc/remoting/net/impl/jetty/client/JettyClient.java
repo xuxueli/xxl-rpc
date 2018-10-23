@@ -51,7 +51,7 @@ public class JettyClient extends Client {
         // request
         Request request = httpClient.newRequest(reqURL);
         request.method(HttpMethod.POST);
-        request.timeout(xxlRpcReferenceBean.getTimeout(), TimeUnit.MILLISECONDS);
+        request.timeout(xxlRpcReferenceBean.getTimeout() + 1000, TimeUnit.MILLISECONDS);		// async, not need timeout
         request.content(new BytesContentProvider(requestBytes));
 
         // invoke
@@ -61,7 +61,7 @@ public class JettyClient extends Client {
 
 				// valid status
 				if (result.isFailed()) {
-					throw new XxlRpcException("xxl-rpc remoting request fail, " + result.getResponseFailure().getMessage());
+					throw new XxlRpcException("xxl-rpc remoting request error.", result.getResponseFailure());
 				}
 
 				// valid HttpStatus

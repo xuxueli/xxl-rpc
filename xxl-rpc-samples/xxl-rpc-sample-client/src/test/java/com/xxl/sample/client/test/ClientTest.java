@@ -38,7 +38,7 @@ public class ClientTest {
 
 
 	/**
-	 * CallType.SYNC, 100/200ms
+	 * CallType.SYNC
 	 */
 	@Test
 	public void testSYNC(){
@@ -62,24 +62,9 @@ public class ClientTest {
 
 	}
 
-	/**
-	 * CallType.ONEWAY, 100/2ms
-	 */
-	@Test
-	public void testONEWAY() throws ExecutionException, InterruptedException {
-		// client test
-		DemoService demoService = (DemoService) new XxlRpcReferenceBean(NetEnum.JETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(), CallType.ONEWAY,
-				DemoService.class, null, 500, "127.0.0.1:7080", null, null).getObject();
-
-		// test
-		demoService.sayHi("jack" );
-
-
-		TimeUnit.SECONDS.sleep(3);
-	}
 
 	/**
-	 * CallType.FUTURE, 100/100ms
+	 * CallType.FUTURE
 	 */
 	@Test
 	public void testFUTURE() throws ExecutionException, InterruptedException {
@@ -90,12 +75,14 @@ public class ClientTest {
 		// test
 		demoService.sayHi("jack" );
 		UserDTO userDTO = XxlRpcInvokeFuture.getFuture(UserDTO.class).get();
+
 		System.out.println(userDTO.toString());
+
 	}
 
 
 	/**
-	 * CallType.CALLBACK, 100/2ms
+	 * CallType.CALLBACK
 	 */
 	@Test
 	public void testCALLBACK() throws ExecutionException, InterruptedException {
@@ -103,21 +90,40 @@ public class ClientTest {
 		DemoService demoService = (DemoService) new XxlRpcReferenceBean(NetEnum.JETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(), CallType.CALLBACK,
 				DemoService.class, null, 500, "127.0.0.1:7080", null, null).getObject();
 
+		for (int i = 0; i < 300; i++) {
+			// test
+			XxlRpcInvokeCallback.setCallback(new XxlRpcInvokeCallback<UserDTO>() {
+				@Override
+				public void onSuccess(UserDTO result) {
+					System.out.println(result);
+				}
+
+				@Override
+				public void onFailure(Throwable exception) {
+					exception.printStackTrace();
+				}
+			});
+
+			demoService.sayHi("jack"+i );
+		}
+
+
+		TimeUnit.SECONDS.sleep(3);
+	}
+
+
+	/**
+	 * CallType.ONEWAY
+	 */
+	@Test
+	public void testONEWAY() throws ExecutionException, InterruptedException {
+		// client test
+		DemoService demoService = (DemoService) new XxlRpcReferenceBean(NetEnum.JETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(), CallType.ONEWAY,
+				DemoService.class, null, 500, "127.0.0.1:7080", null, null).getObject();
 
 		// test
-		XxlRpcInvokeCallback.setCallback(new XxlRpcInvokeCallback<UserDTO>() {
-			@Override
-			public void onSuccess(UserDTO result) {
-				System.out.println(result);
-			}
+		demoService.sayHi("jack");
 
-			@Override
-			public void onFailure(Throwable exception) {
-				exception.printStackTrace();
-			}
-		});
-
-		demoService.sayHi("jack" );
 
 		TimeUnit.SECONDS.sleep(3);
 	}
