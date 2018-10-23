@@ -11,6 +11,7 @@ import org.eclipse.jetty.client.util.BufferingResponseListener;
 import org.eclipse.jetty.client.util.BytesContentProvider;
 import org.eclipse.jetty.http.HttpMethod;
 import org.eclipse.jetty.http.HttpStatus;
+import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
 import java.util.concurrent.TimeUnit;
 
@@ -59,30 +60,50 @@ public class JettyClient extends Client {
 			@Override
 			public void onComplete(Result result) {
 
-				// valid status
-				if (result.isFailed()) {
-					throw new XxlRpcException("xxl-rpc remoting request error.", result.getResponseFailure());
-				}
+			    try {
 
-				// valid HttpStatus
-				if (result.getResponse().getStatus() != HttpStatus.OK_200) {
-					throw new XxlRpcException("xxl-rpc remoting request fail, http HttpStatus["+ result.getResponse().getStatus() +"] invalid.");
-				}
+                    // valid status
+                    if (result.isFailed()) {
+                        throw new XxlRpcException("xxl-rpc remoting request error.", result.getResponseFailure());
+                    }
 
-				// valid response bytes
-				byte[] responseBytes = getContent();
-				if (responseBytes == null || responseBytes.length==0) {
-					throw new XxlRpcException("xxl-rpc remoting request fail, response bytes is empty.");
-				}
+                    // valid HttpStatus
+                    if (result.getResponse().getStatus() != HttpStatus.OK_200) {
+                        throw new XxlRpcException("xxl-rpc remoting request fail, http HttpStatus["+ result.getResponse().getStatus() +"] invalid.");
+                    }
 
-				// deserialize response
-				XxlRpcResponse xxlRpcResponse = (XxlRpcResponse) xxlRpcReferenceBean.getSerializer().deserialize(responseBytes, XxlRpcResponse.class);
+                    // valid response bytes
+                    byte[] responseBytes = getContent();
+                    if (responseBytes == null || responseBytes.length==0) {
+                        throw new XxlRpcException("xxl-rpc remoting request fail, response bytes is empty.");
+                    }
 
-				// wait response
-				XxlRpcFutureResponse futureResponse = XxlRpcFutureResponseFactory.getInvokerFuture(xxlRpcResponse.getRequestId());
-				if (futureResponse != null) {
-					futureResponse.setResponse(xxlRpcResponse);
-				}
+                    // deserialize response
+                    XxlRpcResponse xxlRpcResponse = (XxlRpcResponse) xxlRpcReferenceBean.getSerializer().deserialize(responseBytes, XxlRpcResponse.class);
+
+                    // wait response
+                    XxlRpcFutureResponse futureResponse = XxlRpcFutureResponseFactory.getInvokerFuture(xxlRpcResponse.getRequestId());
+                    if (futureResponse != null) {
+                        futureResponse.setResponse(xxlRpcResponse);
+                    }
+
+                } catch (Exception e){
+
+			        // fail, request finish, remove request
+			        if (result.getRequest().getContent() instanceof BytesContentProvider) {
+			            try {
+                            BytesContentProvider requestCp = (BytesContentProvider) result.getRequest().getContent();
+                            XxlRpcRequest requestTmp = (XxlRpcRequest) xxlRpcReferenceBean.getSerializer().deserialize(requestCp.iterator().next().array(), XxlRpcRequest.class);
+
+                            XxlRpcFutureResponseFactory.removeInvokerFuture(requestTmp.getRequestId());
+                        } catch (Exception e2) {
+                            logger.info(">>>>>>>>>>> xxl-rpc, jetty async request fail and remove invoke future error: ", e2.getMessage());
+                        }
+                    }
+
+                    throw e;
+                }
+
 
 			}
 		});
@@ -103,8 +124,8 @@ public class JettyClient extends Client {
 		// init jettp httpclient
 		jettyHttpClient = new HttpClient();
 		jettyHttpClient.setFollowRedirects(false);	                // avoid redirect-302
-		//jettyHttpClient.setExecutor(new QueuedThreadPool(200));	// default maxThreads 200, minThreads 0
-		jettyHttpClient.setMaxConnectionsPerDestination(1000);	    // limit conn per desc
+		jettyHttpClient.setExecutor(new QueuedThreadPool());		// default maxThreads 200, minThreads 0
+		jettyHttpClient.setMaxConnectionsPerDestination(10000);	    // limit conn per desc
 		jettyHttpClient.start();						            // start
 
 		// stop callback

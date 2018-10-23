@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -47,18 +48,19 @@ public class ClientTest {
 				DemoService.class, null, 500, "127.0.0.1:7080", null, null).getObject();
 
 		// test
-		System.out.println(demoService.sayHi("jack" ));
+        UserDTO userDTO = demoService.sayHi("[SYNC]jack");
+		System.out.println(userDTO);
 
 
 		// test mult
-		int count = 100;
+		/*int count = 100;
 		long start = System.currentTimeMillis();
 		for (int i = 0; i < count; i++) {
-			UserDTO userDTO = demoService.sayHi("jack"+i );
+			UserDTO userDTO = demoService.sayHi("[SYNC]jack"+i );
 			System.out.println(i + "##" + userDTO.toString());
 		}
 		long end = System.currentTimeMillis();
-    	System.out.println("run count:"+ count +", cost:" + (end - start));
+    	System.out.println("run count:"+ count +", cost:" + (end - start));*/
 
 	}
 
@@ -73,8 +75,9 @@ public class ClientTest {
 				DemoService.class, null, 500, "127.0.0.1:7080", null, null).getObject();
 
 		// test
-		demoService.sayHi("jack" );
-		UserDTO userDTO = XxlRpcInvokeFuture.getFuture(UserDTO.class).get();
+		demoService.sayHi("[FUTURE]jack" );
+        Future<UserDTO> userDTOFuture = XxlRpcInvokeFuture.getFuture(UserDTO.class);
+		UserDTO userDTO = userDTOFuture.get();
 
 		System.out.println(userDTO.toString());
 
@@ -90,22 +93,21 @@ public class ClientTest {
 		DemoService demoService = (DemoService) new XxlRpcReferenceBean(NetEnum.JETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(), CallType.CALLBACK,
 				DemoService.class, null, 500, "127.0.0.1:7080", null, null).getObject();
 
-		for (int i = 0; i < 300; i++) {
-			// test
-			XxlRpcInvokeCallback.setCallback(new XxlRpcInvokeCallback<UserDTO>() {
-				@Override
-				public void onSuccess(UserDTO result) {
-					System.out.println(result);
-				}
 
-				@Override
-				public void onFailure(Throwable exception) {
-					exception.printStackTrace();
-				}
-			});
+        // test
+        XxlRpcInvokeCallback.setCallback(new XxlRpcInvokeCallback<UserDTO>() {
+            @Override
+            public void onSuccess(UserDTO result) {
+                System.out.println(result);
+            }
 
-			demoService.sayHi("jack"+i );
-		}
+            @Override
+            public void onFailure(Throwable exception) {
+                exception.printStackTrace();
+            }
+        });
+
+        demoService.sayHi("[CALLBACK]jack");
 
 
 		TimeUnit.SECONDS.sleep(3);
@@ -122,8 +124,7 @@ public class ClientTest {
 				DemoService.class, null, 500, "127.0.0.1:7080", null, null).getObject();
 
 		// test
-		demoService.sayHi("jack");
-
+        demoService.sayHi("[ONEWAY]jack");
 
 		TimeUnit.SECONDS.sleep(3);
 	}
