@@ -168,9 +168,6 @@ public class XxlRpcReferenceBean {
 								// future remove
                                 XxlRpcFutureResponseFactory.removeInvokerFuture(xxlRpcRequest.getRequestId());
 							}
-						} else if (CallType.ONEWAY == callType) {
-							client.asyncSend(address, xxlRpcRequest);
-							return null;
 						} else if (CallType.FUTURE == callType) {
 
 							// thread future set
@@ -216,7 +213,10 @@ public class XxlRpcReferenceBean {
 							}
 
 							return null;
-						} else {
+						} else if (CallType.ONEWAY == callType) {
+                            client.asyncSend(address, xxlRpcRequest);
+                            return null;
+                        } else {
 							throw new XxlRpcException("xxl-rpc callType["+ callType +"] invalid");
 						}
 

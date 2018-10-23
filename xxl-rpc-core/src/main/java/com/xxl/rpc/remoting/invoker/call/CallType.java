@@ -7,13 +7,14 @@ package com.xxl.rpc.remoting.invoker.call;
  */
 public enum CallType {
 
-    SYNC,
 
-    ONEWAY,
+    SYNC,
 
     FUTURE,
 
-    CALLBACK;
+    CALLBACK,
+
+    ONEWAY;
 
 
     public static CallType match(String name, CallType defaultCallType){
