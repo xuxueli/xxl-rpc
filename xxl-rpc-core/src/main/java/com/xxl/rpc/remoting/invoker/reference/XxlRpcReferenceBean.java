@@ -2,6 +2,7 @@ package com.xxl.rpc.remoting.invoker.reference;
 
 import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.invoker.call.CallType;
+import com.xxl.rpc.remoting.invoker.call.XxlRpcInvokeCallback;
 import com.xxl.rpc.remoting.invoker.call.XxlRpcInvokeFuture;
 import com.xxl.rpc.remoting.net.Client;
 import com.xxl.rpc.remoting.net.NetEnum;
@@ -38,33 +39,38 @@ public class XxlRpcReferenceBean {
 
 	private NetEnum netType;
 	private Serializer serializer;
-	private String address;
-	private String accessToken;
+	private CallType callType;
 
 	private Class<?> iface;
 	private String version;
 
 	private long timeout;
-	private CallType callType;
 
+	private String address;
+	private String accessToken;
+
+	private XxlRpcInvokeCallback invokeCallback;
 
 	public XxlRpcReferenceBean(NetEnum netType,
-						   Serializer serializer,
-						   String address,
-						   String accessToken,
-						   Class<?> iface,
-						   String version,
-						   long timeout,
-						   CallType callType) {
+							   Serializer serializer,
+							   CallType callType,
+							   Class<?> iface,
+							   String version,
+							   long timeout,
+							   String address,
+							   String accessToken,
+							   XxlRpcInvokeCallback invokeCallback
+	) {
 
 		this.netType = netType;
 		this.serializer = serializer;
-		this.address = address;
-		this.accessToken = accessToken;
+		this.callType = callType;
 		this.iface = iface;
 		this.version = version;
 		this.timeout = timeout;
-		this.callType = callType;
+		this.address = address;
+		this.accessToken = accessToken;
+		this.invokeCallback = invokeCallback;
 
 		// init Client
 		initClient();
@@ -144,8 +150,8 @@ public class XxlRpcReferenceBean {
 						if (CallType.SYNC == callType) {
 							try {
 								// future set
-								XxlRpcFutureResponse futureResponse = new XxlRpcFutureResponse(xxlRpcRequest);
-                                XxlRpcFutureResponseFactory.setInvokerFuture(xxlRpcRequest.getRequestId(), futureResponse);
+								XxlRpcFutureResponse futureResponse = new XxlRpcFutureResponse(xxlRpcRequest, null);
+								XxlRpcFutureResponseFactory.setInvokerFuture(xxlRpcRequest.getRequestId(), futureResponse);
 
 								// do invoke
 								client.asyncSend(address, xxlRpcRequest);
@@ -167,26 +173,53 @@ public class XxlRpcReferenceBean {
 							return null;
 						} else if (CallType.FUTURE == callType) {
 
+							// thread future set
+							XxlRpcInvokeFuture invokeFuture = null;
                             try {
-                                // thread future set
-                                XxlRpcInvokeFuture invokeFuture = new XxlRpcInvokeFuture(new XxlRpcFutureResponse(xxlRpcRequest));
-                                XxlRpcInvokeFuture.setFuture(invokeFuture);
+								invokeFuture = new XxlRpcInvokeFuture(new XxlRpcFutureResponse(xxlRpcRequest, null));
+								XxlRpcInvokeFuture.setFuture(invokeFuture);
 
                                 // do invoke
                                 client.asyncSend(address, xxlRpcRequest);
 
                                 return null;
                             } catch (Exception e) {
+								// future remove
+								invokeFuture.stop();
+
                                 throw new XxlRpcException(e);
                             }
 
 						} else if (CallType.CALLBACK == callType) {
-							// TODO
+
+							// get callback
+							XxlRpcInvokeCallback finalInvokeCallback = invokeCallback;
+							XxlRpcInvokeCallback threadInvokeCallback = XxlRpcInvokeCallback.getCallback();
+							if (threadInvokeCallback != null) {
+								finalInvokeCallback = threadInvokeCallback;
+							}
+							if (finalInvokeCallback == null) {
+								throw new XxlRpcException("xxl-rpc XxlRpcInvokeCallback（CallType="+ CallType.CALLBACK.name() +"） cannot be null.");
+							}
+
+							try {
+								// future set
+								XxlRpcFutureResponse futureResponse = new XxlRpcFutureResponse(xxlRpcRequest, finalInvokeCallback);
+								XxlRpcFutureResponseFactory.setInvokerFuture(xxlRpcRequest.getRequestId(), futureResponse);
+
+								client.asyncSend(address, xxlRpcRequest);
+							} catch (Exception e) {
+								// future remove
+								XxlRpcFutureResponseFactory.removeInvokerFuture(xxlRpcRequest.getRequestId());
+
+								throw new XxlRpcException(e);
+							}
+
+							return null;
 						} else {
 							throw new XxlRpcException("xxl-rpc callType["+ callType +"] invalid");
 						}
 
-						return null;
 					}
 				});
 	}

@@ -1,15 +1,19 @@
 package com.xxl.sample.client.test;
 
 import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
+import com.xxl.rpc.remoting.invoker.call.CallType;
+import com.xxl.rpc.remoting.invoker.call.XxlRpcInvokeCallback;
 import com.xxl.rpc.remoting.invoker.call.XxlRpcInvokeFuture;
 import com.xxl.rpc.remoting.invoker.reference.XxlRpcReferenceBean;
 import com.xxl.rpc.remoting.net.NetEnum;
-import com.xxl.rpc.remoting.invoker.call.CallType;
 import com.xxl.rpc.sample.api.DemoService;
 import com.xxl.rpc.sample.api.dto.UserDTO;
 import com.xxl.rpc.serialize.Serializer;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-import java.util.concurrent.Future;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -17,37 +21,106 @@ import java.util.concurrent.TimeUnit;
  */
 public class ClientTest {
 
-	public static void main(String[] args) throws Exception {
 
+	XxlRpcInvokerFactory invokerFactory = null;
+	@Before
+	public void before() throws Exception {
 		// init invoker factory
-		XxlRpcInvokerFactory invokerFactory = new XxlRpcInvokerFactory();
+		invokerFactory = new XxlRpcInvokerFactory();
 		invokerFactory.start();
+	}
+
+	@After
+	public void after() throws Exception {
+		// stop invoker factory
+		invokerFactory.stop();
+	}
 
 
+	/**
+	 * CallType.SYNC, 100/200ms
+	 */
+	@Test
+	public void testSYNC(){
+		// init client
+		DemoService demoService = (DemoService) new XxlRpcReferenceBean(NetEnum.JETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(), CallType.SYNC,
+				DemoService.class, null, 500, "127.0.0.1:7080", null, null).getObject();
 
-		// client test
-		DemoService demoService = (DemoService) new XxlRpcReferenceBean(NetEnum.JETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(),
-                "127.0.0.1:7080", null, DemoService.class, null, 500, CallType.FUTURE).getObject();
+		// test
+		System.out.println(demoService.sayHi("jack" ));
 
-		demoService.sayHi("jack" );
-		Future<UserDTO> invokeFuture = XxlRpcInvokeFuture.getFuture(UserDTO.class);
-		System.out.println(invokeFuture.get());
 
-		/*int count = 100;
+		// test mult
+		int count = 100;
 		long start = System.currentTimeMillis();
 		for (int i = 0; i < count; i++) {
 			UserDTO userDTO = demoService.sayHi("jack"+i );
 			System.out.println(i + "##" + userDTO.toString());
 		}
 		long end = System.currentTimeMillis();
-    	System.out.println("run count:"+ count +", cost:" + (end - start));*/
+    	System.out.println("run count:"+ count +", cost:" + (end - start));
 
-
-
-		TimeUnit.SECONDS.sleep(2);
-
-		// stop invoker factory
-		invokerFactory.stop();
 	}
+
+	/**
+	 * CallType.ONEWAY, 100/2ms
+	 */
+	@Test
+	public void testONEWAY() throws ExecutionException, InterruptedException {
+		// client test
+		DemoService demoService = (DemoService) new XxlRpcReferenceBean(NetEnum.JETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(), CallType.ONEWAY,
+				DemoService.class, null, 500, "127.0.0.1:7080", null, null).getObject();
+
+		// test
+		demoService.sayHi("jack" );
+
+
+		TimeUnit.SECONDS.sleep(3);
+	}
+
+	/**
+	 * CallType.FUTURE, 100/100ms
+	 */
+	@Test
+	public void testFUTURE() throws ExecutionException, InterruptedException {
+		// client test
+		DemoService demoService = (DemoService) new XxlRpcReferenceBean(NetEnum.JETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(), CallType.FUTURE,
+				DemoService.class, null, 500, "127.0.0.1:7080", null, null).getObject();
+
+		// test
+		demoService.sayHi("jack" );
+		UserDTO userDTO = XxlRpcInvokeFuture.getFuture(UserDTO.class).get();
+		System.out.println(userDTO.toString());
+	}
+
+
+	/**
+	 * CallType.CALLBACK, 100/2ms
+	 */
+	@Test
+	public void testCALLBACK() throws ExecutionException, InterruptedException {
+		// client test
+		DemoService demoService = (DemoService) new XxlRpcReferenceBean(NetEnum.JETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(), CallType.CALLBACK,
+				DemoService.class, null, 500, "127.0.0.1:7080", null, null).getObject();
+
+
+		// test
+		XxlRpcInvokeCallback.setCallback(new XxlRpcInvokeCallback<UserDTO>() {
+			@Override
+			public void onSuccess(UserDTO result) {
+				System.out.println(result);
+			}
+
+			@Override
+			public void onFailure(Throwable exception) {
+				exception.printStackTrace();
+			}
+		});
+
+		demoService.sayHi("jack" );
+
+		TimeUnit.SECONDS.sleep(3);
+	}
+
 
 }

@@ -1,7 +1,7 @@
 package com.xxl.rpc.remoting.invoker.annotation;
 
-import com.xxl.rpc.remoting.net.NetEnum;
 import com.xxl.rpc.remoting.invoker.call.CallType;
+import com.xxl.rpc.remoting.net.NetEnum;
 import com.xxl.rpc.serialize.Serializer;
 
 import java.lang.annotation.*;
@@ -18,13 +18,16 @@ public @interface XxlRpcReference {
 
     NetEnum netType() default NetEnum.JETTY;
     Serializer.SerializeEnum serializer() default Serializer.SerializeEnum.HESSIAN;
-    String address() default "";
-    String accessToken() default "";
+    CallType callType() default CallType.SYNC;
 
     //Class<?> iface;
     String version() default "";
 
     long timeout() default 1000;
-    CallType callType() default CallType.SYNC;
+
+    String address() default "";
+    String accessToken() default "";
+
+    //XxlRpcInvokeCallback invokeCallback() ;
 
 }

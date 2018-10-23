@@ -5,6 +5,7 @@ import com.xxl.rpc.remoting.provider.XxlRpcProviderFactory;
 import com.xxl.rpc.sample.api.DemoService;
 import com.xxl.rpc.sample.server.service.DemoServiceImpl;
 import com.xxl.rpc.serialize.Serializer;
+import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
 
@@ -13,7 +14,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class ServerTest {
 
-    public static void main(String[] args) throws Exception {
+    @Test
+    public void startServer() throws Exception {
 
         // init
         XxlRpcProviderFactory providerFactory = new XxlRpcProviderFactory();

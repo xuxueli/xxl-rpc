@@ -24,6 +24,11 @@ public class XxlRpcInvokeFuture implements Future {
         // future set
         XxlRpcFutureResponseFactory.setInvokerFuture(futureResponse.getRequest().getRequestId(), futureResponse);
     }
+    public void stop(){
+        // future remove
+        XxlRpcFutureResponseFactory.removeInvokerFuture(futureResponse.getRequest().getRequestId());
+    }
+
 
 
     @Override
@@ -60,9 +65,7 @@ public class XxlRpcInvokeFuture implements Future {
             }
             return xxlRpcResponse.getResult();
         } finally {
-
-            // future remove
-            XxlRpcFutureResponseFactory.removeInvokerFuture(futureResponse.getRequest().getRequestId());
+            stop();
         }
     }
 

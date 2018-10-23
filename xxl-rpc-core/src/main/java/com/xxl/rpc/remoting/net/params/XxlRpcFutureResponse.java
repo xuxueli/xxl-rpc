@@ -1,16 +1,14 @@
 package com.xxl.rpc.remoting.net.params;
 
+import com.xxl.rpc.remoting.invoker.call.XxlRpcInvokeCallback;
 import com.xxl.rpc.util.XxlRpcException;
 
 import java.util.concurrent.*;
 
 /**
- * call back future, make netty-rpc synchronous on asynchronous model
+ * call back future
+ *
  * @author xuxueli 2015-11-5 14:26:37
- * 
- * v1: Synchroniz + notifyAll + ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
- * v2: Map done + ctx.writeAndFlush(response)
- * v3: Map synchronized wait + notifyAll
  */
 public class XxlRpcFutureResponse implements Future<XxlRpcResponse> {
 
@@ -23,9 +21,13 @@ public class XxlRpcFutureResponse implements Future<XxlRpcResponse> {
 	private boolean done = false;
 	private Object lock = new Object();
 
+	// callback
+	private XxlRpcInvokeCallback invokeCallback;
 
-	public XxlRpcFutureResponse(XxlRpcRequest request) {
+
+	public XxlRpcFutureResponse(XxlRpcRequest request, XxlRpcInvokeCallback invokeCallback) {
 		this.request = request;
+		this.invokeCallback = invokeCallback;
 	}
 
 	public XxlRpcRequest getRequest() {
@@ -34,7 +36,18 @@ public class XxlRpcFutureResponse implements Future<XxlRpcResponse> {
 
 	public void setResponse(XxlRpcResponse response) {
 		this.response = response;
-		// notify future lock
+
+		// callback: do callback invoke
+		if (invokeCallback != null) {
+			if (this.response.getErrorMsg() != null) {
+				invokeCallback.onFailure(new XxlRpcException(this.response.getErrorMsg()));
+			} else {
+				invokeCallback.onSuccess(this.response.getResult());
+			}
+			return;
+		}
+
+		// future：notify future lock
 		synchronized (lock) {
 			done = true;
 			lock.notifyAll();

@@ -1,5 +1,6 @@
 package com.xxl.rpc.remoting.invoker.reference.impl;
 
+import com.xxl.rpc.remoting.invoker.call.XxlRpcInvokeCallback;
 import com.xxl.rpc.remoting.invoker.reference.XxlRpcReferenceBean;
 import com.xxl.rpc.remoting.net.NetEnum;
 import com.xxl.rpc.remoting.invoker.call.CallType;
@@ -19,15 +20,17 @@ public class XxlRpcSpringReferenceBean implements FactoryBean<Object>, Initializ
 
     private String netType = NetEnum.JETTY.name();
     private String serialize = Serializer.SerializeEnum.HESSIAN.name();
-    private String address;
-    private String accessToken;
+    private String callType = CallType.SYNC.name();
 
     private Class<?> iface;
     private String version;
 
-    private long timeout = 1000;	                    // million
-    private String callType = CallType.SYNC.name();
+    private long timeout = 1000;
 
+    private String address;
+    private String accessToken;
+
+    private XxlRpcInvokeCallback invokeCallback;
 
     // set
     public void setNetType(String netType) {
@@ -38,12 +41,8 @@ public class XxlRpcSpringReferenceBean implements FactoryBean<Object>, Initializ
         this.serialize = serialize;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
+    public void setCallType(String callType) {
+        this.callType = callType;
     }
 
     public void setIface(Class<?> iface) {
@@ -58,10 +57,17 @@ public class XxlRpcSpringReferenceBean implements FactoryBean<Object>, Initializ
         this.timeout = timeout;
     }
 
-    public void setCallType(String callType) {
-        this.callType = callType;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public void setInvokeCallback(XxlRpcInvokeCallback invokeCallback) {
+        this.invokeCallback = invokeCallback;
+    }
 
     // ---------------------- init ----------------------
 
@@ -78,7 +84,7 @@ public class XxlRpcSpringReferenceBean implements FactoryBean<Object>, Initializ
         }
 
         // init config
-        xxlRpcReferenceBean = new XxlRpcReferenceBean(netTypeEnum, serializer, address, accessToken, iface, version, timeout, callTypeEnum);
+        xxlRpcReferenceBean = new XxlRpcReferenceBean(netTypeEnum, serializer, callTypeEnum, iface, version, timeout, address, accessToken, invokeCallback);
     }
 
     // ---------------------- util ----------------------

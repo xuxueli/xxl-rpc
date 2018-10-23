@@ -3,7 +3,7 @@ package com.xxl.rpc.sample.api.dto;
 import java.io.Serializable;
 
 /**
- * User Dto
+ * User DTO
  */
 public class UserDTO implements Serializable {
     private static final long serialVersionUID = 42L;

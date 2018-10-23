@@ -72,12 +72,13 @@ public class XxlRpcSpringInvokerFactory extends InstantiationAwareBeanPostProces
                     XxlRpcReferenceBean referenceBean = new XxlRpcReferenceBean(
                             rpcReference.netType(),
                             rpcReference.serializer().getSerializer(),
-                            rpcReference.address(),
-                            rpcReference.accessToken(),
+                            rpcReference.callType(),
                             iface,
                             rpcReference.version(),
                             rpcReference.timeout(),
-                            rpcReference.callType()
+                            rpcReference.address(),
+                            rpcReference.accessToken(),
+                            null
                     );
 
                     Object serviceProxy = referenceBean.getObject();

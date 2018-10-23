@@ -57,6 +57,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 
 		<!-- xxl-rpc-core -->
 		<dependency>
@@ -71,7 +77,8 @@
 			<version>${zookeeper.version}</version>
 		</dependency>
 
-		<!-- xxl-rpc-example-api -->
+
+		<!-- xxl-rpc-sample-api -->
 		<dependency>
 			<groupId>com.xxl</groupId>
 			<artifactId>xxl-rpc-sample-api</artifactId>
