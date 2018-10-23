@@ -16,8 +16,12 @@ public enum NetEnum {
 
 
 	NETTY(NettyServer.class, NettyClient.class),
+
 	MINA(MinaServer.class, MinaClient.class),
-	JETTY(JettyServer.class, JettyClient.class);
+
+	JETTY(JettyServer.class, JettyClient.class),
+
+	JETTY_HTTP2(null, null);	// TODO
 
 
 	public final Class<? extends Server> serverClass;
