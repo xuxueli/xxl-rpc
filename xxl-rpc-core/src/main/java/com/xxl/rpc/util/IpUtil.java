@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.regex.Pattern;
 
@@ -140,9 +139,5 @@ public class IpUtil {
         return new Object[]{host, port};
     }
 
-    public static void main(String[] args) throws UnknownHostException {
-        System.out.println(getIp());
-        System.out.println(getIpPort(8080));
-    }
 
 }
