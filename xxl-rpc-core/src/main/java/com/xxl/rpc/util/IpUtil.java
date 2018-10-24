@@ -107,29 +107,15 @@ public class IpUtil {
 
 	/**
 	 * get ip:port
-	 *
 	 * @param port
 	 * @return
 	 */
 	public static String getIpPort(int port){
 		String ip = getIp();
-		return getIpPort(ip, port);
-	}
-
-	public static String getIpPort(String ip, int port){
 		if (ip==null) {
 			return null;
 		}
 		return ip.concat(":").concat(String.valueOf(port));
-	}
-
-	public static Object[] parseIpPort(String address){
-		String[] array = address.split(":");
-
-		String host = array[0];
-		int port = Integer.parseInt(array[1]);
-
-		return new Object[]{host, port};
 	}
 
 
