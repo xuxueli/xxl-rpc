@@ -336,6 +336,7 @@ System.out.println(userDTO.toString());
 - 6、支持HTTP异步请求，线程优化，统一通讯流程；
 - 7、支持多种请求方式，如：SYNC、ONEWAY、FUTURE、CALLBACK 等；
 - 8、【ING】支持HTTP异步响应，至此底层remoting层通讯全异步化；
+- 9、ZK初始化逻辑优化，避免并发初始化，阻塞至TCP连接创建成功才允许后续操作；
 
 ### TODO
 - 目前使用 iface 接口包名进行服务注册, 新增属性 registry-key 用来服务注册,便于接口复用,如果为空则默认使用 iface 接口包名; zookeeper-switch 改为 registry-switch;
