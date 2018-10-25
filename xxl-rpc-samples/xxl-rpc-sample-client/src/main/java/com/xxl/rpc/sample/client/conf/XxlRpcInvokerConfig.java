@@ -1,6 +1,5 @@
 package com.xxl.rpc.sample.client.conf;
 
-import com.xxl.rpc.registry.ServiceRegistry;
 import com.xxl.rpc.registry.impl.ZkServiceRegistry;
 import com.xxl.rpc.remoting.invoker.impl.XxlRpcSpringInvokerFactory;
 import com.xxl.rpc.util.Environment;
@@ -45,7 +44,7 @@ public class XxlRpcInvokerConfig {
             }});
         }
 
-        logger.info(">>>>>>>>>>> xxl-rpc invoker config init success.");
+        logger.info(">>>>>>>>>>> xxl-rpc invoker config init finish.");
         return invokerFactory;
     }
 

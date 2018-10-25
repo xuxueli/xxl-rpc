@@ -1,6 +1,5 @@
 package com.xxl.rpc.sample.server.conf;
 
-import com.xxl.rpc.registry.ServiceRegistry;
 import com.xxl.rpc.registry.impl.ZkServiceRegistry;
 import com.xxl.rpc.remoting.provider.impl.XxlRpcSpringProviderFactory;
 import com.xxl.rpc.util.Environment;
@@ -47,7 +46,7 @@ public class XxlRpcProviderConfig {
             }});
         }
 
-        logger.info(">>>>>>>>>>> xxl-rpc provider config init success.");
+        logger.info(">>>>>>>>>>> xxl-rpc provider config init finish.");
         return providerFactory;
     }
 
