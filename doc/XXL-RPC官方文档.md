@@ -310,6 +310,8 @@ DemoService demoService = (DemoService) new XxlRpcReferenceBean(NetEnum.JETTY, S
 				DemoService.class, null, 500, "127.0.0.1:7080", null, null).getObject();
 
 UserDTO userDTO = demoService.sayHi("jack");
+
+System.out.println(userDTO);
 ```
 
 
