@@ -101,7 +101,7 @@ XXL-RPC 是一个分布式服务通讯框架，提供稳定高性能的RPC远程
 
 ```
 <dependency>
-    <groupId>com.xxl</groupId>
+    <groupId>com.xuxueli</groupId>
     <artifactId>xxl-rpc-core</artifactId>
     <version>${parent.version}</version>
 </dependency>
@@ -158,7 +158,7 @@ version | 服务版本，默认空；可据此区分同一个“服务API” 的
 
 ```
 <dependency>
-    <groupId>com.xxl</groupId>
+    <groupId>com.xuxueli</groupId>
     <artifactId>xxl-rpc-core</artifactId>
     <version>${parent.version}</version>
 </dependency>
