@@ -10,7 +10,7 @@
 	<packaging>jar</packaging>
 
 	<name>${project.artifactId}</name>
-	<description>A lightweight distributed task scheduling framework.</description>
+	<description>A high performance, distributed RPC framework.</description>
 	<url>http://www.xuxueli.com/</url>
 
 	<dependencies>

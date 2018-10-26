@@ -22,8 +22,8 @@
 
 ## Introduction
 
-XXL-RPC is a distributed service communication RPC framework. 
-Provides a stable and high performance RPC remote service invocation function. 
+XXL-RPC is a high performance, distributed RPC framework.
+Provides a stable and high performance RPC function. 
 Now, it's already open source, real "out-of-the-box".
 
 XXL-RPC 是一个分布式服务通讯框架，提供稳定高性能的RPC远程服务调用功能。现已开放源代码，开箱即用。
