@@ -22,6 +22,9 @@
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
 
+		<maven.test.skip>true</maven.test.skip>
+
+
 		<javax.servlet-api.version>3.1.0</javax.servlet-api.version>
 		<javax.servlet.jsp-api.version>2.3.3</javax.servlet.jsp-api.version>
 
@@ -54,14 +57,6 @@
 
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>2.6</version>
-				<configuration>
-					<archiveClasses>false</archiveClasses>
-				</configuration>
-			</plugin>
 		</plugins>
 	</build>
 
