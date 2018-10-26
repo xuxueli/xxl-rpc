@@ -9,7 +9,6 @@ import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import com.xxl.rpc.serialize.Serializer;
 import com.xxl.rpc.util.IpUtil;
 import com.xxl.rpc.util.ThrowableUtil;
-import com.xxl.rpc.util.XxlRpcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -170,16 +169,16 @@ public class XxlRpcProviderFactory {
 
 		// valid
 		if (serviceBean == null) {
-			xxlRpcResponse.setResult(new XxlRpcException("The ServiceBean["+ serviceKey +"] not found."));
+			xxlRpcResponse.setErrorMsg("The serviceKey["+ serviceKey +"] not found.");
 			return xxlRpcResponse;
 		}
 
 		if (System.currentTimeMillis() - xxlRpcRequest.getCreateMillisTime() > 3*60*1000) {
-			xxlRpcResponse.setResult(new XxlRpcException("The timestamp difference between admin and executor exceeds the limit."));
+			xxlRpcResponse.setErrorMsg("The timestamp difference between admin and executor exceeds the limit.");
 			return xxlRpcResponse;
 		}
 		if (accessToken!=null && accessToken.trim().length()>0 && !accessToken.trim().equals(xxlRpcRequest.getAccessToken())) {
-			xxlRpcResponse.setResult(new XxlRpcException("The access token[" + xxlRpcRequest.getAccessToken() + "] is wrong."));
+			xxlRpcResponse.setErrorMsg("The access token[" + xxlRpcRequest.getAccessToken() + "] is wrong.");
 			return xxlRpcResponse;
 		}
 
