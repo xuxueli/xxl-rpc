@@ -135,6 +135,10 @@ public class ZkServiceRegistry extends ServiceRegistry {
             }
         });
 
+        // init client      // TODO, support init without conn, and can use mirror data
+        xxlZkClient.getClient();
+
+
         // refresh thread
         refreshThread = new Thread(new Runnable() {
             @Override

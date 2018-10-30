@@ -51,7 +51,7 @@ public class XxlZkClient {
 			};
 		}
 
-		getClient();
+		//getClient();		// async coon, support init without conn
 	}
 
 	// ------------------------------ zookeeper client ------------------------------
@@ -61,32 +61,32 @@ public class XxlZkClient {
 		if (zooKeeper==null) {
 			try {
 				if (INSTANCE_INIT_LOCK.tryLock(2, TimeUnit.SECONDS)) {
-					if (zooKeeper==null) {		// 二次校验，防止并发创建client
 
-						// init new-client
-						ZooKeeper newZk = null;
-						try {
-							newZk = new ZooKeeper(zkaddress, 10000, watcher);
-							if (zkdigest!=null && zkdigest.trim().length()>0) {
-								newZk.addAuthInfo("digest",zkdigest.getBytes());		// like "account:password"
-							}
-							newZk.exists(zkpath, false);		// sync wait until succcess conn
+                    // init new-client
+                    ZooKeeper newZk = null;
+                    try {
+                        if (zooKeeper == null) {		// 二次校验，防止并发创建client
+                            newZk = new ZooKeeper(zkaddress, 10000, watcher);
+                            if (zkdigest!=null && zkdigest.trim().length()>0) {
+                                newZk.addAuthInfo("digest",zkdigest.getBytes());		// like "account:password"
+                            }
+                            newZk.exists(zkpath, false);		// sync wait until succcess conn
 
-							// set success new-client
-							zooKeeper = newZk;
-							logger.info(">>>>>>>>>> xxl-rpc, XxlZkClient init success.");
-						} catch (Exception e) {
-							// close fail new-client
-							if (newZk != null) {
-								newZk.close();
-							}
+                            // set success new-client
+                            zooKeeper = newZk;
+                            logger.info(">>>>>>>>>> xxl-rpc, XxlZkClient init success.");
+                        }
+                    } catch (Exception e) {
+                        // close fail new-client
+                        if (newZk != null) {
+                            newZk.close();
+                        }
 
-							logger.error(e.getMessage(), e);
-						} finally {
-							INSTANCE_INIT_LOCK.unlock();
-						}
+                        logger.error(e.getMessage(), e);
+                    } finally {
+                        INSTANCE_INIT_LOCK.unlock();
+                    }
 
-					}
 				}
 			} catch (InterruptedException e) {
 				logger.error(e.getMessage(), e);
