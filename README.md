@@ -7,11 +7,17 @@
         <a href="http://www.xuxueli.com/xxl-rpc/"><strong>-- Home Page --</strong></a>
         <br>
         <br>
-         <a href="https://github.com/xuxueli/xxl-rpc/releases">
-             <img src="https://img.shields.io/github/release/xuxueli/xxl-rpc.svg" >
-         </a>
+        <a href="https://travis-ci.org/xuxueli/xxl-rpc">
+            <img src="https://travis-ci.org/xuxueli/xxl-rpc.svg?branch=master" >
+        </a>
+        <a href="https://maven-badges.herokuapp.com/maven-central/com.xuxueli/xxl-rpc/">
+            <img src="https://maven-badges.herokuapp.com/maven-central/com.xuxueli/xxl-rpc/badge.svg" >
+        </a>
+        <a href="https://github.com/xuxueli/xxl-rpc/releases">
+            <img src="https://img.shields.io/github/release/xuxueli/xxl-rpc.svg" >
+        </a>
          <a href="http://www.gnu.org/licenses/gpl-3.0.html">
-             <img src="https://img.shields.io/badge/license-GPLv3-blue.svg" >
+            <img src="https://img.shields.io/badge/license-GPLv3-blue.svg" >
          </a>
          <a href="http://www.xuxueli.com/page/donate.html">
             <img src="https://img.shields.io/badge/%24-donate-ff69b4.svg?style=flat-square" >
@@ -26,7 +32,7 @@ XXL-RPC is a high performance, distributed RPC framework.
 Provides a stable and high performance RPC function. 
 Now, it's already open source, real "out-of-the-box".
 
-XXL-RPC 是一个分布式服务通讯框架，提供稳定高性能的RPC远程服务调用功能。现已开放源代码，开箱即用。
+XXL-RPC 是一个分布式服务框架，提供稳定高性能的RPC远程服务调用功能。现已开放源代码，开箱即用。
 
 
 ## Documentation

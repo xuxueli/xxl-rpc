@@ -1,5 +1,7 @@
-## 《分布式服务通讯框架XXL-RPC》
+## 《分布式服务框架XXL-RPC》
 
+[![Build Status](https://travis-ci.org/xuxueli/xxl-rpc.svg?branch=master)](https://travis-ci.org/xuxueli/xxl-rpc)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.xuxueli/xxl-rpc/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.xuxueli/xxl-rpc/)
 [![GitHub release](https://img.shields.io/github/release/xuxueli/xxl-rpc.svg)](https://github.com/xuxueli/xxl-rpc/releases)
 [![License](https://img.shields.io/badge/license-GPLv3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html)
 [![donate](https://img.shields.io/badge/%24-donate-ff69b4.svg?style=flat-square)](http://www.xuxueli.com/page/donate.html)
@@ -8,7 +10,7 @@
 ## 一、简介
 
 ### 1.1 概述
-XXL-RPC 是一个分布式服务通讯框架，提供稳定高性能的RPC远程服务调用功能。现已开放源代码，开箱即用。
+XXL-RPC 是一个分布式服务框架，提供稳定高性能的RPC远程服务调用功能。现已开放源代码，开箱即用。
 
 ### 1.2 特性
 - 1、快速接入：接入步骤非常简洁，两分钟即可上手；
@@ -355,7 +357,7 @@ System.out.println(userDTO);
     - 预热控制，刚启动的节点，只会分配比较少的请求；逐步增大，直至平均。帮助新节点启动；
 - 服务注册中心, 节点支持单个移除
 - 支持HTTP异步响应，至此底层remoting层通讯全异步化；
-
+- 底层Log整理，RPC报错时打印完整Log，包括请求地址，请求参数等；
 
 ## 五、其他
 
