@@ -346,6 +346,7 @@ System.out.println(userDTO);
 
 ### 4.2 版本 v1.2.1 [迭代中]
 - 1、ZK初始化时unlock逻辑调整，优化断线重连特性；
+- 2、除了springboot类型示例；新增无框架示例项目 "xxl-rpc-executor-sample-frameless"。不依赖第三方框架，只需main方法即可启动运行；
 
 ### TODO
 - 提高系统可用性，以部分功能暂时不可达为代价，防止服务整体缓慢或雪崩

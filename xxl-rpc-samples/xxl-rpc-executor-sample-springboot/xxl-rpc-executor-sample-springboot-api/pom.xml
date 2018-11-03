@@ -3,15 +3,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.xuxueli</groupId>
-		<artifactId>xxl-rpc</artifactId>
+		<artifactId>xxl-rpc-executor-sample-springboot</artifactId>
 		<version>1.2.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>xxl-rpc-samples</artifactId>
-	<packaging>pom</packaging>
-
-	<modules>
-		<module>xxl-rpc-executor-sample-frameless</module>
-		<module>xxl-rpc-executor-sample-springboot</module>
-	</modules>
+	<artifactId>xxl-rpc-executor-sample-springboot-api</artifactId>
+	<packaging>jar</packaging>
 
 </project>

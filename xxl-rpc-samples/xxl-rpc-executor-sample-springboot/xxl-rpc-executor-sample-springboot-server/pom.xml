@@ -3,10 +3,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.xuxueli</groupId>
-		<artifactId>xxl-rpc-samples</artifactId>
+		<artifactId>xxl-rpc-executor-sample-springboot</artifactId>
 		<version>1.2.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>xxl-rpc-sample-server</artifactId>
+	<artifactId>xxl-rpc-executor-sample-springboot-server</artifactId>
 	<packaging>jar</packaging>
 
 
@@ -77,10 +77,10 @@
 		</dependency>
 
 
-		<!-- xxl-rpc-sample-api -->
+		<!-- sample-api -->
 		<dependency>
 			<groupId>com.xuxueli</groupId>
-			<artifactId>xxl-rpc-sample-api</artifactId>
+			<artifactId>xxl-rpc-executor-sample-springboot-api</artifactId>
 			<version>${parent.version}</version>
 		</dependency>
 
