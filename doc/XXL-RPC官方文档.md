@@ -74,7 +74,7 @@ XXL-RPC 是一个分布式服务框架，提供稳定高性能的RPC远程服务
 
     源码目录介绍：
     - /doc
-    - /xxl-rpc-admin    ：服务治理、监控中心，非必选（暂未整理发布...）;
+    - /xxl-rpc-admin    ：服务治理、监控中心（非必选，暂未整理发布）;
     - /xxl-rpc-core     ：核心依赖；
     - /xxl-rpc-samples  ：示例项目；
         - /xxl-rpc-executor-sample-frameless     ：无框架版本示例；
@@ -279,10 +279,10 @@ System.out.println(userDTO);
 ### 4.3 角色构成
 - 1、provider：服务提供方；
 - 2、invoker：服务消费方；
-- 3、registry：服务注册中心；
-- 4、serializer: 序列化模块；
-- 5、remoting：服务通讯模块；
-- 6、admin：服务治理、监控中心：管理服务节点信息，统计服务调用次数、QPS和健康情况；（暂未整理发布...）
+- 3、serializer: 序列化模块；
+- 4、remoting：服务通讯模块；
+- 5、registry：服务注册中心；
+- 6、admin：服务治理、监控中心：管理服务节点信息，统计服务调用次数、QPS和健康情况；（非必选，暂未整理发布...）
 
 ### 4.4 RPC工作原理剖析
 ![输入图片说明](https://raw.githubusercontent.com/xuxueli/xxl-rpc/master/doc/images/img_XEVY.png "在这里输入图片标题")
@@ -296,7 +296,7 @@ System.out.println(userDTO);
 - 6、provider：远程服务的提供方；
 - 7、consumer：远程服务的消费方；
 
-RPC通讯，可大致划分为四个步骤，可参考上图进行理解：
+RPC通讯，可大致划分为四个步骤，可参考上图进行理解：（XXL-RPC提供了多种调用方案，此处以 “SYNC” 方案为例讲解；）
 - 1、consumer发起请求：consumer会根据远程服务的stub实例化远程服务的代理服务，在发起请求时，代理服务会封装本次请求相关底层数据，如服务iface、methos、params等等，然后将数据经过serialization之后发送给provider；
 - 2、provider接收请求：provider接收到请求数据，首先会deserialization获取原始请求数据，然后根据stub匹配目标服务并调用；
 - 3、provider响应请求：provider在调用目标服务后，封装服务返回数据并进行serialization，然后把数据传输给consumer；
@@ -305,7 +305,7 @@ RPC通讯，可大致划分为四个步骤，可参考上图进行理解：
 ### 4.5 TCP通讯模型
 ![输入图片说明](https://raw.githubusercontent.com/xuxueli/xxl-rpc/master/doc/images/img_b1IX.png "在这里输入图片标题")
 
-consumer和provider采用NIO方式通讯，可选NETTY或MINA方案，高吞吐高并发；但是仅仅依靠单个TCP连接进行数据传输存在瓶颈和风险，因此XXL-RPC在consumer端自身实现了内部连接池，consumer和provider之间为了一个连接池，当尽情底层通讯是会取出一条TCP连接进行通讯（可参考上图）。
+consumer和provider采用NIO方式通讯，其中TC通讯方案可选NETTY或MINA具体选型，高吞吐高并发；但是仅仅依靠单个TCP连接进行数据传输存在瓶颈和风险，因此XXL-RPC在consumer端自身实现了内部连接池，consumer和provider之间为了一个连接池，当尽情底层通讯是会取出一条TCP连接进行通讯（可参考上图）。
 
 ### 4.6 sync-over-async
 ![输入图片说明](https://raw.githubusercontent.com/xuxueli/xxl-rpc/master/doc/images/img_pMtS.png "在这里输入图片标题")
@@ -318,6 +318,13 @@ XXL-RPC采用NIO进行底层通讯，但是NIO是异步通讯模型，调用线�
 - 4、调度线程被唤醒，返回异步响应的请求数据。
 
 ### 4.7 注册中心
+
+在XXL-RPC中，注册中心是一个可选组件，可灵活扩展实用；可选择不启用、启用选择内置注册中心、或者自定义实现注册中心；
+
+启用注册中心后，支持服务注册并动态发现；未启用注册中心时，支持直接指定服务提供方机器地址通讯；原生提供 local 与 zookeeper 两种服务注册中心可选方案；
+
+此处以内置的 “zookeeper 注册中心” 为例进行讲解；
+
 ![输入图片说明](https://raw.githubusercontent.com/xuxueli/xxl-rpc/master/doc/images/img_m3Ma.png "在这里输入图片标题")
 
 原理：        
