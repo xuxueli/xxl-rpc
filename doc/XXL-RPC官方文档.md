@@ -246,7 +246,9 @@ providerFactory.addService(DemoService.class.getName(), null, new DemoServiceImp
 // start
 providerFactory.start();
 
-TimeUnit.HOURS.sleep(1);
+while (!Thread.currentThread().isInterrupted()) {
+    TimeUnit.HOURS.sleep(1);
+}
 
 // stop
 providerFactory.stop();
@@ -256,11 +258,12 @@ providerFactory.stop();
 ```
 // 参考代码位置：com.xxl.rpc.sample.client.XxlRpcClientAplication
 
+// init client
 DemoService demoService = (DemoService) new XxlRpcReferenceBean(NetEnum.JETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(), CallType.SYNC,
-				DemoService.class, null, 500, "127.0.0.1:7080", null, null).getObject();
+        DemoService.class, null, 500, "127.0.0.1:7080", null, null).getObject();
 
-UserDTO userDTO = demoService.sayHi("jack");
-
+// test
+UserDTO userDTO = demoService.sayHi("[SYNC]jack");
 System.out.println(userDTO);
 ```
 
