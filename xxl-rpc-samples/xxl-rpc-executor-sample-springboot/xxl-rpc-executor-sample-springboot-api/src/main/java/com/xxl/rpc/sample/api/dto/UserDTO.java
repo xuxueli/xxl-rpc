@@ -8,22 +8,20 @@ import java.io.Serializable;
 public class UserDTO implements Serializable {
     private static final long serialVersionUID = 42L;
 
-
-    private String userName;
+    private String name;
     private String word;
 
-    public UserDTO(String userName, String word) {
-        this.userName = userName;
+    public UserDTO(String name, String word) {
+        this.name = name;
         this.word = word;
     }
 
-
-    public String getUserName() {
-        return userName;
+    public String getName() {
+        return name;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getWord() {
@@ -34,11 +32,10 @@ public class UserDTO implements Serializable {
         this.word = word;
     }
 
-
     @Override
     public String toString() {
         return "UserDTO{" +
-                "userName='" + userName + '\'' +
+                "name='" + name + '\'' +
                 ", word='" + word + '\'' +
                 '}';
     }
