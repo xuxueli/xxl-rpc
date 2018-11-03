@@ -21,9 +21,10 @@ XXL-RPC 是一个分布式服务框架，提供稳定高性能的RPC远程服务
 - 6、注册中心：可选组件，支持服务注册并动态发现；未启用注册中心时，支持直接指定服务提供方机器地址通讯；原生提供 local 与 zookeeper 两种服务注册中心可选方案；
 - 7、软负载均衡及容错：服务提供方集群注册时，在使用软负载算法进行流量分发；
 - 8、容错：服务提供方集群注册时，某个服务节点不可用时将会自动摘除，同时消费方将会移除失效节点将流量分发到其余节点，提高系统容错能力。
-- 9、解决1+1问题：传统分布式通讯一般通过nginx或f5做集群服务的流量负载均衡，如hessian，每次请求在到达目标服务机器之前都需要经过负载均衡机器，即1+1，这将会把流量放大一倍。而XXL-RPC将会从消费方直达服务提供方，每次请求直达目标机器，从而可以避免上述问题；
+- 9、解决1+1问题：传统分布式通讯一般通过nginx或f5做集群服务的流量负载均衡，每次请求在到达目标服务机器之前都需要经过负载均衡机器，即1+1，这将会把流量放大一倍。而XXL-RPC将会从消费方直达服务提供方，每次请求直达目标机器，从而可以避免上述问题；
 - 10、服务治理：提供服务治理中心，可在线管理注册的服务信息，如管理服务节点、节点权重等；（计划中）
 - 11、服务监控：可在线监控服务调用统计信息以及服务健康状况等（计划中）；
+- 12、高兼容性：得益于优良的兼容性与模块化设计，不限制外部框架；除 spring/springboot 环境之外，理论上支持运行在任何Java代码中，甚至main方法直接启动运行；
 
 
 ### 1.3 背景
@@ -64,7 +65,7 @@ XXL-RPC 是一个分布式服务框架，提供稳定高性能的RPC远程服务
 - Tomcat7+
 
 
-## 二、快速入门
+## 二、快速入门（springboot版本）
 
 ### 2.1 准备工作
 
@@ -76,17 +77,19 @@ XXL-RPC 是一个分布式服务框架，提供稳定高性能的RPC远程服务
     - /xxl-rpc-admin    ：服务治理、监控中心，非必选（暂未整理发布...）;
     - /xxl-rpc-core     ：核心依赖；
     - /xxl-rpc-samples  ：示例项目；
-        - /xxl-rpc-sample-api           ：公共API接口）
-        - /xxl-rpc-sample-client        ：服务消费方 invoker 调用示例；
-        - /xxl-rpc-sample-server        ：服务提供方 provider 示例;
+        - /xxl-rpc-executor-sample-frameless     ：无框架版本示例；
+        - /xxl-rpc-executor-sample-springboot    ：springboot版本示例；
+            - /xxl-rpc-executor-sample-springboot-api           ：公共API接口
+            - /xxl-rpc-executor-sample-springboot-client        ：服务消费方 invoker 调用示例；
+            - /xxl-rpc-executor-sample-springboot-server        ：服务提供方 provider 示例;
     
 - 2、zookeeper集群（可选，选择ZK注册中心时才需要；）
 
 ### 2.2 配置部署“服务治理、监控中心”
-忽略（暂未整理发布...）
+忽略（非必选，暂未整理发布）
  
-### 2.3 项目中使用XXL-RPC    
-以示例项目 xxl-rpc-samples 为例讲解；
+### 2.3 项目中使用XXL-RPC
+以示例项目 “xxl-rpc-executor-sample-springboot” 为例讲解；
 
 #### 2.3.1 开发“服务API”
 开发RPC服务的 “接口 / interface” 和 “数据模型 / DTO”；
@@ -206,7 +209,7 @@ netType | 服务通讯方案，可选范围：JETTY（默认）、NETTY、MINA�
 serializer | 序列化方案，可选范围: HESSIAN（默认）、HESSIAN1、PROTOSTUFF、JSON；
 address | 服务远程地址，ip:port 格式；选填；非空时将会优先实用该服务地址，为空时会从注册中心服务地址发现；
 accessToken | 服务鉴权Token，非空时生效；
-version ：服务版本，默认空；可据此区分同一个“服务API” 的不同版本；
+version | 服务版本，默认空；可据此区分同一个“服务API” 的不同版本；
 timeout | 服务超时时间，单位毫秒；
 callType | 请求类型，可选范围：SYNC（默认）、ONEWAY、FUTURE、CALLBACK； 
 
@@ -222,15 +225,56 @@ callType | 请求类型，可选范围：SYNC（默认）、ONEWAY、FUTURE、CA
 访问该Controller地址即可进行测试：http://127.0.0.1:8080/?name=jack
 
 
-## 三、系统设计
 
-### 3.1 系统架构图
+## 三、快速入门（frameless 无框架版本）
+ 
+XXL-RPC 在 spring/springboot 环境可以快速方便的配置实用。但是同时也支持运行在非 spring 环境中。 
+XXL-RPC 得益于优良的兼容性与模块化设计，不限制外部环境，可以运行在任何框架的Java代码中。
+
+以示例项目 “xxl-rpc-executor-sample-frameless” 为例讲解；
+
+### 3.1 API方式创建“服务提供者”：
+```
+// 参考代码位置：com.xxl.rpc.sample.server.XxlRpcServerApplication
+
+// init
+XxlRpcProviderFactory providerFactory = new XxlRpcProviderFactory();
+providerFactory.initConfig(NetEnum.JETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(), null, 7080, null, null, null);
+
+// add services
+providerFactory.addService(DemoService.class.getName(), null, new DemoServiceImpl());
+
+// start
+providerFactory.start();
+
+TimeUnit.HOURS.sleep(1);
+
+// stop
+providerFactory.stop();
+```
+### 3.2 API方式创建“服务消费者”：
+
+```
+// 参考代码位置：com.xxl.rpc.sample.client.XxlRpcClientAplication
+
+DemoService demoService = (DemoService) new XxlRpcReferenceBean(NetEnum.JETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(), CallType.SYNC,
+				DemoService.class, null, 500, "127.0.0.1:7080", null, null).getObject();
+
+UserDTO userDTO = demoService.sayHi("jack");
+
+System.out.println(userDTO);
+```
+
+
+## 四、系统设计
+
+### 4.1 系统架构图
 ![输入图片说明](https://raw.githubusercontent.com/xuxueli/xxl-rpc/master/doc/images/img_DNq6.png "在这里输入图片标题")
 
-### 3.2 核心思想
+### 4.2 核心思想
 提供稳定高性能的RPC远程服务调用功能，简化分布式服务通讯开发。
 
-### 3.3 角色构成
+### 4.3 角色构成
 - 1、provider：服务提供方；
 - 2、invoker：服务消费方；
 - 3、registry：服务注册中心；
@@ -238,7 +282,7 @@ callType | 请求类型，可选范围：SYNC（默认）、ONEWAY、FUTURE、CA
 - 5、remoting：服务通讯模块；
 - 6、admin：服务治理、监控中心：管理服务节点信息，统计服务调用次数、QPS和健康情况；（暂未整理发布...）
 
-### 3.4 RPC工作原理剖析
+### 4.4 RPC工作原理剖析
 ![输入图片说明](https://raw.githubusercontent.com/xuxueli/xxl-rpc/master/doc/images/img_XEVY.png "在这里输入图片标题")
 
 概念：
@@ -256,12 +300,12 @@ RPC通讯，可大致划分为四个步骤，可参考上图进行理解：
 - 3、provider响应请求：provider在调用目标服务后，封装服务返回数据并进行serialization，然后把数据传输给consumer；
 - 4、consumer接收响应：consumer接受到相应数据后，首先会deserialization获取原始数据，然后根据stub生成调用返回结果，返回给请求调用处。结束。
 
-### 3.5 TCP通讯模型
+### 4.5 TCP通讯模型
 ![输入图片说明](https://raw.githubusercontent.com/xuxueli/xxl-rpc/master/doc/images/img_b1IX.png "在这里输入图片标题")
 
 consumer和provider采用NIO方式通讯，可选NETTY或MINA方案，高吞吐高并发；但是仅仅依靠单个TCP连接进行数据传输存在瓶颈和风险，因此XXL-RPC在consumer端自身实现了内部连接池，consumer和provider之间为了一个连接池，当尽情底层通讯是会取出一条TCP连接进行通讯（可参考上图）。
 
-### 3.6 sync-over-async
+### 4.6 sync-over-async
 ![输入图片说明](https://raw.githubusercontent.com/xuxueli/xxl-rpc/master/doc/images/img_pMtS.png "在这里输入图片标题")
 
 XXL-RPC采用NIO进行底层通讯，但是NIO是异步通讯模型，调用线程并不会阻塞获取调用结果，因此，XXL-RPC实现了在异步通讯模型上的同步调用，即“sync-over-async”，实现原理如下，可参考上图进行理解：
@@ -271,7 +315,7 @@ XXL-RPC采用NIO进行底层通讯，但是NIO是异步通讯模型，调用线�
 - 3、然后，底层通过NIO方式发起调用，provider异步响应请求结果，然后根据RequestId寻找到本次调用的RpcResponse，设置响应结果后唤醒调度线程。
 - 4、调度线程被唤醒，返回异步响应的请求数据。
 
-### 3.7 注册中心
+### 4.7 注册中心
 ![输入图片说明](https://raw.githubusercontent.com/xuxueli/xxl-rpc/master/doc/images/img_m3Ma.png "在这里输入图片标题")
 
 原理：        
@@ -282,45 +326,8 @@ XXL-RPC支持两种方式设置远程服务地址：
 - 2、zookeeper注册中心：采用Zookeeper作为注册中心，服务自动注册和动态发现；
 
 
-### 3.8、非Spring环境实用XXL-RPC (API方式提供服务、消费服务)     
-XXL-RPC 在 spring/springboot 环境可以快速方便的配置实用。但是同时也支持运行在非 spring 环境中。 
-XXL-RPC 得益于优良的兼容性与模块化设计，不限制外部环境，可以运行在任何框架的Java代码中。
-
-- API方式创建“服务提供者”：
-```
-// 参考代码位置：com.xxl.sample.server.test.ServerTest
-
-// init
-XxlRpcProviderFactory providerFactory = new XxlRpcProviderFactory();
-providerFactory.initConfig(NetEnum.JETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(), null, 7080, null, null, null);
-
-// add services
-providerFactory.addService(DemoService.class.getName(), null, new DemoServiceImpl());
-
-// start
-providerFactory.start();
-
-TimeUnit.HOURS.sleep(1);
-
-// stop
-providerFactory.stop();
-```
-- API方式创建“服务消费者”：
-
-```
-// 参考代码位置：com.xxl.sample.client.test.ClientTest
-
-DemoService demoService = (DemoService) new XxlRpcReferenceBean(NetEnum.JETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(), CallType.SYNC,
-				DemoService.class, null, 500, "127.0.0.1:7080", null, null).getObject();
-
-UserDTO userDTO = demoService.sayHi("jack");
-
-System.out.println(userDTO);
-```
-
-
-## 四、版本更新日志
-### 4.1 版本 v1.1 新特性
+## 五、版本更新日志
+### 5.1 版本 v1.1 新特性
 - 1、快速接入：接入步骤非常简洁，两分钟即可上手；
 - 2、服务透明：系统完整的封装了底层通信细节，开发时调用远程服务就像调用本地服务，在提供远程调用能力时不损失本地调用的语义简洁性；
 - 3、注册中心（可选）：支持使用zookeeper作为服务注册中心，服务注册并动态发现。同时，也可以不使用注册中心，直接指定服务提供方机器地址进行RPC通讯；
@@ -332,7 +339,7 @@ System.out.println(userDTO);
 - 9、服务监控：可在线监控服务调用统计信息以及服务健康状况等（计划中）；
 - 10、解决1+1问题：传统分布式通讯一般通过nginx或f5做集群服务的流量负载均衡，如hessian，每次请求在到达目标服务机器之前都需要经过负载均衡机器，即1+1，这将会把流量放大一倍。而XXL-RPC将会从消费方至服务提供方建立TCP长连接，每次请求直达目标机器，从而可以避免上述问题；
 
-### 4.2 版本 v1.2.0 [2018-10-26]
+### 5.2 版本 v1.2.0 [2018-10-26]
 - 1、核心模块重度重构：模块化划分、包名重构；
 - 2、轻量级/模块化改造：移除对具体组件的依赖，如ZK、Netty、Mina等，改为可选扩展方式；
 - 3、支持多种请求方式，如：SYNC、ONEWAY、FUTURE、CALLBACK 等；
@@ -344,7 +351,7 @@ System.out.println(userDTO);
 - 9、推送core到maven中央仓库；
 - 10、服务注册逻辑优化，旧方案以 "iface" 接口包名进行服务注册, 改为结合 "iface + version" 作为 serviceKey 进行注册，便于接口多服务复用；
 
-### 4.2 版本 v1.2.1 [迭代中]
+### 5.3 版本 v1.2.1 [迭代中]
 - 1、ZK初始化时unlock逻辑调整，优化断线重连特性；
 - 2、除了springboot类型示例；新增无框架示例项目 "xxl-rpc-executor-sample-frameless"。不依赖第三方框架，只需main方法即可启动运行；
 
@@ -361,15 +368,15 @@ System.out.println(userDTO);
 - 底层Log整理，RPC报错时打印完整Log，包括请求地址，请求参数等；
 - zk注册中心初始化时取消对集群状态强依赖，底层异常时循环检测；
 
-## 五、其他
+## 六、其他
 
-### 5.1 项目贡献
+### 6.1 项目贡献
 欢迎参与项目贡献！比如提交PR修复一个bug，或者新建 [Issue](https://github.com/xuxueli/xxl-rpc/issues/) 讨论新特性或者变更。
 
-### 5.2 用户接入登记
+### 6.2 用户接入登记
 更多接入的公司，欢迎在 [登记地址](https://github.com/xuxueli/xxl-rpc/issues/2 ) 登记，登记仅仅为了产品推广。
 
-### 5.3 开源协议和版权
+### 6.3 开源协议和版权
 产品开源免费，并且将持续提供免费的社区技术支持。个人或企业内部可自由的接入和使用。
 
 - Licensed under the GNU General Public License (GPL) v3.
