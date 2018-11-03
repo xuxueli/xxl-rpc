@@ -228,8 +228,7 @@ callType | 请求类型，可选范围：SYNC（默认）、ONEWAY、FUTURE、CA
 
 ## 三、快速入门（frameless 无框架版本）
  
-XXL-RPC 在 spring/springboot 环境可以快速方便的配置实用。但是同时也支持运行在非 spring 环境中。 
-XXL-RPC 得益于优良的兼容性与模块化设计，不限制外部环境，可以运行在任何框架的Java代码中。
+得益于优良的兼容性与模块化设计，不限制外部框架；除 spring/springboot 环境之外，理论上支持运行在任何Java代码中，甚至main方法直接启动运行；
 
 以示例项目 “xxl-rpc-executor-sample-frameless” 为例讲解；
 
