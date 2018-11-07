@@ -107,10 +107,10 @@ public class JettyClient extends Client {
 								String errorMsg = null;
 								if (e instanceof XxlRpcException) {
 									XxlRpcException rpcException = (XxlRpcException) e;
-									if (rpcException.getMessage() != null) {
-										errorMsg = rpcException.getMessage();
-									} else {
+									if (rpcException.getCause() != null) {
 										errorMsg = ThrowableUtil.toString(rpcException.getCause());
+									} else {
+										errorMsg = rpcException.getMessage();
 									}
 								} else {
 									errorMsg = ThrowableUtil.toString(e);
@@ -126,11 +126,11 @@ public class JettyClient extends Client {
 							}
 
                         } catch (Exception e2) {
-                            logger.info(">>>>>>>>>>> xxl-rpc, remoting request error.", e2.getMessage());
+                            logger.info(">>>>>>>>>>> xxl-rpc, remoting request fail, and callback error.", e2.getMessage());
                         }
                     }
 
-                    throw e;
+                    logger.info(">>>>>>>>>>> xxl-rpc, remoting request error.", e);
                 }
 
 
