@@ -28,6 +28,7 @@ public class MinaClientHandler extends IoHandlerAdapter {
 		XxlRpcFutureResponse futureResponse = XxlRpcFutureResponseFactory.getInvokerFuture(xxlRpcResponse.getRequestId());
 		if (futureResponse != null) {
 			futureResponse.setResponse(xxlRpcResponse);
+			XxlRpcFutureResponseFactory.removeInvokerFuture(xxlRpcResponse.getRequestId());
 		}
 	}
 

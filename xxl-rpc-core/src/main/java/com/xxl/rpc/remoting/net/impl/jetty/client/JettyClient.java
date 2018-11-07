@@ -3,6 +3,7 @@ package com.xxl.rpc.remoting.net.impl.jetty.client;
 import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.net.Client;
 import com.xxl.rpc.remoting.net.params.*;
+import com.xxl.rpc.util.ThrowableUtil;
 import com.xxl.rpc.util.XxlRpcException;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.Request;
@@ -54,7 +55,7 @@ public class JettyClient extends Client {
         // request
         Request request = httpClient.newRequest(reqURL);
         request.method(HttpMethod.POST);
-        request.timeout(xxlRpcReferenceBean.getTimeout() + 1000, TimeUnit.MILLISECONDS);		// async, not need timeout
+        request.timeout(xxlRpcReferenceBean.getTimeout() + 500, TimeUnit.MILLISECONDS);		// async, not need timeout
         request.content(new BytesContentProvider(requestBytes));
 
         // invoke
@@ -66,7 +67,7 @@ public class JettyClient extends Client {
 
                     // valid status
                     if (result.isFailed()) {
-                        throw new XxlRpcException("xxl-rpc remoting request error.", result.getResponseFailure());
+                        throw new XxlRpcException("xxl-rpc remoting request fail.", result.getResponseFailure());
                     }
 
                     // valid HttpStatus
@@ -83,10 +84,11 @@ public class JettyClient extends Client {
                     // deserialize response
                     XxlRpcResponse xxlRpcResponse = (XxlRpcResponse) xxlRpcReferenceBean.getSerializer().deserialize(responseBytes, XxlRpcResponse.class);
 
-                    // wait response
+                    // notify response
                     XxlRpcFutureResponse futureResponse = XxlRpcFutureResponseFactory.getInvokerFuture(xxlRpcResponse.getRequestId());
                     if (futureResponse != null) {
                         futureResponse.setResponse(xxlRpcResponse);
+						XxlRpcFutureResponseFactory.removeInvokerFuture(xxlRpcResponse.getRequestId());
                     }
 
                 } catch (Exception e){
@@ -97,9 +99,21 @@ public class JettyClient extends Client {
                             BytesContentProvider requestCp = (BytesContentProvider) result.getRequest().getContent();
                             XxlRpcRequest requestTmp = (XxlRpcRequest) xxlRpcReferenceBean.getSerializer().deserialize(requestCp.iterator().next().array(), XxlRpcRequest.class);
 
-                            XxlRpcFutureResponseFactory.removeInvokerFuture(requestTmp.getRequestId());
+							// notify response
+							XxlRpcFutureResponse futureResponse = XxlRpcFutureResponseFactory.getInvokerFuture(requestTmp.getRequestId());
+							if (futureResponse != null) {
+
+								//  make response
+								XxlRpcResponse xxlRpcResponse = new XxlRpcResponse();
+								xxlRpcResponse.setRequestId(requestTmp.getRequestId());
+								xxlRpcResponse.setErrorMsg(ThrowableUtil.toString(e));
+
+								futureResponse.setResponse(xxlRpcResponse);
+								XxlRpcFutureResponseFactory.removeInvokerFuture(requestTmp.getRequestId());
+							}
+
                         } catch (Exception e2) {
-                            logger.info(">>>>>>>>>>> xxl-rpc, jetty async request fail and remove invoke future error: ", e2.getMessage());
+                            logger.info(">>>>>>>>>>> xxl-rpc, remoting request error.", e2.getMessage());
                         }
                     }
 
