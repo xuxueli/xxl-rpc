@@ -26,22 +26,24 @@ public class JettyClient extends Client {
 
 	@Override
 	public void asyncSend(String address, XxlRpcRequest xxlRpcRequest) throws Exception {
-
-		// reqURL
-		String reqURL = "http://" + address;
-
 		// do invoke
-		postRequestAsync(reqURL, xxlRpcRequest);
+		postRequestAsync(address, xxlRpcRequest);
 	}
 
     /**
      * post request (async)
      *
-     * @param reqURL
+     * @param address
      * @return
      * @throws Exception
      */
-    private void postRequestAsync(String reqURL, XxlRpcRequest xxlRpcRequest) throws Exception {
+    private void postRequestAsync(String address, XxlRpcRequest xxlRpcRequest) throws Exception {
+
+		// reqURL
+		String reqURL = address;
+		if (!address.toLowerCase().startsWith("http")) {
+			reqURL = "http://" + address;	// IP:PORT, need parse to url
+		}
 
 		// serialize request
 		byte[] requestBytes = xxlRpcReferenceBean.getSerializer().serialize(xxlRpcRequest);
