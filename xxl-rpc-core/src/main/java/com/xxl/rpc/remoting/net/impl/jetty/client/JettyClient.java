@@ -67,7 +67,7 @@ public class JettyClient extends Client {
 
                     // valid status
                     if (result.isFailed()) {
-                        throw new XxlRpcException("xxl-rpc remoting request fail.", result.getResponseFailure());
+                        throw new XxlRpcException(result.getResponseFailure());
                     }
 
                     // valid HttpStatus
@@ -103,10 +103,23 @@ public class JettyClient extends Client {
 							XxlRpcFutureResponse futureResponse = XxlRpcFutureResponseFactory.getInvokerFuture(requestTmp.getRequestId());
 							if (futureResponse != null) {
 
+								// error msg
+								String errorMsg = null;
+								if (e instanceof XxlRpcException) {
+									XxlRpcException rpcException = (XxlRpcException) e;
+									if (rpcException.getMessage() != null) {
+										errorMsg = rpcException.getMessage();
+									} else {
+										errorMsg = ThrowableUtil.toString(rpcException.getCause());
+									}
+								} else {
+									errorMsg = ThrowableUtil.toString(e);
+								}
+
 								//  make response
 								XxlRpcResponse xxlRpcResponse = new XxlRpcResponse();
 								xxlRpcResponse.setRequestId(requestTmp.getRequestId());
-								xxlRpcResponse.setErrorMsg(ThrowableUtil.toString(e));
+								xxlRpcResponse.setErrorMsg(errorMsg);
 
 								futureResponse.setResponse(xxlRpcResponse);
 								XxlRpcFutureResponseFactory.removeInvokerFuture(requestTmp.getRequestId());
