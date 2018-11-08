@@ -25,17 +25,17 @@ public class HessianSerializer extends Serializer {
 			byte[] result = os.toByteArray();
 			return result;
 		} catch (IOException e) {
-			throw new XxlRpcException(e.getMessage(), e);
+			throw new XxlRpcException(e);
 		} finally {
 			try {
 				ho.close();
 			} catch (IOException e) {
-				throw new XxlRpcException(e.getMessage(), e);
+				throw new XxlRpcException(e);
 			}
 			try {
 				os.close();
 			} catch (IOException e) {
-				throw new XxlRpcException(e.getMessage(), e);
+				throw new XxlRpcException(e);
 			}
 		}
 
@@ -49,17 +49,17 @@ public class HessianSerializer extends Serializer {
 			Object result = hi.readObject();
 			return result;
 		} catch (IOException e) {
-			throw new XxlRpcException(e.getMessage(), e);
+			throw new XxlRpcException(e);
 		} finally {
 			try {
 				hi.close();
 			} catch (Exception e) {
-				throw new XxlRpcException(e.getMessage(), e);
+				throw new XxlRpcException(e);
 			}
 			try {
 				is.close();
 			} catch (IOException e) {
-				throw new XxlRpcException(e.getMessage(), e);
+				throw new XxlRpcException(e);
 			}
 		}
 	}

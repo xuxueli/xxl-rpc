@@ -42,7 +42,7 @@ public class ProtostuffSerializer extends Serializer {
             Schema<T> schema = getSchema(cls);
             return ProtostuffIOUtil.toByteArray(obj, schema, buffer);
         } catch (Exception e) {
-            throw new XxlRpcException(e.getMessage(), e);
+            throw new XxlRpcException(e);
         } finally {
             buffer.clear();
         }
@@ -56,7 +56,7 @@ public class ProtostuffSerializer extends Serializer {
             ProtostuffIOUtil.mergeFrom(bytes, message, schema);
             return message;
         } catch (Exception e) {
-            throw new XxlRpcException(e.getMessage(), e);
+            throw new XxlRpcException(e);
         }
 	}
     

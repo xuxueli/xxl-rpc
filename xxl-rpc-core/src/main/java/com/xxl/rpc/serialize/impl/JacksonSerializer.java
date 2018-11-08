@@ -1,13 +1,13 @@
 package com.xxl.rpc.serialize.impl;
 
-import java.io.IOException;
-
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xxl.rpc.serialize.Serializer;
 import com.xxl.rpc.util.XxlRpcException;
+
+import java.io.IOException;
 
 /**
  * Jackson工具类
@@ -24,7 +24,7 @@ public class JacksonSerializer extends Serializer {
 		try {
 			return objectMapper.writeValueAsBytes(obj);
 		} catch (JsonProcessingException e) {
-			throw new XxlRpcException(e.getMessage(), e);
+			throw new XxlRpcException(e);
 		}
 	}
 
@@ -34,11 +34,11 @@ public class JacksonSerializer extends Serializer {
 		try {
 			return objectMapper.readValue(bytes, clazz);
 		} catch (JsonParseException e) {
-			throw new XxlRpcException(e.getMessage(), e);
+			throw new XxlRpcException(e);
 		} catch (JsonMappingException e) {
-			throw new XxlRpcException(e.getMessage(), e);
+			throw new XxlRpcException(e);
 		} catch (IOException e) {
-			throw new XxlRpcException(e.getMessage(), e);
+			throw new XxlRpcException(e);
 		}
 	}
 

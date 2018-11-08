@@ -92,7 +92,7 @@ public class XxlRpcReferenceBean {
 		try {
 			client = netType.clientClass.newInstance();
 			client.init(this);
-		} catch (Exception e) {
+		} catch (InstantiationException | IllegalAccessException e) {
 			throw new XxlRpcException(e);
 		}
 	}
@@ -163,11 +163,7 @@ public class XxlRpcReferenceBean {
 								}
 								return xxlRpcResponse.getResult();
 							} catch (Exception e) {
-								if (e instanceof XxlRpcException) {
-									throw e;
-								} else {
-									throw new XxlRpcException(e);
-								}
+								throw (e instanceof XxlRpcException)?e:new XxlRpcException(e);
 							} finally{
 								// future remove
                                 XxlRpcFutureResponseFactory.removeInvokerFuture(xxlRpcRequest.getRequestId());
@@ -188,7 +184,7 @@ public class XxlRpcReferenceBean {
 								// future remove
 								invokeFuture.stop();
 
-                                throw new XxlRpcException(e);
+								throw (e instanceof XxlRpcException)?e:new XxlRpcException(e);
                             }
 
 						} else if (CallType.CALLBACK == callType) {
@@ -213,7 +209,7 @@ public class XxlRpcReferenceBean {
 								// future remove
 								XxlRpcFutureResponseFactory.removeInvokerFuture(xxlRpcRequest.getRequestId());
 
-								throw new XxlRpcException(e);
+								throw (e instanceof XxlRpcException)?e:new XxlRpcException(e);
 							}
 
 							return null;
