@@ -126,11 +126,13 @@ public class JettyClient extends Client {
 							}
 
                         } catch (Exception e2) {
-                            logger.info(">>>>>>>>>>> xxl-rpc, remoting request fail, and callback error.", e2.getMessage());
+                            logger.info(">>>>>>>>>>> xxl-rpc, remoting request error, and callback error: " + e2.getMessage());
+							logger.info(e.getMessage(), e);
                         }
-                    }
+                    } else {
+						logger.info(">>>>>>>>>>> xxl-rpc, remoting request error.", e);
+					}
 
-                    logger.info(">>>>>>>>>>> xxl-rpc, remoting request error.", e);
                 }
 
 

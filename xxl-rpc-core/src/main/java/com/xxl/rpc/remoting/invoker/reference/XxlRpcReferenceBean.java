@@ -163,7 +163,11 @@ public class XxlRpcReferenceBean {
 								}
 								return xxlRpcResponse.getResult();
 							} catch (Exception e) {
-								throw new XxlRpcException(e);
+								if (e instanceof XxlRpcException) {
+									throw e;
+								} else {
+									throw new XxlRpcException(e);
+								}
 							} finally{
 								// future remove
                                 XxlRpcFutureResponseFactory.removeInvokerFuture(xxlRpcRequest.getRequestId());

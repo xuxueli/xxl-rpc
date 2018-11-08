@@ -103,6 +103,7 @@ public class XxlRpcProviderFactory {
 						}
 					}
 					serviceRegistry.stop();
+					serviceRegistry = null;
 				}
 			}
 		});
