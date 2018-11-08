@@ -21,13 +21,13 @@ public class XxlRpcInvokerConfig {
     private Logger logger = LoggerFactory.getLogger(XxlRpcInvokerConfig.class);
 
 
-    @Value("${xxl-rpc.registry.zk.zkaddress}")
+    @Value("${xxl-rpc.registry.zk.zkaddress:}")
     private String zkaddress;
 
-    @Value("${xxl-rpc.registry.zk.zkdigest}")
+    @Value("${xxl-rpc.registry.zk.zkdigest:}")
     private String zkdigest;
 
-    @Value("${xxl-rpc.env}")
+    @Value("${xxl-rpc.env:}")
     private String env;
 
 
@@ -35,7 +35,7 @@ public class XxlRpcInvokerConfig {
     public XxlRpcSpringInvokerFactory xxlJobExecutor() {
 
         XxlRpcSpringInvokerFactory invokerFactory = new XxlRpcSpringInvokerFactory();
-        if (zkaddress != null) {
+        if (zkaddress!=null && zkaddress.trim().length()>0) {
             invokerFactory.setServiceRegistryClass(ZkServiceRegistry.class);
             invokerFactory.setServiceRegistryParam(new HashMap<String, String>(){{
                 put(Environment.ZK_ADDRESS, zkaddress);

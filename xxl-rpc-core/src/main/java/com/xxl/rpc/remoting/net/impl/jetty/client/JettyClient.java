@@ -155,7 +155,7 @@ public class JettyClient extends Client {
 		// init jettp httpclient
 		jettyHttpClient = new HttpClient();
 		jettyHttpClient.setFollowRedirects(false);	                // avoid redirect-302
-		jettyHttpClient.setExecutor(new QueuedThreadPool());		// default maxThreads 200, minThreads 0
+		jettyHttpClient.setExecutor(new QueuedThreadPool());		// default maxThreads 200, minThreads 8
 		jettyHttpClient.setMaxConnectionsPerDestination(10000);	    // limit conn per desc
 		jettyHttpClient.start();						            // start
 

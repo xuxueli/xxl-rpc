@@ -20,16 +20,16 @@ import java.util.HashMap;
 public class XxlRpcProviderConfig {
     private Logger logger = LoggerFactory.getLogger(XxlRpcProviderConfig.class);
 
-    @Value("${xxl-rpc.remoting.port}")
+    @Value("${xxl-rpc.remoting.port:0}")
     private int port;
 
-    @Value("${xxl-rpc.registry.zk.zkaddress}")
+    @Value("${xxl-rpc.registry.zk.zkaddress:}")
     private String zkaddress;
 
-    @Value("${xxl-rpc.registry.zk.zkdigest}")
+    @Value("${xxl-rpc.registry.zk.zkdigest:}")
     private String zkdigest;
 
-    @Value("${xxl-rpc.env}")
+    @Value("${xxl-rpc.env:}")
     private String env;
 
     @Bean
@@ -37,7 +37,7 @@ public class XxlRpcProviderConfig {
 
         XxlRpcSpringProviderFactory providerFactory = new XxlRpcSpringProviderFactory();
         providerFactory.setPort(port);
-        if (zkaddress != null) {
+        if (zkaddress!=null && zkaddress.trim().length()>0) {
             providerFactory.setServiceRegistryClass(ZkServiceRegistry.class);
             providerFactory.setServiceRegistryParam(new HashMap<String, String>(){{
                 put(Environment.ZK_ADDRESS, zkaddress);

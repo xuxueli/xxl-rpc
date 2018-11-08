@@ -365,6 +365,7 @@ XXL-RPC支持两种方式设置远程服务地址：
 - 2、除了springboot类型示例；新增无框架示例项目 "xxl-rpc-executor-sample-frameless"。不依赖第三方框架，只需main方法即可启动运行；
 - 3、选型http通讯方式时，校验为IP端口格式地址则主动添加地址前缀；
 - 4、RPC异步请求逻辑优化，请求异常时主动通知Client端，避免无效等待时间；
+- 5、http通讯方式选型jetty时，线程池升级为QueuedThreadPool，修复jetty9.4版本server自动销毁问题；
 
 ### TODO
 - 提高系统可用性，以部分功能暂时不可达为代价，防止服务整体缓慢或雪崩
@@ -379,7 +380,7 @@ XXL-RPC支持两种方式设置远程服务地址：
 - 底层Log整理，RPC报错时打印完整Log，包括请求地址，请求参数等；
 - zk注册中心初始化时取消对集群状态强依赖，底层异常时循环检测；
 - 服务提供者iface获取方式优化，兼容代理方式获取接口 “getProxiedInterfaces”；
-- Server启动失败时，ZK销毁中断问题修复；
+- Server启动失败时，ZK销毁中断问题修复，偶发；
 
 
 ## 六、其他

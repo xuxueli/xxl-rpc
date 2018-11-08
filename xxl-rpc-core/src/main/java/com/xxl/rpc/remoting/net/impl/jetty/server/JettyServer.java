@@ -6,7 +6,7 @@ import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.HandlerCollection;
-import org.eclipse.jetty.util.thread.ExecutorThreadPool;
+import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
 /**
  * jetty server
@@ -28,7 +28,7 @@ public class JettyServer extends Server {
 			public void run() {
 
 				// The Server
-				server = new org.eclipse.jetty.server.Server(new ExecutorThreadPool(10000));
+				server = new org.eclipse.jetty.server.Server(new QueuedThreadPool());	// default maxThreads 200, minThreads 8
 				// TODO, thread config, change to async servlet
 
 				// HTTP connector
