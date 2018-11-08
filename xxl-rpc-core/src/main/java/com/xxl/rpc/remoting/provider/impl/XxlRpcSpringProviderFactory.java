@@ -74,6 +74,9 @@ public class XxlRpcSpringProviderFactory extends XxlRpcProviderFactory implement
         Serializer.SerializeEnum serializeEnum = Serializer.SerializeEnum.match(serialize, null);
         Serializer serializer = serializeEnum!=null?serializeEnum.getSerializer():null;
 
+        if (port <= 0) {
+            throw new XxlRpcException("xxl-rpc provider port["+ port +"] is unvalid.");
+        }
         if (NetUtil.isPortUsed(port)) {
             throw new XxlRpcException("xxl-rpc provider port["+ port +"] is used.");
         }

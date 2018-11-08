@@ -3,6 +3,7 @@ package com.xxl.rpc.remoting.net.impl.jetty.server;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import com.xxl.rpc.remoting.provider.XxlRpcProviderFactory;
+import com.xxl.rpc.util.ThrowableUtil;
 import com.xxl.rpc.util.XxlRpcException;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
@@ -33,24 +34,44 @@ public class JettyServerHandler extends AbstractHandler {
 	@Override
 	public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
-		// request
-		XxlRpcRequest xxlRpcRequest = parseRequest(request);
+		if ("/services".equals(target)) {	// services mapping
 
-		// invoke + response
-		XxlRpcResponse xxlRpcResponse = xxlRpcProviderFactory.invokeService(xxlRpcRequest);
+			StringBuffer stringBuffer = new StringBuffer("<ui>");
+			for (String serviceKey: xxlRpcProviderFactory.getServiceData().keySet()) {
+				stringBuffer.append("<li>").append(serviceKey).append(": ").append(xxlRpcProviderFactory.getServiceData().get(serviceKey)).append("</li>");
+			}
+			stringBuffer.append("</ui>");
 
-		writeResponse(baseRequest, response, xxlRpcResponse);
+			writeResponse(baseRequest, response, stringBuffer.toString().getBytes());
+			return;
+		} else {	// default remoting mapping
+
+			// request parse
+			XxlRpcRequest xxlRpcRequest = null;
+			try {
+
+				xxlRpcRequest = parseRequest(request);
+			} catch (Exception e) {
+				writeResponse(baseRequest, response, ThrowableUtil.toString(e).getBytes());
+				return;
+			}
+
+			// invoke
+			XxlRpcResponse xxlRpcResponse = xxlRpcProviderFactory.invokeService(xxlRpcRequest);
+
+			// response-serialize + response-write
+			byte[] responseBytes = xxlRpcProviderFactory.getSerializer().serialize(xxlRpcResponse);
+			writeResponse(baseRequest, response, responseBytes);
+		}
+
 	}
 
 	/**
 	 * write response
 	 */
-	private void writeResponse(Request baseRequest, HttpServletResponse response, XxlRpcResponse xxlRpcResponse) throws IOException {
+	private void writeResponse(Request baseRequest, HttpServletResponse response, byte[] responseBytes) throws IOException {
 
-		// serialize response
-		byte[] responseBytes = xxlRpcProviderFactory.getSerializer().serialize(xxlRpcResponse);
-
-		response.setContentType("text/html;charset=utf-8");
+		response.setContentType("text/html;charset=UTF-8");
 		response.setStatus(HttpServletResponse.SC_OK);
 		baseRequest.setHandled(true);
 
@@ -62,11 +83,11 @@ public class JettyServerHandler extends AbstractHandler {
 	/**
 	 * parse request
 	 */
-	private XxlRpcRequest parseRequest(HttpServletRequest request) throws IOException {
+	private XxlRpcRequest parseRequest(HttpServletRequest request) throws Exception {
 		// deserialize request
 		byte[] requestBytes = readBytes(request);
 		if (requestBytes == null || requestBytes.length==0) {
-			throw new XxlRpcException("XxlRpcRequest byte[] is null");
+			throw new XxlRpcException("xxl-rpc request data is empty.");
 		}
 		XxlRpcRequest rpcXxlRpcRequest = (XxlRpcRequest) xxlRpcProviderFactory.getSerializer().deserialize(requestBytes, XxlRpcRequest.class);
 		return rpcXxlRpcRequest;

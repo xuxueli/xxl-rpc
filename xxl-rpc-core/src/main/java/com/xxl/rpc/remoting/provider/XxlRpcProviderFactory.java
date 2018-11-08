@@ -122,6 +122,9 @@ public class XxlRpcProviderFactory {
 	 * init local rpc service map
 	 */
 	private Map<String, Object> serviceData = new HashMap<String, Object>();
+	public Map<String, Object> getServiceData() {
+		return serviceData;
+	}
 
 	/**
 	 * make service key
