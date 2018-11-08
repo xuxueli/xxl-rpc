@@ -20,12 +20,9 @@ public class XxlRpcInvokeFuture implements Future {
 
     public XxlRpcInvokeFuture(XxlRpcFutureResponse futureResponse) {
         this.futureResponse = futureResponse;
-
-        // future set
-        XxlRpcFutureResponseFactory.setInvokerFuture(futureResponse.getRequest().getRequestId(), futureResponse);
     }
     public void stop(){
-        // future remove
+        // remove-InvokerFuture
         XxlRpcFutureResponseFactory.removeInvokerFuture(futureResponse.getRequest().getRequestId());
     }
 

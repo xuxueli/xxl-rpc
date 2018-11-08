@@ -21,13 +21,16 @@ public class XxlRpcFutureResponse implements Future<XxlRpcResponse> {
 	private boolean done = false;
 	private Object lock = new Object();
 
-	// callback
+	// callback, can be null
 	private XxlRpcInvokeCallback invokeCallback;
 
 
 	public XxlRpcFutureResponse(XxlRpcRequest request, XxlRpcInvokeCallback invokeCallback) {
 		this.request = request;
 		this.invokeCallback = invokeCallback;
+
+		// set-InvokerFuture
+		XxlRpcFutureResponseFactory.setInvokerFuture(request.getRequestId(), this);
 	}
 
 	public XxlRpcRequest getRequest() {

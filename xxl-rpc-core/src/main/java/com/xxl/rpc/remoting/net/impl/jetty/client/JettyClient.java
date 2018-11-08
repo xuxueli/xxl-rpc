@@ -85,11 +85,7 @@ public class JettyClient extends Client {
                     XxlRpcResponse xxlRpcResponse = (XxlRpcResponse) xxlRpcReferenceBean.getSerializer().deserialize(responseBytes, XxlRpcResponse.class);
 
                     // notify response
-                    XxlRpcFutureResponse futureResponse = XxlRpcFutureResponseFactory.getInvokerFuture(xxlRpcResponse.getRequestId());
-                    if (futureResponse != null) {
-                        futureResponse.setResponse(xxlRpcResponse);
-						XxlRpcFutureResponseFactory.removeInvokerFuture(xxlRpcResponse.getRequestId());
-                    }
+					XxlRpcFutureResponseFactory.notifyInvokerFuture(xxlRpcResponse.getRequestId(), xxlRpcResponse);
 
                 } catch (Exception e){
 
@@ -99,31 +95,26 @@ public class JettyClient extends Client {
                             BytesContentProvider requestCp = (BytesContentProvider) result.getRequest().getContent();
                             XxlRpcRequest requestTmp = (XxlRpcRequest) xxlRpcReferenceBean.getSerializer().deserialize(requestCp.iterator().next().array(), XxlRpcRequest.class);
 
-							// notify response
-							XxlRpcFutureResponse futureResponse = XxlRpcFutureResponseFactory.getInvokerFuture(requestTmp.getRequestId());
-							if (futureResponse != null) {
-
-								// error msg
-								String errorMsg = null;
-								if (e instanceof XxlRpcException) {
-									XxlRpcException rpcException = (XxlRpcException) e;
-									if (rpcException.getCause() != null) {
-										errorMsg = ThrowableUtil.toString(rpcException.getCause());
-									} else {
-										errorMsg = rpcException.getMessage();
-									}
+							// error msg
+							String errorMsg = null;
+							if (e instanceof XxlRpcException) {
+								XxlRpcException rpcException = (XxlRpcException) e;
+								if (rpcException.getCause() != null) {
+									errorMsg = ThrowableUtil.toString(rpcException.getCause());
 								} else {
-									errorMsg = ThrowableUtil.toString(e);
+									errorMsg = rpcException.getMessage();
 								}
-
-								//  make response
-								XxlRpcResponse xxlRpcResponse = new XxlRpcResponse();
-								xxlRpcResponse.setRequestId(requestTmp.getRequestId());
-								xxlRpcResponse.setErrorMsg(errorMsg);
-
-								futureResponse.setResponse(xxlRpcResponse);
-								XxlRpcFutureResponseFactory.removeInvokerFuture(requestTmp.getRequestId());
+							} else {
+								errorMsg = ThrowableUtil.toString(e);
 							}
+
+							//  make response
+							XxlRpcResponse xxlRpcResponse = new XxlRpcResponse();
+							xxlRpcResponse.setRequestId(requestTmp.getRequestId());
+							xxlRpcResponse.setErrorMsg(errorMsg);
+
+							// notify response
+							XxlRpcFutureResponseFactory.notifyInvokerFuture(xxlRpcResponse.getRequestId(), xxlRpcResponse);
 
                         } catch (Exception e2) {
                             logger.info(">>>>>>>>>>> xxl-rpc, remoting request error, and callback error: " + e2.getMessage());

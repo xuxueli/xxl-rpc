@@ -13,6 +13,7 @@ public class XxlRpcFutureResponseFactory {
     private static ConcurrentMap<String, XxlRpcFutureResponse> futureResponsePool = new ConcurrentHashMap<String, XxlRpcFutureResponse>();
 
     public static void setInvokerFuture(String requestId, XxlRpcFutureResponse futureResponse){
+        // TODO，running future method-isolation and limit
         futureResponsePool.put(requestId, futureResponse);
     }
 
@@ -20,8 +21,12 @@ public class XxlRpcFutureResponseFactory {
         futureResponsePool.remove(requestId);
     }
 
-    public static XxlRpcFutureResponse getInvokerFuture(String requestId){
-        return futureResponsePool.get(requestId);
+    public static void notifyInvokerFuture(String requestId, XxlRpcResponse xxlRpcResponse){
+        XxlRpcFutureResponse futureResponse = futureResponsePool.get(requestId);
+        if (futureResponse != null) {
+            futureResponse.setResponse(xxlRpcResponse);
+            futureResponsePool.remove(requestId);
+        }
     }
 
 }

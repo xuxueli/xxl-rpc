@@ -151,7 +151,6 @@ public class XxlRpcReferenceBean {
 							try {
 								// future set
 								XxlRpcFutureResponse futureResponse = new XxlRpcFutureResponse(xxlRpcRequest, null);
-								XxlRpcFutureResponseFactory.setInvokerFuture(xxlRpcRequest.getRequestId(), futureResponse);
 
 								// do invoke
 								client.asyncSend(address, xxlRpcRequest);
@@ -167,7 +166,7 @@ public class XxlRpcReferenceBean {
 
 								throw (e instanceof XxlRpcException)?e:new XxlRpcException(e);
 							} finally{
-								// future remove
+								// remove-InvokerFuture
                                 XxlRpcFutureResponseFactory.removeInvokerFuture(xxlRpcRequest.getRequestId());
 							}
 						} else if (CallType.FUTURE == callType) {
@@ -175,6 +174,7 @@ public class XxlRpcReferenceBean {
 							// thread future set
 							XxlRpcInvokeFuture invokeFuture = null;
                             try {
+								// future set
 								invokeFuture = new XxlRpcInvokeFuture(new XxlRpcFutureResponse(xxlRpcRequest, null));
 								XxlRpcInvokeFuture.setFuture(invokeFuture);
 
@@ -185,7 +185,7 @@ public class XxlRpcReferenceBean {
                             } catch (Exception e) {
 								logger.info(">>>>>>>>>>> xxl-job, invoke error, address:{}, XxlRpcRequest{}", address, xxlRpcRequest);
 
-								// future remove
+								// remove-InvokerFuture
 								invokeFuture.stop();
 
 								throw (e instanceof XxlRpcException)?e:new XxlRpcException(e);
@@ -206,7 +206,6 @@ public class XxlRpcReferenceBean {
 							try {
 								// future set
 								XxlRpcFutureResponse futureResponse = new XxlRpcFutureResponse(xxlRpcRequest, finalInvokeCallback);
-								XxlRpcFutureResponseFactory.setInvokerFuture(xxlRpcRequest.getRequestId(), futureResponse);
 
 								client.asyncSend(address, xxlRpcRequest);
 							} catch (Exception e) {
