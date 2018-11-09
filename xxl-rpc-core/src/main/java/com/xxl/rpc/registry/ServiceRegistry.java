@@ -1,9 +1,6 @@
 package com.xxl.rpc.registry;
 
 
-import com.xxl.rpc.registry.impl.LocalServiceRegistry;
-import com.xxl.rpc.registry.impl.ZkServiceRegistry;
-
 import java.util.Map;
 import java.util.TreeSet;
 
