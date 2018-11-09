@@ -368,6 +368,8 @@ XXL-RPC支持两种方式设置远程服务地址：
 - 5、http通讯方式选型jetty时，线程池升级为QueuedThreadPool，修复jetty9.4版本server自动销毁问题；
 - 6、Server新增 "/services" 目录功能，可查看在线服务列表；
 
+### 5.4 版本 v1.2.2 Release Notes[迭代中]
+- 1、[迭代中]负载均衡：loadbance模块；轮训，计划：IP一致性HASH、LRU、LFU、成功率等；
 
 ### TODO
 - 提高系统可用性，以部分功能暂时不可达为代价，防止服务整体缓慢或雪崩
@@ -383,6 +385,13 @@ XXL-RPC支持两种方式设置远程服务地址：
 - zk注册中心初始化时取消对集群状态强依赖，底层异常时循环检测；
 - 服务提供者iface获取方式优化，兼容代理方式获取接口 “getProxiedInterfaces”；
 - Server启动失败时，ZK销毁中断问题修复，偶发；
+- 演进计划：
+    - 通讯：remoting模块；TCP、HTTP、HTTP2可选方案；
+    - 注册中心：registry模块；Local、ZK可选方案；计划基于DB的轻量级注册中心；
+    - 负载均衡：loadbance模块；轮训，计划：IP一致性HASH、LRU、LFU、成功率等；
+    - 限流：ratelimit模块；计划：请求方限流、服务方限流；
+    - 网关：servlet3 + 泛华调用模块；计划：基于DB轻量级注册中心，服务动态发现，自动转发；
+    
 
 
 ## 六、其他
