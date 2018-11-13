@@ -395,6 +395,13 @@ XXL-RPC支持两种方式设置远程服务地址：
     - 负载均衡：loadbance模块；轮训，计划：IP一致性HASH、LRU、LFU、成功率等；
     - 限流：ratelimit模块；计划：请求方限流、服务方限流；
     - 网关：servlet3 + 泛华调用模块；计划：基于DB轻量级注册中心，服务动态发现，自动转发；
+- admin-注册中心；
+    - db
+    - zk
+- admin-服务监控（《xxl-trance》）:
+    - tps，99线；
+    - 成功率；
+    - 调用链：
     
 
 
