@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.regex.Pattern;
 
@@ -45,35 +44,48 @@ public class IpUtil {
      * @return InetAddress
      */
     private static InetAddress getFirstValidAddress() {
-        // NetworkInterface address
-        Enumeration<NetworkInterface> interfaces;
-        try {
-            interfaces = NetworkInterface.getNetworkInterfaces();
-        } catch (SocketException e) {
-            logger.error("Failed to retriving ip address, " + e.getMessage(), e);
-            return null;
-        }
 
-        InetAddress candidateAddress = null;
-        while (interfaces.hasMoreElements()) {
-            NetworkInterface network = interfaces.nextElement();
-            Enumeration<InetAddress> addresses = network.getInetAddresses();
-            while (addresses.hasMoreElements()) {
-                InetAddress address = addresses.nextElement();
-                if (isValidAddress(address)) {
-                    // return site-local address immediately.
-                    if (address.isSiteLocalAddress()) {
-                        return address;
-                    }
-                    // get first candidate address.
-                    if (candidateAddress == null) {
-                        candidateAddress = address;
+        // NetworkInterface address
+        try {
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            if (interfaces != null) {
+                while (interfaces.hasMoreElements()) {
+                    try {
+                        NetworkInterface network = interfaces.nextElement();
+                        Enumeration<InetAddress> addresses = network.getInetAddresses();
+                        if (addresses != null) {
+                            while (addresses.hasMoreElements()) {
+                                try {
+                                    InetAddress address = addresses.nextElement();
+                                    if (isValidAddress(address)) {
+                                        return address;
+                                    }
+                                } catch (Throwable e) {
+                                    logger.error("Failed to retriving ip address, " + e.getMessage(), e);
+                                }
+                            }
+                        }
+                    } catch (Throwable e) {
+                        logger.error("Failed to retriving ip address, " + e.getMessage(), e);
                     }
                 }
             }
+        } catch (Throwable e) {
+            logger.error("Failed to retriving ip address, " + e.getMessage(), e);
         }
+
+        // getLocalHost address
+        try {
+            InetAddress localAddress = InetAddress.getLocalHost();
+            if (isValidAddress(localAddress)) {
+                return localAddress;
+            }
+        } catch (Throwable e) {
+            logger.error("Failed to retriving ip address, " + e.getMessage(), e);
+        }
+
         logger.error("Could not get local host ip address, will use 127.0.0.1 instead.");
-        return candidateAddress;
+        return null;
     }
 
 
@@ -87,7 +99,7 @@ public class IpUtil {
             return LOCAL_ADDRESS;
         }
         InetAddress localAddress = getFirstValidAddress();
-        LOCAL_ADDRESS = localAddress != null ? localAddress.getHostAddress() : null;
+        LOCAL_ADDRESS = localAddress.getHostAddress();
         return LOCAL_ADDRESS;
     }
 
