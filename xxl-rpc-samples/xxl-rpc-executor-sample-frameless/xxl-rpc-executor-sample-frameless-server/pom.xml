@@ -18,7 +18,6 @@
 			<version>${parent.version}</version>
 		</dependency>
 
-
 		<!-- slf4j -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
