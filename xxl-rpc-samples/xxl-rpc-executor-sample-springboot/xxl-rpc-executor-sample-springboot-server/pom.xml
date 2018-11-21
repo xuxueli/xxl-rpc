@@ -69,6 +69,17 @@
 			<artifactId>xxl-rpc-core</artifactId>
 			<version>${parent.version}</version>
 		</dependency>
+		<!-- jetty (support xxl-rpc) -->
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-server</artifactId>
+			<version>${jetty-server.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-client</artifactId>
+			<version>${jetty-server.version}</version>
+		</dependency>
 		<!-- zookeeper (registry-zk) -->
 		<dependency>
 			<groupId>org.apache.zookeeper</groupId>

@@ -31,7 +31,7 @@
 		</dependency>
 
 
-		<!-- ********************** serialize (hessian default) ********************** -->
+		<!-- ********************** serialize (default=hessian) ********************** -->
 
 		<!-- hessian -->
 		<dependency>
@@ -69,7 +69,7 @@
 		</dependency>
 
 
-		<!-- ********************** registry  (local default) ********************** -->
+		<!-- ********************** registry  (default=local) ********************** -->
 
 		<!-- zookeeper (provided) -->
         <dependency>
@@ -80,18 +80,20 @@
         </dependency>
 
 
-		<!-- ********************** net (jetty default) ********************** -->
+		<!-- ********************** net (default=none) ********************** -->
 
-		<!-- jetty (javax.servlet-api:3.1.0;) -->
+		<!-- jetty (javax.servlet-api) -->
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
 			<version>${jetty-server.version}</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-client</artifactId>
 			<version>${jetty-server.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- netty (commons-pool2) -->
@@ -116,7 +118,7 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- ********************** other ********************** -->
+		<!-- ********************** other (provided) ********************** -->
 
 		<!-- spring -->
 		<dependency>
