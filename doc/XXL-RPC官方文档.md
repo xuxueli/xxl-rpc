@@ -374,8 +374,7 @@ XXL-RPC支持两种方式设置远程服务地址：
 
 ### 5.4 版本 v1.2.2 Release Notes[迭代中]
 - 1、IP工具类优化，兼容 Inet6Address 格式地址；
-- 2、通讯方案取消默认JETTY选型，各内置实现依赖改为provided类型，按需添加；可选JETTY、NETTY或MINA等；
-- 3、[迭代中]负载均衡：loadbance模块；轮训，计划：IP一致性HASH、LRU、LFU、成功率等；
+- 2、[迭代中]负载均衡：loadbance模块；轮训，计划：IP一致性HASH、LRU、LFU、成功率等；
 
 ### TODO
 - 提高系统可用性，以部分功能暂时不可达为代价，防止服务整体缓慢或雪崩
