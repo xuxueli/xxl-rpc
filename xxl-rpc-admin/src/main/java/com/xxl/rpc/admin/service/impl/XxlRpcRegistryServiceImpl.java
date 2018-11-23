@@ -360,6 +360,8 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
 
         /**
          * broadcase new one registry-data-file     (1/1s)
+         *
+         * clean old message   (1/10s)
          */
         executorService.execute(new Runnable() {
             @Override
@@ -381,6 +383,12 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
                                 }
                             }
                         }
+
+                        // clean old message;
+                        if (System.currentTimeMillis() % 10 ==0) {
+                            xxlRpcRegistryMessageDao.cleanMessage(10);
+                            readedMessageIds.clear();
+                        }
                     } catch (Exception e) {
                         logger.error(e.getMessage(), e);
                     }
@@ -394,8 +402,6 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
         });
 
         /**
-         *  clean old message   (1/10s)
-         *
          *  clean old registry-data     (1/10s)
          *
          *  sync total registry-data db + file      (1+N/10s)
@@ -408,9 +414,6 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
             public void run() {
                 while (!executorStoped) {
                     try {
-                        // clean old message;
-                        xxlRpcRegistryMessageDao.cleanMessage(beatTime);
-
                         // clean old registry-data in db
                         xxlRpcRegistryDataDao.cleanData(beatTime*2);
 
