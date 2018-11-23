@@ -62,18 +62,21 @@ public class RegistryController {
     // ---------------------- remote registry ----------------------
 
     @RequestMapping("/registry")
+    @ResponseBody
     @PermessionLimit(limit=false)
     public ReturnT<String> registry(XxlRpcRegistryData xxlRpcRegistryData){
         return xxlRpcRegistryService.registry(xxlRpcRegistryData);
     }
 
     @RequestMapping("/remove")
+    @ResponseBody
     @PermessionLimit(limit=false)
     public ReturnT<String> remove(XxlRpcRegistryData xxlRpcRegistryData){
         return xxlRpcRegistryService.remove(xxlRpcRegistryData);
     }
 
     @RequestMapping("/discovery")
+    @ResponseBody
     @PermessionLimit(limit=false)
     public ReturnT<String> discovery(XxlRpcRegistryData xxlRpcRegistryData) {
         return xxlRpcRegistryService.discovery(xxlRpcRegistryData);

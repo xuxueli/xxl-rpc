@@ -34,8 +34,11 @@ public class PropUtil {
             if (in == null) {
                 return null;
             }
+
             Properties prop = new Properties();
             prop.load(new InputStreamReader(in, "utf-8"));
+
+            return prop;
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         } finally {

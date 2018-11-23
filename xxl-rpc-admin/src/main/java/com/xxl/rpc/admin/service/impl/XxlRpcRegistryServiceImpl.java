@@ -227,6 +227,12 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
             xxlRpcRegistryDao.add(xxlRpcRegistry);
             needMessage = true;
         } else {
+
+            // locked, not updated by client
+            if (xxlRpcRegistry.getStatus() == 1) {
+                dataJson = xxlRpcRegistry.getData();
+            }
+
             if (!xxlRpcRegistry.getData().equals(dataJson)) {
                 xxlRpcRegistry.setData(dataJson);
                 xxlRpcRegistry.setVersion(UUID.randomUUID().toString().replaceAll("-", ""));
@@ -270,8 +276,8 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
 
     @Override
     public ReturnT<String> discovery(XxlRpcRegistryData xxlRpcRegistryData) {
-        String valueSet = getFileRegistryData(xxlRpcRegistryData);
-        return new ReturnT<String>(valueSet);
+        String registryData = getFileRegistryData(xxlRpcRegistryData);
+        return new ReturnT<String>(registryData);
     }
 
 
@@ -285,11 +291,7 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
     public String getFileRegistryData(XxlRpcRegistryData xxlRpcRegistryData){
 
         // fileName
-        String fileName = registryDataFilePath
-                .concat(File.separator).concat(xxlRpcRegistryData.getBiz())
-                .concat(File.separator).concat(xxlRpcRegistryData.getEnv())
-                .concat(File.separator).concat(xxlRpcRegistryData.getKey())
-                .concat(".properties");
+        String fileName = parseRegistryDataFileName(xxlRpcRegistryData.getBiz(), xxlRpcRegistryData.getEnv(), xxlRpcRegistryData.getKey());
 
         // read
         Properties prop = PropUtil.loadProp(fileName);
@@ -298,16 +300,21 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
         }
         return null;
     }
-
-    // set
-    public String setFileRegistryData(XxlRpcRegistry xxlRpcRegistry){
-
+    private String parseRegistryDataFileName(String biz, String env, String key){
         // fileName
         String fileName = registryDataFilePath
-                .concat(File.separator).concat(xxlRpcRegistry.getBiz())
-                .concat(File.separator).concat(xxlRpcRegistry.getEnv())
-                .concat(File.separator).concat(xxlRpcRegistry.getKey())
+                .concat(File.separator).concat(biz)
+                .concat(File.separator).concat(env)
+                .concat(File.separator).concat(key)
                 .concat(".properties");
+        return fileName;
+    }
+
+    // set
+    public void setFileRegistryData(XxlRpcRegistry xxlRpcRegistry){
+
+        // fileName
+        String fileName = parseRegistryDataFileName(xxlRpcRegistry.getBiz(), xxlRpcRegistry.getEnv(), xxlRpcRegistry.getKey());
 
         // write
         Properties prop = new Properties();
@@ -319,7 +326,6 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
         logger.info(">>>>>>>>>>> xxl-rpc, setFileRegistryData: biz={}, env={}, key={}, data={}"
                 , xxlRpcRegistry.getBiz(), xxlRpcRegistry.getEnv(), xxlRpcRegistry.getKey(), xxlRpcRegistry.getData());
 
-        return fileName;
     }
     // clean
     public void cleanFileRegistryData(List<String> registryDataFileList){
@@ -338,7 +344,12 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
                 logger.info(">>>>>>>>>>> xxl-rpc, cleanFileRegistryData, RegistryData Path={}", childFile.getPath());
             }
             if (childFile.isDirectory()) {
-                filterChildPath(childFile, registryDataFileList);
+                if (parentPath.listFiles()!=null && parentPath.listFiles().length>0) {
+                    filterChildPath(childFile, registryDataFileList);
+                } else {
+                    childFile.delete();
+                }
+
             }
         }
 
@@ -364,18 +375,9 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
                                 if (message.getType() == 0) {
                                     XxlRpcRegistry xxlRpcRegistry = JacksonUtil.readValue(message.getData(), XxlRpcRegistry.class);
 
-                                    // lock pass, only human update
-                                    if (xxlRpcRegistry.getStatus() == 1) {
-                                        continue;
-                                    }
-
                                     // set
                                     setFileRegistryData(xxlRpcRegistry);
 
-                                    if (!logger.isDebugEnabled()) {
-                                        logger.info(">>>>>>>>>>> xxl-rpc, broadcase set file registry data: biz={}, env={}, key={}, data={}"
-                                                , xxlRpcRegistry.getBiz(), xxlRpcRegistry.getEnv(), xxlRpcRegistry.getKey(), xxlRpcRegistry.getData());
-                                    }
                                 }
                             }
                         }
@@ -422,11 +424,6 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
 
                             for (XxlRpcRegistry registryItem: registryList) {
 
-                                // lock pass, only human update
-                                if (registryItem.getStatus() == 1) {
-                                    continue;
-                                }
-
                                 // data json
                                 List<XxlRpcRegistryData> xxlRpcRegistryDataList = xxlRpcRegistryDataDao.findData(registryItem.getBiz(), registryItem.getEnv(), registryItem.getKey());
                                 TreeSet<String> valueSet = new TreeSet<>();
@@ -437,6 +434,11 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
                                 }
                                 String dataJson = JacksonUtil.writeValueAsString(valueSet);
 
+                                // locked, not updated by client
+                                if (registryItem.getStatus() == 1) {
+                                    dataJson = registryItem.getData();
+                                }
+
                                 // sync db + file
                                 if (!registryItem.getData().equals(dataJson)) {
                                     // db
@@ -445,12 +447,12 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
                                     xxlRpcRegistryDao.update(registryItem);
 
                                     // file
-                                    String registryDataFile = setFileRegistryData(registryItem);
-
-                                    // collect
-                                    registryDataFileList.add(registryDataFile);
+                                    setFileRegistryData(registryItem);
                                 }
 
+                                // collect
+                                String registryDataFile = parseRegistryDataFileName(registryItem.getBiz(), registryItem.getEnv(), registryItem.getKey());
+                                registryDataFileList.add(registryDataFile);
                             }
 
 

@@ -28,10 +28,10 @@
 		FROM XXL_RPC_REGISTRY AS t
 		<trim prefix="WHERE" prefixOverrides="AND | OR" >
 			<if test="biz != null and biz != ''">
-				t.biz = #{biz}
+				AND t.biz = #{biz}
 			</if>
 			<if test="env != null and env != ''">
-				t.env = #{env}
+				AND t.env = #{env}
 			</if>
 			<if test="key != null and key != ''">
 				AND t.key like CONCAT(CONCAT('%', #{key}), '%')
@@ -46,10 +46,10 @@
 		FROM XXL_RPC_REGISTRY AS t
 		<trim prefix="WHERE" prefixOverrides="AND | OR" >
 			<if test="biz != null and biz != ''">
-				t.biz = #{biz}
+				AND t.biz = #{biz}
 			</if>
 			<if test="env != null and env != ''">
-				t.env = #{env}
+				AND t.env = #{env}
 			</if>
 			<if test="key != null and key != ''">
 				AND t.key like CONCAT(CONCAT('%', #{key}), '%')
