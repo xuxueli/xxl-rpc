@@ -315,6 +315,10 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
 
         PropUtil.writeProp(prop, fileName);
 
+
+        logger.info(">>>>>>>>>>> xxl-rpc, setFileRegistryData: biz={}, env={}, key={}, data={}"
+                , xxlRpcRegistry.getBiz(), xxlRpcRegistry.getEnv(), xxlRpcRegistry.getKey(), xxlRpcRegistry.getData());
+
         return fileName;
     }
     // clean
@@ -328,8 +332,10 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
         }
         File[] childFileList = parentPath.listFiles();
         for (File childFile: childFileList) {
-            if (childFile.isFile() && registryDataFileList.contains(childFile.getPath())) {
+            if (childFile.isFile() && !registryDataFileList.contains(childFile.getPath())) {
                 childFile.delete();
+
+                logger.info(">>>>>>>>>>> xxl-rpc, cleanFileRegistryData, RegistryData Path={}", childFile.getPath());
             }
             if (childFile.isDirectory()) {
                 filterChildPath(childFile, registryDataFileList);
@@ -363,7 +369,13 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
                                         continue;
                                     }
 
+                                    // set
                                     setFileRegistryData(xxlRpcRegistry);
+
+                                    if (!logger.isDebugEnabled()) {
+                                        logger.info(">>>>>>>>>>> xxl-rpc, broadcase set file registry data: biz={}, env={}, key={}, data={}"
+                                                , xxlRpcRegistry.getBiz(), xxlRpcRegistry.getEnv(), xxlRpcRegistry.getKey(), xxlRpcRegistry.getData());
+                                    }
                                 }
                             }
                         }
@@ -427,11 +439,15 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
 
                                 // sync db + file
                                 if (!registryItem.getData().equals(dataJson)) {
+                                    // db
                                     registryItem.setData(dataJson);
                                     registryItem.setVersion(UUID.randomUUID().toString().replaceAll("-", ""));
                                     xxlRpcRegistryDao.update(registryItem);
 
+                                    // file
                                     String registryDataFile = setFileRegistryData(registryItem);
+
+                                    // collect
                                     registryDataFileList.add(registryDataFile);
                                 }
 
