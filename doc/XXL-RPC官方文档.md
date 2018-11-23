@@ -374,7 +374,28 @@ XXL-RPC支持两种方式设置远程服务地址：
 
 ### 5.4 版本 v1.2.2 Release Notes[迭代中]
 - 1、IP工具类优化，兼容 Inet6Address 格式地址；
-- 2、[迭代中]负载均衡：loadbance模块；轮训，计划：IP一致性HASH、LRU、LFU、成功率等；
+- 2、[迭代中]XXL-RPC注册中心：底层抽象注册中心模块，并原生提供自研基于DB的注册中心，真正实现开箱即用，更轻量级、降低第三方依赖；至今XXL-RPC以提供三种注册中心具体实现：Local方案、ZK方案、XXL-RPC原生注册中心方案；
+
+```
+-- 注册中心组件：(rpc，mq，job)
+(基于rpc-st，httpregistry，子包-http注册服-path-dao/registry/remove/clean/discovry/message/file)
+--- 字段设计
+(api+线程，同步value+clean)
+--- 数据结构
+----- 服务表，db dao
+----- 注册表，db dao
+----- 服务磁盘prop file，服务为文件名，多属性
+--- client
+----- 注册/摘除api：内置线程10s一次
+----- 发现api：longpolling，10超时后全量
+--- server
+----- 注册/摘除api：写注册表+ 更新服务表版本(去重) + 消息表
+----- 过期清理：内置线程10s清理一次，有效期20s：同摘除逻辑
+----- 发现更新：1s一次监听消息表，10全量
+----- 发现api：读磁盘
+```
+
+- 3、[迭代中]负载均衡：loadbance模块；轮训，计划：IP一致性HASH、LRU、LFU、成功率等；
 
 ### TODO
 - 提高系统可用性，以部分功能暂时不可达为代价，防止服务整体缓慢或雪崩

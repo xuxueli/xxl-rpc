@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xxl.rpc.admin.dao.IXxlRpcRegistryMessageDao" >
+	
+	<resultMap id="xxlRpcRegistryMessage" type="com.xxl.rpc.admin.core.model.XxlRpcRegistryMessage" >
+		<result column="id" property="id" />
+		<result column="type" property="type" />
+		<result column="data" property="data" />
+		<result column="addTime" property="addTime" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		t.`id`,
+		t.`type`,
+		t.`data`,
+		t.`addTime`
+	</sql>
+
+	<insert id="add" parameterType="com.xxl.rpc.admin.core.model.XxlRpcRegistryMessage" >
+		INSERT INTO XXL_RPC_REGISTRY_MESSAGE (
+			`type`,
+			`data`,
+			`addTime`
+		) VALUES
+		(
+			#{xxlRpcRegistryMessage.type},
+			#{xxlRpcRegistryMessage.data},
+			NOW()
+		)
+	</insert>
+
+	<select id="findMessage" parameterType="java.util.HashMap" resultMap="xxlRpcRegistryMessage" >
+		SELECT <include refid="Base_Column_List" />
+		FROM XXL_RPC_REGISTRY_MESSAGE AS t
+		<if test="excludeIds != null and excludeIds.size() > 0" >
+			where t.id not in
+			<foreach collection="excludeIds" item="idItem"  index="index" separator="," open="(" close=")">
+				#{idItem}
+			</foreach>
+		</if>
+		ORDER BY t.id ASC
+	</select>
+
+	<delete id="cleanMessage" parameterType="java.util.HashMap" >
+		DELETE FROM XXL_RPC_REGISTRY_MESSAGE
+		WHERE NOW() <![CDATA[ > ]]> DATE_ADD(addTime, Interval #{messageTimeout} SECOND)
+	</delete>
+
+</mapper>

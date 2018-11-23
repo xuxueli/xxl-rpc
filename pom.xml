@@ -12,8 +12,9 @@
 
 	<modules>
 		<module>xxl-rpc-core</module>
+		<module>xxl-rpc-admin</module>
 		<module>xxl-rpc-samples</module>
-	</modules>
+    </modules>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -52,6 +53,10 @@
 
 		<spring.version>4.3.19.RELEASE</spring.version>
 		<spring-boot.version>1.5.16.RELEASE</spring-boot.version>
+
+		<spring-boot.version>1.5.17.RELEASE</spring-boot.version>
+		<mybatis-spring-boot-starter.version>1.3.2</mybatis-spring-boot-starter.version>
+		<mysql-connector-java.version>5.1.47</mysql-connector-java.version>
 
 	</properties>
 
