@@ -357,6 +357,12 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
 
                                 if (message.getType() == 0) {
                                     XxlRpcRegistry xxlRpcRegistry = JacksonUtil.readValue(message.getData(), XxlRpcRegistry.class);
+
+                                    // lock pass, only human update
+                                    if (xxlRpcRegistry.getStatus() == 1) {
+                                        continue;
+                                    }
+
                                     setFileRegistryData(xxlRpcRegistry);
                                 }
                             }
@@ -403,6 +409,11 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
                         while (registryList!=null && registryList.size()>0) {
 
                             for (XxlRpcRegistry registryItem: registryList) {
+
+                                // lock pass, only human update
+                                if (registryItem.getStatus() == 1) {
+                                    continue;
+                                }
 
                                 // data json
                                 List<XxlRpcRegistryData> xxlRpcRegistryDataList = xxlRpcRegistryDataDao.findData(registryItem.getBiz(), registryItem.getEnv(), registryItem.getKey());
