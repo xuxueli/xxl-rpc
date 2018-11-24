@@ -25,6 +25,9 @@ public class XxlRpcClientAplication {
 		XxlRpcInvokerFactory invokerFactory = new XxlRpcInvokerFactory();
 		invokerFactory.start();
 
+		/*String serviceKey = XxlRpcProviderFactory.makeServiceKey(DemoService.class.getName(), null);		// registry local
+		invokerFactory.getServiceRegistry().registry(new HashSet<String>(Arrays.asList(serviceKey)), "127.0.0.1:7080");*/
+
 		// test
 		testSYNC();
 		testFUTURE();
