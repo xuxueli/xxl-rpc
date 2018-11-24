@@ -100,7 +100,7 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
             return new ReturnT<String>(ReturnT.FAIL_CODE, "注册Key格式非法[0~255]");
         }
         if (xxlRpcRegistry.getData()==null) {
-            xxlRpcRegistry.setData("[]");
+            xxlRpcRegistry.setData(JacksonUtil.writeValueAsString(new ArrayList<String>()));
         }
         List<String> valueList = JacksonUtil.readValue(xxlRpcRegistry.getData(), List.class);
         if (valueList == null) {
@@ -147,7 +147,7 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
             return new ReturnT<String>(ReturnT.FAIL_CODE, "注册Key格式非法[0~255]");
         }
         if (xxlRpcRegistry.getData()==null) {
-            xxlRpcRegistry.setData("[]");
+            xxlRpcRegistry.setData(JacksonUtil.writeValueAsString(new ArrayList<String>()));
         }
         List<String> valueList = JacksonUtil.readValue(xxlRpcRegistry.getData(), List.class);
         if (valueList == null) {
@@ -216,13 +216,13 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
     private void checkRegistryDataAndSendMessage(XxlRpcRegistryData xxlRpcRegistryData){
         // data json
         List<XxlRpcRegistryData> xxlRpcRegistryDataList = xxlRpcRegistryDataDao.findData(xxlRpcRegistryData.getBiz(), xxlRpcRegistryData.getEnv(), xxlRpcRegistryData.getKey());
-        TreeSet<String> valueSet = new TreeSet<>();
+        List<String> valueList = new ArrayList<>();
         if (xxlRpcRegistryDataList!=null && xxlRpcRegistryDataList.size()>0) {
             for (XxlRpcRegistryData dataItem: xxlRpcRegistryDataList) {
-                valueSet.add(dataItem.getValue());
+                valueList.add(dataItem.getValue());
             }
         }
-        String dataJson = JacksonUtil.writeValueAsString(valueSet);
+        String dataJson = JacksonUtil.writeValueAsString(valueList);
 
         // update registry and message
         XxlRpcRegistry xxlRpcRegistry = xxlRpcRegistryDao.load(xxlRpcRegistryData.getBiz(), xxlRpcRegistryData.getEnv(), xxlRpcRegistryData.getKey());
@@ -408,8 +408,7 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
                                         // locked, not updated
                                     } else if (xxlRpcRegistry.getStatus() == 2) {
                                         // disabled, write empty
-                                        String dataJson = JacksonUtil.writeValueAsString(new TreeSet<String>());
-                                        xxlRpcRegistry.setData(dataJson);
+                                        xxlRpcRegistry.setData(JacksonUtil.writeValueAsString(new ArrayList<String>()));
                                     } else {
                                         // default, sync from db （aready sync before message, only write）
                                     }
@@ -468,18 +467,18 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
                                     // locked, not updated
                                 } else if (registryItem.getStatus() == 2) {
                                     // disabled, write empty
-                                    String dataJson = JacksonUtil.writeValueAsString(new TreeSet<String>());
+                                    String dataJson = JacksonUtil.writeValueAsString(new ArrayList<String>());
                                     registryItem.setData(dataJson);
                                 } else {
                                     // default, sync from db
                                     List<XxlRpcRegistryData> xxlRpcRegistryDataList = xxlRpcRegistryDataDao.findData(registryItem.getBiz(), registryItem.getEnv(), registryItem.getKey());
-                                    TreeSet<String> valueSet = new TreeSet<String>();
+                                    List<String> valueList = new ArrayList<String>();
                                     if (xxlRpcRegistryDataList!=null && xxlRpcRegistryDataList.size()>0) {
                                         for (XxlRpcRegistryData dataItem: xxlRpcRegistryDataList) {
-                                            valueSet.add(dataItem.getValue());
+                                            valueList.add(dataItem.getValue());
                                         }
                                     }
-                                    String dataJson = JacksonUtil.writeValueAsString(valueSet);
+                                    String dataJson = JacksonUtil.writeValueAsString(valueList);
 
                                     // check update, sync db
                                     if (!registryItem.getData().equals(dataJson)) {
