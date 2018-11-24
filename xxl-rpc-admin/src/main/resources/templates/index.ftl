@@ -28,7 +28,7 @@
             <div class="row">
 
                 <#-- 服务数量 -->
-                <div class="col-md-4 col-sm-6 col-xs-12">
+                <div class="col-md-6 col-sm-6 col-xs-12">
                     <div class="info-box bg-aqua">
                         <span class="info-box-icon"><i class="fa fa-flag-o"></i></span>
 
@@ -45,7 +45,7 @@
                 </div>
 
                 <#-- 服务实例数量 -->
-                <div class="col-md-4 col-sm-6 col-xs-12" >
+                <div class="col-md-6 col-sm-6 col-xs-12" >
                     <div class="info-box bg-yellow">
                         <span class="info-box-icon"><i class="fa fa-calendar"></i></span>
 

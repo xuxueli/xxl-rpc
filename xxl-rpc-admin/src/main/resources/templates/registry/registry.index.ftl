@@ -59,7 +59,7 @@
                                         <th name="key" >注册Key</th>
                                         <th name="data" >注册信息<#--注册Value有效数据--></th>
                                         <th name="version" >版本</th>
-                                        <th name="status" >状态<#--状态：0-正常、1-锁定--></th>
+                                        <th name="status" >状态<#--状态：0-正常、1-锁定、2-禁用--></th>
 					                  	<th>操作</th>
 					                </tr>
 				                </thead>
@@ -107,6 +107,7 @@
                                 <select class="form-control" name="status">
                                     <option value="0">正常</option>
                                     <option value="1">锁定</option>
+                                    <option value="2">禁用</option>
                                 </select>
                             </div>
                         </div>
@@ -134,15 +135,15 @@
                     <form class="form-horizontal form" role="form" >
                         <div class="form-group">
                             <label for="lastname" class="col-sm-3 control-label">业务标识 <font color="red">*</font></label>
-                            <div class="col-sm-9"><input type="text" class="form-control" name="biz" maxlength="255" placeholder="请输入业务标识" ></div>
+                            <div class="col-sm-9"><input type="text" class="form-control" name="biz" maxlength="255" placeholder="请输入业务标识" readonly ></div>
                         </div>
                         <div class="form-group">
                             <label for="lastname" class="col-sm-3 control-label">环境标识 <font color="red">*</font></label>
-                            <div class="col-sm-9"><input type="text" class="form-control" name="env" maxlength="255" placeholder="请输入环境标识" ></div>
+                            <div class="col-sm-9"><input type="text" class="form-control" name="env" maxlength="255" placeholder="请输入环境标识" readonly ></div>
                         </div>
                         <div class="form-group">
                             <label for="lastname" class="col-sm-3 control-label">注册Key <font color="red">*</font></label>
-                            <div class="col-sm-9"><input type="text" class="form-control" name="key" maxlength="255" placeholder="请输入注册Key" ></div>
+                            <div class="col-sm-9"><input type="text" class="form-control" name="key" maxlength="255" placeholder="请输入注册Key" readonly ></div>
                         </div>
                         <div class="form-group">
                             <label for="lastname" class="col-sm-3 control-label">注册信息 <font color="red">*</font></label>
@@ -156,6 +157,7 @@
                                 <select class="form-control" name="status">
                                     <option value="0">正常</option>
                                     <option value="1">锁定</option>
+                                    <option value="2">禁用</option>
                                 </select>
                             </div>
                         </div>

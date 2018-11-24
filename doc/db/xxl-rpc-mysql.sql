@@ -11,7 +11,7 @@ CREATE TABLE `XXL_RPC_REGISTRY` (
   `version` varchar(255) NOT NULL COMMENT '版本',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：0-正常、1-锁定',
   PRIMARY KEY (`id`),
-  KEY `I_b_e_k` (`biz`,`env`,`key`)
+  UNIQUE KEY `I_b_e_k` (`biz`,`env`,`key`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `XXL_RPC_REGISTRY_DATA` (
@@ -21,7 +21,8 @@ CREATE TABLE `XXL_RPC_REGISTRY_DATA` (
   `key` varchar(255) NOT NULL COMMENT '注册Key',
   `value` varchar(255) NOT NULL COMMENT '注册Value',
   `updateTime` datetime NOT NULL COMMENT '更新时间',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `I_b_e_k_v` (`biz`,`env`,`key`,`value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `XXL_RPC_REGISTRY_MESSAGE` (

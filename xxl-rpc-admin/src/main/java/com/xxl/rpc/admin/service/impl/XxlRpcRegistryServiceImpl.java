@@ -228,9 +228,9 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
             needMessage = true;
         } else {
 
-            // locked, not updated by client
-            if (xxlRpcRegistry.getStatus() == 1) {
-                dataJson = xxlRpcRegistry.getData();
+            // check status, locked and disabled not use
+            if (xxlRpcRegistry.getStatus() != 0) {
+                return;
             }
 
             if (!xxlRpcRegistry.getData().equals(dataJson)) {
@@ -311,7 +311,7 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
     }
 
     // set
-    public void setFileRegistryData(XxlRpcRegistry xxlRpcRegistry){
+    public String setFileRegistryData(XxlRpcRegistry xxlRpcRegistry){
 
         // fileName
         String fileName = parseRegistryDataFileName(xxlRpcRegistry.getBiz(), xxlRpcRegistry.getEnv(), xxlRpcRegistry.getKey());
@@ -320,12 +320,12 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
         Properties prop = new Properties();
         prop.setProperty("data", xxlRpcRegistry.getData());
 
-        PropUtil.writeProp(prop, fileName);
-
+        String registryDataFile = PropUtil.writeProp(prop, fileName);
 
         logger.info(">>>>>>>>>>> xxl-rpc, setFileRegistryData: biz={}, env={}, key={}, data={}"
                 , xxlRpcRegistry.getBiz(), xxlRpcRegistry.getEnv(), xxlRpcRegistry.getKey(), xxlRpcRegistry.getData());
 
+        return registryDataFile;
     }
     // clean
     public void cleanFileRegistryData(List<String> registryDataFileList){
@@ -374,12 +374,23 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
                             for (XxlRpcRegistryMessage message: messageList) {
                                 readedMessageIds.add(message.getId());
 
-                                if (message.getType() == 0) {
+                                if (message.getType() == 0) {   // from registry、add、update、deelete，ne need sync from db, only write
+
                                     XxlRpcRegistry xxlRpcRegistry = JacksonUtil.readValue(message.getData(), XxlRpcRegistry.class);
 
-                                    // set
-                                    setFileRegistryData(xxlRpcRegistry);
+                                    // process data by status
+                                    if (xxlRpcRegistry.getStatus() == 1) {
+                                        // locked, not updated
+                                    } else if (xxlRpcRegistry.getStatus() == 2) {
+                                        // disabled, write empty
+                                        String dataJson = JacksonUtil.writeValueAsString(new TreeSet<String>());
+                                        xxlRpcRegistry.setData(dataJson);
+                                    } else {
+                                        // default, sync from db （aready sync before message, only write）
+                                    }
 
+                                    // sync file
+                                    setFileRegistryData(xxlRpcRegistry);
                                 }
                             }
                         }
@@ -427,34 +438,36 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
 
                             for (XxlRpcRegistry registryItem: registryList) {
 
-                                // data json
-                                List<XxlRpcRegistryData> xxlRpcRegistryDataList = xxlRpcRegistryDataDao.findData(registryItem.getBiz(), registryItem.getEnv(), registryItem.getKey());
-                                TreeSet<String> valueSet = new TreeSet<>();
-                                if (xxlRpcRegistryDataList!=null && xxlRpcRegistryDataList.size()>0) {
-                                    for (XxlRpcRegistryData dataItem: xxlRpcRegistryDataList) {
-                                        valueSet.add(dataItem.getValue());
+                                // process data by status
+                                if (registryItem.getStatus() == 1) {
+                                    // locked, not updated
+                                } else if (registryItem.getStatus() == 2) {
+                                    // disabled, write empty
+                                    String dataJson = JacksonUtil.writeValueAsString(new TreeSet<String>());
+                                    registryItem.setData(dataJson);
+                                } else {
+                                    // default, sync from db
+                                    List<XxlRpcRegistryData> xxlRpcRegistryDataList = xxlRpcRegistryDataDao.findData(registryItem.getBiz(), registryItem.getEnv(), registryItem.getKey());
+                                    TreeSet<String> valueSet = new TreeSet<String>();
+                                    if (xxlRpcRegistryDataList!=null && xxlRpcRegistryDataList.size()>0) {
+                                        for (XxlRpcRegistryData dataItem: xxlRpcRegistryDataList) {
+                                            valueSet.add(dataItem.getValue());
+                                        }
+                                    }
+                                    String dataJson = JacksonUtil.writeValueAsString(valueSet);
+
+                                    // check update, sync db
+                                    if (!registryItem.getData().equals(dataJson)) {
+                                        registryItem.setData(dataJson);
+                                        registryItem.setVersion(UUID.randomUUID().toString().replaceAll("-", ""));
+                                        xxlRpcRegistryDao.update(registryItem);
                                     }
                                 }
-                                String dataJson = JacksonUtil.writeValueAsString(valueSet);
 
-                                // locked, not updated by client
-                                if (registryItem.getStatus() == 1) {
-                                    dataJson = registryItem.getData();
-                                }
+                                // sync file
+                                String registryDataFile = setFileRegistryData(registryItem);
 
-                                // sync db + file
-                                if (!registryItem.getData().equals(dataJson)) {
-                                    // db
-                                    registryItem.setData(dataJson);
-                                    registryItem.setVersion(UUID.randomUUID().toString().replaceAll("-", ""));
-                                    xxlRpcRegistryDao.update(registryItem);
-
-                                    // file
-                                    setFileRegistryData(registryItem);
-                                }
-
-                                // collect
-                                String registryDataFile = parseRegistryDataFileName(registryItem.getBiz(), registryItem.getEnv(), registryItem.getKey());
+                                // collect registryDataFile
                                 registryDataFileList.add(registryDataFile);
                             }
 

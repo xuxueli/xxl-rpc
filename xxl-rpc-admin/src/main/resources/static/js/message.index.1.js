@@ -45,6 +45,8 @@ $(function() {
 						        return '正常';
                             } else if (data == 1) {
                                 return '锁定';
+                            } else if (data == 2) {
+                                return '禁用';
                             }
 							return data;
 						}

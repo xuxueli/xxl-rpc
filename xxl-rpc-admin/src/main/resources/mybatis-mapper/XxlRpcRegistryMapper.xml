@@ -37,7 +37,7 @@
 				AND t.key like CONCAT(CONCAT('%', #{key}), '%')
 			</if>
 		</trim>
-		ORDER BY t.key ASC
+		ORDER BY t.biz ASC, t.env ASC, t.key ASC
 		LIMIT #{offset}, #{pagesize}
 	</select>
 

@@ -11,7 +11,7 @@ public class XxlRpcRegistry {
     private String key;         // 注册Key
     private String data;        // 注册Value有效数据
     private String version;     // 版本
-    private int status;         // 状态：0-正常、1-锁定
+    private int status;         // 状态：0-正常、1-锁定、2-禁用
 
     public int getId() {
         return id;
