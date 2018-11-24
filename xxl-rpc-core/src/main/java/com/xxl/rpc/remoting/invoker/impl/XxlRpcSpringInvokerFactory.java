@@ -17,7 +17,7 @@ import org.springframework.beans.factory.config.InstantiationAwareBeanPostProces
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
-import java.util.Map;
+import java.util.*;
 
 /**
  * xxl-rpc invoker factory, init service-registry and spring-bean by annotation (for spring)
@@ -56,6 +56,10 @@ public class XxlRpcSpringInvokerFactory extends InstantiationAwareBeanPostProces
     @Override
     public boolean postProcessAfterInstantiation(final Object bean, final String beanName) throws BeansException {
 
+        // collection
+        final Set<String> serviceKeyList = new HashSet<>();
+
+        // parse XxlRpcReferenceBean
         ReflectionUtils.doWithFields(bean.getClass(), new ReflectionUtils.FieldCallback() {
             @Override
             public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
@@ -78,7 +82,8 @@ public class XxlRpcSpringInvokerFactory extends InstantiationAwareBeanPostProces
                             rpcReference.timeout(),
                             rpcReference.address(),
                             rpcReference.accessToken(),
-                            null
+                            null,
+                            xxlRpcInvokerFactory.getServiceRegistry()
                     );
 
                     Object serviceProxy = referenceBean.getObject();
@@ -89,9 +94,23 @@ public class XxlRpcSpringInvokerFactory extends InstantiationAwareBeanPostProces
 
                     logger.info(">>>>>>>>>>> xxl-rpc, invoker factory init reference bean success. serviceKey = {}, bean.field = {}.{}",
                             XxlRpcProviderFactory.makeServiceKey(iface.getName(), rpcReference.version()), beanName, field.getName());
+
+                    // collection
+                    String serviceKey = XxlRpcProviderFactory.makeServiceKey(iface.getName(), rpcReference.version());
+                    serviceKeyList.add(serviceKey);
+
                 }
             }
         });
+
+        // mult discovery
+        if (xxlRpcInvokerFactory.getServiceRegistry() != null) {
+            try {
+                xxlRpcInvokerFactory.getServiceRegistry().discovery(serviceKeyList);
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
 
         return super.postProcessAfterInstantiation(bean, beanName);
     }

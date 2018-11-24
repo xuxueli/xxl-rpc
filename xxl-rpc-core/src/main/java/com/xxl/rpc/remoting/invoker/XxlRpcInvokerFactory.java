@@ -54,11 +54,10 @@ public class XxlRpcInvokerFactory {
     }
 
 
-    // ---------------------- service registry (static) ----------------------
+    // ---------------------- service registry ----------------------
 
-    private static ServiceRegistry serviceRegistry;
-
-    public static ServiceRegistry getServiceRegistry() {
+    private ServiceRegistry serviceRegistry;
+    public ServiceRegistry getServiceRegistry() {
         return serviceRegistry;
     }
 

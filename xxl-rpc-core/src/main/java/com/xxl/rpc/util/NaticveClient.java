@@ -37,8 +37,10 @@ public class NaticveClient {
             Map<String, Object> respObj = getAndValid(url, 10);
 
             // parse
-            Map<String, List<String>> data = (Map<String, List<String>>) respObj.get("data");
-            return data;
+            if (respObj!=null && respObj.containsKey("data")) {
+                Map<String, List<String>> data = (Map<String, List<String>>) respObj.get("data");
+                return data;
+            }
         }
 
         return null;

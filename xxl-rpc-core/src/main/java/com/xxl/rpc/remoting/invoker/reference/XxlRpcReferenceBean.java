@@ -1,6 +1,6 @@
 package com.xxl.rpc.remoting.invoker.reference;
 
-import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
+import com.xxl.rpc.registry.ServiceRegistry;
 import com.xxl.rpc.remoting.invoker.call.CallType;
 import com.xxl.rpc.remoting.invoker.call.XxlRpcInvokeCallback;
 import com.xxl.rpc.remoting.invoker.call.XxlRpcInvokeFuture;
@@ -51,6 +51,8 @@ public class XxlRpcReferenceBean {
 
 	private XxlRpcInvokeCallback invokeCallback;
 
+	private ServiceRegistry serviceRegistry;
+
 	public XxlRpcReferenceBean(NetEnum netType,
 							   Serializer serializer,
 							   CallType callType,
@@ -59,7 +61,8 @@ public class XxlRpcReferenceBean {
 							   long timeout,
 							   String address,
 							   String accessToken,
-							   XxlRpcInvokeCallback invokeCallback
+							   XxlRpcInvokeCallback invokeCallback,
+							   ServiceRegistry serviceRegistry
 	) {
 
 		this.netType = netType;
@@ -71,6 +74,7 @@ public class XxlRpcReferenceBean {
 		this.address = address;
 		this.accessToken = accessToken;
 		this.invokeCallback = invokeCallback;
+		this.serviceRegistry = serviceRegistry;
 
 		// init Client
 		initClient();
@@ -106,9 +110,9 @@ public class XxlRpcReferenceBean {
 			return addressItem;
 		}
 
-		if (XxlRpcInvokerFactory.getServiceRegistry() != null) {
+		if (serviceRegistry != null) {
 			String serviceKey = XxlRpcProviderFactory.makeServiceKey(iface.getName(), version);
-			TreeSet<String> addressSet = XxlRpcInvokerFactory.getServiceRegistry().discovery(serviceKey);
+			TreeSet<String> addressSet = serviceRegistry.discovery(serviceKey);
 			if (addressSet.size() > 0) {
 				addressItem = new ArrayList<String>(addressSet).get(new Random().nextInt(addressSet.size()));
 			}

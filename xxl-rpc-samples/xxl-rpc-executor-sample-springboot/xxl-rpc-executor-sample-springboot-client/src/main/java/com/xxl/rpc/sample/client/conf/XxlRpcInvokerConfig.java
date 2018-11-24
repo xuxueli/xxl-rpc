@@ -1,6 +1,6 @@
 package com.xxl.rpc.sample.client.conf;
 
-import com.xxl.rpc.registry.impl.ZkServiceRegistry;
+import com.xxl.rpc.registry.impl.NativeServiceRegistry;
 import com.xxl.rpc.remoting.invoker.impl.XxlRpcSpringInvokerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,13 +20,10 @@ public class XxlRpcInvokerConfig {
     private Logger logger = LoggerFactory.getLogger(XxlRpcInvokerConfig.class);
 
 
-    @Value("${xxl-rpc.registry.zk.zkaddress:}")
-    private String zkaddress;
+    @Value("${xxl-rpc.registry.native.adminaddress}")
+    private String adminaddress;
 
-    @Value("${xxl-rpc.registry.zk.zkdigest:}")
-    private String zkdigest;
-
-    @Value("${xxl-rpc.env:}")
+    @Value("${xxl-rpc.registry.native.env}")
     private String env;
 
 
@@ -34,14 +31,11 @@ public class XxlRpcInvokerConfig {
     public XxlRpcSpringInvokerFactory xxlJobExecutor() {
 
         XxlRpcSpringInvokerFactory invokerFactory = new XxlRpcSpringInvokerFactory();
-        if (zkaddress!=null && zkaddress.trim().length()>0) {
-            invokerFactory.setServiceRegistryClass(ZkServiceRegistry.class);
-            invokerFactory.setServiceRegistryParam(new HashMap<String, String>(){{
-                put(ZkServiceRegistry.ZK_ADDRESS, zkaddress);
-                put(ZkServiceRegistry.ZK_DIGEST, zkdigest);
-                put(ZkServiceRegistry.ENV, env);
-            }});
-        }
+        invokerFactory.setServiceRegistryClass(NativeServiceRegistry.class);
+        invokerFactory.setServiceRegistryParam(new HashMap<String, String>(){{
+            put(NativeServiceRegistry.XXL_RPC_ADMIN, adminaddress);
+            put(NativeServiceRegistry.ENV, env);
+        }});
 
         logger.info(">>>>>>>>>>> xxl-rpc invoker config init finish.");
         return invokerFactory;
