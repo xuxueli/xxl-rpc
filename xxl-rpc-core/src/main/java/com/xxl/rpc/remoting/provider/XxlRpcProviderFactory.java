@@ -8,7 +8,9 @@ import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import com.xxl.rpc.serialize.Serializer;
 import com.xxl.rpc.util.IpUtil;
+import com.xxl.rpc.util.NetUtil;
 import com.xxl.rpc.util.ThrowableUtil;
+import com.xxl.rpc.util.XxlRpcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +32,7 @@ public class XxlRpcProviderFactory {
 	private Serializer serializer;
 
 	private String ip;					// for registry
-	private int port = 7080;			// default port
+	private int port;					// default port
 	private String accessToken;
 
 	private Class<? extends ServiceRegistry> serviceRegistryClass;
@@ -47,6 +49,7 @@ public class XxlRpcProviderFactory {
 						   Class<? extends ServiceRegistry> serviceRegistryClass,
 						  Map<String, String> serviceRegistryParam) {
 
+		// init
 		this.netType = netType;
 		this.serializer = serializer;
 		this.ip = ip;
@@ -54,6 +57,29 @@ public class XxlRpcProviderFactory {
 		this.accessToken = accessToken;
 		this.serviceRegistryClass = serviceRegistryClass;
 		this.serviceRegistryParam = serviceRegistryParam;
+
+		// valid
+		if (this.netType==null) {
+			throw new XxlRpcException("xxl-rpc provider netType missing.");
+		}
+		if (this.serializer==null) {
+			throw new XxlRpcException("xxl-rpc provider serializer missing.");
+		}
+		if (this.ip == null) {
+			this.ip = IpUtil.getIp();
+		}
+		if (this.port <= 0) {
+			this.port = 7080;
+		}
+		if (NetUtil.isPortUsed(this.port)) {
+			throw new XxlRpcException("xxl-rpc provider port["+ this.port +"] is used.");
+		}
+		if (this.serviceRegistryClass != null) {
+			if (this.serviceRegistryParam == null) {
+				throw new XxlRpcException("xxl-rpc provider serviceRegistryParam is missing.");
+			}
+		}
+
 	}
 
 

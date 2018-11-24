@@ -28,8 +28,8 @@ public class XxlRpcSpringProviderFactory extends XxlRpcProviderFactory implement
     private String netType = NetEnum.JETTY.name();
     private String serialize = Serializer.SerializeEnum.HESSIAN.name();
 
-    private String ip = IpUtil.getIp();		        // for registry
-    private int port = 7080;       			        // default port
+    private String ip;          	// for registry
+    private int port;				// default port
     private String accessToken;
 
     private Class<? extends ServiceRegistry> serviceRegistryClass;                          // class.forname
@@ -73,13 +73,6 @@ public class XxlRpcSpringProviderFactory extends XxlRpcProviderFactory implement
         NetEnum netTypeEnum = NetEnum.autoMatch(netType, null);
         Serializer.SerializeEnum serializeEnum = Serializer.SerializeEnum.match(serialize, null);
         Serializer serializer = serializeEnum!=null?serializeEnum.getSerializer():null;
-
-        if (port <= 0) {
-            throw new XxlRpcException("xxl-rpc provider port["+ port +"] is unvalid.");
-        }
-        if (NetUtil.isPortUsed(port)) {
-            throw new XxlRpcException("xxl-rpc provider port["+ port +"] is used.");
-        }
 
         // init config
         super.initConfig(netTypeEnum, serializer, ip, port, accessToken, serviceRegistryClass, serviceRegistryParam);

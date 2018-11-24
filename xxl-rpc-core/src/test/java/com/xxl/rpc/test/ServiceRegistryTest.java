@@ -15,7 +15,7 @@ public class ServiceRegistryTest {
     public static void main(String[] args) throws IllegalAccessException, InstantiationException, InterruptedException {
 
         Map<String, String> param = new HashMap<>();
-        param.put(ZkServiceRegistry.ZK_ADDRESS, "192.168.99.100:2181");
+        param.put(ZkServiceRegistry.ZK_ADDRESS, "127.0.0.1:2181");
         param.put(ZkServiceRegistry.ZK_DIGEST, "");
         param.put(ZkServiceRegistry.ENV, "test");
 
