@@ -194,6 +194,16 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
             xxlRpcRegistryDataDao.add(xxlRpcRegistryData);
         }
 
+        // valid file status
+        XxlRpcRegistry fileXxlRpcRegistry = getFileRegistryData(xxlRpcRegistryData);
+        if (fileXxlRpcRegistry.getStatus() != 0) {
+            return new ReturnT<String>(ReturnT.SUCCESS_CODE, "Status limited.");
+        } else {
+            if (fileXxlRpcRegistry.getDataList().contains(xxlRpcRegistryData.getValue())) {
+                return new ReturnT<String>(ReturnT.SUCCESS_CODE, "Repeated limited.");
+            }
+        }
+
         // checkRegistryDataAndSendMessage
         checkRegistryDataAndSendMessage(xxlRpcRegistryData);
 
@@ -268,6 +278,16 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
         // refresh or add
         xxlRpcRegistryDataDao.deleteData(xxlRpcRegistryData.getBiz(), xxlRpcRegistryData.getEnv(), xxlRpcRegistryData.getKey());
 
+        // valid file status
+        XxlRpcRegistry fileXxlRpcRegistry = getFileRegistryData(xxlRpcRegistryData);
+        if (fileXxlRpcRegistry.getStatus() != 0) {
+            return new ReturnT<String>(ReturnT.SUCCESS_CODE, "Status limited.");
+        } else {
+            if (fileXxlRpcRegistry.getDataList().contains(xxlRpcRegistryData.getValue())) {
+                return new ReturnT<String>(ReturnT.SUCCESS_CODE, "Repeated limited.");
+            }
+        }
+
         // checkRegistryDataAndSendMessage
         checkRegistryDataAndSendMessage(xxlRpcRegistryData);
 
@@ -276,10 +296,10 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
 
     @Override
     public ReturnT<String> discovery(XxlRpcRegistryData xxlRpcRegistryData) {
-        String registryData = getFileRegistryData(xxlRpcRegistryData);
-        return new ReturnT<String>(registryData);
+        XxlRpcRegistry fileXxlRpcRegistry = getFileRegistryData(xxlRpcRegistryData);
+        String dataJson = fileXxlRpcRegistry.getData();
+        return new ReturnT<String>(dataJson);
     }
-
 
     // ------------------------ broadcase + file data ------------------------
 
@@ -288,7 +308,7 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
     private volatile List<Integer> readedMessageIds = Collections.synchronizedList(new ArrayList<Integer>());
 
     // get
-    public String getFileRegistryData(XxlRpcRegistryData xxlRpcRegistryData){
+    public XxlRpcRegistry getFileRegistryData(XxlRpcRegistryData xxlRpcRegistryData){
 
         // fileName
         String fileName = parseRegistryDataFileName(xxlRpcRegistryData.getBiz(), xxlRpcRegistryData.getEnv(), xxlRpcRegistryData.getKey());
@@ -296,7 +316,11 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
         // read
         Properties prop = PropUtil.loadProp(fileName);
         if (prop!=null) {
-            return prop.getProperty("data");
+            XxlRpcRegistry fileXxlRpcRegistry = new XxlRpcRegistry();
+            fileXxlRpcRegistry.setData(prop.getProperty("data"));
+            fileXxlRpcRegistry.setStatus(Integer.valueOf(prop.getProperty("status")));
+            fileXxlRpcRegistry.setDataList(JacksonUtil.readValue(fileXxlRpcRegistry.getData(), List.class));
+            return fileXxlRpcRegistry;
         }
         return null;
     }
@@ -319,6 +343,7 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
         // write
         Properties prop = new Properties();
         prop.setProperty("data", xxlRpcRegistry.getData());
+        prop.setProperty("status", String.valueOf(xxlRpcRegistry.getStatus()));
 
         String registryDataFile = PropUtil.writeProp(prop, fileName);
 

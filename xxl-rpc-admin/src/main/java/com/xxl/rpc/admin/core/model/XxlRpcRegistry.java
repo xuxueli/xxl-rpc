@@ -1,5 +1,7 @@
 package com.xxl.rpc.admin.core.model;
 
+import java.util.List;
+
 /**
  * @author xuxueli 2018-11-23
  */
@@ -12,6 +14,9 @@ public class XxlRpcRegistry {
     private String data;        // 注册Value有效数据
     private String version;     // 版本
     private int status;         // 状态：0-正常、1-锁定、2-禁用
+
+    // plugin
+    private List<String> dataList;
 
     public int getId() {
         return id;
@@ -69,4 +74,11 @@ public class XxlRpcRegistry {
         this.status = status;
     }
 
+    public List<String> getDataList() {
+        return dataList;
+    }
+
+    public void setDataList(List<String> dataList) {
+        this.dataList = dataList;
+    }
 }
