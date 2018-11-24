@@ -41,6 +41,8 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
 
     @Value("${xxl.rpc.registry.data.filepath}")
     private String registryDataFilePath;
+    @Value("${xxl.rpc.registry.beattime}")
+    private int registryBeatTime;
 
 
     @Override
@@ -307,11 +309,157 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
         return new ReturnT<String>(dataJson);
     }
 
+
     // ------------------------ broadcase + file data ------------------------
 
     private ExecutorService executorService = Executors.newCachedThreadPool();
     private volatile boolean executorStoped = false;
     private volatile List<Integer> readedMessageIds = Collections.synchronizedList(new ArrayList<Integer>());
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+
+        /**
+         * broadcase new one registry-data-file     (1/1s)
+         *
+         * clean old message   (1/10s)
+         */
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                while (!executorStoped) {
+                    try {
+                        // new message, filter readed
+                        List<XxlRpcRegistryMessage> messageList = xxlRpcRegistryMessageDao.findMessage(readedMessageIds);
+                        if (messageList!=null && messageList.size()>0) {
+                            for (XxlRpcRegistryMessage message: messageList) {
+                                readedMessageIds.add(message.getId());
+
+                                if (message.getType() == 0) {   // from registry、add、update、deelete，ne need sync from db, only write
+
+                                    XxlRpcRegistry xxlRpcRegistry = JacksonUtil.readValue(message.getData(), XxlRpcRegistry.class);
+
+                                    // process data by status
+                                    if (xxlRpcRegistry.getStatus() == 1) {
+                                        // locked, not updated
+                                    } else if (xxlRpcRegistry.getStatus() == 2) {
+                                        // disabled, write empty
+                                        xxlRpcRegistry.setData(JacksonUtil.writeValueAsString(new ArrayList<String>()));
+                                    } else {
+                                        // default, sync from db （aready sync before message, only write）
+                                    }
+
+                                    // sync file
+                                    setFileRegistryData(xxlRpcRegistry);
+                                }
+                            }
+                        }
+
+                        // clean old message;
+                        if (System.currentTimeMillis() % registryBeatTime ==0) {
+                            xxlRpcRegistryMessageDao.cleanMessage(10);
+                            readedMessageIds.clear();
+                        }
+                    } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                    try {
+                        TimeUnit.SECONDS.sleep(1);
+                    } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                }
+            }
+        });
+
+        /**
+         *  clean old registry-data     (1/10s)
+         *
+         *  sync total registry-data db + file      (1+N/10s)
+         *
+         *  clean old registry-data file
+         */
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                while (!executorStoped) {
+                    try {
+                        // clean old registry-data in db
+                        xxlRpcRegistryDataDao.cleanData(registryBeatTime * 2);
+
+                        // sync registry-data, db + file
+                        int offset = 0;
+                        int pagesize = 1000;
+                        List<String> registryDataFileList = new ArrayList<>();
+
+                        List<XxlRpcRegistry> registryList = xxlRpcRegistryDao.pageList(offset, pagesize, null, null, null);
+                        while (registryList!=null && registryList.size()>0) {
+
+                            for (XxlRpcRegistry registryItem: registryList) {
+
+                                // process data by status
+                                if (registryItem.getStatus() == 1) {
+                                    // locked, not updated
+                                } else if (registryItem.getStatus() == 2) {
+                                    // disabled, write empty
+                                    String dataJson = JacksonUtil.writeValueAsString(new ArrayList<String>());
+                                    registryItem.setData(dataJson);
+                                } else {
+                                    // default, sync from db
+                                    List<XxlRpcRegistryData> xxlRpcRegistryDataList = xxlRpcRegistryDataDao.findData(registryItem.getBiz(), registryItem.getEnv(), registryItem.getKey());
+                                    List<String> valueList = new ArrayList<String>();
+                                    if (xxlRpcRegistryDataList!=null && xxlRpcRegistryDataList.size()>0) {
+                                        for (XxlRpcRegistryData dataItem: xxlRpcRegistryDataList) {
+                                            valueList.add(dataItem.getValue());
+                                        }
+                                    }
+                                    String dataJson = JacksonUtil.writeValueAsString(valueList);
+
+                                    // check update, sync db
+                                    if (!registryItem.getData().equals(dataJson)) {
+                                        registryItem.setData(dataJson);
+                                        registryItem.setVersion(UUID.randomUUID().toString().replaceAll("-", ""));
+                                        xxlRpcRegistryDao.update(registryItem);
+                                    }
+                                }
+
+                                // sync file
+                                String registryDataFile = setFileRegistryData(registryItem);
+
+                                // collect registryDataFile
+                                registryDataFileList.add(registryDataFile);
+                            }
+
+
+                            offset += 1000;
+                            registryList = xxlRpcRegistryDao.pageList(offset, pagesize, null, null, null);
+                        }
+
+                        // clean old registry-data file
+                        cleanFileRegistryData(registryDataFileList);
+
+                    } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                    try {
+                        TimeUnit.SECONDS.sleep(registryBeatTime);
+                    } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                }
+            }
+        });
+
+
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        executorService.shutdownNow();
+    }
+
+
+    // ------------------------ file opt ------------------------
 
     // get
     public XxlRpcRegistry getFileRegistryData(XxlRpcRegistryData xxlRpcRegistryData){
@@ -384,149 +532,6 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
             }
         }
 
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-
-        /**
-         * broadcase new one registry-data-file     (1/1s)
-         *
-         * clean old message   (1/10s)
-         */
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                while (!executorStoped) {
-                    try {
-                        // new message, filter readed
-                        List<XxlRpcRegistryMessage> messageList = xxlRpcRegistryMessageDao.findMessage(readedMessageIds);
-                        if (messageList!=null && messageList.size()>0) {
-                            for (XxlRpcRegistryMessage message: messageList) {
-                                readedMessageIds.add(message.getId());
-
-                                if (message.getType() == 0) {   // from registry、add、update、deelete，ne need sync from db, only write
-
-                                    XxlRpcRegistry xxlRpcRegistry = JacksonUtil.readValue(message.getData(), XxlRpcRegistry.class);
-
-                                    // process data by status
-                                    if (xxlRpcRegistry.getStatus() == 1) {
-                                        // locked, not updated
-                                    } else if (xxlRpcRegistry.getStatus() == 2) {
-                                        // disabled, write empty
-                                        xxlRpcRegistry.setData(JacksonUtil.writeValueAsString(new ArrayList<String>()));
-                                    } else {
-                                        // default, sync from db （aready sync before message, only write）
-                                    }
-
-                                    // sync file
-                                    setFileRegistryData(xxlRpcRegistry);
-                                }
-                            }
-                        }
-
-                        // clean old message;
-                        if (System.currentTimeMillis() % 10 ==0) {
-                            xxlRpcRegistryMessageDao.cleanMessage(10);
-                            readedMessageIds.clear();
-                        }
-                    } catch (Exception e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                    try {
-                        TimeUnit.SECONDS.sleep(1);
-                    } catch (Exception e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                }
-            }
-        });
-
-        /**
-         *  clean old registry-data     (1/10s)
-         *
-         *  sync total registry-data db + file      (1+N/10s)
-         *
-         *  clean old registry-data file
-         */
-        final int beatTime = 10;
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                while (!executorStoped) {
-                    try {
-                        // clean old registry-data in db
-                        xxlRpcRegistryDataDao.cleanData(beatTime*2);
-
-                        // sync registry-data, db + file
-                        int offset = 0;
-                        int pagesize = 1000;
-                        List<String> registryDataFileList = new ArrayList<>();
-
-                        List<XxlRpcRegistry> registryList = xxlRpcRegistryDao.pageList(offset, pagesize, null, null, null);
-                        while (registryList!=null && registryList.size()>0) {
-
-                            for (XxlRpcRegistry registryItem: registryList) {
-
-                                // process data by status
-                                if (registryItem.getStatus() == 1) {
-                                    // locked, not updated
-                                } else if (registryItem.getStatus() == 2) {
-                                    // disabled, write empty
-                                    String dataJson = JacksonUtil.writeValueAsString(new ArrayList<String>());
-                                    registryItem.setData(dataJson);
-                                } else {
-                                    // default, sync from db
-                                    List<XxlRpcRegistryData> xxlRpcRegistryDataList = xxlRpcRegistryDataDao.findData(registryItem.getBiz(), registryItem.getEnv(), registryItem.getKey());
-                                    List<String> valueList = new ArrayList<String>();
-                                    if (xxlRpcRegistryDataList!=null && xxlRpcRegistryDataList.size()>0) {
-                                        for (XxlRpcRegistryData dataItem: xxlRpcRegistryDataList) {
-                                            valueList.add(dataItem.getValue());
-                                        }
-                                    }
-                                    String dataJson = JacksonUtil.writeValueAsString(valueList);
-
-                                    // check update, sync db
-                                    if (!registryItem.getData().equals(dataJson)) {
-                                        registryItem.setData(dataJson);
-                                        registryItem.setVersion(UUID.randomUUID().toString().replaceAll("-", ""));
-                                        xxlRpcRegistryDao.update(registryItem);
-                                    }
-                                }
-
-                                // sync file
-                                String registryDataFile = setFileRegistryData(registryItem);
-
-                                // collect registryDataFile
-                                registryDataFileList.add(registryDataFile);
-                            }
-
-
-                            offset += 1000;
-                            registryList = xxlRpcRegistryDao.pageList(offset, pagesize, null, null, null);
-                        }
-
-                        // clean old registry-data file
-                        cleanFileRegistryData(registryDataFileList);
-
-                    } catch (Exception e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                    try {
-                        TimeUnit.SECONDS.sleep(beatTime);
-                    } catch (Exception e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                }
-            }
-        });
-
-
-    }
-
-    @Override
-    public void destroy() throws Exception {
-        executorService.shutdownNow();
     }
 
 }
