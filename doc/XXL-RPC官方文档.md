@@ -18,7 +18,7 @@ XXL-RPC 是一个分布式服务框架，提供稳定高性能的RPC远程服务
 - 3、多调用方案：支持 SYNC、ONEWAY、FUTURE、CALLBACK 等方案；
 - 4、多通讯方案：支持 TCP 和 HTTP 两种通讯方式进行服务调用；其中 TCP 提供可选方案 NETTY 或 MINA ，HTTP 提供可选方案 Jetty；
 - 5、多序列化方案：支持 HESSIAN、HESSIAN1、PROTOSTUFF、JSON 等方案；
-- 6、注册中心：可选组件，支持服务注册并动态发现；未启用注册中心时，支持直接指定服务提供方机器地址通讯；原生提供 local 与 zookeeper 两种服务注册中心可选方案；
+- 6、注册中心：可选组件，支持服务注册并动态发现；可直接指定服务提供方机器地址通讯；原生提供多种开箱即用的注册中心可选方案，包括：“XXL-RPC原生轻量级注册中心”、“ZK注册中心”、“Local注册中心”等；
 - 7、软负载均衡及容错：服务提供方集群注册时，在使用软负载算法进行流量分发；
 - 8、容错：服务提供方集群注册时，某个服务节点不可用时将会自动摘除，同时消费方将会移除失效节点将流量分发到其余节点，提高系统容错能力。
 - 9、解决1+1问题：传统分布式通讯一般通过nginx或f5做集群服务的流量负载均衡，每次请求在到达目标服务机器之前都需要经过负载均衡机器，即1+1，这将会把流量放大一倍。而XXL-RPC将会从消费方直达服务提供方，每次请求直达目标机器，从而可以避免上述问题；
@@ -74,7 +74,7 @@ XXL-RPC 是一个分布式服务框架，提供稳定高性能的RPC远程服务
 
     源码目录介绍：
     - /doc
-    - /xxl-rpc-admin    ：服务治理、监控中心（非必选，暂未整理发布）;
+    - /xxl-rpc-admin    ：分布式服务中心：包含注册中心功能模块，支持服务动态注册、发现功能；（服务治理、监控功能，暂未整理发布）;）
     - /xxl-rpc-core     ：核心依赖；
     - /xxl-rpc-samples  ：示例项目；
         - /xxl-rpc-executor-sample-frameless     ：无框架版本示例；
@@ -82,11 +82,39 @@ XXL-RPC 是一个分布式服务框架，提供稳定高性能的RPC远程服务
             - /xxl-rpc-executor-sample-springboot-api           ：公共API接口
             - /xxl-rpc-executor-sample-springboot-client        ：服务消费方 invoker 调用示例；
             - /xxl-rpc-executor-sample-springboot-server        ：服务提供方 provider 示例;
-    
-- 2、zookeeper集群（可选，选择ZK注册中心时才需要；）
 
-### 2.2 配置部署“服务治理、监控中心”
-忽略（非必选，暂未整理发布）
+### 2.2 配置部署“分布式服务中心”
+参考项目 “xxl-rpc-admin”；   
+该模块为可选模块，系统提供了多种配置中心，仅当选择实用 “XXL-RPC原生轻量级注册中心” 时才需要配置；
+
+#### 配置属性说明
+```
+// 配置文件位置：/xxl-rpc/xxl-rpc-admin/src/main/resources/application.properties
+
+……
+### 配置中心数据库配置，存储服务信息元数据
+spring.datasource.url=jdbc:mysql://127.0.0.1:3306/xxl-rpc?Unicode=true&characterEncoding=UTF-8
+……
+
+### 注册中心心跳间隔时间；正常服务注册、摘除几乎可以实时发现，该配置仅针对服务异常退出情况，用于判断过期服务并清理；
+xxl.rpc.registry.beattime=10
+### 注册中心服务信息本地磁盘缓存目录；注意，务必要对该磁盘由读写权限；
+xxl.rpc.registry.data.filepath=/data/applogs/xxl-rpc/registrydata
+
+### 登陆账号信息
+xxl.rpc.login.username=admin
+xxl.rpc.login.password=123456
+```
+
+#### 服务中心集群部署
+服务中心支持集群部署，提升调度系统容灾和可用性。
+
+服务中心集群部署时，几点要求和建议：
+- DB配置保持一致；
+- 登陆账号配置保持一致；
+- 集群机器时钟保持一致（单机集群忽视）；
+- 建议：推荐通过nginx为服务中心集群做负载均衡，分配域名。服务中心访问、客户端注册与发现服务等操作均通过该域名进行。
+
  
 ### 2.3 项目中使用XXL-RPC
 以示例项目 “xxl-rpc-executor-sample-springboot” 为例讲解；
@@ -122,6 +150,11 @@ public XxlRpcSpringProviderFactory xxlRpcSpringProviderFactory() {
 
     XxlRpcSpringProviderFactory providerFactory = new XxlRpcSpringProviderFactory();
     providerFactory.setPort(port);
+    providerFactory.setServiceRegistryClass(NativeServiceRegistry.class);       // 注册中心选型，此处选择“XXL-RPC原生轻量级注册中心”
+    providerFactory.setServiceRegistryParam(new HashMap<String, String>(){{
+        put(NativeServiceRegistry.XXL_RPC_ADMIN, adminaddress);                 // 原生注册中心跟地址
+        put(NativeServiceRegistry.ENV, env);                                    // 注册环境，支持注册信息环境隔离
+    }});
     
     logger.info(">>>>>>>>>>> xxl-rpc provider config init success.");
     return providerFactory;
@@ -178,6 +211,11 @@ version | 服务版本，默认空；可据此区分同一个“服务API” 的
 public XxlRpcSpringInvokerFactory xxlJobExecutor() {
 
     XxlRpcSpringInvokerFactory invokerFactory = new XxlRpcSpringInvokerFactory();
+    invokerFactory.setServiceRegistryClass(NativeServiceRegistry.class);        // 注册中心选型，此处选择“XXL-RPC原生轻量级注册中心”
+    invokerFactory.setServiceRegistryParam(new HashMap<String, String>(){{
+        put(NativeServiceRegistry.XXL_RPC_ADMIN, adminaddress);                 // 原生注册中心跟地址
+        put(NativeServiceRegistry.ENV, env);                                    // 注册环境，支持注册信息环境隔离
+    }});
 
     logger.info(">>>>>>>>>>> xxl-rpc invoker config init success.");
     return invokerFactory;
@@ -222,7 +260,7 @@ callType | 请求类型，可选范围：SYNC（默认）、ONEWAY、FUTURE、CA
 代码中将上面配置的消费方 invoker 远程服务注入到测试 Controller 中使用，调用该服务，查看看是否正常。
 如果正常，说明该接口项目通过XXL-RPC从 client 项目调用了 server 项目中的服务，夸JVM进行了一次RPC通讯。
 
-访问该Controller地址即可进行测试：http://127.0.0.1:8080/?name=jack
+访问该Controller地址即可进行测试：http://127.0.0.1:8081/?name=jack
 
 
 
@@ -338,6 +376,17 @@ XXL-RPC支持两种方式设置远程服务地址：
 ### 4.8 在线服务目录  
 服务提供方新增 "/services" 服务目录功能，可查看在线服务列表；暂时仅针对JETTY通讯方案，浏览器访问地址 "{端口地址}/services" 即可。
 
+### 4.9 如何切换“通讯方案”选型
+XXL-RPC提供多中通讯方案：支持 TCP 和 HTTP 两种通讯方式进行服务调用；其中 TCP 提供可选方案 NETTY 或 MINA ，HTTP 提供可选方案 Jetty；
+
+
+
+
+### 4.9 如何切换“注册中心”选型
+注册中心：可选组件，支持服务注册并动态发现；可直接指定服务提供方机器地址通讯；原生提供多种开箱即用的注册中心可选方案，包括：“XXL-RPC原生轻量级注册中心”、“ZK注册中心”、“Local注册中心”等；
+
+
+
 
 ## 五、版本更新日志
 ### 5.1 版本 v1.1 新特性
@@ -388,8 +437,7 @@ XXL-RPC支持两种方式设置远程服务地址：
 - 7、XXL-RPC客户端可快速接入，只需要切换注册中心实现为 "NativeServiceRegistry" 即可；
     - 注册/摘除api：内置线程10s刷新一次
     - 发现api：longpolling，10超时后全量
-- 8、[迭代中]文档增强，多注册中心配置、多通讯方案配置说明；
-
+- 8、文档增强，多注册中心配置、多通讯方案配置说明；
 
 
 ### TODO

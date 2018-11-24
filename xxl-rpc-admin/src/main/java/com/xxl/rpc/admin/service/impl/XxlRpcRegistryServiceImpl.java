@@ -534,7 +534,7 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
                 while (!executorStoped) {
                     try {
                         // clean old registry-data in db
-                        xxlRpcRegistryDataDao.cleanData(registryBeatTime * 2);
+                        xxlRpcRegistryDataDao.cleanData(registryBeatTime * 3);
 
                         // sync registry-data, db + file
                         int offset = 0;
