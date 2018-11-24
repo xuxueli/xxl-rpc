@@ -409,7 +409,9 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
 
                                 // valid file status
                                 XxlRpcRegistry fileXxlRpcRegistry = getFileRegistryData(xxlRpcRegistryData);
-                                if (fileXxlRpcRegistry.getStatus() != 0) {
+                                if (fileXxlRpcRegistry == null) {
+                                    // go on
+                                } else if (fileXxlRpcRegistry.getStatus() != 0) {
                                     continue;     // "Status limited."
                                 } else {
                                     if (fileXxlRpcRegistry.getDataList().contains(xxlRpcRegistryData.getValue())) {
@@ -445,7 +447,9 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
 
                                 // valid file status
                                 XxlRpcRegistry fileXxlRpcRegistry = getFileRegistryData(xxlRpcRegistryData);
-                                if (fileXxlRpcRegistry.getStatus() != 0) {
+                                if (fileXxlRpcRegistry == null) {
+                                    // go on
+                                } else if (fileXxlRpcRegistry.getStatus() != 0) {
                                     continue;   // "Status limited."
                                 } else {
                                     if (!fileXxlRpcRegistry.getDataList().contains(xxlRpcRegistryData.getValue())) {

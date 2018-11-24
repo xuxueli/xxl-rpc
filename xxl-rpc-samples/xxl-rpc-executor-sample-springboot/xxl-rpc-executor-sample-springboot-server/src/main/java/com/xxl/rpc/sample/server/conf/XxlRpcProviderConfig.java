@@ -1,6 +1,6 @@
 package com.xxl.rpc.sample.server.conf;
 
-import com.xxl.rpc.registry.impl.ZkServiceRegistry;
+import com.xxl.rpc.registry.impl.NativeServiceRegistry;
 import com.xxl.rpc.remoting.provider.impl.XxlRpcSpringProviderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,16 +19,13 @@ import java.util.HashMap;
 public class XxlRpcProviderConfig {
     private Logger logger = LoggerFactory.getLogger(XxlRpcProviderConfig.class);
 
-    @Value("${xxl-rpc.remoting.port:0}")
+    @Value("${xxl-rpc.remoting.port}")
     private int port;
 
-    @Value("${xxl-rpc.registry.zk.zkaddress:}")
-    private String zkaddress;
+    @Value("${xxl-rpc.registry.native.adminaddress}")
+    private String adminaddress;
 
-    @Value("${xxl-rpc.registry.zk.zkdigest:}")
-    private String zkdigest;
-
-    @Value("${xxl-rpc.env:}")
+    @Value("${xxl-rpc.registry.native.env}")
     private String env;
 
     @Bean
@@ -36,14 +33,11 @@ public class XxlRpcProviderConfig {
 
         XxlRpcSpringProviderFactory providerFactory = new XxlRpcSpringProviderFactory();
         providerFactory.setPort(port);
-        if (zkaddress!=null && zkaddress.trim().length()>0) {
-            providerFactory.setServiceRegistryClass(ZkServiceRegistry.class);
-            providerFactory.setServiceRegistryParam(new HashMap<String, String>(){{
-                put(ZkServiceRegistry.ZK_ADDRESS, zkaddress);
-                put(ZkServiceRegistry.ZK_DIGEST, zkdigest);
-                put(ZkServiceRegistry.ENV, env);
-            }});
-        }
+        providerFactory.setServiceRegistryClass(NativeServiceRegistry.class);
+        providerFactory.setServiceRegistryParam(new HashMap<String, String>(){{
+            put(NativeServiceRegistry.XXL_RPC_ADMIN, adminaddress);
+            put(NativeServiceRegistry.ENV, env);
+        }});
 
         logger.info(">>>>>>>>>>> xxl-rpc provider config init finish.");
         return providerFactory;

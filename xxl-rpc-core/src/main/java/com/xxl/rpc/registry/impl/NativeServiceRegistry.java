@@ -17,8 +17,8 @@ import java.util.concurrent.TimeUnit;
 public class NativeServiceRegistry extends ServiceRegistry {
     private static Logger logger = LoggerFactory.getLogger(ZkServiceRegistry.class);
 
-    public static final String XXL_RPC_ADMIN = "env";                       // native registry env
-    public static final String ENV = "env";                       // native registry env
+    public static final String XXL_RPC_ADMIN = "XXL_RPC_ADMIN";      // native registry env
+    public static final String ENV = "ENV";                             // native registry env
 
 
     // param
@@ -65,12 +65,12 @@ public class NativeServiceRegistry extends ServiceRegistry {
             public void run() {
                 while (!registryThreadStop) {
                     try {
-                        if (discoveryData.size() > 0) {
+                        if (registryData.size() > 0) {
 
                             // change k-v to v-k
                             Map<String, Set<String>> regL2KMap = new HashMap<>(); // v-k[]
-                            for (String regK : discoveryData.keySet()) {    // k - v[]
-                                TreeSet<String> regL = discoveryData.get(regK);
+                            for (String regK : registryData.keySet()) {    // k - v[]
+                                TreeSet<String> regL = registryData.get(regK);
                                 for (String regVItem:regL) {
                                     Set<String> regKList = regL2KMap.get(regVItem);
                                     if (regKList == null) {
@@ -85,6 +85,7 @@ public class NativeServiceRegistry extends ServiceRegistry {
                             for (String vItem : regL2KMap.keySet()) {
                                 NaticveClient.registry(adminAddressArr, biz, env, regL2KMap.get(vItem), vItem);
                             }
+                            logger.info(">>>>>>>>>> xxl-rpc, refresh registry data success, registryData = {}", registryData);
 
                         }
                     } catch (Exception e) {
@@ -113,14 +114,13 @@ public class NativeServiceRegistry extends ServiceRegistry {
             public void run() {
                 while (!registryThreadStop) {
                     try {
-
                         // long polling, monitor, timeout 30s
                         if (discoveryData.size() > 0) {
                             NaticveClient.monitor(adminAddressArr, biz, env, discoveryData.keySet());
-                        }
 
-                        // refreshDiscoveryData, all
-                        refreshDiscoveryData(null);
+                            // refreshDiscoveryData, all
+                            refreshDiscoveryData(discoveryData.keySet());
+                        }
                     } catch (Exception e) {
                         if (!registryThreadStop) {
                             logger.error(">>>>>>>>>> xxl-rpc, refresh thread error.", e);
@@ -143,7 +143,7 @@ public class NativeServiceRegistry extends ServiceRegistry {
 
 
 
-        logger.info(">>>>>>>>>> xxl-rpc, NativeServiceRegistry init success. [adminAddress=[], env={}]", adminAddress, env);
+        logger.info(">>>>>>>>>> xxl-rpc, NativeServiceRegistry init success. [adminAddress={}, env={}]", adminAddress, env);
     }
 
     @Override
@@ -161,11 +161,6 @@ public class NativeServiceRegistry extends ServiceRegistry {
      * refreshDiscoveryData, some or all
      */
     private void refreshDiscoveryData(Set<String> keys){
-        if (keys==null && discoveryData.size() > 0) {
-            keys = new HashSet<String>();
-            keys.addAll(discoveryData.keySet());
-        }
-
         if (keys.size() > 0) {
             // discovery mult
             Map<String, List<String>> keyValueListData = NaticveClient.discovery(adminAddressArr, biz, env, keys);
@@ -174,8 +169,8 @@ public class NativeServiceRegistry extends ServiceRegistry {
                     discoveryData.put(keyItem, new TreeSet<String>(keyValueListData.get(keyItem)));
                 }
             }
+            logger.info(">>>>>>>>>> xxl-rpc, refresh discovery data success, discoveryData = {}", discoveryData);
         }
-
     }
 
     @Override
@@ -224,7 +219,7 @@ public class NativeServiceRegistry extends ServiceRegistry {
             }
         }
 
-        // fail, find from remote
+        // not find all, find from remote
         if (keys.size() != registryDataTmp.size()) {
 
             // refreshDiscoveryData, some, first use
@@ -237,6 +232,7 @@ public class NativeServiceRegistry extends ServiceRegistry {
                     registryDataTmp.put(key, valueSet);
                 }
             }
+
         }
 
         return registryDataTmp;
