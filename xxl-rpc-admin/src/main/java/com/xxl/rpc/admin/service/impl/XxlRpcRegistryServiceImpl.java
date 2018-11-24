@@ -16,14 +16,12 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.annotation.Resource;
 import java.io.File;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * @author xuxueli 2016-5-28 15:30:33
@@ -288,6 +286,48 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
         return new ReturnT<Map<String, List<String>>>(result);
     }
 
+    @Override
+    public DeferredResult<ReturnT<String>> monitor(String biz, String env, List<String> keys) {
+
+        // init
+        DeferredResult deferredResult = new DeferredResult(registryBeatTime * 3 * 1000L, new ReturnT<>(ReturnT.FAIL_CODE, "Monitor timeout."));
+
+        // valid
+        if (biz==null || biz.trim().length()==0 || biz.trim().length()>255) {
+            deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "Biz Invalid[0~255]"));
+            return deferredResult;
+        }
+        if (env==null || env.trim().length()==0 || env.trim().length()>255) {
+            deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "Env Invalid[0~255]"));
+            return deferredResult;
+        }
+        if (keys==null || keys.size()==0) {
+            deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "keys Invalid."));
+            return deferredResult;
+        }
+        for (String key: keys) {
+            if (key==null || key.trim().length()==0 || key.trim().length()>255) {
+                deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "Key Invalid[0~255]"));
+                return deferredResult;
+            }
+        }
+
+        // monitor by client
+        for (String key: keys) {
+            String fileName = parseRegistryDataFileName(biz, env, key);
+
+            List<DeferredResult> deferredResultList = registryDeferredResultMap.get(fileName);
+            if (deferredResultList == null) {
+                deferredResultList = new ArrayList<>();
+                registryDeferredResultMap.put(fileName, deferredResultList);
+            }
+
+            deferredResultList.add(deferredResult);
+        }
+
+        return deferredResult;
+    }
+
     /**
      * update Registry And Message
      */
@@ -344,6 +384,7 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
 
     private volatile LinkedBlockingQueue<XxlRpcRegistryData> registryQueue = new LinkedBlockingQueue<XxlRpcRegistryData>();
     private volatile LinkedBlockingQueue<XxlRpcRegistryData> removeQueue = new LinkedBlockingQueue<XxlRpcRegistryData>();
+    private Map<String, List<DeferredResult>> registryDeferredResultMap = new ConcurrentHashMap<>();
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -598,17 +639,36 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
         // fileName
         String fileName = parseRegistryDataFileName(xxlRpcRegistry.getBiz(), xxlRpcRegistry.getEnv(), xxlRpcRegistry.getKey());
 
+        // valid repeat update
+        Properties existProp = PropUtil.loadProp(fileName);
+        if (existProp != null
+                && existProp.getProperty("data").equals(xxlRpcRegistry.getData())
+                && existProp.getProperty("status").equals(String.valueOf(xxlRpcRegistry.getStatus()))
+                ) {
+            return new File(fileName).getPath();
+        }
+
         // write
         Properties prop = new Properties();
         prop.setProperty("data", xxlRpcRegistry.getData());
         prop.setProperty("status", String.valueOf(xxlRpcRegistry.getStatus()));
 
-        String registryDataFile = PropUtil.writeProp(prop, fileName);
+        PropUtil.writeProp(prop, fileName);
 
         logger.info(">>>>>>>>>>> xxl-rpc, setFileRegistryData: biz={}, env={}, key={}, data={}"
                 , xxlRpcRegistry.getBiz(), xxlRpcRegistry.getEnv(), xxlRpcRegistry.getKey(), xxlRpcRegistry.getData());
 
-        return registryDataFile;
+
+        // brocast monitor client
+        List<DeferredResult> deferredResultList = registryDeferredResultMap.get(fileName);
+        if (deferredResultList != null) {
+            registryDeferredResultMap.remove(fileName);
+            for (DeferredResult deferredResult: deferredResultList) {
+                deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "Monitor key update."));
+            }
+        }
+
+        return new File(fileName).getPath();
     }
     // clean
     public void cleanFileRegistryData(List<String> registryDataFileList){

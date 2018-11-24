@@ -2,7 +2,6 @@ package com.xxl.rpc.admin.controller;
 
 import com.xxl.rpc.admin.controller.annotation.PermessionLimit;
 import com.xxl.rpc.admin.core.model.XxlRpcRegistry;
-import com.xxl.rpc.admin.core.model.XxlRpcRegistryData;
 import com.xxl.rpc.admin.core.result.ReturnT;
 import com.xxl.rpc.admin.service.IXxlRpcRegistryService;
 import org.springframework.stereotype.Controller;
@@ -10,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -81,6 +81,13 @@ public class RegistryController {
     @PermessionLimit(limit=false)
     public ReturnT<Map<String, List<String>>> discovery(String biz, String env, @RequestParam(name = "keys", required = false) List<String> keys) {
         return xxlRpcRegistryService.discovery(biz, env, keys);
+    }
+
+    @RequestMapping("/monitor")
+    @ResponseBody
+    @PermessionLimit(limit=false)
+    public DeferredResult monitor(String biz, String env, @RequestParam(name = "keys", required = false) List<String> keys) {
+        return xxlRpcRegistryService.monitor(biz, env, keys);
     }
 
 }

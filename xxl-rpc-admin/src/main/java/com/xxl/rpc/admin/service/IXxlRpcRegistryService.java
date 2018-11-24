@@ -2,8 +2,8 @@ package com.xxl.rpc.admin.service;
 
 
 import com.xxl.rpc.admin.core.model.XxlRpcRegistry;
-import com.xxl.rpc.admin.core.model.XxlRpcRegistryData;
 import com.xxl.rpc.admin.core.result.ReturnT;
+import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.List;
 import java.util.Map;
@@ -36,5 +36,10 @@ public interface IXxlRpcRegistryService {
      * discovery registry-data, read file
      */
     ReturnT<Map<String, List<String>>> discovery(String biz, String env, List<String> keys);
+
+    /**
+     * monitor update
+     */
+    DeferredResult<ReturnT<String>> monitor(String biz, String env, List<String> keys);
 
 }
