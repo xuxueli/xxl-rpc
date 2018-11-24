@@ -9,10 +9,7 @@ import org.apache.zookeeper.Watcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
@@ -44,7 +41,7 @@ public class ZkServiceRegistry extends ServiceRegistry {
     private XxlZkClient xxlZkClient = null;
 
     private Thread refreshThread;
-    private boolean refreshThreadStop = false;
+    private volatile boolean refreshThreadStop = false;
 
     private volatile ConcurrentMap<String, TreeSet<String>> registryData = new ConcurrentHashMap<String, TreeSet<String>>();
     private volatile ConcurrentMap<String, TreeSet<String>> discoveryData = new ConcurrentHashMap<String, TreeSet<String>>();
@@ -240,35 +237,51 @@ public class ZkServiceRegistry extends ServiceRegistry {
     }
 
     @Override
-    public boolean registry(String key, String value) {
+    public boolean registry(Set<String> keys, String value) {
+        for (String key : keys) {
+            // local cache
+            TreeSet<String> values = registryData.get(key);
+            if (values == null) {
+                values = new TreeSet<>();
+                registryData.put(key, values);
+            }
+            values.add(value);
 
-        // local cache
-        TreeSet<String> values = registryData.get(key);
-        if (values == null) {
-            values = new TreeSet<>();
-            registryData.put(key, values);
+            // make path, child path
+            String path = keyToPath(key);
+            xxlZkClient.setChildPathData(path, value, "");
         }
-        values.add(value);
-
-        // make path, child path
-        String path = keyToPath(key);
-        xxlZkClient.setChildPathData(path, value, "");
-
-        logger.info(">>>>>>>>>> xxl-rpc, registry success, key = {}, value = {}", key, value);
+        logger.info(">>>>>>>>>> xxl-rpc, registry success, keys = {}, value = {}", keys, value);
         return true;
     }
 
     @Override
-    public boolean remove(String key, String value) {
-
-        TreeSet<String> values = discoveryData.get(key);
-        if (values != null) {
-            values.remove(value);
+    public boolean remove(Set<String> keys, String value) {
+        for (String key : keys) {
+            TreeSet<String> values = discoveryData.get(key);
+            if (values != null) {
+                values.remove(value);
+            }
+            String path = keyToPath(key);
+            xxlZkClient.deleteChildPath(path, value);
         }
-        String path = keyToPath(key);
-        xxlZkClient.deleteChildPath(path, value);
-
+        logger.info(">>>>>>>>>> xxl-rpc, remove success, keys = {}, value = {}", keys, value);
         return true;
+    }
+
+    @Override
+    public Map<String, TreeSet<String>> discovery(Set<String> keys) {
+        if (keys==null || keys.size()==0) {
+            return null;
+        }
+        Map<String, TreeSet<String>> registryDataTmp = new HashMap<String, TreeSet<String>>();
+        for (String key : keys) {
+            TreeSet<String> valueSetTmp = discovery(key);
+            if (valueSetTmp != null) {
+                registryDataTmp.put(key, valueSetTmp);
+            }
+        }
+        return registryDataTmp;
     }
 
     @Override

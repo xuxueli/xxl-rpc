@@ -4,6 +4,7 @@ import com.xxl.rpc.registry.ServiceRegistry;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 
 /**
@@ -34,26 +35,48 @@ public class LocalServiceRegistry extends ServiceRegistry {
 
 
     @Override
-    public boolean registry(String key, String value) {
-        if (key==null || key.trim().length()==0 || value==null || value.trim().length()==0) {
+    public boolean registry(Set<String> keys, String value) {
+        if (keys==null || keys.size()==0 || value==null || value.trim().length()==0) {
             return false;
         }
-        TreeSet<String> values = registryData.get(key);
-        if (values == null) {
-            values = new TreeSet<>();
-            registryData.put(key, values);
+        for (String key : keys) {
+            TreeSet<String> values = registryData.get(key);
+            if (values == null) {
+                values = new TreeSet<>();
+                registryData.put(key, values);
+            }
+            values.add(value);
         }
-        values.add(value);
         return true;
     }
 
     @Override
-    public boolean remove(String key, String value) {
-        TreeSet<String> values = registryData.get(key);
-        if (values != null) {
-            values.remove(value);
+    public boolean remove(Set<String> keys, String value) {
+        if (keys==null || keys.size()==0 || value==null || value.trim().length()==0) {
+            return false;
+        }
+        for (String key : keys) {
+            TreeSet<String> values = registryData.get(key);
+            if (values != null) {
+                values.remove(value);
+            }
         }
         return true;
+    }
+
+    @Override
+    public Map<String, TreeSet<String>> discovery(Set<String> keys) {
+        if (keys==null || keys.size()==0) {
+            return null;
+        }
+        Map<String, TreeSet<String>> registryDataTmp = new HashMap<String, TreeSet<String>>();
+        for (String key : keys) {
+            TreeSet<String> valueSetTmp = discovery(key);
+            if (valueSetTmp != null) {
+                registryDataTmp.put(key, valueSetTmp);
+            }
+        }
+        return registryDataTmp;
     }
 
     @Override

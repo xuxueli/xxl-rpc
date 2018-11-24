@@ -110,9 +110,7 @@ public class XxlRpcProviderFactory {
 
 					if (serviceData.size() > 0) {
 						String ipPort = IpUtil.getIpPort(ip, port);
-						for (String serviceKey :serviceData.keySet()) {
-							serviceRegistry.registry(serviceKey, ipPort);
-						}
+						serviceRegistry.registry(serviceData.keySet(), ipPort);
 					}
 				}
 			}
@@ -124,9 +122,7 @@ public class XxlRpcProviderFactory {
 				if (serviceRegistry != null) {
 					if (serviceData.size() > 0) {
 						String ipPort = IpUtil.getIpPort(ip, port);
-						for (String serviceKey :serviceData.keySet()) {
-							serviceRegistry.remove(serviceKey, ipPort);
-						}
+						serviceRegistry.remove(serviceData.keySet(), ipPort);
 					}
 					serviceRegistry.stop();
 					serviceRegistry = null;

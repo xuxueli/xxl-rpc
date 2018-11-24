@@ -3,7 +3,9 @@ package com.xxl.rpc.test;
 import com.xxl.rpc.registry.ServiceRegistry;
 import com.xxl.rpc.registry.impl.ZkServiceRegistry;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -29,15 +31,15 @@ public class ServiceRegistryTest {
         String servicename = "demo_service";
         System.out.println(serviceRegistry.discovery(servicename));
 
-        serviceRegistry.registry(servicename, "127.0.0.1:8888");
+        serviceRegistry.registry(new HashSet<String>(Arrays.asList(servicename)), "127.0.0.1:8888");
         TimeUnit.MILLISECONDS.sleep(10);
         System.out.println(serviceRegistry.discovery(servicename));
 
-        serviceRegistry.registry(servicename, "127.0.0.1:9999");
+        serviceRegistry.registry(new HashSet<String>(Arrays.asList(servicename)), "127.0.0.1:9999");
         TimeUnit.MILLISECONDS.sleep(10);
         System.out.println(serviceRegistry.discovery(servicename));
 
-        serviceRegistry.remove(servicename, "127.0.0.1:9999");
+        serviceRegistry.remove(new HashSet<String>(Arrays.asList(servicename)), "127.0.0.1:9999");
         TimeUnit.MILLISECONDS.sleep(10);
         System.out.println(serviceRegistry.discovery(servicename));
 
