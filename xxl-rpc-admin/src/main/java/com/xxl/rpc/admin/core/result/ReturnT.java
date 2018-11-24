@@ -19,16 +19,16 @@ public class ReturnT<T> implements Serializable {
 
 	private int code;
 	private String msg;
-	private T content;
+	private T data;
 
 	public ReturnT(){}
 	public ReturnT(int code, String msg) {
 		this.code = code;
 		this.msg = msg;
 	}
-	public ReturnT(T content) {
+	public ReturnT(T data) {
 		this.code = SUCCESS_CODE;
-		this.content = content;
+		this.data = data;
 	}
 
 	public int getCode() {
@@ -43,16 +43,16 @@ public class ReturnT<T> implements Serializable {
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
-	public T getContent() {
-		return content;
+	public T getData() {
+		return data;
 	}
-	public void setContent(T content) {
-		this.content = content;
+	public void setData(T data) {
+		this.data = data;
 	}
 
 	@Override
 	public String toString() {
-		return "ReturnT [code=" + code + ", msg=" + msg + ", content=" + content + "]";
+		return "ReturnT [code=" + code + ", msg=" + msg + ", data=" + data + "]";
 	}
 
 }

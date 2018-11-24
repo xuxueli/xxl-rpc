@@ -1,6 +1,7 @@
 package com.xxl.rpc.registry.impl;
 
 import com.xxl.rpc.registry.ServiceRegistry;
+import com.xxl.rpc.util.NaticveClient;
 import com.xxl.rpc.util.XxlRpcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,6 +103,9 @@ public class NativeServiceRegistry extends ServiceRegistry {
 
         if (keys.size() > 0) {
             // TODO, discovery mult
+
+            Map<String, List<String>> keyValueList = NaticveClient.discovery(adminAddress, biz, env, keys);
+
 
         }
 
