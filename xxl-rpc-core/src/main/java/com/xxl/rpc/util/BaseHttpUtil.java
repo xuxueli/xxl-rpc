@@ -15,27 +15,45 @@ import java.net.URLConnection;
 public class BaseHttpUtil {
     private static Logger logger = LoggerFactory.getLogger(NaticveClient.class);
 
-    public static String get(String url) {
+    /**
+     * get
+     *
+     * @param url
+     * @param timeout second
+     * @return
+     */
+    public static String get(String url, int timeout) {
+        HttpURLConnection connection = null;
         BufferedReader bufferedReader = null;
         try {
+            // connection
             URL realUrl = new URL(url);
+            connection = (HttpURLConnection) realUrl.openConnection();
 
-            URLConnection connection = realUrl.openConnection();
-            connection.setRequestProperty("accept", "*/*");
+            // connection setting
+            connection.setReadTimeout(timeout * 1000);
+            connection.setConnectTimeout(3 * 1000);
+            connection.setRequestMethod("GET");
+            connection.setUseCaches(false);
+            connection.setDoOutput(true);
+            connection.setDoInput(true);
             connection.setRequestProperty("connection", "Keep-Alive");
-            //connection.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+            connection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+            connection.setRequestProperty("Accept-Charset", "application/json;charset=UTF-8");
+
+            // do connection
             connection.connect();
 
             //Map<String, List<String>> map = connection.getHeaderFields();
-            int statusCode = ((HttpURLConnection) connection).getResponseCode();
+            int statusCode = connection.getResponseCode();
             if (statusCode == 200) {
                 bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                String result = "";
+                StringBuilder result = new StringBuilder();
                 String line;
                 while ((line = bufferedReader.readLine()) != null) {
-                    result += line;
+                    result.append(line);
                 }
-                return result;
+                return result.toString();
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -43,6 +61,9 @@ public class BaseHttpUtil {
             try {
                 if (bufferedReader != null) {
                     bufferedReader.close();
+                }
+                if (connection != null) {
+                    connection.disconnect();
                 }
             } catch (Exception e2) {
                 logger.error(e2.getMessage(), e2);
@@ -53,7 +74,7 @@ public class BaseHttpUtil {
 
     public static void main(String[] args) {
         String url = "http://localhost:8080/xxl-rpc-admin/registry/discovery?biz=xxl-rpc&env=test&key=service01";
-        System.out.println(get(url));
+        System.out.println(get(url, 3));
     }
 
 }

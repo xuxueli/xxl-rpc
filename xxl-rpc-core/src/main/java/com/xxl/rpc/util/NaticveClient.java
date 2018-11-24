@@ -34,7 +34,7 @@ public class NaticveClient {
             }
 
             // get and valid
-            Map<String, Object> respObj = getAndValid(url);
+            Map<String, Object> respObj = getAndValid(url, 10);
 
             // parse
             Map<String, List<String>> data = (Map<String, List<String>>) respObj.get("data");
@@ -44,9 +44,9 @@ public class NaticveClient {
         return null;
     }
 
-    private static Map<String, Object> getAndValid(String url){
+    private static Map<String, Object> getAndValid(String url, int timeout){
         // resp json
-        String respJson = BaseHttpUtil.get(url);
+        String respJson = BaseHttpUtil.get(url, timeout);
         if (respJson == null) {
             return null;
         }
@@ -85,7 +85,7 @@ public class NaticveClient {
             url += "&value=" + value;
 
             // get and valid
-            Map<String, Object> respObj = getAndValid(url);
+            Map<String, Object> respObj = getAndValid(url, 10);
 
             return respObj!=null?true:false;
         }
@@ -116,7 +116,36 @@ public class NaticveClient {
             url += "&value=" + value;
 
             // get and valid
-            Map<String, Object> respObj = getAndValid(url);
+            Map<String, Object> respObj = getAndValid(url, 10);
+
+            return respObj!=null?true:false;
+        }
+        return false;
+    }
+
+    /**
+     * monitor
+     *
+     * @param adminAddressArr
+     * @param biz
+     * @param env
+     * @param keys
+     * @return
+     */
+    public static boolean monitor(List<String> adminAddressArr, String biz, String env, Set<String> keys) {
+
+        for (String adminAddressUrl: adminAddressArr) {
+
+            // final url
+            String url = adminAddressUrl + "/registry/monitor";
+            url += "?biz=" + biz;
+            url += "&env=" + env;
+            for (String key : keys) {
+                url += "&keys=" + key;
+            }
+
+            // get and valid
+            Map<String, Object> respObj = getAndValid(url, 60);
 
             return respObj!=null?true:false;
         }
@@ -124,6 +153,8 @@ public class NaticveClient {
     }
 
     public static void main(String[] args) throws InterruptedException {
+
+        System.out.println(monitor(Arrays.asList("http://localhost:8080/xxl-rpc-admin"), "xxl-rpc", "test", new HashSet<String>(Arrays.asList("service01"))));
 
         System.out.println(discovery(Arrays.asList("http://localhost:8080/xxl-rpc-admin"), "xxl-rpc", "test", new HashSet<String>(Arrays.asList("service01"))));
 

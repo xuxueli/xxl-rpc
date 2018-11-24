@@ -31,8 +31,10 @@ public class NativeServiceRegistry extends ServiceRegistry {
 
     private volatile ConcurrentMap<String, TreeSet<String>> registryData = new ConcurrentHashMap<String, TreeSet<String>>();
     private volatile ConcurrentMap<String, TreeSet<String>> discoveryData = new ConcurrentHashMap<String, TreeSet<String>>();
-    private Thread refreshThread;
-    private volatile boolean refreshThreadStop = false;
+
+    private Thread registryThread;
+    private Thread discoveryThread;
+    private volatile boolean registryThreadStop = false;
 
 
     @Override
@@ -58,27 +60,42 @@ public class NativeServiceRegistry extends ServiceRegistry {
         }
 
         // registry thread
-        refreshThread = new Thread(new Runnable() {
+        registryThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (!refreshThreadStop) {
+                while (!registryThreadStop) {
                     try {
+                        if (discoveryData.size() > 0) {
 
-                        // long polling, monitor, timeout 10s
-                        // TODO, discovery , monitor
+                            // change k-v to v-k
+                            Map<String, Set<String>> regL2KMap = new HashMap<>(); // v-k[]
+                            for (String regK : discoveryData.keySet()) {    // k - v[]
+                                TreeSet<String> regL = discoveryData.get(regK);
+                                for (String regVItem:regL) {
+                                    Set<String> regKList = regL2KMap.get(regVItem);
+                                    if (regKList == null) {
+                                        regKList = new TreeSet<>();
+                                        regL2KMap.put(regVItem, regKList);
+                                    }
+                                    regKList.add(regK);
+                                }
+                            }
 
+                            // total registry
+                            for (String vItem : regL2KMap.keySet()) {
+                                NaticveClient.registry(adminAddressArr, biz, env, regL2KMap.get(vItem), vItem);
+                            }
 
-                        // refreshDiscoveryData, all
-                        refreshDiscoveryData(null);
+                        }
                     } catch (Exception e) {
-                        if (!refreshThreadStop) {
+                        if (!registryThreadStop) {
                             logger.error(">>>>>>>>>> xxl-rpc, refresh thread error.", e);
                         }
                     }
                     try {
                         TimeUnit.SECONDS.sleep(10);
                     } catch (Exception e) {
-                        if (!refreshThreadStop) {
+                        if (!registryThreadStop) {
                             logger.error(">>>>>>>>>> xxl-rpc, refresh thread error.", e);
                         }
                     }
@@ -86,18 +103,57 @@ public class NativeServiceRegistry extends ServiceRegistry {
                 logger.info(">>>>>>>>>> xxl-rpc, refresh thread stoped.");
             }
         });
-        refreshThread.setName("xxl-rpc, NativeServiceRegistry refresh thread.");
-        refreshThread.setDaemon(true);
-        refreshThread.start();
+        registryThread.setName("xxl-rpc, NativeServiceRegistry refresh thread.");
+        registryThread.setDaemon(true);
+        registryThread.start();
+
+        // discovery thread
+        discoveryThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (!registryThreadStop) {
+                    try {
+
+                        // long polling, monitor, timeout 30s
+                        if (discoveryData.size() > 0) {
+                            NaticveClient.monitor(adminAddressArr, biz, env, discoveryData.keySet());
+                        }
+
+                        // refreshDiscoveryData, all
+                        refreshDiscoveryData(null);
+                    } catch (Exception e) {
+                        if (!registryThreadStop) {
+                            logger.error(">>>>>>>>>> xxl-rpc, refresh thread error.", e);
+                        }
+                    }
+                    try {
+                        TimeUnit.SECONDS.sleep(1);
+                    } catch (Exception e) {
+                        if (!registryThreadStop) {
+                            logger.error(">>>>>>>>>> xxl-rpc, refresh thread error.", e);
+                        }
+                    }
+                }
+                logger.info(">>>>>>>>>> xxl-rpc, refresh thread stoped.");
+            }
+        });
+        discoveryThread.setName("xxl-rpc, NativeServiceRegistry refresh thread.");
+        discoveryThread.setDaemon(true);
+        discoveryThread.start();
+
+
 
         logger.info(">>>>>>>>>> xxl-rpc, NativeServiceRegistry init success. [adminAddress=[], env={}]", adminAddress, env);
     }
 
     @Override
     public void stop() {
-        if (refreshThread != null) {
-            refreshThreadStop = true;
-            refreshThread.interrupt();
+        registryThreadStop = true;
+        if (registryThread != null) {
+            registryThread.interrupt();
+        }
+        if (discoveryThread != null) {
+            discoveryThread.interrupt();
         }
     }
 
