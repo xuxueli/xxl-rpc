@@ -210,6 +210,7 @@ public class ZkServiceRegistry extends ServiceRegistry {
                 }
 
                 if (childPathData.size() > 0) {
+                	existValues.clear();
                     existValues.addAll(childPathData.keySet());
                 }
             }
