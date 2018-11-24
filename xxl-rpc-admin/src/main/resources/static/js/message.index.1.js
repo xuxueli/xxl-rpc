@@ -45,8 +45,6 @@ $(function() {
 						        return '正常';
                             } else if (data == 1) {
                                 return '锁定';
-                            } else if (data == 2) {
-                                return '禁用';
                             }
 							return data;
 						}
@@ -202,6 +200,22 @@ $(function() {
 			element.parent('div').append(error);
 		},
 		submitHandler : function(form) {
+
+            // valid
+            var dataJson = $("#addModal .form textarea[name='data']").val();
+            if (dataJson) {
+                try {
+                    $.parseJSON(dataJson);
+                } catch (e) {
+                    layer.open({
+                        icon: '2',
+                        content: "注册信息格式非法，限制为字符串数组JSON格式，如 [address,address2] <br>" + e
+                    });
+                    return;
+                }
+            }
+
+            // post
 			$.post(base_url + "/registry/add", $("#addModal .form").serialize(), function(data, status) {
 				if (data.code == "200") {
 					$('#addModal').modal('hide');
@@ -289,6 +303,21 @@ $(function() {
 			element.parent('div').append(error);
 		},
 		submitHandler : function(form) {
+            // valid
+            var dataJson = $("#addModal .form textarea[name='data']").val();
+            if (dataJson) {
+                try {
+                    $.parseJSON(dataJson);
+                } catch (e) {
+                    layer.open({
+                        icon: '2',
+                        content: "注册信息格式非法，限制为字符串数组JSON格式，如 [address,address2] <br>" + e
+                    });
+                    return;
+                }
+            }
+
+            // post
 			$.post(base_url + "/registry/update", $("#updateModal .form").serialize(), function(data, status) {
 				if (data.code == "200") {
 					$('#updateModal').modal('hide');

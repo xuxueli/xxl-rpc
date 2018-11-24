@@ -99,12 +99,12 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
         if (xxlRpcRegistry.getKey()==null || xxlRpcRegistry.getKey().trim().length()==0) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "注册Key格式非法[0~255]");
         }
-        if (xxlRpcRegistry.getData()==null) {
+        if (xxlRpcRegistry.getData()==null || xxlRpcRegistry.getData().trim().length()==0) {
             xxlRpcRegistry.setData(JacksonUtil.writeValueAsString(new ArrayList<String>()));
         }
         List<String> valueList = JacksonUtil.readValue(xxlRpcRegistry.getData(), List.class);
         if (valueList == null) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "注册Value数据格式非法（JSON格式字符串数组）");
+            return new ReturnT<String>(ReturnT.FAIL_CODE, "注册Value数据格式非法；限制为字符串数组JSON格式，如 [address,address2]");
         }
 
         // valid exist
@@ -146,12 +146,18 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
         if (xxlRpcRegistry.getKey()==null || xxlRpcRegistry.getKey().trim().length()==0 || xxlRpcRegistry.getKey().trim().length()>255) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "注册Key格式非法[0~255]");
         }
-        if (xxlRpcRegistry.getData()==null) {
+        if (xxlRpcRegistry.getData()==null || xxlRpcRegistry.getData().trim().length()==0) {
             xxlRpcRegistry.setData(JacksonUtil.writeValueAsString(new ArrayList<String>()));
         }
         List<String> valueList = JacksonUtil.readValue(xxlRpcRegistry.getData(), List.class);
         if (valueList == null) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "注册Value数据格式非法（JSON格式字符串数组）");
+            return new ReturnT<String>(ReturnT.FAIL_CODE, "注册Value数据格式非法；限制为字符串数组JSON格式，如 [address,address2]");
+        }
+
+        // valid exist
+        XxlRpcRegistry exist = xxlRpcRegistryDao.load(xxlRpcRegistry.getBiz(), xxlRpcRegistry.getEnv(), xxlRpcRegistry.getKey());
+        if (exist != null) {
+            return new ReturnT<String>(ReturnT.FAIL_CODE, "注册Key请勿重复");
         }
 
         // fill version

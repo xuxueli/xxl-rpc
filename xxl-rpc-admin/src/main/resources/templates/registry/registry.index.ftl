@@ -98,7 +98,7 @@
                         <div class="form-group">
                             <label for="lastname" class="col-sm-3 control-label">注册信息 <font color="red">*</font></label>
                             <div class="col-sm-9">
-                                <textarea class="textarea" name="data" maxlength="60000" placeholder="请输入注册信息，JSON-List<String> 格式" style="width: 100%; height: 100px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
+                                <textarea class="textarea" name="data" maxlength="60000" placeholder="请输入注册信息；限制为字符串数组JSON格式，如 [address,address2]" style="width: 100%; height: 100px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
                             </div>
                         </div>
                         <div class="form-group">
@@ -135,7 +135,7 @@
                     <form class="form-horizontal form" role="form" >
                         <div class="form-group">
                             <label for="lastname" class="col-sm-3 control-label">业务标识 <font color="red">*</font></label>
-                            <div class="col-sm-9"><input type="text" class="form-control" name="biz" maxlength="255" placeholder="请输入业务标识" readonly ></div>
+                            <div class="col-sm-9"><input type="text" class="form-control" name="biz" maxlength="255" placeholder="请输入业务标识" ></div>
                         </div>
                         <div class="form-group">
                             <label for="lastname" class="col-sm-3 control-label">环境标识 <font color="red">*</font></label>
@@ -148,7 +148,7 @@
                         <div class="form-group">
                             <label for="lastname" class="col-sm-3 control-label">注册信息 <font color="red">*</font></label>
                             <div class="col-sm-9">
-                                <textarea class="textarea" name="data" maxlength="60000" placeholder="请输入注册信息，JSON-List<String> 格式" style="width: 100%; height: 100px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
+                                <textarea class="textarea" name="data" maxlength="60000" placeholder="请输入注册信息；限制为字符串数组JSON格式，如 [address,address2]" style="width: 100%; height: 100px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
                             </div>
                         </div>
                         <div class="form-group">
