@@ -2,7 +2,6 @@ package com.xxl.rpc.test;
 
 import com.xxl.rpc.registry.ServiceRegistry;
 import com.xxl.rpc.registry.impl.ZkServiceRegistry;
-import com.xxl.rpc.util.Environment;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,9 +15,9 @@ public class ServiceRegistryTest {
     public static void main(String[] args) throws IllegalAccessException, InstantiationException, InterruptedException {
 
         Map<String, String> param = new HashMap<>();
-        param.put(Environment.ZK_ADDRESS, "127.0.0.1:2181");
-        param.put(Environment.ZK_DIGEST, "");
-        param.put(Environment.ENV, "test");
+        param.put(ZkServiceRegistry.ZK_ADDRESS, "192.168.99.100:2181");
+        param.put(ZkServiceRegistry.ZK_DIGEST, "");
+        param.put(ZkServiceRegistry.ENV, "test");
 
 
         Class<? extends ServiceRegistry> serviceRegistryClass = ZkServiceRegistry.class;

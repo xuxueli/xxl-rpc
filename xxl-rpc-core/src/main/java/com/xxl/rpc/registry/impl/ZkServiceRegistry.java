@@ -1,7 +1,6 @@
 package com.xxl.rpc.registry.impl;
 
 import com.xxl.rpc.registry.ServiceRegistry;
-import com.xxl.rpc.util.Environment;
 import com.xxl.rpc.util.XxlRpcException;
 import com.xxl.rpc.util.XxlZkClient;
 import org.apache.zookeeper.KeeperException;
@@ -30,6 +29,11 @@ import java.util.concurrent.TimeUnit;
  */
 public class ZkServiceRegistry extends ServiceRegistry {
     private static Logger logger = LoggerFactory.getLogger(ZkServiceRegistry.class);
+
+    // param
+    public static final String ENV = "env";                       // zk env
+    public static final String ZK_ADDRESS = "zkaddress";        // zk registry address, like "ip1:port,ip2:port,ip3:port"
+    public static final String ZK_DIGEST = "zkdigest";          // zk registry digest
 
 
     // ------------------------------ zk conf ------------------------------
@@ -77,9 +81,9 @@ public class ZkServiceRegistry extends ServiceRegistry {
      */
     @Override
     public void start(Map<String, String> param) {
-        String zkaddress = param.get(Environment.ZK_ADDRESS);
-        String zkdigest = param.get(Environment.ZK_DIGEST);
-        String env = param.get(Environment.ENV);
+        String zkaddress = param.get(ZK_ADDRESS);
+        String zkdigest = param.get(ZK_DIGEST);
+        String env = param.get(ENV);
 
         // valid
         if (zkaddress==null || zkaddress.trim().length()==0) {

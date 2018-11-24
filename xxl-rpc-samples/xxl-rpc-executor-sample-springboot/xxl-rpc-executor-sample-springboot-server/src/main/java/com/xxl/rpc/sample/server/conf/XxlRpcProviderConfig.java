@@ -2,7 +2,6 @@ package com.xxl.rpc.sample.server.conf;
 
 import com.xxl.rpc.registry.impl.ZkServiceRegistry;
 import com.xxl.rpc.remoting.provider.impl.XxlRpcSpringProviderFactory;
-import com.xxl.rpc.util.Environment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,9 +39,9 @@ public class XxlRpcProviderConfig {
         if (zkaddress!=null && zkaddress.trim().length()>0) {
             providerFactory.setServiceRegistryClass(ZkServiceRegistry.class);
             providerFactory.setServiceRegistryParam(new HashMap<String, String>(){{
-                put(Environment.ZK_ADDRESS, zkaddress);
-                put(Environment.ZK_DIGEST, zkdigest);
-                put(Environment.ENV, env);
+                put(ZkServiceRegistry.ZK_ADDRESS, zkaddress);
+                put(ZkServiceRegistry.ZK_DIGEST, zkdigest);
+                put(ZkServiceRegistry.ENV, env);
             }});
         }
 
