@@ -24,7 +24,9 @@ public class NativeServiceRegistry extends ServiceRegistry {
     // param
     private String adminAddress = null;
     private String biz = "xxl-rpc";
-    private String env;         // 环境标识
+    private String env;
+
+    private List<String> adminAddressArr = null;
 
 
     private volatile ConcurrentMap<String, TreeSet<String>> registryData = new ConcurrentHashMap<String, TreeSet<String>>();
@@ -41,6 +43,13 @@ public class NativeServiceRegistry extends ServiceRegistry {
         // valid
         if (adminAddress==null || adminAddress.trim().length()==0) {
             throw new XxlRpcException("xxl-rpc adminAddress can not be empty");
+        }
+        // admin address
+        adminAddressArr = new ArrayList<>();
+        if (adminAddress.contains(",")) {
+            adminAddressArr.add(adminAddress);
+        } else {
+            adminAddressArr.addAll(Arrays.asList(adminAddress.split(",")));
         }
 
         // init zkpath
@@ -102,11 +111,13 @@ public class NativeServiceRegistry extends ServiceRegistry {
         }
 
         if (keys.size() > 0) {
-            // TODO, discovery mult
-
-            Map<String, List<String>> keyValueList = NaticveClient.discovery(adminAddress, biz, env, keys);
-
-
+            // discovery mult
+            Map<String, List<String>> keyValueListData = NaticveClient.discovery(adminAddressArr, biz, env, keys);
+                if (keyValueListData!=null) {
+                for (String keyItem: keyValueListData.keySet()) {
+                    discoveryData.put(keyItem, new TreeSet<String>(keyValueListData.get(keyItem)));
+                }
+            }
         }
 
     }
@@ -124,9 +135,10 @@ public class NativeServiceRegistry extends ServiceRegistry {
             values.add(value);
         }
 
-        // TODO, registry mult
+        // remove mult
+        boolean ret = NaticveClient.registry(adminAddressArr, biz, env, keys, value);
 
-        return false;
+        return ret;
     }
 
     @Override
@@ -138,9 +150,10 @@ public class NativeServiceRegistry extends ServiceRegistry {
             }
         }
 
-        // TODO, remove mult
+        // remove mult
+        boolean ret = NaticveClient.remove(adminAddressArr, biz, env, keys, value);
 
-        return false;
+        return ret;
     }
 
     @Override

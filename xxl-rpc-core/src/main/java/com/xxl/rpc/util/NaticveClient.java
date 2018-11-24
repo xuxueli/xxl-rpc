@@ -1,15 +1,10 @@
 package com.xxl.rpc.util;
 
-import com.xxl.rpc.registry.impl.ZkServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author xuxueli 2018-11-25 00:35:22
@@ -18,17 +13,17 @@ public class NaticveClient {
     private static Logger logger = LoggerFactory.getLogger(NaticveClient.class);
 
 
-    public static Map<String, List<String>> discovery(String adminAddress, String biz, String env, Set<String> keys) {
-
-        // admin address
-        List<String> adminAddressUrls = new ArrayList<>();
-        if (adminAddress.contains(",")) {
-            adminAddressUrls.add(adminAddress);
-        } else {
-            adminAddressUrls.addAll(Arrays.asList(adminAddress.split(",")));
-        }
-
-        for (String adminAddressUrl: adminAddressUrls) {
+    /**
+     * discovery
+     *
+     * @param adminAddressArr
+     * @param biz
+     * @param env
+     * @param keys
+     * @return
+     */
+    public static Map<String, List<String>> discovery(List<String> adminAddressArr, String biz, String env, Set<String> keys) {
+        for (String adminAddressUrl: adminAddressArr) {
 
             // final url
             String url = adminAddressUrl + "/registry/discovery";
@@ -38,18 +33,10 @@ public class NaticveClient {
                 url += "&keys=" + key;
             }
 
-            // resp json
-            String respJson = BaseHttpUtil.get(url);
-            if (respJson == null) {
-                continue;
-            }
+            // get and valid
+            Map<String, Object> respObj = getAndValid(url);
 
-            // parse obj
-            Map<String, Object> respObj = new BasicJsonParser().parseMap(respJson);
-            int code = Integer.valueOf(String.valueOf(respObj.get("code")));
-            if (code != 200) {
-                logger.info("NaticveClient.discovery fail, msg={}", respObj.get("msg"));
-            }
+            // parse
             Map<String, List<String>> data = (Map<String, List<String>>) respObj.get("data");
             return data;
         }
@@ -57,9 +44,99 @@ public class NaticveClient {
         return null;
     }
 
-    public static void main(String[] args) {
-        Map<String, List<String>> data = discovery("http://localhost:8080/xxl-rpc-admin", "xxl-rpc", "test", new HashSet<String>(Arrays.asList("service01")));
-        System.out.println(data);
+    private static Map<String, Object> getAndValid(String url){
+        // resp json
+        String respJson = BaseHttpUtil.get(url);
+        if (respJson == null) {
+            return null;
+        }
+
+        // parse obj
+        Map<String, Object> respObj = new BasicJsonParser().parseMap(respJson);
+        int code = Integer.valueOf(String.valueOf(respObj.get("code")));
+        if (code != 200) {
+            logger.info("NaticveClient.discovery fail, msg={}", (respObj.containsKey("msg")?respObj.get("msg"):respJson) );
+            return null;
+        }
+        return respObj;
+    }
+
+    /**
+     * registry
+     *
+     * @param adminAddressArr
+     * @param biz
+     * @param env
+     * @param keys
+     * @param value
+     * @return
+     */
+    public static boolean registry(List<String> adminAddressArr, String biz, String env, Set<String> keys, String value) {
+
+        for (String adminAddressUrl: adminAddressArr) {
+
+            // final url
+            String url = adminAddressUrl + "/registry/registry";
+            url += "?biz=" + biz;
+            url += "&env=" + env;
+            for (String key : keys) {
+                url += "&keys=" + key;
+            }
+            url += "&value=" + value;
+
+            // get and valid
+            Map<String, Object> respObj = getAndValid(url);
+
+            return respObj!=null?true:false;
+        }
+        return false;
+    }
+
+    /**
+     * remove
+     *
+     * @param adminAddressArr
+     * @param biz
+     * @param env
+     * @param keys
+     * @param value
+     * @return
+     */
+    public static boolean remove(List<String> adminAddressArr, String biz, String env, Set<String> keys, String value) {
+
+        for (String adminAddressUrl: adminAddressArr) {
+
+            // final url
+            String url = adminAddressUrl + "/registry/remove";
+            url += "?biz=" + biz;
+            url += "&env=" + env;
+            for (String key : keys) {
+                url += "&keys=" + key;
+            }
+            url += "&value=" + value;
+
+            // get and valid
+            Map<String, Object> respObj = getAndValid(url);
+
+            return respObj!=null?true:false;
+        }
+        return false;
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+
+        System.out.println(discovery(Arrays.asList("http://localhost:8080/xxl-rpc-admin"), "xxl-rpc", "test", new HashSet<String>(Arrays.asList("service01"))));
+
+        // registry
+        System.out.println(registry(Arrays.asList("http://localhost:8080/xxl-rpc-admin"), "xxl-rpc", "test", new HashSet<String>(Arrays.asList("service01")), "127.0.0.1"));
+        TimeUnit.SECONDS.sleep(2);
+        System.out.println(discovery(Arrays.asList("http://localhost:8080/xxl-rpc-admin"), "xxl-rpc", "test", new HashSet<String>(Arrays.asList("service01"))));
+
+        // remove
+        System.out.println(remove(Arrays.asList("http://localhost:8080/xxl-rpc-admin"), "xxl-rpc", "test", new HashSet<String>(Arrays.asList("service01")), "127.0.0.1"));
+        TimeUnit.SECONDS.sleep(2);
+        System.out.println(discovery(Arrays.asList("http://localhost:8080/xxl-rpc-admin"), "xxl-rpc", "test", new HashSet<String>(Arrays.asList("service01"))));
+
     }
 
 }
