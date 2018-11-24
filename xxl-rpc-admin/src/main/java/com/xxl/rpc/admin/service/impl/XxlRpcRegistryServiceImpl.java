@@ -22,6 +22,7 @@ import java.io.File;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -180,42 +181,111 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
     // ------------------------ remote registry ------------------------
 
     @Override
-    public ReturnT<String> registry(XxlRpcRegistryData xxlRpcRegistryData) {
+    public ReturnT<String> registry(String biz, String env, List<String> keys, String value) {
 
         // valid
-        if (xxlRpcRegistryData.getBiz()==null || xxlRpcRegistryData.getBiz().trim().length()==0 || xxlRpcRegistryData.getBiz().trim().length()>255) {
+        if (biz==null || biz.trim().length()==0 || biz.trim().length()>255) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "Biz Invalid[0~255]");
         }
-        if (xxlRpcRegistryData.getEnv()==null || xxlRpcRegistryData.getEnv().trim().length()==0 || xxlRpcRegistryData.getEnv().trim().length()>255) {
+        if (env==null || env.trim().length()==0 || env.trim().length()>255) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "Env Invalid[0~255]");
         }
-        if (xxlRpcRegistryData.getKey()==null || xxlRpcRegistryData.getKey().trim().length()==0 || xxlRpcRegistryData.getKey().trim().length()>255) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "Key Invalid[0~255]");
+        if (keys==null || keys.size()==0) {
+            return new ReturnT<String>(ReturnT.FAIL_CODE, "keys Invalid.");
         }
-        if (xxlRpcRegistryData.getValue()==null || xxlRpcRegistryData.getValue().trim().length()==0 || xxlRpcRegistryData.getValue().trim().length()>255) {
+        for (String key: keys) {
+            if (key==null || key.trim().length()==0 || key.trim().length()>255) {
+                return new ReturnT<String>(ReturnT.FAIL_CODE, "Key Invalid[0~255]");
+            }
+        }
+        if (value==null || value.trim().length()==0 || value.trim().length()>255) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "Value Invalid[0~255]");
         }
 
-        // refresh or add
-        int ret = xxlRpcRegistryDataDao.refresh(xxlRpcRegistryData);
-        if (ret == 0) {
-            xxlRpcRegistryDataDao.add(xxlRpcRegistryData);
+        // add queue
+        for (String key: keys) {
+            XxlRpcRegistryData xxlRpcRegistryData = new XxlRpcRegistryData();
+            xxlRpcRegistryData.setBiz(biz);
+            xxlRpcRegistryData.setEnv(env);
+            xxlRpcRegistryData.setKey(key);
+            xxlRpcRegistryData.setValue(value);
+            registryQueue.add(xxlRpcRegistryData);
         }
 
-        // valid file status
-        XxlRpcRegistry fileXxlRpcRegistry = getFileRegistryData(xxlRpcRegistryData);
-        if (fileXxlRpcRegistry.getStatus() != 0) {
-            return new ReturnT<String>(ReturnT.SUCCESS_CODE, "Status limited.");
-        } else {
-            if (fileXxlRpcRegistry.getDataList().contains(xxlRpcRegistryData.getValue())) {
-                return new ReturnT<String>(ReturnT.SUCCESS_CODE, "Repeated limited.");
+        return ReturnT.SUCCESS;
+    }
+
+    @Override
+    public ReturnT<String> remove(String biz, String env, List<String> keys, String value) {
+
+        // valid
+        if (biz==null || biz.trim().length()==0 || biz.trim().length()>255) {
+            return new ReturnT<String>(ReturnT.FAIL_CODE, "Biz Invalid[0~255]");
+        }
+        if (env==null || env.trim().length()==0 || env.trim().length()>255) {
+            return new ReturnT<String>(ReturnT.FAIL_CODE, "Env Invalid[0~255]");
+        }
+        if (keys==null || keys.size()==0) {
+            return new ReturnT<String>(ReturnT.FAIL_CODE, "keys Invalid.");
+        }
+        for (String key: keys) {
+            if (key==null || key.trim().length()==0 || key.trim().length()>255) {
+                return new ReturnT<String>(ReturnT.FAIL_CODE, "Key Invalid[0~255]");
+            }
+        }
+        if (value==null || value.trim().length()==0 || value.trim().length()>255) {
+            return new ReturnT<String>(ReturnT.FAIL_CODE, "Value Invalid[0~255]");
+        }
+
+        // add queue
+        for (String key: keys) {
+            XxlRpcRegistryData xxlRpcRegistryData = new XxlRpcRegistryData();
+            xxlRpcRegistryData.setBiz(biz);
+            xxlRpcRegistryData.setEnv(env);
+            xxlRpcRegistryData.setKey(key);
+            xxlRpcRegistryData.setValue(value);
+            removeQueue.add(xxlRpcRegistryData);
+        }
+
+        return ReturnT.SUCCESS;
+    }
+
+    @Override
+    public ReturnT<Map<String, List<String>>> discovery(String biz, String env, List<String> keys) {
+
+        // valid
+        if (biz==null || biz.trim().length()==0 || biz.trim().length()>255) {
+            return new ReturnT<>(ReturnT.FAIL_CODE, "Biz Invalid[0~255]");
+        }
+        if (env==null || env.trim().length()==0 || env.trim().length()>255) {
+            return new ReturnT<>(ReturnT.FAIL_CODE, "Env Invalid[0~255]");
+        }
+        if (keys==null || keys.size()==0) {
+            return new ReturnT<>(ReturnT.FAIL_CODE, "keys Invalid.");
+        }
+        for (String key: keys) {
+            if (key==null || key.trim().length()==0 || key.trim().length()>255) {
+                return new ReturnT<>(ReturnT.FAIL_CODE, "Key Invalid[0~255]");
             }
         }
 
-        // checkRegistryDataAndSendMessage
-        checkRegistryDataAndSendMessage(xxlRpcRegistryData);
+        Map<String, List<String>> result = new HashMap<String, List<String>>();
+        for (String key: keys) {
+            XxlRpcRegistryData xxlRpcRegistryData = new XxlRpcRegistryData();
+            xxlRpcRegistryData.setBiz(biz);
+            xxlRpcRegistryData.setEnv(env);
+            xxlRpcRegistryData.setKey(key);
 
-        return ReturnT.SUCCESS;
+            List<String> dataList = new ArrayList<String>();
+            XxlRpcRegistry fileXxlRpcRegistry = getFileRegistryData(xxlRpcRegistryData);
+            if (fileXxlRpcRegistry!=null) {
+                dataList = fileXxlRpcRegistry.getDataList();
+            }
+
+            result.put(key, dataList);
+        }
+
+        return new ReturnT<Map<String, List<String>>>(result);
     }
 
     /**
@@ -266,58 +336,92 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
 
     }
 
-    @Override
-    public ReturnT<String> remove(XxlRpcRegistryData xxlRpcRegistryData) {
-
-        // valid
-        if (xxlRpcRegistryData.getBiz()==null || xxlRpcRegistryData.getBiz().trim().length()==0 || xxlRpcRegistryData.getBiz().trim().length()>255) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "Biz Invalid[0~255]");
-        }
-        if (xxlRpcRegistryData.getEnv()==null || xxlRpcRegistryData.getEnv().trim().length()==0 || xxlRpcRegistryData.getEnv().trim().length()>255) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "Env Invalid[0~255]");
-        }
-        if (xxlRpcRegistryData.getKey()==null || xxlRpcRegistryData.getKey().trim().length()==0 || xxlRpcRegistryData.getKey().trim().length()>255) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "Key Invalid[0~255]");
-        }
-        if (xxlRpcRegistryData.getValue()==null || xxlRpcRegistryData.getValue().trim().length()==0 || xxlRpcRegistryData.getValue().trim().length()>255) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "Value Invalid[0~255]");
-        }
-
-        // refresh or add
-        xxlRpcRegistryDataDao.deleteDataValue(xxlRpcRegistryData.getBiz(), xxlRpcRegistryData.getEnv(), xxlRpcRegistryData.getKey(), xxlRpcRegistryData.getValue());
-
-        // valid file status
-        XxlRpcRegistry fileXxlRpcRegistry = getFileRegistryData(xxlRpcRegistryData);
-        if (fileXxlRpcRegistry.getStatus() != 0) {
-            return new ReturnT<String>(ReturnT.SUCCESS_CODE, "Status limited.");
-        } else {
-            if (!fileXxlRpcRegistry.getDataList().contains(xxlRpcRegistryData.getValue())) {
-                return new ReturnT<String>(ReturnT.SUCCESS_CODE, "Repeated limited.");
-            }
-        }
-
-        // checkRegistryDataAndSendMessage
-        checkRegistryDataAndSendMessage(xxlRpcRegistryData);
-
-        return ReturnT.SUCCESS;
-    }
-
-    @Override
-    public ReturnT<String> discovery(XxlRpcRegistryData xxlRpcRegistryData) {
-        XxlRpcRegistry fileXxlRpcRegistry = getFileRegistryData(xxlRpcRegistryData);
-        String dataJson = fileXxlRpcRegistry.getData();
-        return new ReturnT<String>(dataJson);
-    }
-
-
     // ------------------------ broadcase + file data ------------------------
 
     private ExecutorService executorService = Executors.newCachedThreadPool();
     private volatile boolean executorStoped = false;
     private volatile List<Integer> readedMessageIds = Collections.synchronizedList(new ArrayList<Integer>());
 
+    private volatile LinkedBlockingQueue<XxlRpcRegistryData> registryQueue = new LinkedBlockingQueue<XxlRpcRegistryData>();
+    private volatile LinkedBlockingQueue<XxlRpcRegistryData> removeQueue = new LinkedBlockingQueue<XxlRpcRegistryData>();
+
     @Override
     public void afterPropertiesSet() throws Exception {
+
+        /**
+         * registry registry data         (N/Ms)
+         */
+        for (int i = 0; i < 10; i++) {
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    while (!executorStoped) {
+                        try {
+                            XxlRpcRegistryData xxlRpcRegistryData = registryQueue.take();
+                            if (xxlRpcRegistryData !=null) {
+
+                                // refresh or add
+                                int ret = xxlRpcRegistryDataDao.refresh(xxlRpcRegistryData);
+                                if (ret == 0) {
+                                    xxlRpcRegistryDataDao.add(xxlRpcRegistryData);
+                                }
+
+                                // valid file status
+                                XxlRpcRegistry fileXxlRpcRegistry = getFileRegistryData(xxlRpcRegistryData);
+                                if (fileXxlRpcRegistry.getStatus() != 0) {
+                                    continue;     // "Status limited."
+                                } else {
+                                    if (fileXxlRpcRegistry.getDataList().contains(xxlRpcRegistryData.getValue())) {
+                                        continue;     // "Repeated limited."
+                                    }
+                                }
+
+                                // checkRegistryDataAndSendMessage
+                                checkRegistryDataAndSendMessage(xxlRpcRegistryData);
+                            }
+                        } catch (InterruptedException e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    }
+                }
+            });
+        }
+
+        /**
+         * remove registry data         (N/Ms)
+         */
+        for (int i = 0; i < 10; i++) {
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    while (!executorStoped) {
+                        try {
+                            XxlRpcRegistryData xxlRpcRegistryData = removeQueue.take();
+                            if (xxlRpcRegistryData != null) {
+
+                                // delete
+                                xxlRpcRegistryDataDao.deleteDataValue(xxlRpcRegistryData.getBiz(), xxlRpcRegistryData.getEnv(), xxlRpcRegistryData.getKey(), xxlRpcRegistryData.getValue());
+
+                                // valid file status
+                                XxlRpcRegistry fileXxlRpcRegistry = getFileRegistryData(xxlRpcRegistryData);
+                                if (fileXxlRpcRegistry.getStatus() != 0) {
+                                    continue;   // "Status limited."
+                                } else {
+                                    if (!fileXxlRpcRegistry.getDataList().contains(xxlRpcRegistryData.getValue())) {
+                                        continue;   // "Repeated limited."
+                                    }
+                                }
+
+                                // checkRegistryDataAndSendMessage
+                                checkRegistryDataAndSendMessage(xxlRpcRegistryData);
+                            }
+                        } catch (InterruptedException e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    }
+                }
+            });
+        }
 
         /**
          * broadcase new one registry-data-file     (1/1s)

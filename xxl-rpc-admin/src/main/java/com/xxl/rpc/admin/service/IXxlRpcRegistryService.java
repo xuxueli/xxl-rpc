@@ -5,6 +5,7 @@ import com.xxl.rpc.admin.core.model.XxlRpcRegistry;
 import com.xxl.rpc.admin.core.model.XxlRpcRegistryData;
 import com.xxl.rpc.admin.core.result.ReturnT;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,16 +25,16 @@ public interface IXxlRpcRegistryService {
     /**
      * refresh registry-value, check update and broacase
      */
-    ReturnT<String> registry(XxlRpcRegistryData xxlRpcRegistryData);
+    ReturnT<String> registry(String biz, String env, List<String> keys, String value);
 
     /**
      * remove registry-value, check update and broacase
      */
-    ReturnT<String> remove(XxlRpcRegistryData xxlRpcRegistryData);
+    ReturnT<String> remove(String biz, String env, List<String> keys, String value);
 
     /**
      * discovery registry-data, read file
      */
-    ReturnT<String> discovery(XxlRpcRegistryData xxlRpcRegistryData);
+    ReturnT<Map<String, List<String>>> discovery(String biz, String env, List<String> keys);
 
 }

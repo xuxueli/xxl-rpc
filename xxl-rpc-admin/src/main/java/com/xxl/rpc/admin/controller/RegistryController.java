@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -64,22 +65,22 @@ public class RegistryController {
     @RequestMapping("/registry")
     @ResponseBody
     @PermessionLimit(limit=false)
-    public ReturnT<String> registry(XxlRpcRegistryData xxlRpcRegistryData){
-        return xxlRpcRegistryService.registry(xxlRpcRegistryData);
+    public ReturnT<String> registry(String biz, String env, @RequestParam(name = "keys", required = false) List<String> keys, String value){
+        return xxlRpcRegistryService.registry(biz, env, keys, value);
     }
 
     @RequestMapping("/remove")
     @ResponseBody
     @PermessionLimit(limit=false)
-    public ReturnT<String> remove(XxlRpcRegistryData xxlRpcRegistryData){
-        return xxlRpcRegistryService.remove(xxlRpcRegistryData);
+    public ReturnT<String> remove(String biz, String env, @RequestParam(name = "keys", required = false) List<String> keys, String value){
+        return xxlRpcRegistryService.remove(biz, env, keys, value);
     }
 
     @RequestMapping("/discovery")
     @ResponseBody
     @PermessionLimit(limit=false)
-    public ReturnT<String> discovery(XxlRpcRegistryData xxlRpcRegistryData) {
-        return xxlRpcRegistryService.discovery(xxlRpcRegistryData);
+    public ReturnT<Map<String, List<String>>> discovery(String biz, String env, @RequestParam(name = "keys", required = false) List<String> keys) {
+        return xxlRpcRegistryService.discovery(biz, env, keys);
     }
 
 }
