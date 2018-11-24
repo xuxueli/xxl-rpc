@@ -282,14 +282,14 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
         }
 
         // refresh or add
-        xxlRpcRegistryDataDao.deleteData(xxlRpcRegistryData.getBiz(), xxlRpcRegistryData.getEnv(), xxlRpcRegistryData.getKey());
+        xxlRpcRegistryDataDao.deleteDataValue(xxlRpcRegistryData.getBiz(), xxlRpcRegistryData.getEnv(), xxlRpcRegistryData.getKey(), xxlRpcRegistryData.getValue());
 
         // valid file status
         XxlRpcRegistry fileXxlRpcRegistry = getFileRegistryData(xxlRpcRegistryData);
         if (fileXxlRpcRegistry.getStatus() != 0) {
             return new ReturnT<String>(ReturnT.SUCCESS_CODE, "Status limited.");
         } else {
-            if (fileXxlRpcRegistry.getDataList().contains(xxlRpcRegistryData.getValue())) {
+            if (!fileXxlRpcRegistry.getDataList().contains(xxlRpcRegistryData.getValue())) {
                 return new ReturnT<String>(ReturnT.SUCCESS_CODE, "Repeated limited.");
             }
         }

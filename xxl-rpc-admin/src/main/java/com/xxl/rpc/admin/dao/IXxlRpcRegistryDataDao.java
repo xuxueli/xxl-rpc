@@ -28,6 +28,11 @@ public interface IXxlRpcRegistryDataDao {
                           @Param("env") String env,
                           @Param("key") String key);
 
+    public int deleteDataValue(@Param("biz") String biz,
+                          @Param("env") String env,
+                          @Param("key") String key,
+                           @Param("value") String value);
+
     public int count();
 
 }

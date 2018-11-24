@@ -69,6 +69,14 @@
 			and `key` = #{key}
 	</delete>
 
+	<delete id="deleteDataValue" parameterType="java.util.HashMap" >
+		DELETE FROM XXL_RPC_REGISTRY_DATA
+		WHERE `biz` = #{biz}
+			and `env` = #{env}
+			and `key` = #{key}
+			and `value` = #{value}
+	</delete>
+
 	<select id="count" resultType="java.lang.Integer" >
 		SELECT count(1)
 		FROM XXL_RPC_REGISTRY_DATA
