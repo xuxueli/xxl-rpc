@@ -152,7 +152,7 @@ public XxlRpcSpringProviderFactory xxlRpcSpringProviderFactory() {
     providerFactory.setPort(port);
     providerFactory.setServiceRegistryClass(NativeServiceRegistry.class);       // 注册中心选型，此处选择“XXL-RPC原生轻量级注册中心”
     providerFactory.setServiceRegistryParam(new HashMap<String, String>(){{
-        put(NativeServiceRegistry.XXL_RPC_ADMIN, adminaddress);                 // 原生注册中心跟地址
+        put(NativeServiceRegistry.XXL_RPC_ADMIN, adminaddress);                 // 原生注册中心跟地址，需要和上文“服务中心”部署跟地址一致；
         put(NativeServiceRegistry.ENV, env);                                    // 注册环境，支持注册信息环境隔离
     }});
     
@@ -213,7 +213,7 @@ public XxlRpcSpringInvokerFactory xxlJobExecutor() {
     XxlRpcSpringInvokerFactory invokerFactory = new XxlRpcSpringInvokerFactory();
     invokerFactory.setServiceRegistryClass(NativeServiceRegistry.class);        // 注册中心选型，此处选择“XXL-RPC原生轻量级注册中心”
     invokerFactory.setServiceRegistryParam(new HashMap<String, String>(){{
-        put(NativeServiceRegistry.XXL_RPC_ADMIN, adminaddress);                 // 原生注册中心跟地址
+        put(NativeServiceRegistry.XXL_RPC_ADMIN, adminaddress);                 // 需要和上文“服务中心”部署跟地址一致；
         put(NativeServiceRegistry.ENV, env);                                    // 注册环境，支持注册信息环境隔离
     }});
 
@@ -379,12 +379,32 @@ XXL-RPC支持两种方式设置远程服务地址：
 ### 4.9 如何切换“通讯方案”选型
 XXL-RPC提供多中通讯方案：支持 TCP 和 HTTP 两种通讯方式进行服务调用；其中 TCP 提供可选方案 NETTY 或 MINA ，HTTP 提供可选方案 Jetty；
 
-
+如果需要切换XXL-RPC“通讯方案”，只需要执行以下两个步骤即可：
+- a、引入通讯依赖包，排除掉其他方案依赖，各方案依赖如下：
+    - JETTY：依赖 jetty-server + jetty-client；
+    - NETTY：依赖 netty-all + commons-pool2；
+    - MINA：依赖 mina-core + commons-pool2；
+- b、修改通讯枚举，需要同时在“服务方”与“消费方”两端一同修改，通讯枚举属性代码位置如下：
+    - XxlRpcSpringProviderFactory.netType：可参考springboot示例组件初始化代码；
+    - XxlRpcSpringInvokerFactory.netType：可参考springboot示例组件初始化代码；
 
 
 ### 4.9 如何切换“注册中心”选型
-注册中心：可选组件，支持服务注册并动态发现；可直接指定服务提供方机器地址通讯；原生提供多种开箱即用的注册中心可选方案，包括：“XXL-RPC原生轻量级注册中心”、“ZK注册中心”、“Local注册中心”等；
+XXL-RPC的注册中心，是一个可选组件，不强制依赖；
 
+当不需要注册中心时，可直接指定服务提供方机器地址通讯；
+
+当需要注册中心时， 原生提供多种开箱即用的注册中心可选方案，包括：“XXL-RPC原生轻量级注册中心”、“ZK注册中心”、“Local注册中心”等；
+
+如果需要切换XXL-RPC“通讯方案”，只需要执行以下两个步骤即可：
+- a、引入注册注册中心依赖包，排除掉其他方案依赖，各方案依赖如下：
+    - XXL-RPC原生轻量级注册中心：轻量级、无依赖；
+    - ZK注册中心：依赖 zookeeper
+    - Local注册中心：轻量级、无依赖；
+- b、修改注册中心配置，需要同时在“服务方”与“消费方”两端一同修改，代码位置如下：
+    - XxlRpcSpringProviderFactory.serviceRegistryClass：注册中心实现类，可选：NativeServiceRegistry.class、LocalServiceRegistry.class、ZkServiceRegistry.class
+    - XxlRpcSpringProviderFactory.serviceRegistryParam：注册中心启动参数，各种注册中心启动参数不同，可参考其 start 方案了解；
+    
 
 
 
