@@ -115,7 +115,7 @@ $(function() {
 
 		var id = $(this).parent('p').attr("id");
 
-        layer.confirm( "确认删除该消息?", {
+        layer.confirm( "确认删除该服务?", {
             icon: 3,
             title: "系统提示" ,
             btn: [ "确认", "取消" ]
