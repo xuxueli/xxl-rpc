@@ -390,7 +390,7 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
     public void afterPropertiesSet() throws Exception {
 
         /**
-         * registry registry data         (N/Ms)
+         * registry registry data         (client-num/10 s)
          */
         for (int i = 0; i < 10; i++) {
             executorService.execute(new Runnable() {
@@ -431,7 +431,7 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
         }
 
         /**
-         * remove registry data         (N/Ms)
+         * remove registry data         (client-num/start-interval s)
          */
         for (int i = 0; i < 10; i++) {
             executorService.execute(new Runnable() {

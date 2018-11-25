@@ -44,19 +44,19 @@
                     </div>
                 </div>
 
-                <#-- 服务实例数量 -->
+                <#-- 服务提供者数量 -->
                 <div class="col-md-6 col-sm-6 col-xs-12" >
                     <div class="info-box bg-yellow">
                         <span class="info-box-icon"><i class="fa fa-calendar"></i></span>
 
                         <div class="info-box-content">
-                            <span class="info-box-text">服务实例数量</span>
+                            <span class="info-box-text">服务提供者数量</span>
                             <span class="info-box-number">${registryDataNum}</span>
 
                             <div class="progress">
                                 <div class="progress-bar" style="width: 100%" ></div>
                             </div>
-                            <span class="progress-description">服务中心接入的服务实例数量</span>
+                            <span class="progress-description">服务中心接入的服务提供者数量</span>
                         </div>
                     </div>
                 </div>
