@@ -129,13 +129,16 @@ xxl.rpc.login.password=123456
 
 
 #### 其他：Docker 镜像方式搭建"服务中心"：
+
 - 下载镜像
+
 ```
 // Docker地址：https://hub.docker.com/r/xuxueli/xxl-rpc-admin/
 docker pull xuxueli/xxl-rpc-admin
 ```
 
 - 创建容器并运行
+
 ```
 docker run -p 8080:8080 -v /tmp:/data/applogs --name xxl-rpc-admin  -d xuxueli/xxl-rpc-admin
 
@@ -161,7 +164,7 @@ docker run -e PARAMS="--spring.datasource.url=jdbc:mysql://127.0.0.1:3306/xxl-rp
 #### 2.3.2 配置开发“服务提供方”
 - 1、配置 “maven依赖”：  
 
-需引入：XXL-RPC核心依赖 + 公共API接口依赖（如选择ZK注册中心需引入ZK依赖，否则忽略；）
+需引入：XXL-RPC核心依赖 + 公共API接口依赖
 
 ```
 <dependency>
@@ -194,7 +197,7 @@ public XxlRpcSpringProviderFactory xxlRpcSpringProviderFactory() {
 
 ProviderFactory 参数 | 说明
 --- | ---
-netType | 服务通讯方案，可选范围：JETTY（默认）、NETTY、MINA； 
+netType | 服务通讯方案，可选范围：NETTY（默认）、MINA、JETTY； 
 serialize | 序列化方案，可选范围: HESSIAN（默认）、HESSIAN1、PROTOSTUFF、JSON；
 ip |  服务方IP，为空自动获取机器IP，支持手动指定；
 port | 服务方端口，默认 7080 
@@ -223,7 +226,7 @@ version | 服务版本，默认空；可据此区分同一个“服务API” 的
 
 - 1、配置 “maven依赖”：  
 
-需引入：XXL-RPC核心依赖 + 公共API接口依赖（如选择ZK注册中心需引入ZK依赖，否则忽略；）
+需引入：XXL-RPC核心依赖 + 公共API接口依赖
 
 ```
 <dependency>
@@ -274,7 +277,7 @@ UserDTO user = demoService.sayHi(name);
 
 “@XxlRpcReference” 注解参数 | 说明
 --- | ---
-netType | 服务通讯方案，可选范围：JETTY（默认）、NETTY、MINA； 
+netType | 服务通讯方案，可选范围：NETTY（默认）、MINA、JETTY； 
 serializer | 序列化方案，可选范围: HESSIAN（默认）、HESSIAN1、PROTOSTUFF、JSON；
 address | 服务远程地址，ip:port 格式；选填；非空时将会优先实用该服务地址，为空时会从注册中心服务地址发现；
 accessToken | 服务鉴权Token，非空时生效；
@@ -563,6 +566,7 @@ XXL-RPC的注册中心，是一个可选组件，不强制依赖；支持服务�
 - 注册中心安全性校验；
 - 服务中心Docker镜像；
 - 服务注册，支持节点权重配置；
+- 注册中心，线程起始时间同步；
 
 
 ## 六、其他
