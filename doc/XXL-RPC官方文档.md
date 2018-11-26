@@ -119,7 +119,7 @@ xxl.rpc.login.username=admin
 xxl.rpc.login.password=123456
 ```
 
-#### 服务中心集群部署
+#### "服务中心" 集群部署（可选）
 服务中心支持集群部署，提升调度系统容灾和可用性。
 
 服务中心集群部署时，几点要求和建议：
@@ -127,6 +127,25 @@ xxl.rpc.login.password=123456
 - 登陆账号配置保持一致；
 - 集群机器时钟保持一致（单机集群忽视）；
 - 建议：推荐通过nginx为服务中心集群做负载均衡，分配域名。服务中心访问、客户端注册与发现服务等操作均通过该域名进行。
+
+
+#### 其他：Docker 镜像方式搭建"服务中心"：
+- 下载镜像
+```
+// Docker地址：https://hub.docker.com/r/xuxueli/xxl-rpc-admin/
+docker pull xuxueli/xxl-rpc-admin
+```
+
+- 创建容器并运行
+```
+docker run -p 8080:8080 -v /tmp:/data/applogs --name xxl-rpc-admin  -d xuxueli/xxl-rpc-admin
+
+/**
+* 如需自定义 mysql 等配置，可通过 "PARAMS" 指定；
+* 配置项参考文件：/xxl-rpc/xxl-rpc-admin/src/main/resources/application.properties
+*/
+docker run -e PARAMS="--spring.datasource.url=jdbc:mysql://127.0.0.1:3306/xxl-rpc?Unicode=true&characterEncoding=UTF-8" -p 8080:8080 -v /tmp:/data/applogs --name xxl-rpc-admin  -d xuxueli/xxl-rpc-admin
+```
 
  
 ### 2.3 项目中使用XXL-RPC

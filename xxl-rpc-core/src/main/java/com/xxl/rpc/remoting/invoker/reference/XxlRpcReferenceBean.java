@@ -166,7 +166,7 @@ public class XxlRpcReferenceBean {
 								}
 								return xxlRpcResponse.getResult();
 							} catch (Exception e) {
-								logger.info(">>>>>>>>>>> xxl-job, invoke error, address:{}, XxlRpcRequest{}", address, xxlRpcRequest);
+								logger.info(">>>>>>>>>>> xxl-rpc, invoke error, address:{}, XxlRpcRequest{}", address, xxlRpcRequest);
 
 								throw (e instanceof XxlRpcException)?e:new XxlRpcException(e);
 							} finally{
@@ -187,7 +187,7 @@ public class XxlRpcReferenceBean {
 
                                 return null;
                             } catch (Exception e) {
-								logger.info(">>>>>>>>>>> xxl-job, invoke error, address:{}, XxlRpcRequest{}", address, xxlRpcRequest);
+								logger.info(">>>>>>>>>>> xxl-rpc, invoke error, address:{}, XxlRpcRequest{}", address, xxlRpcRequest);
 
 								// remove-InvokerFuture
 								invokeFuture.stop();
@@ -213,7 +213,7 @@ public class XxlRpcReferenceBean {
 
 								client.asyncSend(address, xxlRpcRequest);
 							} catch (Exception e) {
-								logger.info(">>>>>>>>>>> xxl-job, invoke error, address:{}, XxlRpcRequest{}", address, xxlRpcRequest);
+								logger.info(">>>>>>>>>>> xxl-rpc, invoke error, address:{}, XxlRpcRequest{}", address, xxlRpcRequest);
 
 								// future remove
 								XxlRpcFutureResponseFactory.removeInvokerFuture(xxlRpcRequest.getRequestId());
