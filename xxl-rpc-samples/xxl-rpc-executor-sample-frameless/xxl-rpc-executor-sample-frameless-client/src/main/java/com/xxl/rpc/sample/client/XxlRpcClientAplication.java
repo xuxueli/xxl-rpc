@@ -47,7 +47,7 @@ public class XxlRpcClientAplication {
 	 */
 	public static void testSYNC(){
 		// init client
-		DemoService demoService = (DemoService) new XxlRpcReferenceBean(NetEnum.JETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(), CallType.SYNC,
+		DemoService demoService = (DemoService) new XxlRpcReferenceBean(NetEnum.NETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(), CallType.SYNC,
 				DemoService.class, null, 500, "127.0.0.1:7080", null, null, null).getObject();
 
 		// test
@@ -73,7 +73,7 @@ public class XxlRpcClientAplication {
 	 */
 	public static void testFUTURE() throws ExecutionException, InterruptedException {
 		// client test
-		DemoService demoService = (DemoService) new XxlRpcReferenceBean(NetEnum.JETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(), CallType.FUTURE,
+		DemoService demoService = (DemoService) new XxlRpcReferenceBean(NetEnum.NETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(), CallType.FUTURE,
 				DemoService.class, null, 500, "127.0.0.1:7080", null, null, null).getObject();
 
 		// test
@@ -90,7 +90,7 @@ public class XxlRpcClientAplication {
 	 */
 	public static void testCALLBACK() throws ExecutionException, InterruptedException {
 		// client test
-		DemoService demoService = (DemoService) new XxlRpcReferenceBean(NetEnum.JETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(), CallType.CALLBACK,
+		DemoService demoService = (DemoService) new XxlRpcReferenceBean(NetEnum.NETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(), CallType.CALLBACK,
 				DemoService.class, null, 500, "127.0.0.1:7080", null, null, null).getObject();
 
 
@@ -116,7 +116,7 @@ public class XxlRpcClientAplication {
 	 */
 	public static void testONEWAY() throws ExecutionException, InterruptedException {
 		// client test
-		DemoService demoService = (DemoService) new XxlRpcReferenceBean(NetEnum.JETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(), CallType.ONEWAY,
+		DemoService demoService = (DemoService) new XxlRpcReferenceBean(NetEnum.NETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(), CallType.ONEWAY,
 				DemoService.class, null, 500, "127.0.0.1:7080", null, null, null).getObject();
 
 		// test

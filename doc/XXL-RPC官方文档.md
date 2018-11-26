@@ -436,12 +436,12 @@ XXL-RPC提供多中通讯方案：支持 TCP 和 HTTP 两种通讯方式进行�
 
 如果需要切换XXL-RPC“通讯方案”，只需要执行以下两个步骤即可：
 - a、引入通讯依赖包，排除掉其他方案依赖，各方案依赖如下：
-    - JETTY：依赖 jetty-server + jetty-client；
     - NETTY：依赖 netty-all + commons-pool2；
     - MINA：依赖 mina-core + commons-pool2；
+    - JETTY：依赖 jetty-server + jetty-client；
 - b、修改通讯枚举，需要同时在“服务方”与“消费方”两端一同修改，通讯枚举属性代码位置如下：
-    - XxlRpcSpringProviderFactory.netType：可参考springboot示例组件初始化代码；
-    - XxlRpcSpringInvokerFactory.netType：可参考springboot示例组件初始化代码；
+    - 服务工厂 "XxlRpcSpringProviderFactory.netType" ：可参考springboot示例组件初始化代码；
+    - 服务引用注解 "XxlRpcReference.netType" | 服务Bean对象 "XxlRpcReferenceBean.netType" ：可参考springboot示例组件初始化代码；
 
 
 ### 4.9 如何切换“注册中心”选型
@@ -497,7 +497,7 @@ XXL-RPC的注册中心，是一个可选组件，不强制依赖；支持服务�
 ### 5.4 版本 v1.2.2 Release Notes[迭代中]
 - 1、IP工具类优化，兼容 Inet6Address 格式地址；
 - 2、扩展第三方注册中心ZK底层逻辑优化，避免旧注册信息无法清理的问题；
-- 3、XXL-RPC注册中心：底层抽象注册中心模块，并原生提供自研基于DB的注册中心，真正实现开箱即用，更轻量级、降低第三方依赖；至今XXL-RPC以提供三种注册中心具体实现：Local方案、ZK方案、XXL-RPC原生注册中心方案；
+- 3、XXL-RPC注册中心：底层抽象注册中心模块，并原生提供自研基于DB的注册中心，真正实现开箱即用，更轻量级、降低第三方依赖；至今XXL-RPC以提供三种注册中心具体实现："XXL-RPC原生注册中心方案"，"ZK方案"，"Local方案"；其中"XXL-RPC原生注册中心方案特性如下：
     - 轻量级：基于DB与磁盘文件，只需要提供一个DB实例即可，无第三方依赖；
     - 实时性：借助内部广播机制，新服务上线、下线，可以在1s内推送给客户端；
     - 数据同步：注册中心内部10s会全量同步一次磁盘数据，清理无效服务，确保服务数据实时可用；
@@ -511,6 +511,8 @@ XXL-RPC的注册中心，是一个可选组件，不强制依赖；支持服务�
 - 6、注册模块API优化，改为批量模式进一步提升性能；
 - 7、XXL-RPC客户端可快速接入，只需要切换注册中心实现为 "NativeServiceRegistry" 即可，文档由专门章节介绍；
 - 8、文档增强，注册中心配置切换、通讯方案配置切换说明；
+- 9、默认通讯方案切换为 Netty，可选方案依赖均调整为 provided 类型；提供强制依赖最小精简选型组合 "netty + hessian + 无注册中心(推荐采用：XXL-RPC原生注册中心)"；
+- 10、Netty销毁逻辑优化；
 
 
 ### TODO

@@ -5,8 +5,6 @@ import com.xxl.rpc.remoting.net.NetEnum;
 import com.xxl.rpc.remoting.provider.XxlRpcProviderFactory;
 import com.xxl.rpc.remoting.provider.annotation.XxlRpcService;
 import com.xxl.rpc.serialize.Serializer;
-import com.xxl.rpc.util.IpUtil;
-import com.xxl.rpc.util.NetUtil;
 import com.xxl.rpc.util.XxlRpcException;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
@@ -25,7 +23,7 @@ public class XxlRpcSpringProviderFactory extends XxlRpcProviderFactory implement
 
     // ---------------------- config ----------------------
 
-    private String netType = NetEnum.JETTY.name();
+    private String netType = NetEnum.NETTY.name();
     private String serialize = Serializer.SerializeEnum.HESSIAN.name();
 
     private String ip;          	// for registry

@@ -82,41 +82,42 @@
 
 		<!-- ********************** net (default=jetty) ********************** -->
 
-		<!-- jetty (javax.servlet-api) -->
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-server</artifactId>
-			<version>${jetty-server.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-client</artifactId>
-			<version>${jetty-server.version}</version>
-		</dependency>
-
-		<!-- netty (commons-pool2) -->
+		<!-- netty (+commons-pool2) -->
 		<dependency>
 			<groupId>io.netty</groupId>
 			<artifactId>netty-all</artifactId>
 			<version>${netty.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<!-- mina (commons-pool2) -->
-		<dependency>
-			<groupId>org.apache.mina</groupId>
-			<artifactId>mina-core</artifactId>
-			<version>${mina.version}</version>
-			<scope>provided</scope>
 		</dependency>
 		<!-- commons-pool2 -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-pool2</artifactId>
 			<version>${commons-pool2.version}</version>
+		</dependency>
+
+		<!-- mina (+commons-pool2) -->
+		<dependency>
+			<groupId>org.apache.mina</groupId>
+			<artifactId>mina-core</artifactId>
+			<version>${mina.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- ********************** other (provided) ********************** -->
+		<!-- jetty (javax.servlet-api) -->
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-server</artifactId>
+			<version>${jetty-server.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-client</artifactId>
+			<version>${jetty-server.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- ********************** spring (default=provided) ********************** -->
 
 		<!-- spring -->
 		<dependency>

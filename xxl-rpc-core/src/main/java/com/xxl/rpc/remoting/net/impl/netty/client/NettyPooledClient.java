@@ -23,12 +23,13 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 public class NettyPooledClient extends ClientPooled  {
 
 
+	private EventLoopGroup group;
 	private Channel channel;
 
 
 	@Override
 	public void init(String host, int port, final Serializer serializer) throws Exception {
-		EventLoopGroup group = new NioEventLoopGroup();
+		this.group = new NioEventLoopGroup();
     	Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(group).channel(NioSocketChannel.class)
             .handler(new ChannelInitializer<SocketChannel>() {
@@ -59,9 +60,10 @@ public class NettyPooledClient extends ClientPooled  {
 	@Override
 	public void close() {
 		if (this.channel != null) {
-			if (this.channel.isOpen()) {
-				this.channel.close();
-			}
+			this.channel.close();		// if this.channel.isOpen()
+		}
+		if (this.group != null) {
+			group.shutdownGracefully();
 		}
 		logger.debug(">>>>>>>>>>>> xxl-rpc netty client close.");
 	}

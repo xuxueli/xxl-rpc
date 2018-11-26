@@ -19,7 +19,7 @@ public class XxlRpcSpringReferenceBean implements FactoryBean<Object>, Initializ
 
     // ---------------------- config ----------------------
 
-    private String netType = NetEnum.JETTY.name();
+    private String netType = NetEnum.NETTY.name();
     private String serialize = Serializer.SerializeEnum.HESSIAN.name();
     private String callType = CallType.SYNC.name();
 

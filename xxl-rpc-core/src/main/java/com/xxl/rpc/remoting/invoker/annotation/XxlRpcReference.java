@@ -16,7 +16,7 @@ import java.lang.annotation.*;
 @Inherited
 public @interface XxlRpcReference {
 
-    NetEnum netType() default NetEnum.JETTY;
+    NetEnum netType() default NetEnum.NETTY;
     Serializer.SerializeEnum serializer() default Serializer.SerializeEnum.HESSIAN;
     CallType callType() default CallType.SYNC;
 
