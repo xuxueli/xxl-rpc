@@ -60,13 +60,13 @@ public class MinaPooledClient extends ClientPooled {
 		future.awaitUninterruptibly(5, TimeUnit.SECONDS);
 		
 		if (!future.isConnected()) {
-			logger.error(">>>>>>>>>>>> xxl-rpc mina client proxy, connect to server fail at host:{}, port:{}", host, port);
+			logger.error(">>>>>>>>>>> xxl-rpc mina client proxy, connect to server fail at host:{}, port:{}", host, port);
 			connector.dispose();
 			connector = null;
 			return;
 		}
 		this.ioSession = future.getSession();
-		logger.debug(">>>>>>>>>>>> xxl-rpc mina client proxy, connect to server success at host:{}, port:{}", host, port);
+		logger.debug(">>>>>>>>>>> xxl-rpc mina client proxy, connect to server success at host:{}, port:{}", host, port);
 	}
 
 
@@ -92,7 +92,7 @@ public class MinaPooledClient extends ClientPooled {
 			this.connector.dispose();
 			this.connector = null;
 		}
-		logger.debug(">>>>>>>>>>>> xxl-rpc mina client close.");
+		logger.debug(">>>>>>>>>>> xxl-rpc mina client close.");
 	}
 
 	@Override

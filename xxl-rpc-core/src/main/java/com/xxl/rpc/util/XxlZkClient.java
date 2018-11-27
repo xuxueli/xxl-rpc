@@ -40,7 +40,7 @@ public class XxlZkClient {
 			this.watcher = new Watcher() {
 				@Override
 				public void process(WatchedEvent watchedEvent) {
-					logger.info(">>>>>>>>>> xxl-rpc: watcher:{}", watchedEvent);
+					logger.info(">>>>>>>>>>> xxl-rpc: watcher:{}", watchedEvent);
 
 					// session expire, close old and create new
 					if (watchedEvent.getState() == Event.KeeperState.Expired) {
@@ -74,7 +74,7 @@ public class XxlZkClient {
 
                             // set success new-client
                             zooKeeper = newZk;
-                            logger.info(">>>>>>>>>> xxl-rpc, XxlZkClient init success.");
+                            logger.info(">>>>>>>>>>> xxl-rpc, XxlZkClient init success.");
                         }
                     } catch (Exception e) {
                         // close fail new-client
@@ -157,7 +157,7 @@ public class XxlZkClient {
 			if (stat != null) {
 				getClient().delete(path, stat.getVersion());
 			} else {
-				logger.info(">>>>>>>>>> zookeeper node path not found :{}", path);
+				logger.info(">>>>>>>>>>> zookeeper node path not found :{}", path);
 			}
 		} catch (Exception e) {
 			throw new XxlRpcException(e);
@@ -201,7 +201,7 @@ public class XxlZkClient {
 					znodeValue = new String(resultData, "UTF-8");
 				}
 			} else {
-				logger.info(">>>>>>>>>> xxl-rpc, path[{}] not found.", path);
+				logger.info(">>>>>>>>>>> xxl-rpc, path[{}] not found.", path);
 			}
 			return znodeValue;
 		} catch (Exception e) {

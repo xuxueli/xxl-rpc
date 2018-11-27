@@ -65,7 +65,7 @@ public class NettyPooledClient extends ClientPooled  {
 		if (this.group != null) {
 			group.shutdownGracefully();
 		}
-		logger.debug(">>>>>>>>>>>> xxl-rpc netty client close.");
+		logger.debug(">>>>>>>>>>> xxl-rpc netty client close.");
 	}
 
 

@@ -99,7 +99,7 @@ public class ZkServiceRegistry extends ServiceRegistry {
             @Override
             public void process(WatchedEvent watchedEvent) {
                 try {
-                    logger.debug(">>>>>>>>>> xxl-rpc: watcher:{}", watchedEvent);
+                    logger.debug(">>>>>>>>>>> xxl-rpc: watcher:{}", watchedEvent);
 
                     // session expire, close old and create new
                     if (watchedEvent.getState() == Event.KeeperState.Expired) {
@@ -109,7 +109,7 @@ public class ZkServiceRegistry extends ServiceRegistry {
                         // refreshDiscoveryData (all)：expire retry
                         refreshDiscoveryData(null);
 
-                        logger.info(">>>>>>>>>> xxl-rpc, zk re-connect reloadAll success.");
+                        logger.info(">>>>>>>>>>> xxl-rpc, zk re-connect reloadAll success.");
                     }
 
                     // watch + refresh
@@ -155,18 +155,18 @@ public class ZkServiceRegistry extends ServiceRegistry {
                         refreshRegistryData();
                     } catch (Exception e) {
                         if (!refreshThreadStop) {
-                            logger.error(">>>>>>>>>> xxl-rpc, refresh thread error.", e);
+                            logger.error(">>>>>>>>>>> xxl-rpc, refresh thread error.", e);
                         }
                     }
                 }
-                logger.info(">>>>>>>>>> xxl-rpc, refresh thread stoped.");
+                logger.info(">>>>>>>>>>> xxl-rpc, refresh thread stoped.");
             }
         });
         refreshThread.setName("xxl-rpc, ZkServiceRegistry refresh thread.");
         refreshThread.setDaemon(true);
         refreshThread.start();
 
-        logger.info(">>>>>>>>>> xxl-rpc, ZkServiceRegistry init success. [env={}]", env);
+        logger.info(">>>>>>>>>>> xxl-rpc, ZkServiceRegistry init success. [env={}]", env);
     }
 
     @Override
@@ -215,7 +215,7 @@ public class ZkServiceRegistry extends ServiceRegistry {
                     existValues.addAll(childPathData.keySet());
                 }
             }
-            logger.info(">>>>>>>>>> xxl-rpc, refresh discovery data success, discoveryData = {}", discoveryData);
+            logger.info(">>>>>>>>>>> xxl-rpc, refresh discovery data success, discoveryData = {}", discoveryData);
         }
     }
 
@@ -232,7 +232,7 @@ public class ZkServiceRegistry extends ServiceRegistry {
                     xxlZkClient.setChildPathData(path, value, "");
                 }
             }
-            logger.info(">>>>>>>>>> xxl-rpc, refresh registry data success, registryData = {}", registryData);
+            logger.info(">>>>>>>>>>> xxl-rpc, refresh registry data success, registryData = {}", registryData);
         }
     }
 
@@ -251,7 +251,7 @@ public class ZkServiceRegistry extends ServiceRegistry {
             String path = keyToPath(key);
             xxlZkClient.setChildPathData(path, value, "");
         }
-        logger.info(">>>>>>>>>> xxl-rpc, registry success, keys = {}, value = {}", keys, value);
+        logger.info(">>>>>>>>>>> xxl-rpc, registry success, keys = {}, value = {}", keys, value);
         return true;
     }
 
@@ -265,7 +265,7 @@ public class ZkServiceRegistry extends ServiceRegistry {
             String path = keyToPath(key);
             xxlZkClient.deleteChildPath(path, value);
         }
-        logger.info(">>>>>>>>>> xxl-rpc, remove success, keys = {}, value = {}", keys, value);
+        logger.info(">>>>>>>>>>> xxl-rpc, remove success, keys = {}, value = {}", keys, value);
         return true;
     }
 

@@ -85,23 +85,23 @@ public class NativeServiceRegistry extends ServiceRegistry {
                             for (String vItem : regL2KMap.keySet()) {
                                 NaticveClient.registry(adminAddressArr, biz, env, regL2KMap.get(vItem), vItem);
                             }
-                            logger.info(">>>>>>>>>> xxl-rpc, refresh registry data success, registryData = {}", registryData);
+                            logger.info(">>>>>>>>>>> xxl-rpc, refresh registry data success, registryData = {}", registryData);
 
                         }
                     } catch (Exception e) {
                         if (!registryThreadStop) {
-                            logger.error(">>>>>>>>>> xxl-rpc, refresh thread error.", e);
+                            logger.error(">>>>>>>>>>> xxl-rpc, refresh thread error.", e);
                         }
                     }
                     try {
                         TimeUnit.SECONDS.sleep(10);
                     } catch (Exception e) {
                         if (!registryThreadStop) {
-                            logger.error(">>>>>>>>>> xxl-rpc, refresh thread error.", e);
+                            logger.error(">>>>>>>>>>> xxl-rpc, refresh thread error.", e);
                         }
                     }
                 }
-                logger.info(">>>>>>>>>> xxl-rpc, refresh thread stoped.");
+                logger.info(">>>>>>>>>>> xxl-rpc, refresh thread stoped.");
             }
         });
         registryThread.setName("xxl-rpc, NativeServiceRegistry refresh thread.");
@@ -123,18 +123,18 @@ public class NativeServiceRegistry extends ServiceRegistry {
                         }
                     } catch (Exception e) {
                         if (!registryThreadStop) {
-                            logger.error(">>>>>>>>>> xxl-rpc, refresh thread error.", e);
+                            logger.error(">>>>>>>>>>> xxl-rpc, refresh thread error.", e);
                         }
                     }
                     try {
                         TimeUnit.SECONDS.sleep(1);
                     } catch (Exception e) {
                         if (!registryThreadStop) {
-                            logger.error(">>>>>>>>>> xxl-rpc, refresh thread error.", e);
+                            logger.error(">>>>>>>>>>> xxl-rpc, refresh thread error.", e);
                         }
                     }
                 }
-                logger.info(">>>>>>>>>> xxl-rpc, refresh thread stoped.");
+                logger.info(">>>>>>>>>>> xxl-rpc, refresh thread stoped.");
             }
         });
         discoveryThread.setName("xxl-rpc, NativeServiceRegistry refresh thread.");
@@ -143,7 +143,7 @@ public class NativeServiceRegistry extends ServiceRegistry {
 
 
 
-        logger.info(">>>>>>>>>> xxl-rpc, NativeServiceRegistry init success. [adminAddress={}, env={}]", adminAddress, env);
+        logger.info(">>>>>>>>>>> xxl-rpc, NativeServiceRegistry init success. [adminAddress={}, env={}]", adminAddress, env);
     }
 
     @Override
@@ -169,7 +169,7 @@ public class NativeServiceRegistry extends ServiceRegistry {
                     discoveryData.put(keyItem, new TreeSet<String>(keyValueListData.get(keyItem)));
                 }
             }
-            logger.info(">>>>>>>>>> xxl-rpc, refresh discovery data success, discoveryData = {}", discoveryData);
+            logger.info(">>>>>>>>>>> xxl-rpc, refresh discovery data success, discoveryData = {}", discoveryData);
         }
     }
 
