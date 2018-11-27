@@ -537,7 +537,8 @@ XXL-RPC的注册中心，是一个可选组件，不强制依赖；支持服务�
 - 10、扩展第三方注册中心ZK底层逻辑优化，避免旧注册信息无法清理的问题；
 
 ### 5.5 版本 v1.3.0 Release Notes[迭代中]
-
+- [迭代中]registry模块拆出来：单独立项 + 提供registry-client包 + 注册服务api示例 + accesstoken 鉴权；
+- [迭代中]移除 static 组件，无状态；
 
 
 ### TODO
