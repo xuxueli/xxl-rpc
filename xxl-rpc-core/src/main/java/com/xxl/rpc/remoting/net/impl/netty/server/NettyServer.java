@@ -53,7 +53,7 @@ public class NettyServer extends Server {
 					onStarted();
 
 					Channel serviceChannel = future.channel().closeFuture().sync().channel();
-				} catch (InterruptedException e) {
+				} catch (Exception e) {
 					logger.error(e.getMessage(), e);
 				} finally {
 					workerGroup.shutdownGracefully();

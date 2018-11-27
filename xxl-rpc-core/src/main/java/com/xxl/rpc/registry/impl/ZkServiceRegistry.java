@@ -3,7 +3,6 @@ package com.xxl.rpc.registry.impl;
 import com.xxl.rpc.registry.ServiceRegistry;
 import com.xxl.rpc.util.XxlRpcException;
 import com.xxl.rpc.util.XxlZkClient;
-import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.slf4j.Logger;
@@ -128,9 +127,7 @@ public class ZkServiceRegistry extends ServiceRegistry {
                         }
                     }
 
-                } catch (KeeperException e) {
-                    logger.error(e.getMessage(), e);
-                } catch (InterruptedException e) {
+                } catch (Exception e) {
                     logger.error(e.getMessage(), e);
                 }
             }

@@ -88,7 +88,7 @@ public class XxlZkClient {
                     }
 
 				}
-			} catch (InterruptedException e) {
+			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
 		}
@@ -103,7 +103,7 @@ public class XxlZkClient {
 			try {
 				zooKeeper.close();
 				zooKeeper = null;
-			} catch (InterruptedException e) {
+			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
 		}

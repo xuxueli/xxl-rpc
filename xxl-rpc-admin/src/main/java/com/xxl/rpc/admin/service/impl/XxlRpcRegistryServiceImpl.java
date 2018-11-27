@@ -422,8 +422,10 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
                                 // checkRegistryDataAndSendMessage
                                 checkRegistryDataAndSendMessage(xxlRpcRegistryData);
                             }
-                        } catch (InterruptedException e) {
-                            logger.error(e.getMessage(), e);
+                        } catch (Exception e) {
+                            if (!executorStoped) {
+                                logger.error(e.getMessage(), e);
+                            }
                         }
                     }
                 }
@@ -460,8 +462,10 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
                                 // checkRegistryDataAndSendMessage
                                 checkRegistryDataAndSendMessage(xxlRpcRegistryData);
                             }
-                        } catch (InterruptedException e) {
-                            logger.error(e.getMessage(), e);
+                        } catch (Exception e) {
+                            if (!executorStoped) {
+                                logger.error(e.getMessage(), e);
+                            }
                         }
                     }
                 }
@@ -510,12 +514,16 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
                             readedMessageIds.clear();
                         }
                     } catch (Exception e) {
-                        logger.error(e.getMessage(), e);
+                        if (!executorStoped) {
+                            logger.error(e.getMessage(), e);
+                        }
                     }
                     try {
                         TimeUnit.SECONDS.sleep(1);
                     } catch (Exception e) {
-                        logger.error(e.getMessage(), e);
+                        if (!executorStoped) {
+                            logger.error(e.getMessage(), e);
+                        }
                     }
                 }
             }
@@ -588,12 +596,16 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
                         cleanFileRegistryData(registryDataFileList);
 
                     } catch (Exception e) {
-                        logger.error(e.getMessage(), e);
+                        if (!executorStoped) {
+                            logger.error(e.getMessage(), e);
+                        }
                     }
                     try {
                         TimeUnit.SECONDS.sleep(registryBeatTime);
                     } catch (Exception e) {
-                        logger.error(e.getMessage(), e);
+                        if (!executorStoped) {
+                            logger.error(e.getMessage(), e);
+                        }
                     }
                 }
             }
@@ -604,6 +616,7 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
 
     @Override
     public void destroy() throws Exception {
+        executorStoped = true;
         executorService.shutdownNow();
     }
 
