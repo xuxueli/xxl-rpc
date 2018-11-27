@@ -54,7 +54,7 @@ public class NettyServer extends Server {
 
 					Channel serviceChannel = future.channel().closeFuture().sync().channel();
 				} catch (Exception e) {
-					logger.error(e.getMessage(), e);
+                    logger.error(">>>>>>>>>>> xxl-rpc remoting server start error.", e);
 				} finally {
 					workerGroup.shutdownGracefully();
 					bossGroup.shutdownGracefully();

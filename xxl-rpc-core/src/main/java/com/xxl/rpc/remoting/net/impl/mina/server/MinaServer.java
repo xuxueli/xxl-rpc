@@ -65,7 +65,7 @@ public class MinaServer extends Server {
 				} catch (Exception e) {
 					logger.error(">>>>>>>>>>> xxl-rpc remoting server start error.", e);
 				} finally {
-					if (acceptor != null && acceptor.isActive()) {
+					if (acceptor.isActive()) {
 						acceptor.unbind();
 						acceptor.dispose();
 					}
