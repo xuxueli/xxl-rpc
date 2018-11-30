@@ -439,6 +439,7 @@ XXL-RPC的注册中心，是一个可选组件，不强制依赖；支持服务�
 - 注册中心线程销毁逻辑优化；
 - 原生注册中心拆分为独立项目 "xxl-registry"，并提供响应cient简化接入难度；
 - NativeServiceRegistry 更名为 XxlRegistryServiceRegistry；
+- POM依赖升级；
 - [迭代中]移除 static 组件，无状态；
 
 
