@@ -26,7 +26,7 @@ public class XxlRegistryServiceRegistry extends ServiceRegistry {
 
 
     private volatile Set<XxlRegistryParam> registryData = new HashSet<>();
-    private volatile ConcurrentMap<String, TreeSet<String>> discoveryData = new ConcurrentHashMap<String, TreeSet<String>>();
+    private volatile ConcurrentMap<String, TreeSet<String>> discoveryData = new ConcurrentHashMap<>();
 
 
     private Thread registryThread;
@@ -50,8 +50,8 @@ public class XxlRegistryServiceRegistry extends ServiceRegistry {
                     try {
                         if (registryData.size() > 0) {
 
-                            registryClient.registry(new ArrayList<XxlRegistryParam>(registryData));
-                            logger.info(">>>>>>>>>>> xxl-rpc, refresh registry data success, registryData = {}", registryData);
+                            boolean ret = registryClient.registry(new ArrayList<XxlRegistryParam>(registryData));
+                            logger.info(">>>>>>>>>>> xxl-rpc, refresh registry data {}, registryData = {}", ret?"success":"fail",registryData);
                         }
                     } catch (Exception e) {
                         if (!registryThreadStop) {
@@ -210,10 +210,15 @@ public class XxlRegistryServiceRegistry extends ServiceRegistry {
         Map<String, TreeSet<String>> keyValueListData = registryClient.discovery(keys);
         if (keyValueListData!=null) {
             for (String keyItem: keyValueListData.keySet()) {
-                discoveryData.put(keyItem, keyValueListData.get(keyItem));
+
+                // list > set
+                TreeSet<String> valueSet = new TreeSet<>();
+                valueSet.addAll(keyValueListData.get(keyItem));
+
+                discoveryData.put(keyItem, valueSet);
             }
         }
-        logger.info(">>>>>>>>>>> xxl-rpc, refresh discovery data success, discoveryData = {}", discoveryData);
+        logger.info(">>>>>>>>>>> xxl-rpc, refresh discovery data finish, discoveryData = {}", discoveryData);
     }
 
     @Override

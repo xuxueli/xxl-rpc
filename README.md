@@ -10,9 +10,6 @@
         <a href="https://travis-ci.org/xuxueli/xxl-rpc">
             <img src="https://travis-ci.org/xuxueli/xxl-rpc.svg?branch=master" >
         </a>
-        <a href="https://hub.docker.com/r/xuxueli/xxl-rpc-admin/">
-            <img src="https://img.shields.io/badge/docker-passing-brightgreen.svg" >
-        </a>
         <a href="https://maven-badges.herokuapp.com/maven-central/com.xuxueli/xxl-rpc/">
             <img src="https://maven-badges.herokuapp.com/maven-central/com.xuxueli/xxl-rpc/badge.svg" >
         </a>
