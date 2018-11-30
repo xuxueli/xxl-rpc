@@ -1,8 +1,8 @@
 package com.xxl.rpc.registry.impl;
 
+import com.xxl.registry.client.XxlRegistryClient;
+import com.xxl.registry.client.model.XxlRegistryParam;
 import com.xxl.rpc.registry.ServiceRegistry;
-import com.xxl.rpc.util.NaticveClient;
-import com.xxl.rpc.util.XxlRpcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,25 +12,22 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author xuxueli 2018-11-24 22:48:57
+ * @author xuxueli 2018-11-30
  */
-public class NativeServiceRegistry extends ServiceRegistry {
-    private static Logger logger = LoggerFactory.getLogger(ZkServiceRegistry.class);
-
-    public static final String XXL_RPC_ADMIN = "XXL_RPC_ADMIN";      // native registry env
-    public static final String ENV = "ENV";                             // native registry env
+public class XxlRegistryServiceRegistry extends ServiceRegistry {
+    private static Logger logger = LoggerFactory.getLogger(XxlRegistryServiceRegistry.class);
 
 
-    // param
-    private String adminAddress = null;
-    private String biz = "xxl-rpc";
-    private String env;
-
-    private List<String> adminAddressArr = null;
+    public static final String XXL_REGISTRY_ADDRESS = "XXL_REGISTRY_ADDRESS";
+    public static final String ENV = "ENV";
 
 
-    private volatile ConcurrentMap<String, TreeSet<String>> registryData = new ConcurrentHashMap<String, TreeSet<String>>();
+    private XxlRegistryClient registryClient;
+
+
+    private volatile Set<XxlRegistryParam> registryData = new HashSet<>();
     private volatile ConcurrentMap<String, TreeSet<String>> discoveryData = new ConcurrentHashMap<String, TreeSet<String>>();
+
 
     private Thread registryThread;
     private Thread discoveryThread;
@@ -39,25 +36,11 @@ public class NativeServiceRegistry extends ServiceRegistry {
 
     @Override
     public void start(Map<String, String> param) {
-        this.adminAddress = param.get(XXL_RPC_ADMIN);
-        this.env = param.get(ENV);
+        String xxlRegistryAddress = param.get(XXL_REGISTRY_ADDRESS);
+        String env = param.get(ENV);
 
-        // valid
-        if (adminAddress==null || adminAddress.trim().length()==0) {
-            throw new XxlRpcException("xxl-rpc adminAddress can not be empty");
-        }
-        // admin address
-        adminAddressArr = new ArrayList<>();
-        if (adminAddress.contains(",")) {
-            adminAddressArr.add(adminAddress);
-        } else {
-            adminAddressArr.addAll(Arrays.asList(adminAddress.split(",")));
-        }
-
-        // init zkpath
-        if (env==null || env.trim().length()==0) {
-            throw new XxlRpcException("xxl-rpc env can not be empty");
-        }
+        registryClient = new XxlRegistryClient(xxlRegistryAddress, "xxl-rpc", env);
+        logger.info(">>>>>>>>>>> xxl-rpc, XxlRegistryServiceRegistry init .... [xxlRegistryAddress={}, env={}]", xxlRegistryAddress, env);
 
         // registry thread
         registryThread = new Thread(new Runnable() {
@@ -67,26 +50,8 @@ public class NativeServiceRegistry extends ServiceRegistry {
                     try {
                         if (registryData.size() > 0) {
 
-                            // change k-v to v-k
-                            Map<String, Set<String>> regL2KMap = new HashMap<>(); // v-k[]
-                            for (String regK : registryData.keySet()) {    // k - v[]
-                                TreeSet<String> regL = registryData.get(regK);
-                                for (String regVItem:regL) {
-                                    Set<String> regKList = regL2KMap.get(regVItem);
-                                    if (regKList == null) {
-                                        regKList = new TreeSet<>();
-                                        regL2KMap.put(regVItem, regKList);
-                                    }
-                                    regKList.add(regK);
-                                }
-                            }
-
-                            // total registry
-                            for (String vItem : regL2KMap.keySet()) {
-                                NaticveClient.registry(adminAddressArr, biz, env, regL2KMap.get(vItem), vItem);
-                            }
+                            registryClient.registry(new ArrayList<XxlRegistryParam>(registryData));
                             logger.info(">>>>>>>>>>> xxl-rpc, refresh registry data success, registryData = {}", registryData);
-
                         }
                     } catch (Exception e) {
                         if (!registryThreadStop) {
@@ -104,7 +69,7 @@ public class NativeServiceRegistry extends ServiceRegistry {
                 logger.info(">>>>>>>>>>> xxl-rpc, refresh thread stoped.");
             }
         });
-        registryThread.setName("xxl-rpc, NativeServiceRegistry refresh thread.");
+        registryThread.setName("xxl-rpc, XxlRegistryServiceRegistry refresh thread.");
         registryThread.setDaemon(true);
         registryThread.start();
 
@@ -116,7 +81,8 @@ public class NativeServiceRegistry extends ServiceRegistry {
                     try {
                         // long polling, monitor, timeout 30s
                         if (discoveryData.size() > 0) {
-                            NaticveClient.monitor(adminAddressArr, biz, env, discoveryData.keySet());
+
+                            registryClient.monitor(discoveryData.keySet());
 
                             // refreshDiscoveryData, all
                             refreshDiscoveryData(discoveryData.keySet());
@@ -137,13 +103,11 @@ public class NativeServiceRegistry extends ServiceRegistry {
                 logger.info(">>>>>>>>>>> xxl-rpc, refresh thread stoped.");
             }
         });
-        discoveryThread.setName("xxl-rpc, NativeServiceRegistry refresh thread.");
+        discoveryThread.setName("xxl-rpc, XxlRegistryServiceRegistry refresh thread.");
         discoveryThread.setDaemon(true);
         discoveryThread.start();
 
-
-
-        logger.info(">>>>>>>>>>> xxl-rpc, NativeServiceRegistry init success. [adminAddress={}, env={}]", adminAddress, env);
+        logger.info(">>>>>>>>>>> xxl-rpc, XxlRegistryServiceRegistry init success.");
     }
 
     @Override
@@ -157,58 +121,54 @@ public class NativeServiceRegistry extends ServiceRegistry {
         }
     }
 
-    /**
-     * refreshDiscoveryData, some or all
-     */
-    private void refreshDiscoveryData(Set<String> keys){
-        if (keys.size() > 0) {
-            // discovery mult
-            Map<String, List<String>> keyValueListData = NaticveClient.discovery(adminAddressArr, biz, env, keys);
-                if (keyValueListData!=null) {
-                for (String keyItem: keyValueListData.keySet()) {
-                    discoveryData.put(keyItem, new TreeSet<String>(keyValueListData.get(keyItem)));
-                }
-            }
-            logger.info(">>>>>>>>>>> xxl-rpc, refresh discovery data success, discoveryData = {}", discoveryData);
-        }
-    }
-
     @Override
     public boolean registry(Set<String> keys, String value) {
-        // local cache
-        for (String key : keys) {
-
-            TreeSet<String> values = registryData.get(key);
-            if (values == null) {
-                values = new TreeSet<>();
-                registryData.put(key, values);
-            }
-            values.add(value);
+        if (keys==null || keys.size() == 0 || value == null) {
+            return false;
         }
 
-        // remove mult
-        boolean ret = NaticveClient.registry(adminAddressArr, biz, env, keys, value);
+        // init
+        List<XxlRegistryParam> registryParamList = new ArrayList<>();
+        for (String key:keys) {
+            registryParamList.add(new XxlRegistryParam(key, value));
+        }
 
-        return ret;
+        // cache
+        registryData.addAll(registryParamList);
+
+        // remote
+        registryClient.registry(registryParamList);
+
+        return true;
     }
 
     @Override
     public boolean remove(Set<String> keys, String value) {
-        for (String key : keys) {
-            TreeSet<String> values = discoveryData.get(key);
-            if (values != null) {
-                values.remove(value);
-            }
+        if (keys==null || keys.size() == 0 || value == null) {
+            return false;
         }
 
-        // remove mult
-        boolean ret = NaticveClient.remove(adminAddressArr, biz, env, keys, value);
+        // init
+        List<XxlRegistryParam> registryParamList = new ArrayList<>();
+        for (String key:keys) {
+            registryParamList.add(new XxlRegistryParam(key, value));
+        }
 
-        return ret;
+        // cache
+        registryData.removeAll(registryParamList);
+
+
+        // remote
+        registryClient.remove(registryParamList);
+
+        return true;
     }
 
     @Override
     public Map<String, TreeSet<String>> discovery(Set<String> keys) {
+        if (keys==null || keys.size() == 0) {
+            return null;
+        }
 
         // find from local
         Map<String, TreeSet<String>> registryDataTmp = new HashMap<String, TreeSet<String>>();
@@ -238,13 +198,32 @@ public class NativeServiceRegistry extends ServiceRegistry {
         return registryDataTmp;
     }
 
+    /**
+     * refreshDiscoveryData, some or all
+     */
+    private void refreshDiscoveryData(Set<String> keys){
+        if (keys==null || keys.size() == 0) {
+            return;
+        }
+
+        // discovery mult
+        Map<String, TreeSet<String>> keyValueListData = registryClient.discovery(keys);
+        if (keyValueListData!=null) {
+            for (String keyItem: keyValueListData.keySet()) {
+                discoveryData.put(keyItem, keyValueListData.get(keyItem));
+            }
+        }
+        logger.info(">>>>>>>>>>> xxl-rpc, refresh discovery data success, discoveryData = {}", discoveryData);
+    }
+
     @Override
     public TreeSet<String> discovery(String key) {
         Map<String, TreeSet<String>> keyValueSetTmp = discovery(new HashSet<String>(Arrays.asList(key)));
-        if (keyValueSetTmp!=null) {
+        if (keyValueSetTmp != null) {
             return keyValueSetTmp.get(key);
         }
         return null;
     }
+
 
 }

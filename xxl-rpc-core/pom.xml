@@ -69,7 +69,14 @@
 		</dependency>
 
 
-		<!-- ********************** registry  (default=local) ********************** -->
+		<!-- ********************** registry  (default=xxl-registry) ********************** -->
+
+		<!-- xxl-registry-client -->
+		<dependency>
+			<groupId>com.xuxueli</groupId>
+			<artifactId>xxl-registry-client</artifactId>
+			<version>${xxl-registry.version}</version>
+		</dependency>
 
 		<!-- zookeeper (provided) -->
         <dependency>

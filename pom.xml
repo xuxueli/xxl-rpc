@@ -12,7 +12,6 @@
 
 	<modules>
 		<module>xxl-rpc-core</module>
-		<module>xxl-rpc-admin</module>
 		<module>xxl-rpc-samples</module>
     </modules>
 
@@ -48,6 +47,7 @@
 		<jackson.version>2.9.6</jackson.version>
 
 
+		<xxl-registry.version>1.0.0</xxl-registry.version>
 		<zookeeper.version>3.4.13</zookeeper.version>
 
 
