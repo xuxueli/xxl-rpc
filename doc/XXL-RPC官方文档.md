@@ -237,7 +237,7 @@ callType | 请求类型，可选范围：SYNC（默认）、ONEWAY、FUTURE、CA
  
 得益于优良的兼容性与模块化设计，不限制外部框架；除 spring/springboot 环境之外，理论上支持运行在任何Java代码中，甚至main方法直接启动运行；
 
-以示例项目 “xxl-rpc-executor-sample-frameless” 为例讲解；
+以示例项目 “xxl-rpc-executor-sample-frameless” 为例讲解；该示例项目以直连IP方式进行演示，也可以选择接入注册中心方式使用，如接入 XXL-REGISTRY。
 
 ### 3.1 API方式创建“服务提供者”：
 ```
@@ -371,9 +371,9 @@ XXL-RPC的注册中心，是一个可选组件，不强制依赖；支持服务�
 
 如果需要切换XXL-RPC“注册中心”，只需要执行以下两个步骤即可：
 - a、引入注册注册中心依赖包，排除掉其他方案依赖，各方案依赖如下：
-    - XXL-RPC原生轻量级注册中心：轻量级、无依赖；
+    - XXL-RPC原生轻量级注册中心：轻量级、无第三方依赖；
     - ZK注册中心：依赖 zookeeper
-    - Local注册中心：轻量级、无依赖；
+    - Local注册中心：轻量级、零依赖；
 - b、修改注册中心配置，需要同时在“服务方”与“消费方”两端一同修改，代码位置如下：
     - XxlRpcSpringProviderFactory.serviceRegistryClass：注册中心实现类，可选：XxlRegistryServiceRegistry.class、LocalServiceRegistry.class、ZkServiceRegistry.class
     - XxlRpcSpringProviderFactory.serviceRegistryParam：注册中心启动参数，各种注册中心启动参数不同，可参考其 start 方案了解；
