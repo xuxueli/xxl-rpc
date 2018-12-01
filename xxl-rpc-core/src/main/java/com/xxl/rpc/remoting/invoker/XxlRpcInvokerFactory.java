@@ -1,6 +1,7 @@
 package com.xxl.rpc.remoting.invoker;
 
 import com.xxl.rpc.registry.ServiceRegistry;
+import com.xxl.rpc.registry.impl.LocalServiceRegistry;
 import com.xxl.rpc.remoting.net.params.BaseCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,13 +20,11 @@ public class XxlRpcInvokerFactory {
 
     // ---------------------- default instance ----------------------
 
-    private static XxlRpcInvokerFactory instance;
-    public static synchronized XxlRpcInvokerFactory getInstance() {
-        if (instance == null) {
-            instance = new XxlRpcInvokerFactory();
-        }
+    private static XxlRpcInvokerFactory instance = new XxlRpcInvokerFactory(LocalServiceRegistry.class, null);
+    public static XxlRpcInvokerFactory getInstance() {
         return instance;
     }
+
 
     // ---------------------- config ----------------------
 
@@ -39,6 +38,7 @@ public class XxlRpcInvokerFactory {
         this.serviceRegistryClass = serviceRegistryClass;
         this.serviceRegistryParam = serviceRegistryParam;
     }
+
 
     // ---------------------- start / stop ----------------------
 
@@ -79,6 +79,7 @@ public class XxlRpcInvokerFactory {
 
 
     // ---------------------- service registry ----------------------
+
     private List<BaseCallback> stopCallbackList = new ArrayList<BaseCallback>();
 
     public void addStopCallBack(BaseCallback callback){
