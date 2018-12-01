@@ -435,13 +435,12 @@ XXL-RPC的注册中心，是一个可选组件，不强制依赖；支持服务�
 - 9、Netty销毁逻辑优化；
 - 10、扩展第三方注册中心ZK底层逻辑优化，避免旧注册信息无法清理的问题；
 
-### 5.5 版本 v1.3.0 Release Notes[迭代中]
-- 注册中心线程销毁逻辑优化；
-- 原生注册中心拆分为独立项目 "xxl-registry"，并提供响应cient简化接入难度；
-- NativeServiceRegistry 更名为 XxlRegistryServiceRegistry；
-- POM依赖升级，冗余POM清理；
-- 代码优化：XxlRpcInvokerFactory 移除 static 代码块及相关组件，进一步实现组件无状态；
-- 服务注册逻辑优化，避免地址重复生成；
+### 5.5 版本 v1.3.0 Release Notes[2018-12-02]
+- 1、原生注册中心拆分为独立项目 "xxl-registry"（https://github.com/xuxueli/xxl-registry ），提供服务注册restful服务，并提送响应client端依赖用于简化接入难度；
+- 2、NativeServiceRegistry 更名为 XxlRegistryServiceRegistry；
+- 3、POM依赖升级，冗余POM清理；
+- 4、代码优化：XxlRpcInvokerFactory 移除 static 代码块及相关组件，进一步实现组件无状态；
+- 5、服务注册逻辑优化，避免地址重复生成；
 
 
 ### TODO
