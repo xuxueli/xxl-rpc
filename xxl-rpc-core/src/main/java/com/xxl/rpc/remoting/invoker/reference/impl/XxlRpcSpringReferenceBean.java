@@ -1,10 +1,10 @@
 package com.xxl.rpc.remoting.invoker.reference.impl;
 
-import com.xxl.rpc.registry.ServiceRegistry;
+import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
+import com.xxl.rpc.remoting.invoker.call.CallType;
 import com.xxl.rpc.remoting.invoker.call.XxlRpcInvokeCallback;
 import com.xxl.rpc.remoting.invoker.reference.XxlRpcReferenceBean;
 import com.xxl.rpc.remoting.net.NetEnum;
-import com.xxl.rpc.remoting.invoker.call.CallType;
 import com.xxl.rpc.serialize.Serializer;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -33,7 +33,7 @@ public class XxlRpcSpringReferenceBean implements FactoryBean<Object>, Initializ
 
     private XxlRpcInvokeCallback invokeCallback;
 
-    private ServiceRegistry serviceRegistry;
+    private XxlRpcInvokerFactory xxlRpcInvokerFactory;
 
     // set
     public void setNetType(String netType) {
@@ -72,8 +72,8 @@ public class XxlRpcSpringReferenceBean implements FactoryBean<Object>, Initializ
         this.invokeCallback = invokeCallback;
     }
 
-    public void setServiceRegistry(ServiceRegistry serviceRegistry) {
-        this.serviceRegistry = serviceRegistry;
+    public void setXxlRpcInvokerFactory(XxlRpcInvokerFactory xxlRpcInvokerFactory) {
+        this.xxlRpcInvokerFactory = xxlRpcInvokerFactory;
     }
 
     // ---------------------- init ----------------------
@@ -91,7 +91,7 @@ public class XxlRpcSpringReferenceBean implements FactoryBean<Object>, Initializ
         }
 
         // init config
-        xxlRpcReferenceBean = new XxlRpcReferenceBean(netTypeEnum, serializer, callTypeEnum, iface, version, timeout, address, accessToken, invokeCallback, serviceRegistry);
+        xxlRpcReferenceBean = new XxlRpcReferenceBean(netTypeEnum, serializer, callTypeEnum, iface, version, timeout, address, accessToken, invokeCallback, xxlRpcInvokerFactory);
     }
 
     // ---------------------- util ----------------------

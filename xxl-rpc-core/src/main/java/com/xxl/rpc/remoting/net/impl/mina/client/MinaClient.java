@@ -16,7 +16,7 @@ public class MinaClient extends Client {
 	public void asyncSend(String address, XxlRpcRequest xxlRpcRequest) throws Exception {
 
 		// client pool
-    	GenericObjectPool<ClientPooled> clientPool = ClientPooled.getPool(address, xxlRpcReferenceBean.getSerializer(), MinaPooledClient.class);
+    	GenericObjectPool<ClientPooled> clientPool = ClientPooled.getPool(address, xxlRpcReferenceBean.getSerializer(), MinaPooledClient.class, xxlRpcReferenceBean.getInvokerFactory());
     	// client proxy
 		ClientPooled clientPoolProxy = null;
 

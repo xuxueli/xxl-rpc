@@ -22,11 +22,17 @@ public class XxlRpcClientAplication {
 	public static void main(String[] args) throws Exception {
 
 		// init invoker factory
-		XxlRpcInvokerFactory invokerFactory = new XxlRpcInvokerFactory();
-		invokerFactory.start();
+		/*XxlRpcInvokerFactory invokerFactory = new XxlRpcInvokerFactory();
+		invokerFactory.start();*/
 
 		/*String serviceKey = XxlRpcProviderFactory.makeServiceKey(DemoService.class.getName(), null);		// registry local
 		invokerFactory.getServiceRegistry().registry(new HashSet<String>(Arrays.asList(serviceKey)), "127.0.0.1:7080");*/
+
+		// test
+
+		// stop invoker factory
+		/*invokerFactory.stop();*/
+
 
 		// test
 		testSYNC();
@@ -36,8 +42,8 @@ public class XxlRpcClientAplication {
 
 		TimeUnit.SECONDS.sleep(2);
 
-		// stop invoker factory
-		invokerFactory.stop();
+		// stop client invoker factory (default by getInstance, exist inner thread, need destory)
+		XxlRpcInvokerFactory.getInstance().stop();
 	}
 
 

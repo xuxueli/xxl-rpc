@@ -32,13 +32,13 @@ public abstract class ClientPooled {
     // ---------------------- client pool map ----------------------
 
     private static ConcurrentHashMap<String, GenericObjectPool<ClientPooled>> clientPoolMap;
-    public static GenericObjectPool<ClientPooled> getPool(String address, Serializer serializer, Class<? extends ClientPooled> clientPoolImpl) throws Exception {
+    public static GenericObjectPool<ClientPooled> getPool(String address, Serializer serializer, Class<? extends ClientPooled> clientPoolImpl, XxlRpcInvokerFactory xxlRpcInvokerFactory) throws Exception {
 
         if (clientPoolMap == null) {
             // init
             clientPoolMap = new ConcurrentHashMap<String, GenericObjectPool<ClientPooled>>();
             // stop callback
-            XxlRpcInvokerFactory.addStopCallBack(new BaseCallback() {
+            xxlRpcInvokerFactory.addStopCallBack(new BaseCallback() {
                 @Override
                 public void run() throws Exception {
                     if (clientPoolMap.size() > 0) {

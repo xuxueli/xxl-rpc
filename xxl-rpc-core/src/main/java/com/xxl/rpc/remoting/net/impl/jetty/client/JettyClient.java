@@ -50,7 +50,7 @@ public class JettyClient extends Client {
 		byte[] requestBytes = xxlRpcReferenceBean.getSerializer().serialize(xxlRpcRequest);
 
         // httpclient
-        HttpClient httpClient = getJettyHttpClient();
+        HttpClient httpClient = getJettyHttpClient(xxlRpcReferenceBean.getInvokerFactory());
 
         // request
         Request request = httpClient.newRequest(reqURL);
@@ -138,7 +138,7 @@ public class JettyClient extends Client {
 	 * @throws Exception
 	 */
 	private static HttpClient jettyHttpClient;
-	public synchronized static HttpClient getJettyHttpClient() throws Exception {
+	public synchronized static HttpClient getJettyHttpClient(XxlRpcInvokerFactory xxlRpcInvokerFactory) throws Exception {
 		if (jettyHttpClient != null) {
 			return jettyHttpClient;
 		}
@@ -151,7 +151,7 @@ public class JettyClient extends Client {
 		jettyHttpClient.start();						            // start
 
 		// stop callback
-		XxlRpcInvokerFactory.addStopCallBack(new BaseCallback() {
+		xxlRpcInvokerFactory.addStopCallBack(new BaseCallback() {
 			@Override
 			public void run() throws Exception {
 				if (jettyHttpClient != null) {

@@ -1,6 +1,6 @@
 package com.xxl.rpc.remoting.invoker.reference;
 
-import com.xxl.rpc.registry.ServiceRegistry;
+import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.invoker.call.CallType;
 import com.xxl.rpc.remoting.invoker.call.XxlRpcInvokeCallback;
 import com.xxl.rpc.remoting.invoker.call.XxlRpcInvokeFuture;
@@ -44,14 +44,14 @@ public class XxlRpcReferenceBean {
 	private Class<?> iface;
 	private String version;
 
-	private long timeout;
+	private long timeout = 1000;
 
 	private String address;
 	private String accessToken;
 
 	private XxlRpcInvokeCallback invokeCallback;
 
-	private ServiceRegistry serviceRegistry;
+	private XxlRpcInvokerFactory invokerFactory;
 
 	public XxlRpcReferenceBean(NetEnum netType,
 							   Serializer serializer,
@@ -62,7 +62,7 @@ public class XxlRpcReferenceBean {
 							   String address,
 							   String accessToken,
 							   XxlRpcInvokeCallback invokeCallback,
-							   ServiceRegistry serviceRegistry
+							   XxlRpcInvokerFactory invokerFactory
 	) {
 
 		this.netType = netType;
@@ -74,7 +74,12 @@ public class XxlRpcReferenceBean {
 		this.address = address;
 		this.accessToken = accessToken;
 		this.invokeCallback = invokeCallback;
-		this.serviceRegistry = serviceRegistry;
+		this.invokerFactory = invokerFactory;
+
+		// valid
+		if (this.invokerFactory == null) {
+			this.invokerFactory = XxlRpcInvokerFactory.getInstance();
+		}
 
 		// init Client
 		initClient();
@@ -86,6 +91,10 @@ public class XxlRpcReferenceBean {
 	}
 	public long getTimeout() {
 		return timeout;
+	}
+
+	public XxlRpcInvokerFactory getInvokerFactory() {
+		return invokerFactory;
 	}
 
 	// ---------------------- initClient ----------------------
@@ -110,9 +119,9 @@ public class XxlRpcReferenceBean {
 			return addressItem;
 		}
 
-		if (serviceRegistry != null) {
+		if (invokerFactory!=null && invokerFactory.getServiceRegistry()!=null) {
 			String serviceKey = XxlRpcProviderFactory.makeServiceKey(iface.getName(), version);
-			TreeSet<String> addressSet = serviceRegistry.discovery(serviceKey);
+			TreeSet<String> addressSet = invokerFactory.getServiceRegistry().discovery(serviceKey);
 			if (addressSet.size() > 0) {
 				addressItem = new ArrayList<String>(addressSet).get(new Random().nextInt(addressSet.size()));
 			}

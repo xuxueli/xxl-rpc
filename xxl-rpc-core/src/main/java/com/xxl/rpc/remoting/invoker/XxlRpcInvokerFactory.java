@@ -2,6 +2,8 @@ package com.xxl.rpc.remoting.invoker;
 
 import com.xxl.rpc.registry.ServiceRegistry;
 import com.xxl.rpc.remoting.net.params.BaseCallback;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +15,17 @@ import java.util.Map;
  * @author xuxueli 2018-10-19
  */
 public class XxlRpcInvokerFactory {
+    private static Logger logger = LoggerFactory.getLogger(XxlRpcInvokerFactory.class);
 
+    // ---------------------- default instance ----------------------
+
+    private static XxlRpcInvokerFactory instance;
+    public static synchronized XxlRpcInvokerFactory getInstance() {
+        if (instance == null) {
+            instance = new XxlRpcInvokerFactory();
+        }
+        return instance;
+    }
 
     // ---------------------- config ----------------------
 
@@ -47,7 +59,11 @@ public class XxlRpcInvokerFactory {
         // stop callback
         if (stopCallbackList.size() > 0) {
             for (BaseCallback callback: stopCallbackList) {
-                callback.run();
+                try {
+                    callback.run();
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
+                }
             }
         }
 
@@ -62,10 +78,10 @@ public class XxlRpcInvokerFactory {
     }
 
 
-    // ---------------------- service registry (static) ----------------------
-    private static List<BaseCallback> stopCallbackList = new ArrayList<BaseCallback>();     // JettyClient、ClientPooled
+    // ---------------------- service registry ----------------------
+    private List<BaseCallback> stopCallbackList = new ArrayList<BaseCallback>();
 
-    public static void addStopCallBack(BaseCallback callback){
+    public void addStopCallBack(BaseCallback callback){
         stopCallbackList.add(callback);
     }
 
