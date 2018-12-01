@@ -96,9 +96,11 @@ public class XxlRpcProviderFactory {
 
 	private Server server;
 	private ServiceRegistry serviceRegistry;
+	private String serviceAddress;
 
 	public void start() throws Exception {
 		// start server
+		serviceAddress = IpUtil.getIpPort(this.ip, port);
 		server = netType.serverClass.newInstance();
 		server.setStartedCallback(new BaseCallback() {		// serviceRegistry started
 			@Override
@@ -107,10 +109,8 @@ public class XxlRpcProviderFactory {
 				if (serviceRegistryClass != null) {
 					serviceRegistry = serviceRegistryClass.newInstance();
 					serviceRegistry.start(serviceRegistryParam);
-
 					if (serviceData.size() > 0) {
-						String ipPort = IpUtil.getIpPort(ip, port);
-						serviceRegistry.registry(serviceData.keySet(), ipPort);
+						serviceRegistry.registry(serviceData.keySet(), serviceAddress);
 					}
 				}
 			}
@@ -121,8 +121,7 @@ public class XxlRpcProviderFactory {
 				// stop registry
 				if (serviceRegistry != null) {
 					if (serviceData.size() > 0) {
-						String ipPort = IpUtil.getIpPort(ip, port);
-						serviceRegistry.remove(serviceData.keySet(), ipPort);
+						serviceRegistry.remove(serviceData.keySet(), serviceAddress);
 					}
 					serviceRegistry.stop();
 					serviceRegistry = null;

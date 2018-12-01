@@ -21,6 +21,19 @@ public class XxlRpcClientAplication {
 
 	public static void main(String[] args) throws Exception {
 
+		// test
+		testSYNC();
+		testFUTURE();
+		testCALLBACK();
+		testONEWAY();
+
+		TimeUnit.SECONDS.sleep(2);
+
+		// stop client invoker factory (default by getInstance, exist inner thread, need destory)
+		XxlRpcInvokerFactory.getInstance().stop();
+
+
+
 		// init invoker factory
 		/*XxlRpcInvokerFactory invokerFactory = new XxlRpcInvokerFactory();
 		invokerFactory.start();*/
@@ -33,17 +46,6 @@ public class XxlRpcClientAplication {
 		// stop invoker factory
 		/*invokerFactory.stop();*/
 
-
-		// test
-		testSYNC();
-		testFUTURE();
-		testCALLBACK();
-		testONEWAY();
-
-		TimeUnit.SECONDS.sleep(2);
-
-		// stop client invoker factory (default by getInstance, exist inner thread, need destory)
-		XxlRpcInvokerFactory.getInstance().stop();
 	}
 
 
