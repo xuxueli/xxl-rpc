@@ -7,6 +7,8 @@ import com.xxl.rpc.registry.ServiceRegistry;
 import java.util.*;
 
 /**
+ * service registry for "xxl-registry v1.0.0"
+ *
  * @author xuxueli 2018-11-30
  */
 public class XxlRegistryServiceRegistry extends ServiceRegistry {

@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
 /**
- * service registry
+ * service registry for "zookeeper"
  *
  *  /xxl-rpc/dev/
  *              - key01(service01)

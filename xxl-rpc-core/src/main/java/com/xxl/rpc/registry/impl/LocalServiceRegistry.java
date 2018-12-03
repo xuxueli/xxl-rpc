@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * local service registry
+ * service registry for "local"
  *
  * @author xuxueli 2018-10-17
  */
