@@ -138,28 +138,40 @@ public class JettyClient extends Client {
 	 * @throws Exception
 	 */
 	private static HttpClient jettyHttpClient;
-	public synchronized static HttpClient getJettyHttpClient(XxlRpcInvokerFactory xxlRpcInvokerFactory) throws Exception {
+	public static HttpClient getJettyHttpClient(final XxlRpcInvokerFactory xxlRpcInvokerFactory) throws Exception {
+
+		// get
 		if (jettyHttpClient != null) {
 			return jettyHttpClient;
 		}
 
-		// init jettp httpclient
-		jettyHttpClient = new HttpClient();
-		jettyHttpClient.setFollowRedirects(false);	                // avoid redirect-302
-		jettyHttpClient.setExecutor(new QueuedThreadPool());		// default maxThreads 200, minThreads 8
-		jettyHttpClient.setMaxConnectionsPerDestination(10000);	    // limit conn per desc
-		jettyHttpClient.start();						            // start
+		// init jetty cilent, avoid repeat init
+		synchronized (JettyClient.class) {
 
-		// stop callback
-		xxlRpcInvokerFactory.addStopCallBack(new BaseCallback() {
-			@Override
-			public void run() throws Exception {
-				if (jettyHttpClient != null) {
-					jettyHttpClient.stop();
-					jettyHttpClient = null;
-				}
+			// re-get
+			if (jettyHttpClient != null) {
+				return jettyHttpClient;
 			}
-		});
+
+
+			// init jettp httpclient
+			jettyHttpClient = new HttpClient();
+			jettyHttpClient.setFollowRedirects(false);	                // avoid redirect-302
+			jettyHttpClient.setExecutor(new QueuedThreadPool());		// default maxThreads 200, minThreads 8
+			jettyHttpClient.setMaxConnectionsPerDestination(10000);	    // limit conn per desc
+			jettyHttpClient.start();						            // start
+
+			// stop callback
+			xxlRpcInvokerFactory.addStopCallBack(new BaseCallback() {
+				@Override
+				public void run() throws Exception {
+					if (jettyHttpClient != null) {
+						jettyHttpClient.stop();
+						jettyHttpClient = null;
+					}
+				}
+			});
+		}
 
 		return jettyHttpClient;
 	}

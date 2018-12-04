@@ -15,7 +15,7 @@ public abstract class Client {
 
 	// ---------------------- init ----------------------
 
-	protected XxlRpcReferenceBean xxlRpcReferenceBean;
+	protected volatile XxlRpcReferenceBean xxlRpcReferenceBean;
 
 	public void init(XxlRpcReferenceBean xxlRpcReferenceBean) {
 		this.xxlRpcReferenceBean = xxlRpcReferenceBean;
