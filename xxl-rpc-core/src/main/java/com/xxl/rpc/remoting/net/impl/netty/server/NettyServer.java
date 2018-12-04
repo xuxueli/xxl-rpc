@@ -6,11 +6,17 @@ import com.xxl.rpc.remoting.net.impl.netty.codec.NettyEncoder;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import com.xxl.rpc.remoting.provider.XxlRpcProviderFactory;
+import com.xxl.rpc.util.XxlRpcException;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * netty rpc server
@@ -28,9 +34,24 @@ public class NettyServer extends Server {
 			@Override
 			public void run() {
 
+				// param
+				final ThreadPoolExecutor triggerPool = new ThreadPoolExecutor(
+						8,
+						200,
+						60L,
+						TimeUnit.SECONDS,
+						new LinkedBlockingQueue<Runnable>(1000),
+						new RejectedExecutionHandler() {
+							@Override
+							public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+								throw new XxlRpcException("xxl-rpc NettyServer Thread pool is EXHAUSTED!");
+							}
+						});		// default maxThreads 200, minThreads 8
 				EventLoopGroup bossGroup = new NioEventLoopGroup();
 				EventLoopGroup workerGroup = new NioEventLoopGroup();
+
 				try {
+					// start server
 					ServerBootstrap bootstrap = new ServerBootstrap();
 					bootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class)
 							.childHandler(new ChannelInitializer<SocketChannel>() {
@@ -39,7 +60,7 @@ public class NettyServer extends Server {
 									channel.pipeline()
 											.addLast(new NettyDecoder(XxlRpcRequest.class, xxlRpcProviderFactory.getSerializer()))
 											.addLast(new NettyEncoder(XxlRpcResponse.class, xxlRpcProviderFactory.getSerializer()))
-											.addLast(new NettyServerHandler(xxlRpcProviderFactory));
+											.addLast(new NettyServerHandler(xxlRpcProviderFactory, triggerPool));
 								}
 							})
 							.option(ChannelOption.SO_TIMEOUT, 100)
@@ -56,8 +77,17 @@ public class NettyServer extends Server {
 				} catch (Exception e) {
                     logger.error(">>>>>>>>>>> xxl-rpc remoting server start error.", e);
 				} finally {
+
+					// stop
+					triggerPool.shutdownNow();
 					workerGroup.shutdownGracefully();
 					bossGroup.shutdownGracefully();
+
+					try {
+						stop();
+					} catch (Exception e) {
+						logger.error(e.getMessage(), e);
+					}
 				}
 			}
 		});

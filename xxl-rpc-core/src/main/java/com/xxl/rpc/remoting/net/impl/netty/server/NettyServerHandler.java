@@ -3,10 +3,13 @@ package com.xxl.rpc.remoting.net.impl.netty.server;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import com.xxl.rpc.remoting.provider.XxlRpcProviderFactory;
+import com.xxl.rpc.util.ThrowableUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * netty server handler
@@ -18,18 +21,37 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<XxlRpcReques
 
 
     private XxlRpcProviderFactory xxlRpcProviderFactory;
-    public NettyServerHandler(XxlRpcProviderFactory xxlRpcProviderFactory) {
+    private ThreadPoolExecutor triggerPool;
+
+    public NettyServerHandler(XxlRpcProviderFactory xxlRpcProviderFactory, ThreadPoolExecutor triggerPool) {
         this.xxlRpcProviderFactory = xxlRpcProviderFactory;
+        this.triggerPool = triggerPool;
     }
 
 
     @Override
-    public void channelRead0(final ChannelHandlerContext ctx, XxlRpcRequest xxlRpcRequest) throws Exception {
+    public void channelRead0(final ChannelHandlerContext ctx, final XxlRpcRequest xxlRpcRequest) throws Exception {
 
-        // invoke + response
-        XxlRpcResponse xxlRpcResponse = xxlRpcProviderFactory.invokeService(xxlRpcRequest);
-    	
-        ctx.writeAndFlush(xxlRpcResponse);
+        try {
+            // do invoke
+            triggerPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    // invoke + response
+                    XxlRpcResponse xxlRpcResponse = xxlRpcProviderFactory.invokeService(xxlRpcRequest);
+
+                    ctx.writeAndFlush(xxlRpcResponse);
+                }
+            });
+        } catch (Exception e) {
+            // catch error
+            XxlRpcResponse xxlRpcResponse = new XxlRpcResponse();
+            xxlRpcResponse.setRequestId(xxlRpcRequest.getRequestId());
+            xxlRpcResponse.setErrorMsg(ThrowableUtil.toString(e));
+
+            ctx.writeAndFlush(xxlRpcResponse);
+        }
+
     }
 
     @Override

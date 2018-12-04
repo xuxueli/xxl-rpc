@@ -207,8 +207,8 @@ public class XxlRpcProviderFactory {
 			return xxlRpcResponse;
 		}
 
-		// invoke
 		try {
+			// invoke
 			Class<?> serviceClass = serviceBean.getClass();
 			String methodName = xxlRpcRequest.getMethodName();
 			Class<?>[] parameterTypes = xxlRpcRequest.getParameterTypes();
@@ -224,6 +224,7 @@ public class XxlRpcProviderFactory {
 
 			xxlRpcResponse.setResult(result);
 		} catch (Throwable t) {
+			// catch error
 			logger.error("xxl-rpc provider invokeService error.", t);
 			xxlRpcResponse.setErrorMsg(ThrowableUtil.toString(t));
 		}
