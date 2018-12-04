@@ -29,10 +29,10 @@
 ## Introduction
 
 XXL-RPC is a high performance, distributed RPC framework.Provides a stable and high performance RPC function.
-Features such as "high-performance、distributed、service-registry、soft-loading、service-governance" 
+Features such as "high-performance、distributed、service-registry、load-balancing、service-governance" 
 Now, it's already open source, real "out-of-the-box".
 
-XXL-RPC 是一个分布式服务框架，提供稳定高性能的RPC远程服务调用功能。拥有"高性能、分布式、注册中心、软负载、服务治理"等特性。现已开放源代码，开箱即用。
+XXL-RPC 是一个分布式服务框架，提供稳定高性能的RPC远程服务调用功能。拥有"高性能、分布式、注册中心、负载均衡、服务治理"等特性。现已开放源代码，开箱即用。
 
 
 ## Documentation
@@ -46,7 +46,7 @@ XXL-RPC 是一个分布式服务框架，提供稳定高性能的RPC远程服务
 - 3、多调用方案：支持 SYNC、ONEWAY、FUTURE、CALLBACK 等方案；
 - 4、多通讯方案：支持 TCP 和 HTTP 两种通讯方式进行服务调用；其中 TCP 提供可选方案 NETTY 或 MINA ，HTTP 提供可选方案 Jetty；
 - 5、多序列化方案：支持 HESSIAN、HESSIAN1、PROTOSTUFF、JSON 等方案；
-- 6、软负载均衡及容错：服务提供方集群注册时，在使用软负载算法进行流量分发；
+- 6、负载均衡/软负载：提供丰富的负载均衡策略，包括：轮询、随机、LRU、LFU、一致性HASH等；
 - 7、注册中心：可选组件，支持服务注册并动态发现；可选择不启用，直接指定服务提供方机器地址通讯；选择启用时，内置可选方案：“XXL-REGISTRY 轻量级注册中心”（推荐）、“ZK注册中心”、“Local注册中心”等；
 - 8、服务治理：提供服务治理中心，可在线管理注册的服务信息，如服务锁定、禁用等；
 - 9、服务监控：可在线监控服务调用统计信息以及服务健康状况等（计划中）；

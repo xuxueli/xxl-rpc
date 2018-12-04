@@ -79,6 +79,7 @@ public class XxlRpcSpringInvokerFactory extends InstantiationAwareBeanPostProces
                             rpcReference.netType(),
                             rpcReference.serializer().getSerializer(),
                             rpcReference.callType(),
+                            rpcReference.loadBalance(),
                             iface,
                             rpcReference.version(),
                             rpcReference.timeout(),

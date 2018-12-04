@@ -1,6 +1,7 @@
 package com.xxl.rpc.remoting.invoker.annotation;
 
 import com.xxl.rpc.remoting.invoker.call.CallType;
+import com.xxl.rpc.remoting.invoker.route.LoadBalance;
 import com.xxl.rpc.remoting.net.NetEnum;
 import com.xxl.rpc.serialize.Serializer;
 
@@ -19,6 +20,7 @@ public @interface XxlRpcReference {
     NetEnum netType() default NetEnum.NETTY;
     Serializer.SerializeEnum serializer() default Serializer.SerializeEnum.HESSIAN;
     CallType callType() default CallType.SYNC;
+    LoadBalance loadBalance() default LoadBalance.ROUND;
 
     //Class<?> iface;
     String version() default "";

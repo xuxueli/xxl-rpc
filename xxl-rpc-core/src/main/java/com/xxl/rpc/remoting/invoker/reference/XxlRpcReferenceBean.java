@@ -4,6 +4,7 @@ import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.invoker.call.CallType;
 import com.xxl.rpc.remoting.invoker.call.XxlRpcInvokeCallback;
 import com.xxl.rpc.remoting.invoker.call.XxlRpcInvokeFuture;
+import com.xxl.rpc.remoting.invoker.route.LoadBalance;
 import com.xxl.rpc.remoting.net.Client;
 import com.xxl.rpc.remoting.net.NetEnum;
 import com.xxl.rpc.remoting.net.params.XxlRpcFutureResponse;
@@ -19,8 +20,6 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.ArrayList;
-import java.util.Random;
 import java.util.TreeSet;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -40,6 +39,7 @@ public class XxlRpcReferenceBean {
 	private NetEnum netType;
 	private Serializer serializer;
 	private CallType callType;
+	private LoadBalance loadBalance;
 
 	private Class<?> iface;
 	private String version;
@@ -56,6 +56,7 @@ public class XxlRpcReferenceBean {
 	public XxlRpcReferenceBean(NetEnum netType,
 							   Serializer serializer,
 							   CallType callType,
+							   LoadBalance loadBalance,
 							   Class<?> iface,
 							   String version,
 							   long timeout,
@@ -68,6 +69,7 @@ public class XxlRpcReferenceBean {
 		this.netType = netType;
 		this.serializer = serializer;
 		this.callType = callType;
+		this.loadBalance = loadBalance;
 		this.iface = iface;
 		this.version = version;
 		this.timeout = timeout;
@@ -77,6 +79,24 @@ public class XxlRpcReferenceBean {
 		this.invokerFactory = invokerFactory;
 
 		// valid
+		if (this.netType==null) {
+			throw new XxlRpcException("xxl-rpc reference netType missing.");
+		}
+		if (this.serializer==null) {
+			throw new XxlRpcException("xxl-rpc reference serializer missing.");
+		}
+		if (this.callType==null) {
+			throw new XxlRpcException("xxl-rpc reference callType missing.");
+		}
+		if (this.loadBalance==null) {
+			throw new XxlRpcException("xxl-rpc reference loadBalance missing.");
+		}
+		if (this.iface==null) {
+			throw new XxlRpcException("xxl-rpc reference iface missing.");
+		}
+		if (this.timeout < 0) {
+			this.timeout = 0;
+		}
 		if (this.invokerFactory == null) {
 			this.invokerFactory = XxlRpcInvokerFactory.getInstance();
 		}
@@ -113,22 +133,6 @@ public class XxlRpcReferenceBean {
 
 	// ---------------------- util ----------------------
 
-	public String routeAddress(){
-		String addressItem = address;
-		if (addressItem!=null && addressItem.trim().length()>0) {
-			return addressItem;
-		}
-
-		if (invokerFactory!=null && invokerFactory.getServiceRegistry()!=null) {
-			String serviceKey = XxlRpcProviderFactory.makeServiceKey(iface.getName(), version);
-			TreeSet<String> addressSet = invokerFactory.getServiceRegistry().discovery(serviceKey);
-			if (addressSet.size() > 0) {
-				addressItem = new ArrayList<String>(addressSet).get(new Random().nextInt(addressSet.size()));
-			}
-		}
-		return addressItem;
-	}
-
 	public Object getObject() {
 		return Proxy.newProxyInstance(Thread.currentThread()
 				.getContextClassLoader(), new Class[] { iface },
@@ -144,8 +148,24 @@ public class XxlRpcReferenceBean {
 						}
 
 						// address
-						String address = routeAddress();
-						if (address==null || address.trim().length()==0) {
+						String finalAddress = address;
+						if (finalAddress==null || finalAddress.trim().length()==0) {
+							if (invokerFactory!=null && invokerFactory.getServiceRegistry()!=null) {
+								// discovery
+								String serviceKey = XxlRpcProviderFactory.makeServiceKey(iface.getName(), version);
+								TreeSet<String> addressSet = invokerFactory.getServiceRegistry().discovery(serviceKey);
+								// load balance
+								if (addressSet == null) {
+									// pass
+								} else if (addressSet.size()==1) {
+									finalAddress = addressSet.first();
+								} else {
+									finalAddress = loadBalance.xxlRpcInvokerRouter.route(serviceKey, addressSet);
+								}
+
+							}
+						}
+						if (finalAddress==null || finalAddress.trim().length()==0) {
 							throw new XxlRpcException("xxl-rpc reference bean["+ className +"] address empty");
 						}
 
@@ -166,7 +186,7 @@ public class XxlRpcReferenceBean {
 								XxlRpcFutureResponse futureResponse = new XxlRpcFutureResponse(xxlRpcRequest, null);
 
 								// do invoke
-								client.asyncSend(address, xxlRpcRequest);
+								client.asyncSend(finalAddress, xxlRpcRequest);
 
 								// future get
 								XxlRpcResponse xxlRpcResponse = futureResponse.get(timeout, TimeUnit.MILLISECONDS);
@@ -175,7 +195,7 @@ public class XxlRpcReferenceBean {
 								}
 								return xxlRpcResponse.getResult();
 							} catch (Exception e) {
-								logger.warn(">>>>>>>>>>> xxl-rpc, invoke error, address:{}, XxlRpcRequest{}", address, xxlRpcRequest);
+								logger.warn(">>>>>>>>>>> xxl-rpc, invoke error, address:{}, XxlRpcRequest{}", finalAddress, xxlRpcRequest);
 
 								throw (e instanceof XxlRpcException)?e:new XxlRpcException(e);
 							} finally{
@@ -192,11 +212,11 @@ public class XxlRpcReferenceBean {
 								XxlRpcInvokeFuture.setFuture(invokeFuture);
 
                                 // do invoke
-                                client.asyncSend(address, xxlRpcRequest);
+                                client.asyncSend(finalAddress, xxlRpcRequest);
 
                                 return null;
                             } catch (Exception e) {
-								logger.warn(">>>>>>>>>>> xxl-rpc, invoke error, address:{}, XxlRpcRequest{}", address, xxlRpcRequest);
+								logger.warn(">>>>>>>>>>> xxl-rpc, invoke error, address:{}, XxlRpcRequest{}", finalAddress, xxlRpcRequest);
 
 								// remove-InvokerFuture
 								invokeFuture.stop();
@@ -220,9 +240,9 @@ public class XxlRpcReferenceBean {
 								// future set
 								XxlRpcFutureResponse futureResponse = new XxlRpcFutureResponse(xxlRpcRequest, finalInvokeCallback);
 
-								client.asyncSend(address, xxlRpcRequest);
+								client.asyncSend(finalAddress, xxlRpcRequest);
 							} catch (Exception e) {
-								logger.warn(">>>>>>>>>>> xxl-rpc, invoke error, address:{}, XxlRpcRequest{}", address, xxlRpcRequest);
+								logger.warn(">>>>>>>>>>> xxl-rpc, invoke error, address:{}, XxlRpcRequest{}", finalAddress, xxlRpcRequest);
 
 								// future remove
 								XxlRpcFutureResponseFactory.removeInvokerFuture(xxlRpcRequest.getRequestId());
@@ -232,7 +252,7 @@ public class XxlRpcReferenceBean {
 
 							return null;
 						} else if (CallType.ONEWAY == callType) {
-                            client.asyncSend(address, xxlRpcRequest);
+                            client.asyncSend(finalAddress, xxlRpcRequest);
                             return null;
                         } else {
 							throw new XxlRpcException("xxl-rpc callType["+ callType +"] invalid");
