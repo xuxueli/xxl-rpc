@@ -67,13 +67,11 @@ public class NettyPooledClient extends ClientPooled  {
 
 	@Override
 	public void close() {
-		if (this.channel != null) {
+		if (this.channel!=null && this.channel.isActive()) {
 			this.channel.close();		// if this.channel.isOpen()
-			this.channel = null;
 		}
-		if (this.group != null) {
+		if (this.group!=null && !this.group.isShutdown()) {
 			this.group.shutdownGracefully();
-			this.group = null;
 		}
 		logger.debug(">>>>>>>>>>> xxl-rpc netty client close.");
 	}

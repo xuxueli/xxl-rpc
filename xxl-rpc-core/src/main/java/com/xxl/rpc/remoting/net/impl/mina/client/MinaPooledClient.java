@@ -72,7 +72,7 @@ public class MinaPooledClient extends ClientPooled {
 
 	@Override
 	public boolean isValidate() {
-		if (this.ioSession != null && this.connector != null) {
+		if (this.connector != null && this.ioSession != null) {
 			return this.connector.isActive() && this.ioSession.isConnected();
 		}
 		return false;
@@ -81,16 +81,12 @@ public class MinaPooledClient extends ClientPooled {
 
 	@Override
 	public void close() {
-		if (this.ioSession != null) {
-			if (this.ioSession.isConnected()) {
-				ioSession.getCloseFuture().awaitUninterruptibly();
-			}
+		if (this.ioSession!=null && this.ioSession.isConnected()) {
+			this.ioSession.getCloseFuture().awaitUninterruptibly();
 			this.ioSession.closeOnFlush();
-			this.ioSession = null;
 		}
-		if (this.connector != null) {
+		if (this.connector!=null && this.connector.isActive()) {
 			this.connector.dispose();
-			this.connector = null;
 		}
 		logger.debug(">>>>>>>>>>> xxl-rpc mina client close.");
 	}
