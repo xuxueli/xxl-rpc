@@ -1,19 +1,20 @@
 package com.xxl.rpc.registry.impl;
 
 import com.xxl.registry.client.XxlRegistryClient;
-import com.xxl.registry.client.model.XxlRegistryParam;
+import com.xxl.registry.client.model.XxlRegistryDataParamVO;
 import com.xxl.rpc.registry.ServiceRegistry;
 
 import java.util.*;
 
 /**
- * service registry for "xxl-registry v1.0.0"
+ * service registry for "xxl-registry v1.0.1"
  *
  * @author xuxueli 2018-11-30
  */
 public class XxlRegistryServiceRegistry extends ServiceRegistry {
 
     public static final String XXL_REGISTRY_ADDRESS = "XXL_REGISTRY_ADDRESS";
+    public static final String ACCESS_TOKEN = "ACCESS_TOKEN";
     public static final String ENV = "ENV";
 
     private XxlRegistryClient xxlRegistryClient;
@@ -21,9 +22,10 @@ public class XxlRegistryServiceRegistry extends ServiceRegistry {
     @Override
     public void start(Map<String, String> param) {
         String xxlRegistryAddress = param.get(XXL_REGISTRY_ADDRESS);
+        String accessToken = param.get(ACCESS_TOKEN);
         String env = param.get(ENV);
 
-        xxlRegistryClient = new XxlRegistryClient(xxlRegistryAddress, "xxl-rpc", env);
+        xxlRegistryClient = new XxlRegistryClient(xxlRegistryAddress, accessToken, "xxl-rpc", env);
     }
 
     @Override
@@ -40,12 +42,12 @@ public class XxlRegistryServiceRegistry extends ServiceRegistry {
         }
 
         // init
-        List<XxlRegistryParam> registryParamList = new ArrayList<>();
+        List<XxlRegistryDataParamVO> registryDataList = new ArrayList<>();
         for (String key:keys) {
-            registryParamList.add(new XxlRegistryParam(key, value));
+            registryDataList.add(new XxlRegistryDataParamVO(key, value));
         }
 
-        return xxlRegistryClient.registry(registryParamList);
+        return xxlRegistryClient.registry(registryDataList);
     }
 
     @Override
@@ -55,12 +57,12 @@ public class XxlRegistryServiceRegistry extends ServiceRegistry {
         }
 
         // init
-        List<XxlRegistryParam> registryParamList = new ArrayList<>();
+        List<XxlRegistryDataParamVO> registryDataList = new ArrayList<>();
         for (String key:keys) {
-            registryParamList.add(new XxlRegistryParam(key, value));
+            registryDataList.add(new XxlRegistryDataParamVO(key, value));
         }
 
-        return xxlRegistryClient.remove(registryParamList);
+        return xxlRegistryClient.remove(registryDataList);
     }
 
     @Override
