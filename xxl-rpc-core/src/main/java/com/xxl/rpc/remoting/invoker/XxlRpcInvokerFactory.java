@@ -20,7 +20,7 @@ public class XxlRpcInvokerFactory {
 
     // ---------------------- default instance ----------------------
 
-    private static XxlRpcInvokerFactory instance = new XxlRpcInvokerFactory(LocalServiceRegistry.class, null);
+    private static volatile XxlRpcInvokerFactory instance = new XxlRpcInvokerFactory(LocalServiceRegistry.class, null);
     public static XxlRpcInvokerFactory getInstance() {
         return instance;
     }
