@@ -45,6 +45,14 @@ public class NettyPooledClient extends ClientPooled  {
 			.option(ChannelOption.SO_REUSEADDR, true)
             .option(ChannelOption.SO_KEEPALIVE, true);
         this.channel = bootstrap.connect(host, port).sync().channel();
+
+        // valid
+		if (!isValidate()) {
+			close();
+			return;
+		}
+
+		logger.debug(">>>>>>>>>>> xxl-rpc netty client proxy, connect to server success at host:{}, port:{}", host, port);
 	}
 
 
@@ -61,9 +69,11 @@ public class NettyPooledClient extends ClientPooled  {
 	public void close() {
 		if (this.channel != null) {
 			this.channel.close();		// if this.channel.isOpen()
+			this.channel = null;
 		}
 		if (this.group != null) {
-			group.shutdownGracefully();
+			this.group.shutdownGracefully();
+			this.group = null;
 		}
 		logger.debug(">>>>>>>>>>> xxl-rpc netty client close.");
 	}

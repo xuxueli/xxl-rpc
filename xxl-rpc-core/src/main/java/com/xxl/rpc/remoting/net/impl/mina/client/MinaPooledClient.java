@@ -58,14 +58,14 @@ public class MinaPooledClient extends ClientPooled {
 		
 		ConnectFuture future = connector.connect(new InetSocketAddress(host, port));
 		future.awaitUninterruptibly(5, TimeUnit.SECONDS);
-		
-		if (!future.isConnected()) {
-			logger.error(">>>>>>>>>>> xxl-rpc mina client proxy, connect to server fail at host:{}, port:{}", host, port);
-			connector.dispose();
-			connector = null;
+		this.ioSession = future.getSession();
+
+		// valid
+		if (!isValidate()) {
+			close();
 			return;
 		}
-		this.ioSession = future.getSession();
+
 		logger.debug(">>>>>>>>>>> xxl-rpc mina client proxy, connect to server success at host:{}, port:{}", host, port);
 	}
 

@@ -444,6 +444,7 @@ XXL-RPC的注册中心，是一个可选组件，不强制依赖；支持服务�
 
 ### 5.6 版本 v1.3.1 Release Notes[迭代中]
 - TCP通讯方案Server端线程池优化；
+- TCP通讯方案Client初始化逻辑优化；
 - [迭代中]支持批量注册、摘除，API同注册中心；升级 xxl-registry 至 v1.0.1
 
 ### TODO
