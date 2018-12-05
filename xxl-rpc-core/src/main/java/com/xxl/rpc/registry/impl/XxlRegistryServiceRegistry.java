@@ -15,17 +15,26 @@ public class XxlRegistryServiceRegistry extends ServiceRegistry {
 
     public static final String XXL_REGISTRY_ADDRESS = "XXL_REGISTRY_ADDRESS";
     public static final String ACCESS_TOKEN = "ACCESS_TOKEN";
+    public static final String BIZ = "BIZ";
     public static final String ENV = "ENV";
 
     private XxlRegistryClient xxlRegistryClient;
+    public XxlRegistryClient getXxlRegistryClient() {
+        return xxlRegistryClient;
+    }
 
     @Override
     public void start(Map<String, String> param) {
         String xxlRegistryAddress = param.get(XXL_REGISTRY_ADDRESS);
         String accessToken = param.get(ACCESS_TOKEN);
+        String biz = param.get(BIZ);
         String env = param.get(ENV);
 
-        xxlRegistryClient = new XxlRegistryClient(xxlRegistryAddress, accessToken, "xxl-rpc", env);
+        // fill
+        biz = (biz!=null&&biz.trim().length()>0)?biz:"default";
+        env = (env!=null&&env.trim().length()>0)?env:"default";
+
+        xxlRegistryClient = new XxlRegistryClient(xxlRegistryAddress, accessToken, biz, env);
     }
 
     @Override
