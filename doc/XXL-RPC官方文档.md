@@ -443,7 +443,8 @@ XXL-RPC的注册中心，是一个可选组件，不强制依赖；支持服务�
 - 5、服务注册逻辑优化，避免地址重复生成；
 
 ### 5.6 版本 v1.3.1 Release Notes[迭代中]
-- TCP通讯方案Server端线程池优化；
+- TCP通讯方案Server端Channel线程优化（60/300/1000），避免IO线程阻塞于业务；
+- [迭代中]TCP通讯方案Client端Channel线程优化（10/100/1000），避免IO线程阻塞于callback业务；
 - TCP通讯方案Client初始化逻辑优化；
 - TCP长连销毁逻辑优化；
 - 底层Log整理，RPC报错时打印完整Log，包括请求地址，请求参数等；
@@ -473,6 +474,9 @@ XXL-RPC的注册中心，是一个可选组件，不强制依赖；支持服务�
     - 调用链：
 - rpc filter：方便埋点、监控等；
 - 服务治理实现，服务调用量，成功率，1min上报一次； 
+- 服务泛化调用：
+    - 方案A：服务端不需要定制，客户端借助泛化Service调用；
+    - 方案B：服务端提供泛化开关，开启后每个Service兼容提供HTTP服务，路径为 "{服务地址}/{serviceKey}/methodName"，request/response 均为json格式数据；
 
 
 

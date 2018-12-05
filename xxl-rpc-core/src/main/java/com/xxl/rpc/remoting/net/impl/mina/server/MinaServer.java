@@ -38,8 +38,8 @@ public class MinaServer extends Server {
 
 				// param
 				final ThreadPoolExecutor triggerPool = new ThreadPoolExecutor(
-						8,
-						200,
+						60,
+						300,
 						60L,
 						TimeUnit.SECONDS,
 						new LinkedBlockingQueue<Runnable>(1000),
@@ -48,7 +48,7 @@ public class MinaServer extends Server {
 							public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
 								throw new XxlRpcException("xxl-rpc MinaServer Thread pool is EXHAUSTED!");
 							}
-						});		// default maxThreads 200, minThreads 8
+						});		// default maxThreads 300, minThreads 60
 				NioSocketAcceptor acceptor = new NioSocketAcceptor();
 
 				try {
