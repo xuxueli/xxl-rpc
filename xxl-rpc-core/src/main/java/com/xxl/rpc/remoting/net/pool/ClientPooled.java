@@ -20,7 +20,7 @@ public abstract class ClientPooled {
 
     // ---------------------- iface ----------------------
 
-    public abstract void init(String host, int port, Serializer serializer) throws Exception;
+    public abstract void init(String host, int port, final Serializer serializer, final XxlRpcInvokerFactory xxlRpcInvokerFactory) throws Exception;
 
     public abstract void close();
 
@@ -32,7 +32,7 @@ public abstract class ClientPooled {
     // ---------------------- client pool map ----------------------
 
     private static ConcurrentHashMap<String, GenericObjectPool<ClientPooled>> clientPoolMap;
-    public static GenericObjectPool<ClientPooled> getPool(String address, Serializer serializer, Class<? extends ClientPooled> clientPoolImpl, final XxlRpcInvokerFactory xxlRpcInvokerFactory) throws Exception {
+    public static GenericObjectPool<ClientPooled> getPool(String address, Class<? extends ClientPooled> clientPoolImpl, Serializer serializer, final XxlRpcInvokerFactory xxlRpcInvokerFactory) throws Exception {
 
         // init client-pool-map, avoid repeat init
         if (clientPoolMap == null) {
@@ -78,7 +78,7 @@ public abstract class ClientPooled {
             int port = (int) array[1];
 
             // set pool
-            clientPool = new GenericObjectPool<ClientPooled>(new ClientPoolFactory(host, port, serializer, clientPoolImpl));
+            clientPool = new GenericObjectPool<ClientPooled>(new ClientPoolFactory(clientPoolImpl, host, port, serializer, xxlRpcInvokerFactory));
             clientPool.setTestOnBorrow(true);
             clientPool.setMaxTotal(2);
 

@@ -1,6 +1,6 @@
 package com.xxl.rpc.remoting.net.impl.netty.client;
 
-import com.xxl.rpc.remoting.net.params.XxlRpcFutureResponseFactory;
+import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -16,6 +16,12 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<XxlRpcRespon
 	private static final Logger logger = LoggerFactory.getLogger(NettyClientHandler.class);
 
 
+	private XxlRpcInvokerFactory xxlRpcInvokerFactory;
+	public NettyClientHandler(final XxlRpcInvokerFactory xxlRpcInvokerFactory) {
+		this.xxlRpcInvokerFactory = xxlRpcInvokerFactory;
+	}
+
+
 	@Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
     	logger.error(">>>>>>>>>>> xxl-rpc netty client caught exception", cause);
@@ -26,7 +32,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<XxlRpcRespon
 	protected void channelRead0(ChannelHandlerContext ctx, XxlRpcResponse xxlRpcResponse) throws Exception {
 
 		// notify response
-		XxlRpcFutureResponseFactory.notifyInvokerFuture(xxlRpcResponse.getRequestId(), xxlRpcResponse);
+		xxlRpcInvokerFactory.notifyInvokerFuture(xxlRpcResponse.getRequestId(), xxlRpcResponse);
 	}
 
 }

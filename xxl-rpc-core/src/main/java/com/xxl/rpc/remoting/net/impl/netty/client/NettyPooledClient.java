@@ -1,5 +1,6 @@
 package com.xxl.rpc.remoting.net.impl.netty.client;
 
+import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.net.impl.netty.codec.NettyDecoder;
 import com.xxl.rpc.remoting.net.impl.netty.codec.NettyEncoder;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
@@ -28,7 +29,7 @@ public class NettyPooledClient extends ClientPooled  {
 
 
 	@Override
-	public void init(String host, int port, final Serializer serializer) throws Exception {
+	public void init(String host, int port, final Serializer serializer, final XxlRpcInvokerFactory xxlRpcInvokerFactory) throws Exception {
 		this.group = new NioEventLoopGroup();
     	Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(group).channel(NioSocketChannel.class)
@@ -38,7 +39,7 @@ public class NettyPooledClient extends ClientPooled  {
                     channel.pipeline()
                         .addLast(new NettyEncoder(XxlRpcRequest.class, serializer))
                         .addLast(new NettyDecoder(XxlRpcResponse.class, serializer))
-                        .addLast(new NettyClientHandler());
+                        .addLast(new NettyClientHandler(xxlRpcInvokerFactory));
                 }
             })
             .option(ChannelOption.TCP_NODELAY, true)

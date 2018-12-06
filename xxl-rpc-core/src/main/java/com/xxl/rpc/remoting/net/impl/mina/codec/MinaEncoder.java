@@ -12,7 +12,7 @@ public class MinaEncoder implements ProtocolEncoder {
 	private Class<?> genericClass;
     private Serializer serializer;
 
-    public MinaEncoder(Class<?> genericClass, Serializer serializer) {
+    public MinaEncoder(Class<?> genericClass, final Serializer serializer) {
         this.genericClass = genericClass;
         this.serializer = serializer;
     }

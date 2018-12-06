@@ -1,7 +1,6 @@
 package com.xxl.rpc.remoting.invoker.call;
 
 import com.xxl.rpc.remoting.net.params.XxlRpcFutureResponse;
-import com.xxl.rpc.remoting.net.params.XxlRpcFutureResponseFactory;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import com.xxl.rpc.util.XxlRpcException;
 
@@ -23,7 +22,7 @@ public class XxlRpcInvokeFuture implements Future {
     }
     public void stop(){
         // remove-InvokerFuture
-        XxlRpcFutureResponseFactory.removeInvokerFuture(futureResponse.getRequest().getRequestId());
+        futureResponse.removeInvokerFuture();
     }
 
 

@@ -8,7 +8,6 @@ import com.xxl.rpc.remoting.invoker.route.LoadBalance;
 import com.xxl.rpc.remoting.net.Client;
 import com.xxl.rpc.remoting.net.NetEnum;
 import com.xxl.rpc.remoting.net.params.XxlRpcFutureResponse;
-import com.xxl.rpc.remoting.net.params.XxlRpcFutureResponseFactory;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import com.xxl.rpc.remoting.provider.XxlRpcProviderFactory;
@@ -181,10 +180,9 @@ public class XxlRpcReferenceBean {
 	                    
 	                    // send
 						if (CallType.SYNC == callType) {
+							// future-response set
+							XxlRpcFutureResponse futureResponse = new XxlRpcFutureResponse(invokerFactory, xxlRpcRequest, null);
 							try {
-								// future set
-								XxlRpcFutureResponse futureResponse = new XxlRpcFutureResponse(xxlRpcRequest, null);
-
 								// do invoke
 								client.asyncSend(finalAddress, xxlRpcRequest);
 
@@ -199,16 +197,15 @@ public class XxlRpcReferenceBean {
 
 								throw (e instanceof XxlRpcException)?e:new XxlRpcException(e);
 							} finally{
-								// remove-InvokerFuture
-                                XxlRpcFutureResponseFactory.removeInvokerFuture(xxlRpcRequest.getRequestId());
+								// future-response remove
+								futureResponse.removeInvokerFuture();
 							}
 						} else if (CallType.FUTURE == callType) {
-
-							// thread future set
-							XxlRpcInvokeFuture invokeFuture = null;
+							// future-response set
+							XxlRpcFutureResponse futureResponse = new XxlRpcFutureResponse(invokerFactory, xxlRpcRequest, null);
                             try {
-								// future set
-								invokeFuture = new XxlRpcInvokeFuture(new XxlRpcFutureResponse(xxlRpcRequest, null));
+								// invoke future set
+								XxlRpcInvokeFuture invokeFuture = new XxlRpcInvokeFuture(futureResponse);
 								XxlRpcInvokeFuture.setFuture(invokeFuture);
 
                                 // do invoke
@@ -218,8 +215,8 @@ public class XxlRpcReferenceBean {
                             } catch (Exception e) {
 								logger.warn(">>>>>>>>>>> xxl-rpc, invoke error, address:{}, XxlRpcRequest{}", finalAddress, xxlRpcRequest);
 
-								// remove-InvokerFuture
-								invokeFuture.stop();
+								// future-response remove
+								futureResponse.removeInvokerFuture();
 
 								throw (e instanceof XxlRpcException)?e:new XxlRpcException(e);
                             }
@@ -236,16 +233,15 @@ public class XxlRpcReferenceBean {
 								throw new XxlRpcException("xxl-rpc XxlRpcInvokeCallback（CallType="+ CallType.CALLBACK.name() +"） cannot be null.");
 							}
 
+							// future-response set
+							XxlRpcFutureResponse futureResponse = new XxlRpcFutureResponse(invokerFactory, xxlRpcRequest, finalInvokeCallback);
 							try {
-								// future set
-								XxlRpcFutureResponse futureResponse = new XxlRpcFutureResponse(xxlRpcRequest, finalInvokeCallback);
-
 								client.asyncSend(finalAddress, xxlRpcRequest);
 							} catch (Exception e) {
 								logger.warn(">>>>>>>>>>> xxl-rpc, invoke error, address:{}, XxlRpcRequest{}", finalAddress, xxlRpcRequest);
 
-								// future remove
-								XxlRpcFutureResponseFactory.removeInvokerFuture(xxlRpcRequest.getRequestId());
+								// future-response remove
+								futureResponse.removeInvokerFuture();
 
 								throw (e instanceof XxlRpcException)?e:new XxlRpcException(e);
 							}

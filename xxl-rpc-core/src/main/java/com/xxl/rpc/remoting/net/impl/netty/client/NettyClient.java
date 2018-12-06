@@ -15,7 +15,7 @@ public class NettyClient extends Client {
 	public void asyncSend(String address, XxlRpcRequest xxlRpcRequest) throws Exception {
 
 		// client pool	[tips03 : may save 35ms/100invoke if move it to constructor, but it is necessary. cause by ConcurrentHashMap.get]
-		GenericObjectPool<ClientPooled> clientPool = ClientPooled.getPool(address, xxlRpcReferenceBean.getSerializer(), NettyPooledClient.class, xxlRpcReferenceBean.getInvokerFactory());
+		GenericObjectPool<ClientPooled> clientPool = ClientPooled.getPool(address, NettyPooledClient.class, xxlRpcReferenceBean.getSerializer(), xxlRpcReferenceBean.getInvokerFactory());
         // client proxt
 		ClientPooled clientPoolProxy = null;
 

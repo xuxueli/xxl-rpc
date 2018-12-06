@@ -16,7 +16,7 @@ public class NettyEncoder extends MessageToByteEncoder<Object> {
     private Class<?> genericClass;
     private Serializer serializer;
 
-    public NettyEncoder(Class<?> genericClass, Serializer serializer) {
+    public NettyEncoder(Class<?> genericClass, final Serializer serializer) {
         this.genericClass = genericClass;
         this.serializer = serializer;
     }

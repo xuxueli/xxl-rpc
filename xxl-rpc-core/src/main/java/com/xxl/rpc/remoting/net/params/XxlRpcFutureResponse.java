@@ -1,5 +1,6 @@
 package com.xxl.rpc.remoting.net.params;
 
+import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.invoker.call.XxlRpcInvokeCallback;
 import com.xxl.rpc.util.XxlRpcException;
 
@@ -12,6 +13,7 @@ import java.util.concurrent.*;
  */
 public class XxlRpcFutureResponse implements Future<XxlRpcResponse> {
 
+	private XxlRpcInvokerFactory invokerFactory;
 
 	// net data
 	private XxlRpcRequest request;
@@ -25,17 +27,37 @@ public class XxlRpcFutureResponse implements Future<XxlRpcResponse> {
 	private XxlRpcInvokeCallback invokeCallback;
 
 
-	public XxlRpcFutureResponse(XxlRpcRequest request, XxlRpcInvokeCallback invokeCallback) {
+	public XxlRpcFutureResponse(final XxlRpcInvokerFactory invokerFactory, XxlRpcRequest request, XxlRpcInvokeCallback invokeCallback) {
+		this.invokerFactory = invokerFactory;
 		this.request = request;
 		this.invokeCallback = invokeCallback;
 
 		// set-InvokerFuture
-		XxlRpcFutureResponseFactory.setInvokerFuture(request.getRequestId(), this);
+		setInvokerFuture();
 	}
+
+
+	// ---------------------- response pool ----------------------
+
+	public void setInvokerFuture(){
+		this.invokerFactory.setInvokerFuture(request.getRequestId(), this);
+	}
+	public void removeInvokerFuture(){
+		this.invokerFactory.removeInvokerFuture(request.getRequestId());
+	}
+
+
+	// ---------------------- get ----------------------
 
 	public XxlRpcRequest getRequest() {
 		return request;
 	}
+	public XxlRpcInvokeCallback getInvokeCallback() {
+		return invokeCallback;
+	}
+
+
+	// ---------------------- for invoke back ----------------------
 
 	public void setResponse(XxlRpcResponse response) {
 		this.response = response;
@@ -57,6 +79,8 @@ public class XxlRpcFutureResponse implements Future<XxlRpcResponse> {
 		}
 	}
 
+
+	// ---------------------- for invoke ----------------------
 
 	@Override
 	public boolean cancel(boolean mayInterruptIfRunning) {

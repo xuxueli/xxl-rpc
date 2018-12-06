@@ -2,7 +2,9 @@ package com.xxl.rpc.remoting.net.impl.jetty.client;
 
 import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.net.Client;
-import com.xxl.rpc.remoting.net.params.*;
+import com.xxl.rpc.remoting.net.params.BaseCallback;
+import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
+import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import com.xxl.rpc.util.ThrowableUtil;
 import com.xxl.rpc.util.XxlRpcException;
 import org.eclipse.jetty.client.HttpClient;
@@ -85,7 +87,7 @@ public class JettyClient extends Client {
                     XxlRpcResponse xxlRpcResponse = (XxlRpcResponse) xxlRpcReferenceBean.getSerializer().deserialize(responseBytes, XxlRpcResponse.class);
 
                     // notify response
-					XxlRpcFutureResponseFactory.notifyInvokerFuture(xxlRpcResponse.getRequestId(), xxlRpcResponse);
+					xxlRpcReferenceBean.getInvokerFactory().notifyInvokerFuture(xxlRpcResponse.getRequestId(), xxlRpcResponse);
 
                 } catch (Exception e){
 
@@ -114,7 +116,7 @@ public class JettyClient extends Client {
 							xxlRpcResponse.setErrorMsg(errorMsg);
 
 							// notify response
-							XxlRpcFutureResponseFactory.notifyInvokerFuture(xxlRpcResponse.getRequestId(), xxlRpcResponse);
+							xxlRpcReferenceBean.getInvokerFactory().notifyInvokerFuture(xxlRpcResponse.getRequestId(), xxlRpcResponse);
 
                         } catch (Exception e2) {
                             logger.info(">>>>>>>>>>> xxl-rpc, remoting request error, and callback error: " + e2.getMessage());

@@ -12,7 +12,7 @@ public class MinaDecoder extends CumulativeProtocolDecoder {
 	private Class<?> genericClass;
     private Serializer serializer;
 
-    public MinaDecoder(Class<?> genericClass, Serializer serializer) {
+    public MinaDecoder(Class<?> genericClass, final Serializer serializer) {
         this.genericClass = genericClass;
         this.serializer = serializer;
     }

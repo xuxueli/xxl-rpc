@@ -17,7 +17,7 @@ public class NettyDecoder extends ByteToMessageDecoder {
     private Class<?> genericClass;
     private Serializer serializer;
 
-    public NettyDecoder(Class<?> genericClass, Serializer serializer) {
+    public NettyDecoder(Class<?> genericClass, final Serializer serializer) {
         this.genericClass = genericClass;
         this.serializer = serializer;
     }

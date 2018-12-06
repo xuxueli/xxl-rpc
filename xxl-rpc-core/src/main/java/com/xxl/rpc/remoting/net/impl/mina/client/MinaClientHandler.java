@@ -1,6 +1,6 @@
 package com.xxl.rpc.remoting.net.impl.mina.client;
 
-import com.xxl.rpc.remoting.net.params.XxlRpcFutureResponseFactory;
+import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
@@ -14,6 +14,13 @@ import org.slf4j.LoggerFactory;
 public class MinaClientHandler extends IoHandlerAdapter {
 	private static final Logger logger = LoggerFactory.getLogger(MinaClientHandler.class);
 
+
+	private XxlRpcInvokerFactory xxlRpcInvokerFactory;
+	public MinaClientHandler(final XxlRpcInvokerFactory xxlRpcInvokerFactory) {
+		this.xxlRpcInvokerFactory = xxlRpcInvokerFactory;
+	}
+
+
 	@Override
 	public void exceptionCaught(IoSession session, Throwable cause) throws Exception {
 		super.exceptionCaught(session, cause);
@@ -25,7 +32,7 @@ public class MinaClientHandler extends IoHandlerAdapter {
 		XxlRpcResponse xxlRpcResponse = (XxlRpcResponse) message;
 
 		// notify response
-		XxlRpcFutureResponseFactory.notifyInvokerFuture(xxlRpcResponse.getRequestId(), xxlRpcResponse);
+		xxlRpcInvokerFactory.notifyInvokerFuture(xxlRpcResponse.getRequestId(), xxlRpcResponse);
 	}
 
 }

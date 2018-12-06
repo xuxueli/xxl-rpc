@@ -1,5 +1,6 @@
 package com.xxl.rpc.remoting.net.impl.mina.client;
 
+import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.net.impl.mina.codec.MinaDecoder;
 import com.xxl.rpc.remoting.net.impl.mina.codec.MinaEncoder;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
@@ -31,7 +32,7 @@ public class MinaPooledClient extends ClientPooled {
 
 
 	@Override
-	public void init(String host, int port, final Serializer serializer) {
+	public void init(String host, int port, final Serializer serializer, final XxlRpcInvokerFactory xxlRpcInvokerFactory) {
 
 		connector = new NioSocketConnector();
 		connector.getFilterChain().addLast("codec", new ProtocolCodecFilter(new ProtocolCodecFactory() {
@@ -44,7 +45,7 @@ public class MinaPooledClient extends ClientPooled {
 				return new MinaDecoder(XxlRpcResponse.class, serializer);
 			}
 		}));
-		connector.setHandler(new MinaClientHandler());
+		connector.setHandler(new MinaClientHandler(xxlRpcInvokerFactory));
 		connector.setConnectTimeoutMillis(5000);
 		
 		DefaultSocketSessionConfig sessionConfiguration = (DefaultSocketSessionConfig) connector.getSessionConfig();
