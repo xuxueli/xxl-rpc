@@ -23,7 +23,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<XxlRpcReques
     private XxlRpcProviderFactory xxlRpcProviderFactory;
     private ThreadPoolExecutor serverHandlerPool;
 
-    public NettyServerHandler(XxlRpcProviderFactory xxlRpcProviderFactory, ThreadPoolExecutor serverHandlerPool) {
+    public NettyServerHandler(final XxlRpcProviderFactory xxlRpcProviderFactory, final ThreadPoolExecutor serverHandlerPool) {
         this.xxlRpcProviderFactory = xxlRpcProviderFactory;
         this.serverHandlerPool = serverHandlerPool;
     }

@@ -25,7 +25,7 @@ public class MinaServerHandler extends IoHandlerAdapter {
 	private ThreadPoolExecutor serverHandlerPool;
 
 
-	public MinaServerHandler(XxlRpcProviderFactory xxlRpcProviderFactory, ThreadPoolExecutor serverHandlerPool) {
+	public MinaServerHandler(final XxlRpcProviderFactory xxlRpcProviderFactory, final ThreadPoolExecutor serverHandlerPool) {
 		this.xxlRpcProviderFactory = xxlRpcProviderFactory;
 		this.serverHandlerPool = serverHandlerPool;
 	}
@@ -61,6 +61,6 @@ public class MinaServerHandler extends IoHandlerAdapter {
 	@Override
 	public void exceptionCaught(IoSession session, Throwable cause) throws Exception {
 		logger.error(">>>>>>>>>>> xxl-rpc provider mina server caught exception", cause);
-		session.closeNow();
+		session.closeOnFlush();
 	}
 }

@@ -26,7 +26,7 @@ public class JettyServerHandler extends AbstractHandler {
 
 
 	private XxlRpcProviderFactory xxlRpcProviderFactory;
-	public JettyServerHandler(XxlRpcProviderFactory xxlRpcProviderFactory) {
+	public JettyServerHandler(final XxlRpcProviderFactory xxlRpcProviderFactory) {
 		this.xxlRpcProviderFactory = xxlRpcProviderFactory;
 	}
 

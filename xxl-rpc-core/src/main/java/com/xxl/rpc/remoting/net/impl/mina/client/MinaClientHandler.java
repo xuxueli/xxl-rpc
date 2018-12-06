@@ -23,8 +23,9 @@ public class MinaClientHandler extends IoHandlerAdapter {
 
 	@Override
 	public void exceptionCaught(IoSession session, Throwable cause) throws Exception {
-		super.exceptionCaught(session, cause);
+		//super.exceptionCaught(session, cause);
 		logger.error(">>>>>>>>>>> xxl-rpc mina client caught exception:", cause);
+		session.closeOnFlush();
 	}
 
 	@Override

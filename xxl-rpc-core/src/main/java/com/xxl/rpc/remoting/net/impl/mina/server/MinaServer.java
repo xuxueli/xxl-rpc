@@ -78,6 +78,9 @@ public class MinaServer extends Server {
 					logger.info(">>>>>>>>>>> xxl-rpc remoting server start success, nettype = {}, port = {}", MinaServer.class.getName(), xxlRpcProviderFactory.getPort());
 					onStarted();
 
+					while (!Thread.currentThread().isInterrupted()) {
+						Thread.sleep(1);
+					}
 				} catch (Exception e) {
 					logger.error(">>>>>>>>>>> xxl-rpc remoting server start error.", e);
 				} finally {
