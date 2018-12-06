@@ -51,7 +51,7 @@ public class JettyServer extends Server {
 
 					server.join();
 				} catch (Exception e) {
-					logger.error(">>>>>>>>>>> xxl-rpc remoting server start error.", e);
+					logger.warn(">>>>>>>>>>> xxl-rpc remoting server error.", e);
 				} finally {
 					if (server!=null && server.isRunning()) {
 						try {

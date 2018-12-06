@@ -82,7 +82,7 @@ public class MinaServer extends Server {
 						Thread.sleep(1);
 					}
 				} catch (Exception e) {
-					logger.error(">>>>>>>>>>> xxl-rpc remoting server start error.", e);
+					logger.warn(">>>>>>>>>>> xxl-rpc remoting server error.", e);
 				} finally {
 
 					// stop
