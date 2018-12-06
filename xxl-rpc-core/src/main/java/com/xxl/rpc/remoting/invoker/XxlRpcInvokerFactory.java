@@ -105,11 +105,18 @@ public class XxlRpcInvokerFactory {
         futureResponsePool.remove(requestId);
     }
     public void notifyInvokerFuture(String requestId, final XxlRpcResponse xxlRpcResponse){
-        final XxlRpcFutureResponse futureResponse = futureResponsePool.get(requestId);
-        if (futureResponse != null) {
 
-            if (futureResponse.getInvokeCallback()!=null) {
-                // callback type
+        // get
+        final XxlRpcFutureResponse futureResponse = futureResponsePool.get(requestId);
+        if (futureResponse == null) {
+            return;
+        }
+
+        // notify
+        if (futureResponse.getInvokeCallback()!=null) {
+
+            // callback type
+            try {
                 executeResponseCallback(new Runnable() {
                     @Override
                     public void run() {
@@ -120,14 +127,18 @@ public class XxlRpcInvokerFactory {
                         }
                     }
                 });
-            } else {
-                // other type
-                futureResponse.setResponse(xxlRpcResponse);
+            }catch (Exception e) {
+                logger.error(e.getMessage(), e);
             }
+        } else {
 
-            // do remove
-            futureResponsePool.remove(requestId);
+            // other nomal type
+            futureResponse.setResponse(xxlRpcResponse);
         }
+
+        // do remove
+        futureResponsePool.remove(requestId);
+
     }
 
 
@@ -148,7 +159,7 @@ public class XxlRpcInvokerFactory {
                             new RejectedExecutionHandler() {
                                 @Override
                                 public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
-                                    throw new XxlRpcException("xxl-rpc MinaServer Thread pool is EXHAUSTED!");
+                                    throw new XxlRpcException("xxl-rpc Invoke Callback Thread pool is EXHAUSTED!");
                                 }
                             });		// default maxThreads 300, minThreads 60
                 }

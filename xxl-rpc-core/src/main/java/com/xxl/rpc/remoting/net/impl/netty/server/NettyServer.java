@@ -44,7 +44,7 @@ public class NettyServer extends Server {
 						new RejectedExecutionHandler() {
 							@Override
 							public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
-								throw new XxlRpcException("xxl-rpc MinaServer Thread pool is EXHAUSTED!");
+								throw new XxlRpcException("xxl-rpc NettyServer Thread pool is EXHAUSTED!");
 							}
 						});		// default maxThreads 300, minThreads 60
 				EventLoopGroup bossGroup = new NioEventLoopGroup();

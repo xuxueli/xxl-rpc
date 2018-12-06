@@ -451,7 +451,7 @@ XXL-RPC的注册中心，是一个可选组件，不强制依赖；支持服务�
 - 负载均衡/软负载：提供丰富的负载均衡策略，包括：轮询、随机、LRU、LFU、一致性HASH等；
 - 服务发现注册逻辑优化：支持批量注册、摘除，升级 xxl-registry 至 v1.0.1；
 - Server端销毁逻辑优化；
-- static代码块优化，进行组件无状态优化：response factory等；迁移到invoke factory上来；（后续待优化：jetty/pool/）
+- static代码块优化，进行组件无状态优化：response factory等；迁移到invoke factory上来；
 
 
 ### TODO
@@ -479,7 +479,7 @@ XXL-RPC的注册中心，是一个可选组件，不强制依赖；支持服务�
 - 服务泛化调用：
     - 方案A：服务端不需要定制，客户端借助泛化Service调用；
     - 方案B：服务端提供泛化开关，开启后每个Service兼容提供HTTP服务，路径为 "{服务地址}/{serviceKey}/methodName"，request/response 均为json格式数据；
-
+- static代码块移除，进行组件无状态优化，jetty/pool/等；
 
 
 ## 六、其他

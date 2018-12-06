@@ -139,7 +139,7 @@ public class JettyClient extends Client {
 	 * @return
 	 * @throws Exception
 	 */
-	private static HttpClient jettyHttpClient;
+	private static HttpClient jettyHttpClient;		// (static) alread addStopCallBack
 	public static HttpClient getJettyHttpClient(final XxlRpcInvokerFactory xxlRpcInvokerFactory) throws Exception {
 
 		// get

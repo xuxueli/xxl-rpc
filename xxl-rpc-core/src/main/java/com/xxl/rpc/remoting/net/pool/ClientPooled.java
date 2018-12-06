@@ -31,7 +31,7 @@ public abstract class ClientPooled {
 
     // ---------------------- client pool map ----------------------
 
-    private static ConcurrentHashMap<String, GenericObjectPool<ClientPooled>> clientPoolMap;
+    private static ConcurrentHashMap<String, GenericObjectPool<ClientPooled>> clientPoolMap;        // (static) alread addStopCallBack
     public static GenericObjectPool<ClientPooled> getPool(String address, Class<? extends ClientPooled> clientPoolImpl, Serializer serializer, final XxlRpcInvokerFactory xxlRpcInvokerFactory) throws Exception {
 
         // init client-pool-map, avoid repeat init

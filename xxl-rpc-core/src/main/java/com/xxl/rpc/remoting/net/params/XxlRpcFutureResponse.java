@@ -61,18 +61,6 @@ public class XxlRpcFutureResponse implements Future<XxlRpcResponse> {
 
 	public void setResponse(XxlRpcResponse response) {
 		this.response = response;
-
-		// callback: do callback invoke
-		if (invokeCallback != null) {
-			if (this.response.getErrorMsg() != null) {
-				invokeCallback.onFailure(new XxlRpcException(this.response.getErrorMsg()));
-			} else {
-				invokeCallback.onSuccess(this.response.getResult());
-			}
-			return;
-		}
-
-		// future：notify future lock
 		synchronized (lock) {
 			done = true;
 			lock.notifyAll();
