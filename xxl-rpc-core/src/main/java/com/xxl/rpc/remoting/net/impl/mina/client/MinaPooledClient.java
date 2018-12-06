@@ -49,14 +49,11 @@ public class MinaPooledClient extends ClientPooled {
 		connector.setConnectTimeoutMillis(5000);
 		
 		DefaultSocketSessionConfig sessionConfiguration = (DefaultSocketSessionConfig) connector.getSessionConfig();
-		sessionConfiguration.setReadBufferSize(1024);
-		sessionConfiguration.setSendBufferSize(512);
-		sessionConfiguration.setReuseAddress(true);
 		sessionConfiguration.setTcpNoDelay(true);
+		sessionConfiguration.setReuseAddress(true);
 		sessionConfiguration.setKeepAlive(true);
 		sessionConfiguration.setSoLinger(-1);
-		sessionConfiguration.setWriteTimeout(5);
-		
+
 		ConnectFuture future = connector.connect(new InetSocketAddress(host, port));
 		future.awaitUninterruptibly(5, TimeUnit.SECONDS);
 		this.ioSession = future.getSession();

@@ -67,10 +67,10 @@ public class MinaServer extends Server {
 					acceptor.setHandler(new MinaServerHandler(xxlRpcProviderFactory, serverHandlerPool));
 					
 					SocketSessionConfig config = acceptor.getSessionConfig();
+					config.setTcpNoDelay(true);
 					config.setReuseAddress(true);
-					config.setTcpNoDelay(true);	// TCP_NODELAY和TCP_CORK基本上控制了包的“Nagle化”，这里我们主要讲TCP_NODELAY.Nagle化在这里的含义是采用Nagle算法把较小的包组装为更大的帧。
-					config.setSoLinger(0);		// 执行Socket的close方法，该方法也会立即返回
-					config.setReadBufferSize(1024 * 2);
+					config.setKeepAlive(true);
+					config.setSoLinger(-1);
 					config.setIdleTime(IdleStatus.BOTH_IDLE, 10);
 					
 					acceptor.bind(new InetSocketAddress(xxlRpcProviderFactory.getPort()));
