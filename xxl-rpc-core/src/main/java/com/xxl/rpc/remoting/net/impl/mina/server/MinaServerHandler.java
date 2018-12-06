@@ -21,11 +21,13 @@ public class MinaServerHandler extends IoHandlerAdapter {
 	private static Logger logger = LoggerFactory.getLogger(MinaServerHandler.class);
 
 
-	private ThreadPoolExecutor triggerPool;
 	private XxlRpcProviderFactory xxlRpcProviderFactory;
+	private ThreadPoolExecutor serverHandlerPool;
 
-	public MinaServerHandler(XxlRpcProviderFactory xxlRpcProviderFactory, ThreadPoolExecutor triggerPool) {
+
+	public MinaServerHandler(XxlRpcProviderFactory xxlRpcProviderFactory, ThreadPoolExecutor serverHandlerPool) {
 		this.xxlRpcProviderFactory = xxlRpcProviderFactory;
+		this.serverHandlerPool = serverHandlerPool;
 	}
 
 	@Override
@@ -36,7 +38,7 @@ public class MinaServerHandler extends IoHandlerAdapter {
 
 		try {
 			// do invoke
-			triggerPool.execute(new Runnable() {
+			serverHandlerPool.execute(new Runnable() {
 				@Override
 				public void run() {
 					// invoke + response

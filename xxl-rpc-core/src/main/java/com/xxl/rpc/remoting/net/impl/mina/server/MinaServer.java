@@ -37,7 +37,7 @@ public class MinaServer extends Server {
 			public void run() {
 
 				// param
-				final ThreadPoolExecutor triggerPool = new ThreadPoolExecutor(
+				final ThreadPoolExecutor serverHandlerPool = new ThreadPoolExecutor(
 						60,
 						300,
 						60L,
@@ -64,7 +64,7 @@ public class MinaServer extends Server {
 							return new MinaDecoder(XxlRpcRequest.class, xxlRpcProviderFactory.getSerializer());
 						}
 					}));
-					acceptor.setHandler(new MinaServerHandler(xxlRpcProviderFactory, triggerPool));
+					acceptor.setHandler(new MinaServerHandler(xxlRpcProviderFactory, serverHandlerPool));
 					
 					SocketSessionConfig config = acceptor.getSessionConfig();
 					config.setReuseAddress(true);
@@ -83,17 +83,25 @@ public class MinaServer extends Server {
 				} finally {
 
 					// stop
-					triggerPool.shutdownNow();
-					if (acceptor.isActive()) {
-						acceptor.unbind();
-						acceptor.dispose();
+					try {
+						serverHandlerPool.shutdownNow();
+					} catch (Exception e) {
+						logger.error(e.getMessage(), e);
 					}
-
+					try {
+						if (acceptor.isActive()) {
+							acceptor.unbind();
+							acceptor.dispose();
+						}
+					} catch (Exception e) {
+						logger.error(e.getMessage(), e);
+					}
 					try {
 						stop();
 					} catch (Exception e) {
 						logger.error(e.getMessage(), e);
 					}
+
 				}
 			}
 		});
@@ -105,11 +113,12 @@ public class MinaServer extends Server {
     @Override
     public void stop() throws Exception {
 
-		// destroy server
+		// destroy server thread
 		if (thread!=null && thread.isAlive()) {
 			thread.interrupt();
 		}
 
+		// on stop
 		onStoped();
 		logger.info(">>>>>>>>>>> xxl-rpc remoting server destroy success.");
     }

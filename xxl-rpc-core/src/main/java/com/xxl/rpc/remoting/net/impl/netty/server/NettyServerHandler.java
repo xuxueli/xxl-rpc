@@ -21,11 +21,11 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<XxlRpcReques
 
 
     private XxlRpcProviderFactory xxlRpcProviderFactory;
-    private ThreadPoolExecutor triggerPool;
+    private ThreadPoolExecutor serverHandlerPool;
 
-    public NettyServerHandler(XxlRpcProviderFactory xxlRpcProviderFactory, ThreadPoolExecutor triggerPool) {
+    public NettyServerHandler(XxlRpcProviderFactory xxlRpcProviderFactory, ThreadPoolExecutor serverHandlerPool) {
         this.xxlRpcProviderFactory = xxlRpcProviderFactory;
-        this.triggerPool = triggerPool;
+        this.serverHandlerPool = serverHandlerPool;
     }
 
 
@@ -34,7 +34,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<XxlRpcReques
 
         try {
             // do invoke
-            triggerPool.execute(new Runnable() {
+            serverHandlerPool.execute(new Runnable() {
                 @Override
                 public void run() {
                     // invoke + response

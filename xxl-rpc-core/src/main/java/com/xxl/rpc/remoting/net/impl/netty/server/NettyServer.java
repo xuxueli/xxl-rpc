@@ -35,7 +35,7 @@ public class NettyServer extends Server {
 			public void run() {
 
 				// param
-				final ThreadPoolExecutor triggerPool = new ThreadPoolExecutor(
+				final ThreadPoolExecutor serverHandlerPool = new ThreadPoolExecutor(
 						60,
 						300,
 						60L,
@@ -60,7 +60,7 @@ public class NettyServer extends Server {
 									channel.pipeline()
 											.addLast(new NettyDecoder(XxlRpcRequest.class, xxlRpcProviderFactory.getSerializer()))
 											.addLast(new NettyEncoder(XxlRpcResponse.class, xxlRpcProviderFactory.getSerializer()))
-											.addLast(new NettyServerHandler(xxlRpcProviderFactory, triggerPool));
+											.addLast(new NettyServerHandler(xxlRpcProviderFactory, serverHandlerPool));
 								}
 							})
 							.option(ChannelOption.SO_TIMEOUT, 100)
@@ -79,10 +79,17 @@ public class NettyServer extends Server {
 				} finally {
 
 					// stop
-					triggerPool.shutdownNow();
-					workerGroup.shutdownGracefully();
-					bossGroup.shutdownGracefully();
-
+					try {
+						serverHandlerPool.shutdownNow();
+					} catch (Exception e) {
+						logger.error(e.getMessage(), e);
+					}
+					try {
+						workerGroup.shutdownGracefully();
+						bossGroup.shutdownGracefully();
+					} catch (Exception e) {
+						logger.error(e.getMessage(), e);
+					}
 					try {
 						stop();
 					} catch (Exception e) {
@@ -99,11 +106,12 @@ public class NettyServer extends Server {
 	@Override
 	public void stop() throws Exception {
 
-        // destroy server
+		// destroy server thread
         if (thread!=null && thread.isAlive()) {
             thread.interrupt();
         }
 
+		// on stop
         onStoped();
         logger.info(">>>>>>>>>>> xxl-rpc remoting server destroy success.");
 	}
