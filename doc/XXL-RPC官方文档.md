@@ -453,7 +453,6 @@ XXL-RPC的注册中心，是一个可选组件，不强制依赖；支持服务�
 - 8、Server端销毁逻辑优化；
 - 9、static代码块优化，进行组件无状态优化：response factory等；迁移到invoke factory上来；
 - 10、升级多项pom依赖至较新稳定版本；
-- 11、Server端销毁逻辑优化；
 
 
 ### 5.7 版本 v1.3.2 Release Notes[迭代中]
