@@ -87,7 +87,7 @@ public class MinaServer extends Server {
 
 					// stop
 					try {
-						serverHandlerPool.shutdownNow();
+						serverHandlerPool.shutdown();
 					} catch (Exception e) {
 						logger.error(e.getMessage(), e);
 					}
@@ -96,11 +96,6 @@ public class MinaServer extends Server {
 							acceptor.unbind();
 							acceptor.dispose();
 						}
-					} catch (Exception e) {
-						logger.error(e.getMessage(), e);
-					}
-					try {
-						stop();
 					} catch (Exception e) {
 						logger.error(e.getMessage(), e);
 					}

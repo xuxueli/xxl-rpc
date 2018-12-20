@@ -84,7 +84,7 @@ public class NettyServer extends Server {
 
 					// stop
 					try {
-						serverHandlerPool.shutdownNow();
+						serverHandlerPool.shutdown();	// shutdownNow
 					} catch (Exception e) {
 						logger.error(e.getMessage(), e);
 					}
@@ -94,11 +94,7 @@ public class NettyServer extends Server {
 					} catch (Exception e) {
 						logger.error(e.getMessage(), e);
 					}
-					try {
-						stop();
-					} catch (Exception e) {
-						logger.error(e.getMessage(), e);
-					}
+
 				}
 			}
 		});

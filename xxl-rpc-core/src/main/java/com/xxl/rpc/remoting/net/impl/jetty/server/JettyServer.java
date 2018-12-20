@@ -61,11 +61,6 @@ public class JettyServer extends Server {
 							logger.error(e.getMessage(), e);
 						}
 					}
-					try {
-						stop();
-					} catch (Exception e) {
-						logger.error(e.getMessage(), e);
-					}
 				}
 			}
 		});
