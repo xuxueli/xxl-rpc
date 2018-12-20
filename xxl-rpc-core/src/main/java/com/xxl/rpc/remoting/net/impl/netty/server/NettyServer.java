@@ -79,7 +79,11 @@ public class NettyServer extends Server {
 					future.channel().closeFuture().sync();
 
 				} catch (Exception e) {
-                    logger.warn(">>>>>>>>>>> xxl-rpc remoting server error.", e);
+					if (e instanceof InterruptedException) {
+						logger.warn(">>>>>>>>>>> xxl-rpc remoting server stop.");
+					} else {
+						logger.warn(">>>>>>>>>>> xxl-rpc remoting server error.", e);
+					}
 				} finally {
 
 					// stop
