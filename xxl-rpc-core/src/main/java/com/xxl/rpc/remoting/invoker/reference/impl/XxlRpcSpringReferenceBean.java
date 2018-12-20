@@ -93,9 +93,6 @@ public class XxlRpcSpringReferenceBean implements FactoryBean<Object>, Initializ
         Serializer serializer = serializeEnum!=null?serializeEnum.getSerializer():null;
         CallType callTypeEnum = CallType.match(callType, null);
         LoadBalance loadBalanceEnum = LoadBalance.match(loadBalance, null);
-        if (timeout <= 0) {
-            timeout = 10;
-        }
 
         // init config
         xxlRpcReferenceBean = new XxlRpcReferenceBean(
