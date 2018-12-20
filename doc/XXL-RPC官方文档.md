@@ -442,16 +442,17 @@ XXL-RPC的注册中心，是一个可选组件，不强制依赖；支持服务�
 - 4、代码优化：XxlRpcInvokerFactory 移除 static 代码块及相关组件，进一步实现组件无状态；
 - 5、服务注册逻辑优化，避免地址重复生成；
 
-### 5.6 版本 v1.3.1 Release Notes[迭代中]
-- TCP通讯方案Server端Channel线程优化（线程参数=60/300/1000），避免IO线程阻塞于业务；
-- TCP通讯方案Client端Channel线程优化（线程参数=10/100/1000），避免IO线程阻塞于callback业务；
-- TCP通讯方案Client初始化逻辑优化；
-- TCP长连销毁逻辑优化；
-- 底层Log整理，RPC报错时打印完整Log，包括请求地址，请求参数等；
-- 负载均衡/软负载：提供丰富的负载均衡策略，包括：轮询、随机、LRU、LFU、一致性HASH等；
-- 服务发现注册逻辑优化：支持批量注册、摘除，升级 xxl-registry 至 v1.0.1；
-- Server端销毁逻辑优化；
-- static代码块优化，进行组件无状态优化：response factory等；迁移到invoke factory上来；
+### 5.6 版本 v1.3.1 Release Notes[2018-12-21]
+- 1、TCP通讯方案Server端Channel线程优化（线程参数=60/300/1000），避免IO线程阻塞于业务；
+- 2、TCP通讯方案Client端Channel线程优化（线程参数=10/100/1000），避免IO线程阻塞于callback业务；
+- 3、TCP通讯方案Client初始化逻辑优化；
+- 4、TCP长连销毁逻辑优化；
+- 5、底层Log整理，RPC报错时打印完整Log，包括请求地址，请求参数等；
+- 6、负载均衡/软负载：提供丰富的负载均衡策略，包括：轮询、随机、LRU、LFU、一致性HASH等；
+- 7、服务发现注册逻辑优化：支持批量注册、摘除，升级 xxl-registry 至 v1.0.1；
+- 8、Server端销毁逻辑优化；
+- 9、static代码块优化，进行组件无状态优化：response factory等；迁移到invoke factory上来；
+- 10、升级多项pom依赖至较新稳定版本；
 
 
 ### TODO
