@@ -108,7 +108,7 @@ public class IpUtil {
                 return localAddress;
             }
         } catch (Throwable e) {
-            logger.warn(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
         try {
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
@@ -131,15 +131,15 @@ public class IpUtil {
                                 return address;
                             }
                         } catch (Throwable e) {
-                            logger.warn(e.getMessage(), e);
+                            logger.error(e.getMessage(), e);
                         }
                     }
                 } catch (Throwable e) {
-                    logger.warn(e.getMessage(), e);
+                    logger.error(e.getMessage(), e);
                 }
             }
         } catch (Throwable e) {
-            logger.warn(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
         return localAddress;
     }

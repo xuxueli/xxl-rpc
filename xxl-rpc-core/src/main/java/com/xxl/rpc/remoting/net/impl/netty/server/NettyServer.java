@@ -80,9 +80,9 @@ public class NettyServer extends Server {
 
 				} catch (Exception e) {
 					if (e instanceof InterruptedException) {
-						logger.warn(">>>>>>>>>>> xxl-rpc remoting server stop.");
+						logger.info(">>>>>>>>>>> xxl-rpc remoting server stop.");
 					} else {
-						logger.warn(">>>>>>>>>>> xxl-rpc remoting server error.", e);
+						logger.error(">>>>>>>>>>> xxl-rpc remoting server error.", e);
 					}
 				} finally {
 
