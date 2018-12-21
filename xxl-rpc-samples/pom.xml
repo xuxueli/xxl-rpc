@@ -12,6 +12,7 @@
 	<modules>
 		<module>xxl-rpc-executor-sample-frameless</module>
 		<module>xxl-rpc-executor-sample-springboot</module>
+		<module>xxl-rpc-executor-sample-jfinal</module>
 	</modules>
 
 </project>
