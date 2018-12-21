@@ -99,6 +99,7 @@ public class JFinalCoreConfig extends JFinalConfig {
 
 	// ---------------------- jfinal ----------------------
 
+    @Override
 	public void configRoute(Routes route) {
 		route.add("/", IndexController.class);
 	}
