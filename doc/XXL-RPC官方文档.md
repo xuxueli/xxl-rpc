@@ -74,11 +74,12 @@ RPC（Remote Procedure Call Protocol，远程过程调用），调用远程服�
     - /doc
     - /xxl-rpc-core     ：核心依赖；
     - /xxl-rpc-samples  ：示例项目；
-        - /xxl-rpc-executor-sample-frameless     ：无框架版本示例；
-        - /xxl-rpc-executor-sample-springboot    ：springboot版本示例；
-            - /xxl-rpc-executor-sample-springboot-api           ：公共API接口
-            - /xxl-rpc-executor-sample-springboot-client        ：服务消费方 invoker 调用示例；
-            - /xxl-rpc-executor-sample-springboot-server        ：服务提供方 provider 示例;
+        - /xxl-rpc-sample-frameless     ：无框架版本示例；
+        - /xxl-rpc-sample-springboot    ：springboot版本示例；
+            - /xxl-rpc-sample-springboot-api           ：公共API接口
+            - /xxl-rpc-sample-springboot-client        ：服务消费方 invoker 调用示例；
+            - /xxl-rpc-sample-springboot-server        ：服务提供方 provider 示例;
+        - / xxl-rpc-sample-jfinal       ：jfinal版本示例；
 
 ### 2.2 配置部署 “分布式服务注册中心XXL-REGISTRY”
 
@@ -86,7 +87,7 @@ RPC（Remote Procedure Call Protocol，远程过程调用），调用远程服�
 
  
 ### 2.3 项目中使用XXL-RPC
-以示例项目 “xxl-rpc-executor-sample-springboot” 为例讲解；
+以示例项目 “xxl-rpc-sample-springboot” 为例讲解；
 
 #### 2.3.1 开发“服务API”
 开发RPC服务的 “接口 / interface” 和 “数据模型 / DTO”；
@@ -237,7 +238,7 @@ callType | 请求类型，可选范围：SYNC（默认）、ONEWAY、FUTURE、CA
  
 得益于优良的兼容性与模块化设计，不限制外部框架；除 spring/springboot 环境之外，理论上支持运行在任何Java代码中，甚至main方法直接启动运行；
 
-以示例项目 “xxl-rpc-executor-sample-frameless” 为例讲解；该示例项目以直连IP方式进行演示，也可以选择接入注册中心方式使用，如接入 XXL-REGISTRY。
+以示例项目 “xxl-rpc-sample-frameless” 为例讲解；该示例项目以直连IP方式进行演示，也可以选择接入注册中心方式使用，如接入 XXL-REGISTRY。
 
 ### 3.1 API方式创建“服务提供者”：
 ```
@@ -408,7 +409,7 @@ XXL-RPC的注册中心，是一个可选组件，不强制依赖；支持服务�
 
 ### 5.3 版本 v1.2.1 Release Notes[2018-11-09]
 - 1、内置注册中心选择ZK时逻辑优化，ZK初始化时unlock逻辑调整，优化断线重连特性；
-- 2、除了springboot类型示例；新增无框架示例项目 "xxl-rpc-executor-sample-frameless"。不依赖第三方框架，只需main方法即可启动运行；
+- 2、除了springboot类型示例；新增无框架示例项目 "xxl-rpc-sample-frameless"。不依赖第三方框架，只需main方法即可启动运行；
 - 3、选型http通讯方式时，校验为IP端口格式地址则主动添加地址前缀；
 - 4、RPC异步请求逻辑优化，请求异常时主动通知Client端，避免无效等待时间；
 - 5、http通讯方式选型jetty时，线程池升级为QueuedThreadPool，修复jetty9.4版本server自动销毁问题；
@@ -443,16 +444,17 @@ XXL-RPC的注册中心，是一个可选组件，不强制依赖；支持服务�
 - 5、服务注册逻辑优化，避免地址重复生成；
 
 ### 5.6 版本 v1.3.1 Release Notes[2018-12-21]
-- 1、TCP通讯方案Server端Channel线程优化（线程参数=60/300/1000），避免IO线程阻塞于业务；
-- 2、TCP通讯方案Client端Channel线程优化（线程参数=10/100/1000），避免IO线程阻塞于callback业务；
-- 3、TCP通讯方案Client初始化逻辑优化；
-- 4、TCP长连销毁逻辑优化；
-- 5、底层Log整理，RPC报错时打印完整Log，包括请求地址，请求参数等；
-- 6、负载均衡/软负载：提供丰富的负载均衡策略，包括：轮询、随机、LRU、LFU、一致性HASH等；
-- 7、服务发现注册逻辑优化：支持批量注册、摘除，升级 xxl-registry 至 v1.0.1；
-- 8、Server端销毁逻辑优化；
-- 9、static代码块优化，进行组件无状态优化：response factory等；迁移到invoke factory上来；
-- 10、升级多项pom依赖至较新稳定版本；
+- 1、负载均衡/软负载：提供丰富的负载均衡策略，包括：轮询、随机、LRU、LFU、一致性HASH等；
+- 2、服务发现注册逻辑优化：支持批量注册、摘除，升级 xxl-registry 至 v1.0.1；
+- 3、新增jfinal类型示例项目 "xxl-rpc-sample-jfinal" 支持jfinal项目快速接入分布式RPC服务功能；高兼容性，原则上支持任务框架，甚至main方法直接运行；
+- 4、TCP通讯方案Server端Channel线程优化（线程参数=60/300/1000），避免IO线程阻塞于业务；
+- 5、TCP通讯方案Client端Channel线程优化（线程参数=10/100/1000），避免IO线程阻塞于callback业务；
+- 6、TCP通讯方案Client初始化逻辑优化；
+- 7、TCP长连销毁逻辑优化；
+- 8、底层Log整理，RPC报错时打印完整Log，包括请求地址，请求参数等；
+- 9、Server端销毁逻辑优化；
+- 10、static代码块优化，进行组件无状态优化：response factory等；迁移到invoke factory上来；
+- 11、升级多项pom依赖至较新稳定版本；
 
 
 ### 5.7 版本 v1.3.2 Release Notes[迭代中]
