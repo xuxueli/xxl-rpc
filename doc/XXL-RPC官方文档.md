@@ -489,6 +489,7 @@ XXL-RPC的注册中心，是一个可选组件，不强制依赖；支持服务�
 - static代码块移除，进行组件无状态优化，jetty/pool/等；
 - 接入方配置方式优化，provider与invoker配置合并至新组建；
 - 新增 appname 属性，为后续服务 trace 做准备；
+- 新增 nutz 类型示例项目;
 
 
 ## 六、其他
