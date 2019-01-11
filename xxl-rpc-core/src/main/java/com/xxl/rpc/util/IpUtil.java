@@ -144,12 +144,15 @@ public class IpUtil {
         return localAddress;
     }
 
+
+    // ---------------------- tool ----------------------
+
     /**
      * Find first valid IP from local network card
      *
      * @return first valid local IP
      */
-    private static InetAddress getLocalAddress() {
+    public static InetAddress getLocalAddress() {
         if (LOCAL_ADDRESS != null) {
             return LOCAL_ADDRESS;
         }
@@ -157,9 +160,6 @@ public class IpUtil {
         LOCAL_ADDRESS = localAddress;
         return localAddress;
     }
-
-
-    // ---------------------- tool ----------------------
 
     /**
      * get ip address
