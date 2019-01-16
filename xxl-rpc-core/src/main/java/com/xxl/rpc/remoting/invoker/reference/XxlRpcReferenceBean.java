@@ -154,7 +154,7 @@ public class XxlRpcReferenceBean {
 								String serviceKey = XxlRpcProviderFactory.makeServiceKey(iface.getName(), version);
 								TreeSet<String> addressSet = invokerFactory.getServiceRegistry().discovery(serviceKey);
 								// load balance
-								if (addressSet == null) {
+								if (addressSet==null || addressSet.size()==0) {
 									// pass
 								} else if (addressSet.size()==1) {
 									finalAddress = addressSet.first();
