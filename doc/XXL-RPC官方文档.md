@@ -491,6 +491,9 @@ XXL-RPC的注册中心，是一个可选组件，不强制依赖；支持服务�
 - 接入方配置方式优化，provider与invoker配置合并至新组建；
 - 新增 appname 属性，为后续服务 trace 做准备；
 - 新增 nutz 类型示例项目;
+- rpc通讯：通讯精简，仅保留最优原型，待考虑
+    -tcp：netty，注释mina，移除pool，主备长连；
+    -http：netty-http，注释jetty，handler精简便于mvc；
 
 
 ## 六、其他
