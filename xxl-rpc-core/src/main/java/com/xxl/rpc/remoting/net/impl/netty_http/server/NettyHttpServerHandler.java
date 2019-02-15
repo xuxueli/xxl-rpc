@@ -121,8 +121,7 @@ public class NettyHttpServerHandler extends ChannelInboundHandlerAdapter {
         if (HttpUtil.isKeepAlive(request)) {
             response.headers().set(CONNECTION, HttpHeaderValues.KEEP_ALIVE.toString());
         }
-        ctx.write(response);
-        ctx.flush();
+        ctx.writeAndFlush(response);
     }
 
     @Override
