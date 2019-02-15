@@ -14,15 +14,13 @@ public class ClientPoolFactory extends BasePooledObjectFactory<ClientPooled> {
 
 	private Class<? extends ClientPooled> clientPoolImpl;
 
-	private String host;
-	private int port;
+	private String address;
 	private Serializer serializer;
 	private XxlRpcInvokerFactory xxlRpcInvokerFactory;
 
-	public ClientPoolFactory(Class<? extends ClientPooled> clientPoolImpl, String host, int port, final Serializer serializer, final XxlRpcInvokerFactory xxlRpcInvokerFactory) {
+	public ClientPoolFactory(Class<? extends ClientPooled> clientPoolImpl, String address, final Serializer serializer, final XxlRpcInvokerFactory xxlRpcInvokerFactory) {
 		this.clientPoolImpl = clientPoolImpl;
-		this.host = host;
-		this.port = port;
+		this.address = address;
 		this.serializer = serializer;
 		this.xxlRpcInvokerFactory = xxlRpcInvokerFactory;
 	}
@@ -31,7 +29,7 @@ public class ClientPoolFactory extends BasePooledObjectFactory<ClientPooled> {
 	public ClientPooled create() throws Exception {
 
 		ClientPooled clientPooled = clientPoolImpl.newInstance();
-		clientPooled.init(host, port, serializer, xxlRpcInvokerFactory);
+		clientPooled.init(address, serializer, xxlRpcInvokerFactory);
 
 		return clientPooled;
 	}

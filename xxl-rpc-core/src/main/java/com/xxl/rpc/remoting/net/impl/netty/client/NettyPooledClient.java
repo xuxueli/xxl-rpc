@@ -7,6 +7,7 @@ import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import com.xxl.rpc.remoting.net.pool.ClientPooled;
 import com.xxl.rpc.serialize.Serializer;
+import com.xxl.rpc.util.IpUtil;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -29,7 +30,13 @@ public class NettyPooledClient extends ClientPooled  {
 
 
 	@Override
-	public void init(String host, int port, final Serializer serializer, final XxlRpcInvokerFactory xxlRpcInvokerFactory) throws Exception {
+	public void init(String address, final Serializer serializer, final XxlRpcInvokerFactory xxlRpcInvokerFactory) throws Exception {
+
+		Object[] array = IpUtil.parseIpPort(address);
+		String host = (String) array[0];
+		int port = (int) array[1];
+
+
 		this.group = new NioEventLoopGroup();
     	Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(group).channel(NioSocketChannel.class)

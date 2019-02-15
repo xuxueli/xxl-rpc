@@ -7,6 +7,7 @@ import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import com.xxl.rpc.remoting.net.pool.ClientPooled;
 import com.xxl.rpc.serialize.Serializer;
+import com.xxl.rpc.util.IpUtil;
 import org.apache.mina.core.future.ConnectFuture;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolCodecFactory;
@@ -32,7 +33,12 @@ public class MinaPooledClient extends ClientPooled {
 
 
 	@Override
-	public void init(String host, int port, final Serializer serializer, final XxlRpcInvokerFactory xxlRpcInvokerFactory) {
+	public void init(String address, final Serializer serializer, final XxlRpcInvokerFactory xxlRpcInvokerFactory) {
+
+		Object[] array = IpUtil.parseIpPort(address);
+		String host = (String) array[0];
+		int port = (int) array[1];
+
 
 		connector = new NioSocketConnector();
 		connector.getFilterChain().addLast("codec", new ProtocolCodecFilter(new ProtocolCodecFactory() {

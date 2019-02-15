@@ -16,6 +16,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.*;
 
 import java.net.URI;
+import java.net.URL;
 
 public class NettyHttpPooledClient extends ClientPooled  {
 
@@ -27,7 +28,18 @@ public class NettyHttpPooledClient extends ClientPooled  {
     private String host;
 
     @Override
-    public void init(String host, int port, final Serializer serializer, final XxlRpcInvokerFactory xxlRpcInvokerFactory) throws Exception {
+    public void init(String address, final Serializer serializer, final XxlRpcInvokerFactory xxlRpcInvokerFactory) throws Exception {
+
+        if (!address.toLowerCase().startsWith("http")) {
+            address = "http://" + address;	// IP:PORT, need parse to url
+        }
+
+        this.address = address;
+        URL url = new URL(address);
+        this.host = url.getHost();
+        int port = url.getPort()>-1?url.getPort():80;
+
+
         this.group = new NioEventLoopGroup();
         Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(group).channel(NioSocketChannel.class)
@@ -45,8 +57,6 @@ public class NettyHttpPooledClient extends ClientPooled  {
         this.channel = bootstrap.connect(host, port).sync().channel();
 
         this.serializer = serializer;
-        this.address = "http://"+host+":"+port;
-        this.host = host;
 
         // valid
         if (!isValidate()) {

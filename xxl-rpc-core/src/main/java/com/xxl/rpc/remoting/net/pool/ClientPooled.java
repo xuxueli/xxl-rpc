@@ -4,12 +4,10 @@ import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.net.params.BaseCallback;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.serialize.Serializer;
-import com.xxl.rpc.util.IpUtil;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -21,7 +19,7 @@ public abstract class ClientPooled {
 
     // ---------------------- iface ----------------------
 
-    public abstract void init(String host, int port, final Serializer serializer, final XxlRpcInvokerFactory xxlRpcInvokerFactory) throws Exception;
+    public abstract void init(String address, final Serializer serializer, final XxlRpcInvokerFactory xxlRpcInvokerFactory) throws Exception;
 
     public abstract void close();
 
@@ -73,22 +71,8 @@ public abstract class ClientPooled {
                 return clientPool;
             }
 
-            // parse address
-            String host = null;
-            int port = 0;
-            if (address.contains("//")) {
-                URL url = new URL(address);
-                host = url.getHost();
-                port = url.getPort()>-1?url.getPort():80;
-            } else {
-                Object[] array = IpUtil.parseIpPort(address);
-                host = (String) array[0];
-                port = (int) array[1];
-            }
-
-
             // set pool
-            clientPool = new GenericObjectPool<ClientPooled>(new ClientPoolFactory(clientPoolImpl, host, port, serializer, xxlRpcInvokerFactory));
+            clientPool = new GenericObjectPool<ClientPooled>(new ClientPoolFactory(clientPoolImpl, address, serializer, xxlRpcInvokerFactory));
             clientPool.setTestOnBorrow(true);
             clientPool.setMaxTotal(2);
 
