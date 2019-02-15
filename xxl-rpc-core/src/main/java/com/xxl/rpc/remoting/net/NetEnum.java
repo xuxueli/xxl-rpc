@@ -23,7 +23,7 @@ public enum NetEnum {
 	NETTY(NettyServer.class, NettyClient.class),
 
 	/**
-	 * netty http server
+	 * netty http server (servlet no server, ServletServerHandler)
 	 */
 	NETTY_HTTP(NettyHttpServer.class, NettyHttpClient.class),
 
