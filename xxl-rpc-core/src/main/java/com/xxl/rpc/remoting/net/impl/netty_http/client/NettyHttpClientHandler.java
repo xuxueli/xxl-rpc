@@ -9,7 +9,6 @@ import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.HttpContent;
-import io.netty.handler.codec.http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,11 +38,11 @@ public class NettyHttpClientHandler extends ChannelInboundHandlerAdapter {
         super.channelInactive(ctx);
     }
 
-    private HttpResponse response;
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (msg instanceof HttpResponse) {
-            response = (HttpResponse) msg;     // response.headers().get(HttpHeaderNames.CONTENT_TYPE.toString())
+
+        if (!(msg instanceof HttpContent)) {
+            return;
         }
         if (msg instanceof HttpContent) {
             final HttpContent content = (HttpContent) msg;

@@ -33,27 +33,26 @@ public class NettyHttpServerHandler extends ChannelInboundHandlerAdapter {
         this.serverHandlerPool = serverHandlerPool;
     }
 
-    private HttpRequest request;
     @Override
     public void channelRead(final ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (msg instanceof HttpRequest) {
-            request = (HttpRequest) msg;
-        }
-        if (msg instanceof HttpContent) {
-            final HttpContent content = (HttpContent) msg;
 
-            // do invoke
-            serverHandlerPool.execute(new Runnable() {
-                @Override
-                public void run() {
-                    process(ctx, request, content);
-                }
-            });
+        if(! (msg instanceof FullHttpRequest)){
+            return;
         }
+        final FullHttpRequest httpRequest = (FullHttpRequest)msg;
+
+        // do invoke
+        serverHandlerPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                process(ctx, httpRequest);
+            }
+        });
+
     }
 
-    private void process(ChannelHandlerContext ctx, HttpRequest request, HttpContent content){
-        String uri = request.uri();
+    private void process(ChannelHandlerContext ctx, FullHttpRequest httpRequest){
+        String uri = httpRequest.uri();
         String requestId = null;
         try {
             if ("/services".equals(uri)) {	// services mapping
@@ -69,12 +68,12 @@ public class NettyHttpServerHandler extends ChannelInboundHandlerAdapter {
                 byte[] responseBytes = stringBuffer.toString().getBytes("UTF-8");
 
                 // response-write
-                writeResponse(ctx, request, responseBytes);
+                writeResponse(ctx, httpRequest, responseBytes);
 
             } else {
 
                 // request parse
-                ByteBuf byteBuf = content.content();
+                ByteBuf byteBuf = httpRequest.content();
                 //String requestStr = byteBuf.toString(io.netty.util.CharsetUtil.UTF_8);
                 byte[] requestBytes = ByteBufUtil.getBytes(byteBuf);
                 byteBuf.release();
@@ -93,7 +92,7 @@ public class NettyHttpServerHandler extends ChannelInboundHandlerAdapter {
                 byte[] responseBytes = xxlRpcProviderFactory.getSerializer().serialize(xxlRpcResponse);
 
                 // response-write
-                writeResponse(ctx, request, responseBytes);
+                writeResponse(ctx, httpRequest, responseBytes);
             }
         } catch (Exception e) {
 
@@ -106,7 +105,7 @@ public class NettyHttpServerHandler extends ChannelInboundHandlerAdapter {
             byte[] responseBytes = xxlRpcProviderFactory.getSerializer().serialize(xxlRpcResponse);
 
             // response-write
-            writeResponse(ctx, request, responseBytes);
+            writeResponse(ctx, httpRequest, responseBytes);
         }
 
     }
