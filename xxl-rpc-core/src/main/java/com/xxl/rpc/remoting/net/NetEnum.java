@@ -6,6 +6,8 @@ import com.xxl.rpc.remoting.net.impl.mina.client.MinaClient;
 import com.xxl.rpc.remoting.net.impl.mina.server.MinaServer;
 import com.xxl.rpc.remoting.net.impl.netty.client.NettyClient;
 import com.xxl.rpc.remoting.net.impl.netty.server.NettyServer;
+import com.xxl.rpc.remoting.net.impl.netty_http.client.NettyHttpClient;
+import com.xxl.rpc.remoting.net.impl.netty_http.server.NettyHttpServer;
 
 /**
  * remoting net
@@ -21,7 +23,7 @@ public enum NetEnum {
 
 	JETTY(JettyServer.class, JettyClient.class),
 
-	JETTY_HTTP2(null, null);	// TODO
+	NETTY_HTTP(NettyHttpServer.class, NettyHttpClient.class);
 
 
 	public final Class<? extends Server> serverClass;

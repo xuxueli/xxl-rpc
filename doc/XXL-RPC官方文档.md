@@ -17,7 +17,7 @@ XXL-RPC 是一个分布式服务框架，提供稳定高性能的RPC远程服务
 - 1、快速接入：接入步骤非常简洁，两分钟即可上手；
 - 2、服务透明：系统完整的封装了底层通信细节，开发时调用远程服务就像调用本地服务，在提供远程调用能力时不损失本地调用的语义简洁性；
 - 3、多调用方案：支持 SYNC、ONEWAY、FUTURE、CALLBACK 等方案；
-- 4、多通讯方案：支持 TCP 和 HTTP 两种通讯方式进行服务调用；其中 TCP 提供可选方案 NETTY 或 MINA ，HTTP 提供可选方案 Jetty；
+- 4、多通讯方案：支持 TCP 和 HTTP 两种通讯方式进行服务调用；其中 TCP 提供可选方案 NETTY 或 MINA ，HTTP 提供可选方案 NETTY_HTTP 或 Jetty；
 - 5、多序列化方案：支持 HESSIAN、HESSIAN1、PROTOSTUFF、JSON 等方案；
 - 6、负载均衡/软负载：提供丰富的负载均衡策略，包括：轮询、随机、LRU、LFU、一致性HASH等；
 - 7、注册中心：可选组件，支持服务注册并动态发现；可选择不启用，直接指定服务提供方机器地址通讯；选择启用时，内置可选方案：“XXL-REGISTRY 轻量级注册中心”（推荐）、“ZK注册中心”、“Local注册中心”等；
@@ -133,7 +133,7 @@ public XxlRpcSpringProviderFactory xxlRpcSpringProviderFactory() {
 
 ProviderFactory 参数 | 说明
 --- | ---
-netType | 服务通讯方案，可选范围：NETTY（默认）、MINA、JETTY； 
+netType | 服务通讯方案，可选范围：NETTY（默认）、MINA、NETTY_HTTP、JETTY； 
 serialize | 序列化方案，可选范围: HESSIAN（默认）、HESSIAN1、PROTOSTUFF、JSON；
 ip |  服务方IP，为空自动获取机器IP，支持手动指定；
 port | 服务方端口，默认 7080 
@@ -213,7 +213,7 @@ UserDTO user = demoService.sayHi(name);
 
 “@XxlRpcReference” 注解参数 | 说明
 --- | ---
-netType | 服务通讯方案，可选范围：NETTY（默认）、MINA、JETTY； 
+netType | 服务通讯方案，可选范围：NETTY（默认）、MINA、NETTY_HTTP、JETTY； 
 serializer | 序列化方案，可选范围: HESSIAN（默认）、HESSIAN1、PROTOSTUFF、JSON；
 address | 服务远程地址，ip:port 格式；选填；非空时将会优先实用该服务地址，为空时会从注册中心服务地址发现；
 accessToken | 服务鉴权Token，非空时生效；
@@ -353,12 +353,13 @@ XXL-RPC中每个服务在zookeeper中对应一个节点，如图"iface name"节�
 服务提供方新增 "/services" 服务目录功能，可查看在线服务列表；暂时仅针对JETTY通讯方案，浏览器访问地址 "{端口地址}/services" 即可。
 
 ### 4.9 如何切换“通讯方案”选型
-XXL-RPC提供多中通讯方案：支持 TCP 和 HTTP 两种通讯方式进行服务调用；其中 TCP 提供可选方案 NETTY 或 MINA ，HTTP 提供可选方案 Jetty；
+XXL-RPC提供多中通讯方案：支持 TCP 和 HTTP 两种通讯方式进行服务调用；其中 TCP 提供可选方案 NETTY 或 MINA ，HTTP 提供可选方案 NETTY_HTTP 或 Jetty；
 
 如果需要切换XXL-RPC“通讯方案”，只需要执行以下两个步骤即可：
 - a、引入通讯依赖包，排除掉其他方案依赖，各方案依赖如下：
     - NETTY：依赖 netty-all + commons-pool2；
     - MINA：依赖 mina-core + commons-pool2；
+    - NETTY_HTTP：依赖 netty-all + commons-pool2；
     - JETTY：依赖 jetty-server + jetty-client；
 - b、修改通讯枚举，需要同时在“服务方”与“消费方”两端一同修改，通讯枚举属性代码位置如下：
     - 服务工厂 "XxlRpcSpringProviderFactory.netType" ：可参考springboot示例组件初始化代码；
@@ -458,9 +459,12 @@ XXL-RPC的注册中心，是一个可选组件，不强制依赖；支持服务�
 
 
 ### 5.7 版本 v1.3.2 Release Notes[迭代中]
-- 1、[迭代中]限流：滑动窗口方式单机限流，双向限流；
-- 2、[迭代中]泛化调用；
-- 3、RPC请求路由时空地址处理优化；
+- 1、RPC请求路由时空地址处理优化；
+- 2、新增通讯方案 "NETTY_HTTP"；
+- 3、[迭代中]tpc连接池取消，改为单一长连接，移除commons-pool2依赖；
+- 4、[迭代中]限流：滑动窗口方式单机限流，双向限流；
+- 5、[迭代中]泛化调用；
+
 
 ### TODO
 - 提高系统可用性，以部分功能暂时不可达为代价，防止服务整体缓慢或雪崩
@@ -491,13 +495,8 @@ XXL-RPC的注册中心，是一个可选组件，不强制依赖；支持服务�
 - 接入方配置方式优化，provider与invoker配置合并至新组建；
 - 新增 appname 属性，为后续服务 trace 做准备；
 - 新增 nutz 类型示例项目;
-- rpc通讯：通讯精简，仅保留最优原型，待考虑
-    - tcp：netty，注释mina，移除pool，主备长连；
-    - http：netty-http，注释jetty，handler精简便于mvc；
-    - 新增：
-        - netty-http：
-        - sample-http：native-http-client + mvc/servlet-server;
-
+- 新增通讯方案 http2，可选参考 netty_http2、jetty_http2；
+    
 
 ## 六、其他
 
