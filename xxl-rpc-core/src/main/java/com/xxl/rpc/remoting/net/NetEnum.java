@@ -23,7 +23,9 @@ public enum NetEnum {
 
 	JETTY(JettyServer.class, JettyClient.class),
 
-	NETTY_HTTP(NettyHttpServer.class, NettyHttpClient.class);
+	NETTY_HTTP(NettyHttpServer.class, NettyHttpClient.class),
+
+    SERVLET_HTTP(null, null);	// todo
 
 
 	public final Class<? extends Server> serverClass;
