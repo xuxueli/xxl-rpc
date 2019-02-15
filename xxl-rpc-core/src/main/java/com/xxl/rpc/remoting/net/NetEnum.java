@@ -8,7 +8,6 @@ import com.xxl.rpc.remoting.net.impl.netty.client.NettyClient;
 import com.xxl.rpc.remoting.net.impl.netty.server.NettyServer;
 import com.xxl.rpc.remoting.net.impl.netty_http.client.NettyHttpClient;
 import com.xxl.rpc.remoting.net.impl.netty_http.server.NettyHttpServer;
-import com.xxl.rpc.remoting.net.impl.servlet.server.ServletServer;
 
 /**
  * remoting net
@@ -27,12 +26,6 @@ public enum NetEnum {
 	 * netty http server
 	 */
 	NETTY_HTTP(NettyHttpServer.class, NettyHttpClient.class),
-
-	/**
-	 * servlet no server, reuse servlet container web server
-	 */
-    SERVLET_HTTP(ServletServer.class, NettyHttpClient.class),
-
 
 	/**
 	 * mina tcp server

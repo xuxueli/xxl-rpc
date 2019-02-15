@@ -1,6 +1,5 @@
 package com.xxl.rpc.remoting.net.impl.servlet.server;
 
-import com.xxl.rpc.remoting.net.Server;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import com.xxl.rpc.remoting.provider.XxlRpcProviderFactory;
@@ -16,19 +15,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class ServletServer extends Server {
-    private static Logger logger = LoggerFactory.getLogger(ServletServer.class);
+public class ServletServerHandler {
+    private static Logger logger = LoggerFactory.getLogger(ServletServerHandler.class);
 
     private XxlRpcProviderFactory xxlRpcProviderFactory;
-
-    @Override
-    public void start(XxlRpcProviderFactory xxlRpcProviderFactory) throws Exception {
+    public ServletServerHandler(XxlRpcProviderFactory xxlRpcProviderFactory) {
         this.xxlRpcProviderFactory = xxlRpcProviderFactory;
-    }
-
-    @Override
-    public void stop() throws Exception {
-        //
     }
 
     /**
