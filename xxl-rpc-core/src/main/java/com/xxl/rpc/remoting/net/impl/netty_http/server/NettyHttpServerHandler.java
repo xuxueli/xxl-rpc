@@ -116,7 +116,7 @@ public class NettyHttpServerHandler extends ChannelInboundHandlerAdapter {
      */
     private void writeResponse(ChannelHandlerContext ctx, HttpRequest request, byte[] responseBytes){
         FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(responseBytes));
-        response.headers().set(CONTENT_TYPE, "text/html");       // "text/plain"    // HttpHeaderValues.TEXT_PLAIN.toString()
+        response.headers().set(CONTENT_TYPE, "text/html;charset=UTF-8");       // HttpHeaderValues.TEXT_PLAIN.toString()
         response.headers().set(CONTENT_LENGTH, response.content().readableBytes());
         if (HttpUtil.isKeepAlive(request)) {
             response.headers().set(CONNECTION, HttpHeaderValues.KEEP_ALIVE.toString());
