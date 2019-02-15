@@ -9,6 +9,7 @@ import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -73,9 +74,18 @@ public abstract class ClientPooled {
             }
 
             // parse address
-            Object[] array = IpUtil.parseIpPort(address);
-            String host = (String) array[0];
-            int port = (int) array[1];
+            String host = null;
+            int port = 0;
+            if (address.contains("//")) {
+                URL url = new URL(address);
+                host = url.getHost();
+                port = url.getPort()>-1?url.getPort():80;
+            } else {
+                Object[] array = IpUtil.parseIpPort(address);
+                host = (String) array[0];
+                port = (int) array[1];
+            }
+
 
             // set pool
             clientPool = new GenericObjectPool<ClientPooled>(new ClientPoolFactory(clientPoolImpl, host, port, serializer, xxlRpcInvokerFactory));
