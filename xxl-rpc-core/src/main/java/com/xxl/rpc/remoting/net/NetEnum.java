@@ -29,7 +29,7 @@ public enum NetEnum {
 	NETTY_HTTP(NettyHttpServer.class, NettyHttpClient.class),
 
 	/**
-	 * servlet http, no server
+	 * servlet no server, reuse servlet container web server
 	 */
     SERVLET_HTTP(ServletServer.class, NettyHttpClient.class),
 
