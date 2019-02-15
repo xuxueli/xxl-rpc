@@ -29,7 +29,7 @@ public class NettyHttpClientHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         //super.exceptionCaught(ctx, cause);
-        logger.error(">>>>>>>>>>> xxl-rpc netty client caught exception", cause);
+        logger.error(">>>>>>>>>>> xxl-rpc netty_http client caught exception", cause);
         ctx.close();
     }
 

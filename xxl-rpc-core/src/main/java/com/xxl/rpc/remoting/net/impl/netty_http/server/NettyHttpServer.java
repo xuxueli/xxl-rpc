@@ -58,7 +58,7 @@ public class NettyHttpServer extends Server  {
                                     ch.pipeline().addLast(new HttpRequestDecoder());
                                     ch.pipeline().addLast(new NettyHttpServerHandler(xxlRpcProviderFactory, serverHandlerPool));
                                 }
-                            }).option(ChannelOption.SO_BACKLOG, 128)
+                            })
                             .childOption(ChannelOption.SO_KEEPALIVE, true);
 
                     // bind
