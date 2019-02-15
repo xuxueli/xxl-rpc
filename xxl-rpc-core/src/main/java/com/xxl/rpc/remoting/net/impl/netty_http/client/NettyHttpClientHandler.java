@@ -8,6 +8,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,10 +42,10 @@ public class NettyHttpClientHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 
-        if (!(msg instanceof HttpContent)) {
+        if(! (msg instanceof FullHttpResponse)){
             return;
         }
-        if (msg instanceof HttpContent) {
+        if (msg instanceof FullHttpResponse) {
             final HttpContent content = (HttpContent) msg;
 
             // response parse

@@ -37,6 +37,7 @@ public class NettyHttpPooledClient extends ClientPooled  {
                         channel.pipeline()
                                 .addLast(new HttpResponseDecoder())
                                 .addLast(new HttpRequestEncoder())
+                                .addLast(new HttpObjectAggregator(10*1024*1024))
                                 .addLast(new NettyHttpClientHandler(xxlRpcInvokerFactory, serializer));
                     }
                 })
