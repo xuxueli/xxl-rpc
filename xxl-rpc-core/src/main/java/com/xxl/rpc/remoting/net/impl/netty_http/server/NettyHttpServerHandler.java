@@ -76,7 +76,7 @@ public class NettyHttpServerHandler extends ChannelInboundHandlerAdapter {
                 ByteBuf byteBuf = httpRequest.content();
                 //String requestStr = byteBuf.toString(io.netty.util.CharsetUtil.UTF_8);
                 byte[] requestBytes = ByteBufUtil.getBytes(byteBuf);
-                byteBuf.release();
+                //byteBuf.release();
 
                 if (requestBytes.length == 0) {
                     throw new XxlRpcException("xxl-rpc request data empty.");
@@ -106,6 +106,8 @@ public class NettyHttpServerHandler extends ChannelInboundHandlerAdapter {
 
             // response-write
             writeResponse(ctx, httpRequest, responseBytes);
+        } finally {
+            httpRequest.release();
         }
 
     }
