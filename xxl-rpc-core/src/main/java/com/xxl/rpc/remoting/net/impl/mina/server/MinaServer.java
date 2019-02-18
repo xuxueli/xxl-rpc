@@ -6,7 +6,7 @@ import com.xxl.rpc.remoting.net.impl.mina.codec.MinaEncoder;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import com.xxl.rpc.remoting.provider.XxlRpcProviderFactory;
-import com.xxl.rpc.util.XxlRpcException;
+import com.xxl.rpc.util.ThreadPoolUtil;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolCodecFactory;
@@ -18,7 +18,8 @@ import org.apache.mina.transport.socket.SocketSessionConfig;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 
 import java.net.InetSocketAddress;
-import java.util.concurrent.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * mina rpc server
@@ -37,24 +38,7 @@ public class MinaServer extends Server {
 			public void run() {
 
 				// param
-				final ThreadPoolExecutor serverHandlerPool = new ThreadPoolExecutor(
-						60,
-						300,
-						60L,
-						TimeUnit.SECONDS,
-						new LinkedBlockingQueue<Runnable>(1000),
-						new ThreadFactory() {
-							@Override
-							public Thread newThread(Runnable r) {
-								return new Thread(r, "xxl-rpc, MinaServer-serverHandlerPool-" + r.hashCode());
-							}
-						},
-						new RejectedExecutionHandler() {
-							@Override
-							public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
-								throw new XxlRpcException("xxl-rpc MinaServer Thread pool is EXHAUSTED!");
-							}
-						});		// default maxThreads 300, minThreads 60
+				final ThreadPoolExecutor serverHandlerPool = ThreadPoolUtil.makeServerThreadPool(MinaServer.class.getSimpleName());
 				NioSocketAcceptor acceptor = new NioSocketAcceptor();
 
 				try {

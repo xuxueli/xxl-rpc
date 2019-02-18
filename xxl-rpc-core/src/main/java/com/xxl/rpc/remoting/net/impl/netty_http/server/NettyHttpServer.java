@@ -2,7 +2,7 @@ package com.xxl.rpc.remoting.net.impl.netty_http.server;
 
 import com.xxl.rpc.remoting.net.Server;
 import com.xxl.rpc.remoting.provider.XxlRpcProviderFactory;
-import com.xxl.rpc.util.XxlRpcException;
+import com.xxl.rpc.util.ThreadPoolUtil;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -15,7 +15,7 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
 
-import java.util.concurrent.*;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class NettyHttpServer extends Server  {
 
@@ -30,24 +30,7 @@ public class NettyHttpServer extends Server  {
             public void run() {
 
                 // param
-                final ThreadPoolExecutor serverHandlerPool = new ThreadPoolExecutor(
-                        60,
-                        300,
-                        60L,
-                        TimeUnit.SECONDS,
-                        new LinkedBlockingQueue<Runnable>(1000),
-                        new ThreadFactory() {
-                            @Override
-                            public Thread newThread(Runnable r) {
-                                return new Thread(r, "xxl-rpc, NettyHttpServer-serverHandlerPool-" + r.hashCode());
-                            }
-                        },
-                        new RejectedExecutionHandler() {
-                            @Override
-                            public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
-                                throw new XxlRpcException("xxl-rpc NettyHttpServer Thread pool is EXHAUSTED!");
-                            }
-                        });		// default maxThreads 300, minThreads 60
+                final ThreadPoolExecutor serverHandlerPool = ThreadPoolUtil.makeServerThreadPool(NettyHttpServer.class.getSimpleName());
                 EventLoopGroup bossGroup = new NioEventLoopGroup();
                 EventLoopGroup workerGroup = new NioEventLoopGroup();
 

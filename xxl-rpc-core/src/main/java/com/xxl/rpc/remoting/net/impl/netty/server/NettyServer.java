@@ -6,14 +6,17 @@ import com.xxl.rpc.remoting.net.impl.netty.codec.NettyEncoder;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import com.xxl.rpc.remoting.provider.XxlRpcProviderFactory;
-import com.xxl.rpc.util.XxlRpcException;
+import com.xxl.rpc.util.ThreadPoolUtil;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.*;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
-import java.util.concurrent.*;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * netty rpc server
@@ -32,24 +35,7 @@ public class NettyServer extends Server {
 			public void run() {
 
 				// param
-				final ThreadPoolExecutor serverHandlerPool = new ThreadPoolExecutor(
-						60,
-						300,
-						60L,
-						TimeUnit.SECONDS,
-						new LinkedBlockingQueue<Runnable>(1000),
-						new ThreadFactory() {
-							@Override
-							public Thread newThread(Runnable r) {
-								return new Thread(r, "xxl-rpc, NettyServer-serverHandlerPool-" + r.hashCode());
-							}
-						},
-						new RejectedExecutionHandler() {
-							@Override
-							public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
-								throw new XxlRpcException("xxl-rpc NettyServer Thread pool is EXHAUSTED!");
-							}
-						});		// default maxThreads 300, minThreads 60
+				final ThreadPoolExecutor serverHandlerPool = ThreadPoolUtil.makeServerThreadPool(NettyServer.class.getSimpleName());
 				EventLoopGroup bossGroup = new NioEventLoopGroup();
 				EventLoopGroup workerGroup = new NioEventLoopGroup();
 
