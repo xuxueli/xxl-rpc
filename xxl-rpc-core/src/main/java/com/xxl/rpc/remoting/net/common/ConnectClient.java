@@ -41,10 +41,6 @@ public abstract class ConnectClient {
         ConnectClient clientPool = ConnectClient.getPool(address, connectClientImpl, xxlRpcReferenceBean);
 
         try {
-            if (!clientPool.isValidate()) {
-
-            }
-
             // do invoke
             clientPool.send(xxlRpcRequest);
         } catch (Exception e) {
@@ -82,6 +78,13 @@ public abstract class ConnectClient {
 
         // get pool
         ConnectClient connectClient = connectClientMap.get(address);
+
+        if (connectClient!=null && !connectClient.isValidate()) {
+            connectClient.close();
+            connectClient = null;
+            connectClientMap.remove(address);
+        }
+
         if (connectClient != null) {
             return connectClient;
         }
