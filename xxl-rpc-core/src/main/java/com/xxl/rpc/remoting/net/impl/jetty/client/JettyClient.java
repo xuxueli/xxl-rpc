@@ -18,8 +18,6 @@ import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
 import java.util.concurrent.TimeUnit;
 
-//import com.xxl.rpc.registry.ZkServiceDiscovery;
-
 /**
  * jetty client
  *
