@@ -15,10 +15,7 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
 
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public class NettyHttpServer extends Server  {
 
@@ -39,6 +36,12 @@ public class NettyHttpServer extends Server  {
                         60L,
                         TimeUnit.SECONDS,
                         new LinkedBlockingQueue<Runnable>(1000),
+                        new ThreadFactory() {
+                            @Override
+                            public Thread newThread(Runnable r) {
+                                return new Thread(r, "xxl-rpc, NettyHttpServer-serverHandlerPool-" + r.hashCode());
+                            }
+                        },
                         new RejectedExecutionHandler() {
                             @Override
                             public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {

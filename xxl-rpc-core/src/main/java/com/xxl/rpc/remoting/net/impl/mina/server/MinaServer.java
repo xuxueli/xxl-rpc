@@ -43,6 +43,12 @@ public class MinaServer extends Server {
 						60L,
 						TimeUnit.SECONDS,
 						new LinkedBlockingQueue<Runnable>(1000),
+						new ThreadFactory() {
+							@Override
+							public Thread newThread(Runnable r) {
+								return new Thread(r, "xxl-rpc, MinaServer-serverHandlerPool-" + r.hashCode());
+							}
+						},
 						new RejectedExecutionHandler() {
 							@Override
 							public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {

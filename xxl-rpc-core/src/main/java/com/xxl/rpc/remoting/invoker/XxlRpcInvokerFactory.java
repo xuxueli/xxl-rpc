@@ -156,6 +156,12 @@ public class XxlRpcInvokerFactory {
                             60L,
                             TimeUnit.SECONDS,
                             new LinkedBlockingQueue<Runnable>(1000),
+                            new ThreadFactory() {
+                                @Override
+                                public Thread newThread(Runnable r) {
+                                    return new Thread(r, "xxl-rpc, XxlRpcInvokerFactory-responseCallbackThreadPool-" + r.hashCode());
+                                }
+                            },
                             new RejectedExecutionHandler() {
                                 @Override
                                 public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
