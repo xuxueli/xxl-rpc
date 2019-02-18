@@ -1,21 +1,18 @@
 package com.xxl.rpc.remoting.net.impl.netty_http.client;
 
 import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
-import com.xxl.rpc.remoting.net.impl.netty.client.NettyClientHandler;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import com.xxl.rpc.serialize.Serializer;
-import io.netty.buffer.ByteBuf;
+import com.xxl.rpc.util.XxlRpcException;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpResponse;
-import io.netty.handler.codec.http.HttpContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class NettyHttpClientHandler extends ChannelInboundHandlerAdapter {
-
-    private static final Logger logger = LoggerFactory.getLogger(NettyClientHandler.class);
+public class NettyHttpClientHandler extends SimpleChannelInboundHandler<FullHttpResponse> {
+    private static final Logger logger = LoggerFactory.getLogger(NettyHttpClientHandler.class);
 
 
     private XxlRpcInvokerFactory xxlRpcInvokerFactory;
@@ -33,33 +30,29 @@ public class NettyHttpClientHandler extends ChannelInboundHandlerAdapter {
         ctx.close();
     }
 
-    @Override
+    /*@Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         // retry
         super.channelInactive(ctx);
-    }
+    }*/
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, FullHttpResponse msg) throws Exception {
 
-        if(! (msg instanceof FullHttpResponse)){
-            return;
+        // response parse
+        byte[] responseBytes = ByteBufUtil.getBytes(msg.content());
+
+        // valid
+        if (responseBytes.length == 0) {
+            throw new XxlRpcException("xxl-rpc request data empty.");
         }
-        if (msg instanceof FullHttpResponse) {
-            final HttpContent content = (HttpContent) msg;
 
-            // response parse
-            ByteBuf byteBuf = content.content();
-            //String requestStr = byteBuf.toString(io.netty.util.CharsetUtil.UTF_8);
-            byte[] responseBytes = ByteBufUtil.getBytes(byteBuf);
-            byteBuf.release();
+        // response deserialize
+        XxlRpcResponse xxlRpcResponse = (XxlRpcResponse) serializer.deserialize(responseBytes, XxlRpcResponse.class);
 
-            XxlRpcResponse xxlRpcResponse = (XxlRpcResponse) serializer.deserialize(responseBytes, XxlRpcResponse.class);
-
-            // notify response
-            xxlRpcInvokerFactory.notifyInvokerFuture(xxlRpcResponse.getRequestId(), xxlRpcResponse);
-
-        }
+        // notify response
+        xxlRpcInvokerFactory.notifyInvokerFuture(xxlRpcResponse.getRequestId(), xxlRpcResponse);
 
     }
+
 }
