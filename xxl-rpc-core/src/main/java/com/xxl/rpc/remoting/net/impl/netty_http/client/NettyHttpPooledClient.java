@@ -47,9 +47,10 @@ public class NettyHttpPooledClient extends ClientPooled  {
                     @Override
                     public void initChannel(SocketChannel channel) throws Exception {
                         channel.pipeline()
-                                .addLast(new HttpResponseDecoder())
-                                .addLast(new HttpRequestEncoder())
-                                .addLast(new HttpObjectAggregator(10*1024*1024))
+                                /*.addLast(new HttpResponseDecoder())
+                                .addLast(new HttpRequestEncoder())*/
+                                .addLast(new HttpClientCodec())
+                                .addLast(new HttpObjectAggregator(5*1024*1024))
                                 .addLast(new NettyHttpClientHandler(xxlRpcInvokerFactory, serializer));
                     }
                 })
