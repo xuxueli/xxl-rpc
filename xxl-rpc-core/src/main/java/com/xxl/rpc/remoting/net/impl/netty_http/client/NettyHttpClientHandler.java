@@ -24,19 +24,6 @@ public class NettyHttpClientHandler extends SimpleChannelInboundHandler<FullHttp
 
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        //super.exceptionCaught(ctx, cause);
-        logger.error(">>>>>>>>>>> xxl-rpc netty_http client caught exception", cause);
-        ctx.close();
-    }
-
-    /*@Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        // retry
-        super.channelInactive(ctx);
-    }*/
-
-    @Override
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpResponse msg) throws Exception {
 
         // response parse
@@ -54,5 +41,19 @@ public class NettyHttpClientHandler extends SimpleChannelInboundHandler<FullHttp
         xxlRpcInvokerFactory.notifyInvokerFuture(xxlRpcResponse.getRequestId(), xxlRpcResponse);
 
     }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        //super.exceptionCaught(ctx, cause);
+        logger.error(">>>>>>>>>>> xxl-rpc netty_http client caught exception", cause);
+        ctx.close();
+    }
+
+    /*@Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        // retry
+        super.channelInactive(ctx);
+    }*/
+
 
 }

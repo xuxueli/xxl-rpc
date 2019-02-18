@@ -23,16 +23,17 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<XxlRpcRespon
 
 
 	@Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-    	logger.error(">>>>>>>>>>> xxl-rpc netty client caught exception", cause);
-        ctx.close();
-    }
-
-	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, XxlRpcResponse xxlRpcResponse) throws Exception {
 
 		// notify response
 		xxlRpcInvokerFactory.notifyInvokerFuture(xxlRpcResponse.getRequestId(), xxlRpcResponse);
 	}
+
+	@Override
+	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+		logger.error(">>>>>>>>>>> xxl-rpc netty client caught exception", cause);
+		ctx.close();
+	}
+
 
 }
