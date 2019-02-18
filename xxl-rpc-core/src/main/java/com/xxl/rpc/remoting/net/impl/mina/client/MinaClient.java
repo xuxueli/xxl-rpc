@@ -2,8 +2,7 @@ package com.xxl.rpc.remoting.net.impl.mina.client;
 
 import com.xxl.rpc.remoting.net.Client;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
-import com.xxl.rpc.remoting.net.pool.ClientPooled;
-import org.apache.commons.pool2.impl.GenericObjectPool;
+import com.xxl.rpc.remoting.net.pool.ConnectClient;
 
 /**
  * mina client
@@ -12,29 +11,11 @@ import org.apache.commons.pool2.impl.GenericObjectPool;
  */
 public class MinaClient extends Client {
 
+	private Class<? extends ConnectClient> connectClientImpl = MinaConnectClient.class;
+
 	@Override
 	public void asyncSend(String address, XxlRpcRequest xxlRpcRequest) throws Exception {
-
-		// client pool
-    	GenericObjectPool<ClientPooled> clientPool = ClientPooled.getPool(address, MinaPooledClient.class, xxlRpcReferenceBean.getSerializer(), xxlRpcReferenceBean.getInvokerFactory());
-    	// client proxy
-		ClientPooled clientPoolProxy = null;
-
-		try {
-			// proxy borrow
-			clientPoolProxy = clientPool.borrowObject();
-
-			// do invoke
-			clientPoolProxy.send(xxlRpcRequest);
-		} catch (Exception e) {
-			throw e;
-		} finally{
-			// proxy return
-			if (clientPoolProxy != null) {
-				clientPool.returnObject(clientPoolProxy);
-			}
-		}
-
+		ConnectClient.asyncSend(xxlRpcRequest, address, connectClientImpl, xxlRpcReferenceBean);
 	}
 
 }

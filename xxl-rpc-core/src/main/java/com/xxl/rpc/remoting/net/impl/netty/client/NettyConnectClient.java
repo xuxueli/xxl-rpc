@@ -5,7 +5,7 @@ import com.xxl.rpc.remoting.net.impl.netty.codec.NettyDecoder;
 import com.xxl.rpc.remoting.net.impl.netty.codec.NettyEncoder;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
-import com.xxl.rpc.remoting.net.pool.ClientPooled;
+import com.xxl.rpc.remoting.net.pool.ConnectClient;
 import com.xxl.rpc.serialize.Serializer;
 import com.xxl.rpc.util.IpUtil;
 import io.netty.bootstrap.Bootstrap;
@@ -22,7 +22,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
  *
  * @author xuxueli
  */
-public class NettyPooledClient extends ClientPooled  {
+public class NettyConnectClient extends ConnectClient {
 
 
 	private EventLoopGroup group;
@@ -71,7 +71,6 @@ public class NettyPooledClient extends ClientPooled  {
 		}
 		return false;
 	}
-
 
 	@Override
 	public void close() {

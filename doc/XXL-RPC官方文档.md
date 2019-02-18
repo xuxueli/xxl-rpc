@@ -357,9 +357,9 @@ XXL-RPC提供多中通讯方案：支持 TCP 和 HTTP 两种通讯方式进行�
 
 如果需要切换XXL-RPC“通讯方案”，只需要执行以下两个步骤即可：
 - a、引入通讯依赖包，排除掉其他方案依赖，各方案依赖如下：
-    - NETTY：依赖 netty-all + commons-pool2；
-    - MINA：依赖 mina-core + commons-pool2；
-    - NETTY_HTTP：依赖 netty-all + commons-pool2；
+    - NETTY：依赖 netty-all ；
+    - MINA：依赖 mina-core ；
+    - NETTY_HTTP：依赖 netty-all ；
     - JETTY：依赖 jetty-server + jetty-client；
 - b、修改通讯枚举，需要同时在“服务方”与“消费方”两端一同修改，通讯枚举属性代码位置如下：
     - 服务工厂 "XxlRpcSpringProviderFactory.netType" ：可参考springboot示例组件初始化代码；
@@ -460,9 +460,9 @@ XXL-RPC的注册中心，是一个可选组件，不强制依赖；支持服务�
 
 ### 5.7 版本 v1.3.2 Release Notes[迭代中]
 - 1、RPC请求路由时空地址处理优化；
-- 2、[测试中]新增通讯方案 "NETTY_HTTP"、"SERVLET_HTTP"；
-- 3、[测试中]通讯连接池address参数优化，出IP:PORT格式外兼容支持常规URL格式地址；
-- 4、[迭代中，ING]tpc连接池取消，改为单一长连接，移除commons-pool2依赖；
+- 2、新增通讯方案 "NETTY_HTTP"；
+- 3、通讯连接池address参数优化，出IP:PORT格式外兼容支持常规URL格式地址；
+- 4、[ING]通讯效率优化：TCP连接池取消，改为单一长连接，移除commons-pool2依赖；
 - 5、[迭代中]限流：滑动窗口方式单机限流，双向限流；
 - 6、[迭代中]泛化调用；
 - 7、线程名称优化，便于适配监控快速进行线程定位；

@@ -2,7 +2,7 @@ package com.xxl.rpc.remoting.net.impl.netty_http.client;
 
 import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
-import com.xxl.rpc.remoting.net.pool.ClientPooled;
+import com.xxl.rpc.remoting.net.pool.ConnectClient;
 import com.xxl.rpc.serialize.Serializer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
@@ -18,7 +18,7 @@ import io.netty.handler.codec.http.*;
 import java.net.URI;
 import java.net.URL;
 
-public class NettyHttpPooledClient extends ClientPooled  {
+public class NettyHttpConnectClient extends ConnectClient {
 
     private EventLoopGroup group;
     private Channel channel;

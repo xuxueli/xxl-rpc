@@ -89,20 +89,14 @@
 
 		<!-- ********************** net (default=jetty) ********************** -->
 
-		<!-- netty (+commons-pool2) -->
+		<!-- netty -->
 		<dependency>
 			<groupId>io.netty</groupId>
 			<artifactId>netty-all</artifactId>
 			<version>${netty.version}</version>
 		</dependency>
-		<!-- commons-pool2 -->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-pool2</artifactId>
-			<version>${commons-pool2.version}</version>
-		</dependency>
 
-		<!-- mina (+commons-pool2) -->
+		<!-- mina -->
 		<dependency>
 			<groupId>org.apache.mina</groupId>
 			<artifactId>mina-core</artifactId>

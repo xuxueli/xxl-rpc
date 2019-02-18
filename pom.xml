@@ -33,8 +33,6 @@
 		<mina.version>2.0.19</mina.version>
 		<jetty-server.version>9.2.26.v20180806</jetty-server.version>
 
-		<commons-pool2.version>2.6.0</commons-pool2.version>
-
 
 		<hessian.version>4.0.51</hessian.version>
 
