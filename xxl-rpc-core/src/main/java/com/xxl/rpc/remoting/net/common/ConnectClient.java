@@ -1,4 +1,4 @@
-package com.xxl.rpc.remoting.net.pool;
+package com.xxl.rpc.remoting.net.common;
 
 import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.invoker.reference.XxlRpcReferenceBean;

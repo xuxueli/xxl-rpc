@@ -5,7 +5,7 @@ import com.xxl.rpc.remoting.net.impl.netty.codec.NettyDecoder;
 import com.xxl.rpc.remoting.net.impl.netty.codec.NettyEncoder;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
-import com.xxl.rpc.remoting.net.pool.ConnectClient;
+import com.xxl.rpc.remoting.net.common.ConnectClient;
 import com.xxl.rpc.serialize.Serializer;
 import com.xxl.rpc.util.IpUtil;
 import io.netty.bootstrap.Bootstrap;

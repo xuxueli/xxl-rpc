@@ -2,7 +2,7 @@ package com.xxl.rpc.remoting.net.impl.netty_http.client;
 
 import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
-import com.xxl.rpc.remoting.net.pool.ConnectClient;
+import com.xxl.rpc.remoting.net.common.ConnectClient;
 import com.xxl.rpc.serialize.Serializer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
