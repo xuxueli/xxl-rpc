@@ -11,6 +11,8 @@ public class UserDTO implements Serializable {
     private String name;
     private String word;
 
+    public UserDTO() {
+    }
     public UserDTO(String name, String word) {
         this.name = name;
         this.word = word;

@@ -13,6 +13,8 @@ import java.io.IOException;
 /**
  * kryo serializer
  *
+ *      - Tips：Class Must have no-arg constructor
+ *
  * @author xuxueli 2019-02-19
  */
 public class KryoSerializer extends Serializer {
