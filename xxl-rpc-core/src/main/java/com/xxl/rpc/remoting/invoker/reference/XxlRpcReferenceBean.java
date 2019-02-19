@@ -4,6 +4,7 @@ import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.invoker.call.CallType;
 import com.xxl.rpc.remoting.invoker.call.XxlRpcInvokeCallback;
 import com.xxl.rpc.remoting.invoker.call.XxlRpcInvokeFuture;
+import com.xxl.rpc.remoting.invoker.generic.XxlRpcGenericService;
 import com.xxl.rpc.remoting.invoker.route.LoadBalance;
 import com.xxl.rpc.remoting.net.Client;
 import com.xxl.rpc.remoting.net.NetEnum;
@@ -138,11 +139,38 @@ public class XxlRpcReferenceBean {
 				new InvocationHandler() {
 					@Override
 					public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-						String className = method.getDeclaringClass().getName();
+
+						// method param
+						String className = method.getDeclaringClass().getName();	// iface.getName()
+						String varsion_ = version;
+						String methodName = method.getName();
+						Class<?>[] parameterTypes = method.getParameterTypes();
+						Object[] parameters = args;
+
+						// filter for generic
+						if (className.equals(XxlRpcGenericService.class.getName()) && methodName.equals("invoke")) {
+
+							Class<?>[] paramTypes = null;
+							if (args[3]!=null) {
+								String[] paramTypes_str = (String[]) args[3];
+								if (paramTypes_str.length > 0) {
+									paramTypes = new Class[paramTypes_str.length];
+									for (int i = 0; i < paramTypes_str.length; i++) {
+										paramTypes[i] = Class.forName(paramTypes_str[i]);
+									}
+								}
+							}
+
+							className = (String) args[0];
+							varsion_ = (String) args[1];
+							methodName = (String) args[2];
+							parameterTypes = paramTypes;
+							parameters = (Object[]) args[4];
+						}
 
 						// filter method like "Object.toString()"
-						if (Object.class.getName().equals(className)) {
-							logger.info(">>>>>>>>>>> xxl-rpc proxy class-method not support [{}.{}]", className, method.getName());
+						if (className.equals(Object.class.getName())) {
+							logger.info(">>>>>>>>>>> xxl-rpc proxy class-method not support [{}#{}]", className, methodName);
 							throw new XxlRpcException("xxl-rpc proxy class-method not support");
 						}
 
@@ -151,7 +179,7 @@ public class XxlRpcReferenceBean {
 						if (finalAddress==null || finalAddress.trim().length()==0) {
 							if (invokerFactory!=null && invokerFactory.getServiceRegistry()!=null) {
 								// discovery
-								String serviceKey = XxlRpcProviderFactory.makeServiceKey(iface.getName(), version);
+								String serviceKey = XxlRpcProviderFactory.makeServiceKey(className, varsion_);
 								TreeSet<String> addressSet = invokerFactory.getServiceRegistry().discovery(serviceKey);
 								// load balance
 								if (addressSet==null || addressSet.size()==0) {
@@ -174,9 +202,9 @@ public class XxlRpcReferenceBean {
 	                    xxlRpcRequest.setCreateMillisTime(System.currentTimeMillis());
 	                    xxlRpcRequest.setAccessToken(accessToken);
 	                    xxlRpcRequest.setClassName(className);
-	                    xxlRpcRequest.setMethodName(method.getName());
-	                    xxlRpcRequest.setParameterTypes(method.getParameterTypes());
-	                    xxlRpcRequest.setParameters(args);
+	                    xxlRpcRequest.setMethodName(methodName);
+	                    xxlRpcRequest.setParameterTypes(parameterTypes);
+	                    xxlRpcRequest.setParameters(parameters);
 	                    
 	                    // send
 						if (CallType.SYNC == callType) {

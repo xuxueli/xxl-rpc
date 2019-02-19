@@ -26,6 +26,7 @@ XXL-RPC 是一个分布式服务框架，提供稳定高性能的RPC远程服务
 - 10、容错：服务提供方集群注册时，某个服务节点不可用时将会自动摘除，同时消费方将会移除失效节点将流量分发到其余节点，提高系统容错能力。
 - 11、解决1+1问题：传统分布式通讯一般通过nginx或f5做集群服务的流量负载均衡，每次请求在到达目标服务机器之前都需要经过负载均衡机器，即1+1，这将会把流量放大一倍。而XXL-RPC将会从消费方直达服务提供方，每次请求直达目标机器，从而可以避免上述问题；
 - 12、高兼容性：得益于优良的兼容性与模块化设计，不限制外部框架；除 spring/springboot 环境之外，理论上支持运行在任何Java代码中，甚至main方法直接启动运行；
+- 13、泛化调用：服务调用方不依赖服务方提供的API；
 
 
 ### 1.3 背景
@@ -380,6 +381,24 @@ XXL-RPC的注册中心，是一个可选组件，不强制依赖；支持服务�
     - XxlRpcSpringProviderFactory.serviceRegistryClass：注册中心实现类，可选：XxlRegistryServiceRegistry.class、LocalServiceRegistry.class、ZkServiceRegistry.class
     - XxlRpcSpringProviderFactory.serviceRegistryParam：注册中心启动参数，各种注册中心启动参数不同，可参考其 start 方案了解；
     
+### 4.10 泛化调用
+XXL-RPC 提供 "泛华调用" 支持，服务调用方不依赖服务方提供的API；
+泛化调用通常用于框架集成，比如 "网关平台、跨语言调用、测试平台" 等；
+
+```
+// API方式初始化示例
+XxlRpcGenericService genericService = (XxlRpcGenericService) new XxlRpcReferenceBean(……).getObject();
+
+// 调用示例
+Object result = genericService.invoke(
+    "com.xxl.rpc.sample.server.service.DemoGenericService",
+    null,
+    "findScore",
+    new String[]{"java.lang.String"},
+    new Object[]{"zhagnsan"}
+);
+
+```
 
 
 
@@ -465,7 +484,7 @@ XXL-RPC的注册中心，是一个可选组件，不强制依赖；支持服务�
 - 4、通讯效率优化：TCP连接池取消，改为单一长连接，移除commons-pool2依赖；
 - 5、线程名称优化，便于适配监控快速进行线程定位；
 - 6、新增序列化方案 "KRYO"；
-- 7、[迭代中]泛化调用；
+- 7、泛化调用：服务调用方不依赖服务方提供的API；
 
 
 ### TODO
