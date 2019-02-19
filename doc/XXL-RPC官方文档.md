@@ -386,18 +386,32 @@ XXL-RPC 提供 "泛华调用" 支持，服务调用方不依赖服务方提供�
 泛化调用通常用于框架集成，比如 "网关平台、跨语言调用、测试平台" 等；
 
 ```
-// API方式初始化示例
+// 服务Reference初始化-注解方式示例
+@XxlRpcReference
+private XxlRpcGenericService genericService;
+	
+// 服务Reference初始化-API方式示例
 XxlRpcGenericService genericService = (XxlRpcGenericService) new XxlRpcReferenceBean(……).getObject();
 
-// 调用示例
+// 调用方示例
 Object result = genericService.invoke(
-    "com.xxl.rpc.sample.server.service.DemoGenericService",
-    null,
-    "findScore",
-    new String[]{"java.lang.String"},
-    new Object[]{"zhagnsan"}
-);
+            "com.xxl.rpc.sample.server.service.Demo2Service",
+            null,
+            "sum",
+            new String[]{"int", "int"},
+            new Object[]{1, 2}
+    );
 
+
+// 服务方示例
+public class Demo2ServiceImpl implements Demo2Service {
+
+    @Override
+    public int sum(int a, int b) {
+        return a + b;
+    }
+
+}
 ```
 
 
