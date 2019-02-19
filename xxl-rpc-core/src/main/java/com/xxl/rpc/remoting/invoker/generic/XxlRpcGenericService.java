@@ -11,7 +11,7 @@ public interface XxlRpcGenericService {
      * @param iface                 iface name
      * @param version               iface version
      * @param method                method name
-     * @param parameterTypes        parameter types, limit base type 、Data、Map、List
+     * @param parameterTypes        parameter types, limit base type like "int、java.lang.Integer、java.util.List、java.util.Map ..."
      * @param args
      * @return
      */

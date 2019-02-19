@@ -13,6 +13,7 @@ import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import com.xxl.rpc.remoting.provider.XxlRpcProviderFactory;
 import com.xxl.rpc.serialize.Serializer;
+import com.xxl.rpc.util.ClassUtil;
 import com.xxl.rpc.util.XxlRpcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -156,7 +157,7 @@ public class XxlRpcReferenceBean {
 								if (paramTypes_str.length > 0) {
 									paramTypes = new Class[paramTypes_str.length];
 									for (int i = 0; i < paramTypes_str.length; i++) {
-										paramTypes[i] = Class.forName(paramTypes_str[i]);
+										paramTypes[i] = ClassUtil.resolveClass(paramTypes_str[i]);
 									}
 								}
 							}
