@@ -38,7 +38,7 @@
 
 		<protostuff.version>1.6.0</protostuff.version>
 		<objenesis.version>2.6</objenesis.version>
-
+		<kryo.version>4.0.2</kryo.version>
 		<jackson.version>2.9.7</jackson.version>
 
 

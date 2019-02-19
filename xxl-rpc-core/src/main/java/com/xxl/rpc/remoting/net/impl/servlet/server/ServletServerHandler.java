@@ -15,6 +15,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+/**
+ * servlet
+ *
+ * @author xuxueli 2015-11-24 22:25:15
+ */
 public class ServletServerHandler {
     private static Logger logger = LoggerFactory.getLogger(ServletServerHandler.class);
 

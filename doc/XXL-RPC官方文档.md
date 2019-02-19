@@ -18,7 +18,7 @@ XXL-RPC 是一个分布式服务框架，提供稳定高性能的RPC远程服务
 - 2、服务透明：系统完整的封装了底层通信细节，开发时调用远程服务就像调用本地服务，在提供远程调用能力时不损失本地调用的语义简洁性；
 - 3、多调用方案：支持 SYNC、ONEWAY、FUTURE、CALLBACK 等方案；
 - 4、多通讯方案：支持 TCP 和 HTTP 两种通讯方式进行服务调用；其中 TCP 提供可选方案 NETTY 或 MINA ，HTTP 提供可选方案 NETTY_HTTP 或 Jetty；
-- 5、多序列化方案：支持 HESSIAN、HESSIAN1、PROTOSTUFF、JSON 等方案；
+- 5、多序列化方案：支持 HESSIAN、HESSIAN1、PROTOSTUFF、KRYO、JACKSON 等方案；
 - 6、负载均衡/软负载：提供丰富的负载均衡策略，包括：轮询、随机、LRU、LFU、一致性HASH等；
 - 7、注册中心：可选组件，支持服务注册并动态发现；可选择不启用，直接指定服务提供方机器地址通讯；选择启用时，内置可选方案：“XXL-REGISTRY 轻量级注册中心”（推荐）、“ZK注册中心”、“Local注册中心”等；
 - 8、服务治理：提供服务治理中心，可在线管理注册的服务信息，如服务锁定、禁用等；
@@ -134,7 +134,7 @@ public XxlRpcSpringProviderFactory xxlRpcSpringProviderFactory() {
 ProviderFactory 参数 | 说明
 --- | ---
 netType | 服务通讯方案，可选范围：NETTY（默认）、MINA、NETTY_HTTP、JETTY； 
-serialize | 序列化方案，可选范围: HESSIAN（默认）、HESSIAN1、PROTOSTUFF、JSON；
+serialize | 序列化方案，可选范围: HESSIAN（默认）、HESSIAN1、PROTOSTUFF、KRYO、JACKSON；
 ip |  服务方IP，为空自动获取机器IP，支持手动指定；
 port | 服务方端口，默认 7080 
 accessToken | 服务鉴权Token，非空时生效；
@@ -214,7 +214,7 @@ UserDTO user = demoService.sayHi(name);
 “@XxlRpcReference” 注解参数 | 说明
 --- | ---
 netType | 服务通讯方案，可选范围：NETTY（默认）、MINA、NETTY_HTTP、JETTY； 
-serializer | 序列化方案，可选范围: HESSIAN（默认）、HESSIAN1、PROTOSTUFF、JSON；
+serializer | 序列化方案，可选范围: HESSIAN（默认）、HESSIAN1、PROTOSTUFF、KRYO、JACKSON；
 address | 服务远程地址，ip:port 格式；选填；非空时将会优先实用该服务地址，为空时会从注册中心服务地址发现；
 accessToken | 服务鉴权Token，非空时生效；
 version | 服务版本，默认空；可据此区分同一个“服务API” 的不同版本；
@@ -464,8 +464,9 @@ XXL-RPC的注册中心，是一个可选组件，不强制依赖；支持服务�
 - 3、通讯连接池address参数优化，出IP:PORT格式外兼容支持常规URL格式地址；
 - 4、通讯效率优化：TCP连接池取消，改为单一长连接，移除commons-pool2依赖；
 - 5、线程名称优化，便于适配监控快速进行线程定位；
-- 6、[迭代中]限流：滑动窗口方式单机限流，双向限流；
-- 7、[迭代中]泛化调用；
+- 6、新增序列化方案 "KRYO"；
+- 7、[迭代中]限流：滑动窗口方式单机限流，双向限流；
+- 8、[迭代中]泛化调用；
 
 
 ### TODO
@@ -498,6 +499,7 @@ XXL-RPC的注册中心，是一个可选组件，不强制依赖；支持服务�
 - 新增 appname 属性，为后续服务 trace 做准备；
 - 新增 nutz 类型示例项目;
 - 新增通讯方案 http2，可选参考 netty_http2、jetty_http2；
+- Server/Client失败尽量响应，避免等到到timeout；
     
 
 ## 六、其他

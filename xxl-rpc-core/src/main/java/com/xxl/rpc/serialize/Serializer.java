@@ -1,9 +1,6 @@
 package com.xxl.rpc.serialize;
 
-import com.xxl.rpc.serialize.impl.Hessian1Serializer;
-import com.xxl.rpc.serialize.impl.HessianSerializer;
-import com.xxl.rpc.serialize.impl.JacksonSerializer;
-import com.xxl.rpc.serialize.impl.ProtostuffSerializer;
+import com.xxl.rpc.serialize.impl.*;
 import com.xxl.rpc.util.XxlRpcException;
 
 /**
@@ -24,7 +21,8 @@ public abstract class Serializer {
 		HESSIAN(HessianSerializer.class),
 		HESSIAN1(Hessian1Serializer.class),
 		PROTOSTUFF(ProtostuffSerializer.class),
-		JSON(JacksonSerializer.class);
+		KRYO(KryoSerializer.class),
+		JACKSON(JacksonSerializer.class);
 
 		private Class<? extends Serializer> serializerClass;
 		private SerializeEnum (Class<? extends Serializer> serializerClass) {

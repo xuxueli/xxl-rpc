@@ -19,6 +19,11 @@ import static io.netty.handler.codec.http.HttpHeaders.Names.*;
 import static io.netty.handler.codec.http.HttpResponseStatus.OK;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
+/**
+ * netty_http
+ *
+ * @author xuxueli 2015-11-24 22:25:15
+ */
 public class NettyHttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
     private static final Logger logger = LoggerFactory.getLogger(NettyHttpServerHandler.class);
 

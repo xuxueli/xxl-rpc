@@ -18,6 +18,11 @@ import io.netty.handler.codec.http.*;
 import java.net.URI;
 import java.net.URL;
 
+/**
+ * netty_http
+ *
+ * @author xuxueli 2015-11-24 22:25:15
+ */
 public class NettyHttpConnectClient extends ConnectClient {
 
     private EventLoopGroup group;

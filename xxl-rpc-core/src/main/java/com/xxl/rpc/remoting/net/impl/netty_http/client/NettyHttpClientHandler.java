@@ -11,6 +11,11 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * netty_http
+ *
+ * @author xuxueli 2015-11-24 22:25:15
+ */
 public class NettyHttpClientHandler extends SimpleChannelInboundHandler<FullHttpResponse> {
     private static final Logger logger = LoggerFactory.getLogger(NettyHttpClientHandler.class);
 

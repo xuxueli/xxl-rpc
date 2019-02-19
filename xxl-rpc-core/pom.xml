@@ -31,62 +31,6 @@
 		</dependency>
 
 
-		<!-- ********************** serialize (default=hessian) ********************** -->
-
-		<!-- hessian -->
-		<dependency>
-			<groupId>com.caucho</groupId>
-			<artifactId>hessian</artifactId>
-			<version>${hessian.version}</version>
-		</dependency>
-
-		<!-- protostuff + objenesis (provided) -->
-		<dependency>
-			<groupId>io.protostuff</groupId>
-			<artifactId>protostuff-core</artifactId>
-			<version>${protostuff.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.protostuff</groupId>
-			<artifactId>protostuff-runtime</artifactId>
-			<version>${protostuff.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.objenesis</groupId>
-			<artifactId>objenesis</artifactId>
-			<version>${objenesis.version}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- jackson (provided) -->
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>${jackson.version}</version>
-			<scope>provided</scope>
-		</dependency>
-
-
-		<!-- ********************** registry  (default=xxl-registry) ********************** -->
-
-		<!-- xxl-registry-client -->
-		<dependency>
-			<groupId>com.xuxueli</groupId>
-			<artifactId>xxl-registry-client</artifactId>
-			<version>${xxl-registry.version}</version>
-		</dependency>
-
-		<!-- zookeeper (provided) -->
-        <dependency>
-            <groupId>org.apache.zookeeper</groupId>
-            <artifactId>zookeeper</artifactId>
-            <version>${zookeeper.version}</version>
-			<scope>provided</scope>
-        </dependency>
-
-
 		<!-- ********************** net (default=netty) ********************** -->
 
 		<!-- netty -->
@@ -118,6 +62,71 @@
 			<scope>provided</scope>
 		</dependency>
 
+
+		<!-- ********************** serialize (default=hessian) ********************** -->
+
+		<!-- hessian -->
+		<dependency>
+			<groupId>com.caucho</groupId>
+			<artifactId>hessian</artifactId>
+			<version>${hessian.version}</version>
+		</dependency>
+
+		<!-- protostuff + objenesis (provided) -->
+		<dependency>
+			<groupId>io.protostuff</groupId>
+			<artifactId>protostuff-core</artifactId>
+			<version>${protostuff.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.protostuff</groupId>
+			<artifactId>protostuff-runtime</artifactId>
+			<version>${protostuff.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.objenesis</groupId>
+			<artifactId>objenesis</artifactId>
+			<version>${objenesis.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- kryo (provided) -->
+		<dependency>
+			<groupId>com.esotericsoftware</groupId>
+			<artifactId>kryo</artifactId>
+			<version>${kryo.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- jackson (provided) -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+
+		<!-- ********************** registry  (default=xxl-registry) ********************** -->
+
+		<!-- xxl-registry-client -->
+		<dependency>
+			<groupId>com.xuxueli</groupId>
+			<artifactId>xxl-registry-client</artifactId>
+			<version>${xxl-registry.version}</version>
+		</dependency>
+
+		<!-- zookeeper (provided) -->
+        <dependency>
+            <groupId>org.apache.zookeeper</groupId>
+            <artifactId>zookeeper</artifactId>
+            <version>${zookeeper.version}</version>
+			<scope>provided</scope>
+        </dependency>
+
+
 		<!-- ********************** spring (default=provided) ********************** -->
 
 		<!-- spring -->
@@ -126,18 +135,36 @@
 			<artifactId>spring-beans</artifactId>
 			<version>${spring.version}</version>
 			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
 			<version>${spring.version}</version>
 			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 			<version>${spring.version}</version>
 			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 	</dependencies>

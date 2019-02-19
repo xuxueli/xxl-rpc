@@ -13,10 +13,14 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
-import io.netty.handler.stream.ChunkedWriteHandler;
 
 import java.util.concurrent.ThreadPoolExecutor;
 
+/**
+ * netty_http
+ *
+ * @author xuxueli 2015-11-24 22:25:15
+ */
 public class NettyHttpServer extends Server  {
 
     private Thread thread;
