@@ -29,25 +29,24 @@
 		<junit.version>4.12</junit.version>
 
 
-		<netty.version>4.1.32.Final</netty.version>
+		<netty.version>4.1.33.Final</netty.version>
 		<mina.version>2.0.19</mina.version>
 		<jetty-server.version>9.2.26.v20180806</jetty-server.version>
 
 
-		<hessian.version>4.0.51</hessian.version>
-
+		<hessian.version>4.0.60</hessian.version>
 		<protostuff.version>1.6.0</protostuff.version>
 		<objenesis.version>2.6</objenesis.version>
 		<kryo.version>4.0.2</kryo.version>
-		<jackson.version>2.9.7</jackson.version>
+		<jackson.version>2.9.8</jackson.version>
 
 
 		<xxl-registry.version>1.0.2-SNAPSHOT</xxl-registry.version>
 		<zookeeper.version>3.4.13</zookeeper.version>
 
 
-		<spring.version>4.3.21.RELEASE</spring.version>
-		<spring-boot.version>1.5.18.RELEASE</spring-boot.version>
+		<spring.version>4.3.22.RELEASE</spring.version>
+		<spring-boot.version>1.5.19.RELEASE</spring-boot.version>
 
 	</properties>
 
