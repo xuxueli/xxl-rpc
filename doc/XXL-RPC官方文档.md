@@ -382,8 +382,17 @@ XXL-RPC的注册中心，是一个可选组件，不强制依赖；支持服务�
     - XxlRpcSpringProviderFactory.serviceRegistryParam：注册中心启动参数，各种注册中心启动参数不同，可参考其 start 方案了解；
     
 ### 4.10 泛化调用
-XXL-RPC 提供 "泛华调用" 支持，服务调用方不依赖服务方提供的API；
-泛化调用通常用于框架集成，比如 "网关平台、跨语言调用、测试平台" 等；
+XXL-RPC 提供 "泛华调用" 支持，服务调用方不依赖服务方提供的API；泛化调用通常用于框架集成，比如 "网关平台、跨语言调用、测试平台" 等；
+开启 "泛华调用" 时服务方不需要做任何调整，仅需要调用方初始化一个泛华调用服务Reference （"XxlRpcGenericService"） 即可。
+
+“XxlRpcGenericService#invoke” 请求参数 | 说明
+--- | ---
+String iface | 服务接口类名
+String version | 服务版本
+String method | 服务方法
+String[] parameterTypes | 服务方法形参-类型，如 "int、java.lang.Integer、java.util.List、java.util.Map ..."
+Object[] args | 服务方法形参-数据
+
 
 ```
 // 服务Reference初始化-注解方式示例
@@ -491,14 +500,14 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 11、升级多项pom依赖至较新稳定版本；
 
 
-### 5.7 版本 v1.3.2 Release Notes[迭代中]
-- 1、RPC请求路由时空地址处理优化；
+### 5.7 版本 v1.3.2 Release Notes[TEST]
+- 1、泛化调用：服务调用方不依赖服务方提供的API；
 - 2、新增通讯方案 "NETTY_HTTP"；
-- 3、通讯连接池address参数优化，出IP:PORT格式外兼容支持常规URL格式地址；
+- 3、新增序列化方案 "KRYO"；
 - 4、通讯效率优化：TCP连接池取消，改为单一长连接，移除commons-pool2依赖；
-- 5、线程名称优化，便于适配监控快速进行线程定位；
-- 6、新增序列化方案 "KRYO"；
-- 7、泛化调用：服务调用方不依赖服务方提供的API；
+- 5、RPC请求路由时空地址处理优化；
+- 6、通讯连接池address参数优化，出IP:PORT格式外兼容支持常规URL格式地址；
+- 7、线程名称优化，便于适配监控快速进行线程定位；
 
 
 ### TODO
@@ -523,14 +532,10 @@ public class Demo2ServiceImpl implements Demo2Service {
     - 调用链：
 - rpc filter：方便埋点、监控等；
 - 服务治理实现，服务调用量，成功率，1min上报一次； 
-- 服务泛化调用：
-    - 方案A：服务端不需要定制，客户端借助泛化Service调用；
-    - 方案B：服务端提供泛化开关，开启后每个Service兼容提供HTTP服务，路径为 "{服务地址}/{serviceKey}/methodName"，request/response 均为json格式数据；
 - static代码块移除，进行组件无状态优化，jetty/pool/等；
 - 接入方配置方式优化，provider与invoker配置合并至新组建；
 - 新增 appname 属性，为后续服务 trace 做准备；
 - 新增 nutz 类型示例项目;
-- 新增通讯方案 http2，可选参考 netty_http2、jetty_http2；
 - Server/Client失败尽量响应，避免等到到timeout；
     
 
