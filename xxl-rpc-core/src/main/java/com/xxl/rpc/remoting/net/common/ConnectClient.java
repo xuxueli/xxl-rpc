@@ -49,11 +49,12 @@ public abstract class ConnectClient {
 
     }
 
-    private static ConcurrentHashMap<String, ConnectClient> connectClientMap;        // (static) alread addStopCallBack
+    private static volatile ConcurrentHashMap<String, ConnectClient> connectClientMap;        // (static) alread addStopCallBack
+    private static volatile ConcurrentHashMap<String, Object> connectClientLockMap = new ConcurrentHashMap<>();
     private static ConnectClient getPool(String address, Class<? extends ConnectClient> connectClientImpl,
                                          final XxlRpcReferenceBean xxlRpcReferenceBean) throws Exception {
 
-        // init client-pool-map, avoid repeat init
+        // init base compont, avoid repeat init
         if (connectClientMap == null) {
             synchronized (ConnectClient.class) {
                 if (connectClientMap == null) {
@@ -76,26 +77,32 @@ public abstract class ConnectClient {
             }
         }
 
-        // get pool
+        // get-valid client
         ConnectClient connectClient = connectClientMap.get(address);
-
-        if (connectClient!=null && !connectClient.isValidate()) {
-            connectClient.close();
-            connectClient = null;
-            connectClientMap.remove(address);
-        }
-
-        if (connectClient != null) {
+        if (connectClient!=null && connectClient.isValidate()) {
             return connectClient;
         }
 
-        // make pool, avoid repeat init
-        synchronized (connectClientMap) {
+        // lock
+        Object clientLock = connectClientLockMap.get(address);
+        if (clientLock == null) {
+            connectClientLockMap.putIfAbsent(address, new Object());
+            clientLock = connectClientLockMap.get(address);
+        }
 
-            // re-get pool
+        // remove-create new client
+        synchronized (clientLock) {
+
+            // get-valid client, avlid repeat
             connectClient = connectClientMap.get(address);
-            if (connectClient != null) {
+            if (connectClient!=null && connectClient.isValidate()) {
                 return connectClient;
+            }
+
+            // remove old
+            if (connectClient != null) {
+                connectClient.close();
+                connectClientMap.remove(address);
             }
 
             // set pool
