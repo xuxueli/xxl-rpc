@@ -58,8 +58,8 @@ public class MinaServer extends Server {
 					
 					SocketSessionConfig config = acceptor.getSessionConfig();
 					config.setTcpNoDelay(true);
-					config.setReuseAddress(true);
 					config.setKeepAlive(true);
+					//config.setReuseAddress(true);
 					config.setSoLinger(-1);
 					config.setIdleTime(IdleStatus.BOTH_IDLE, 10);
 					

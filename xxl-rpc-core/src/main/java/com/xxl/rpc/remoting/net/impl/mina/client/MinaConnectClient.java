@@ -1,11 +1,11 @@
 package com.xxl.rpc.remoting.net.impl.mina.client;
 
 import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
+import com.xxl.rpc.remoting.net.common.ConnectClient;
 import com.xxl.rpc.remoting.net.impl.mina.codec.MinaDecoder;
 import com.xxl.rpc.remoting.net.impl.mina.codec.MinaEncoder;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
-import com.xxl.rpc.remoting.net.common.ConnectClient;
 import com.xxl.rpc.serialize.Serializer;
 import com.xxl.rpc.util.IpUtil;
 import org.apache.mina.core.future.ConnectFuture;
@@ -56,8 +56,8 @@ public class MinaConnectClient extends ConnectClient {
 		
 		DefaultSocketSessionConfig sessionConfiguration = (DefaultSocketSessionConfig) connector.getSessionConfig();
 		sessionConfiguration.setTcpNoDelay(true);
-		sessionConfiguration.setReuseAddress(true);
 		sessionConfiguration.setKeepAlive(true);
+		//sessionConfiguration.setReuseAddress(true);
 		sessionConfiguration.setSoLinger(-1);
 
 		ConnectFuture future = connector.connect(new InetSocketAddress(host, port));

@@ -41,7 +41,8 @@ public class NettyHttpServer extends Server  {
                 try {
                     // start server
                     ServerBootstrap bootstrap = new ServerBootstrap();
-                    bootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class)
+                    bootstrap.group(bossGroup, workerGroup)
+                            .channel(NioServerSocketChannel.class)
                             .childHandler(new ChannelInitializer<SocketChannel>() {
                                 @Override
                                 public void initChannel(SocketChannel ch) throws Exception {
@@ -52,7 +53,7 @@ public class NettyHttpServer extends Server  {
                                     ch.pipeline().addLast(new HttpObjectAggregator(5*1024*1024));  // merge request & reponse to FULL
                                     ch.pipeline().addLast(new NettyHttpServerHandler(xxlRpcProviderFactory, serverHandlerPool));
                                 }
-                            }).option(ChannelOption.SO_BACKLOG, 128)
+                            })
                             .childOption(ChannelOption.SO_KEEPALIVE, true);
 
                     // bind
