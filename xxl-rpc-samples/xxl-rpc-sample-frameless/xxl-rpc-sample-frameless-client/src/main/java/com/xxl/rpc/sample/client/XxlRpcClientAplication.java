@@ -68,8 +68,8 @@ public class XxlRpcClientAplication {
 		/*int count = 100;
 		long start = System.currentTimeMillis();
 		for (int i = 0; i < count; i++) {
-			UserDTO userDTO = demoService.sayHi("[SYNC]jack"+i );
-			System.out.println(i + "##" + userDTO.toString());
+			UserDTO userDTO2 = demoService.sayHi("[SYNC]jack"+i );
+			System.out.println(i + "##" + userDTO2.toString());
 		}
 		long end = System.currentTimeMillis();
     	System.out.println("run count:"+ count +", cost:" + (end - start));*/
