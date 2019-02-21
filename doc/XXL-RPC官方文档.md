@@ -500,7 +500,7 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 11、升级多项pom依赖至较新稳定版本；
 
 
-### 5.7 版本 v1.3.2 Release Notes[TEST]
+### 5.7 版本 v1.3.2 Release Notes[2019-02-21]
 - 1、泛化调用：服务调用方不依赖服务方提供的API；
 - 2、新增通讯方案 "NETTY_HTTP"；
 - 3、新增序列化方案 "KRYO"；

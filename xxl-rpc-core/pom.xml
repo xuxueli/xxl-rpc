@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.xuxueli</groupId>
 		<artifactId>xxl-rpc</artifactId>
-		<version>1.3.2-SNAPSHOT</version>
+		<version>1.3.2</version>
 	</parent>
 	<artifactId>xxl-rpc-core</artifactId>
 	<packaging>jar</packaging>
