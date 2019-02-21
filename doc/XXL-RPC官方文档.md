@@ -509,6 +509,9 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 6、通讯连接池address参数优化，出IP:PORT格式外兼容支持常规URL格式地址；
 - 7、线程名称优化，便于适配监控快速进行线程定位；
 
+### 5.8 版本 v1.4.0 Release Notes[ING]
+- [ING]"ConnectClient#clientLock" 优化，复用连接对象；
+- [ING]初始化枚举改为接口实例，方便扩展；
 
 ### TODO
 - 提高系统可用性，以部分功能暂时不可达为代价，防止服务整体缓慢或雪崩
