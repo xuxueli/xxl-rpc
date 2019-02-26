@@ -510,6 +510,7 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 7、线程名称优化，便于适配监控快速进行线程定位；
 
 ### 5.8 版本 v1.4.0 Release Notes[ING]
+- 1、LRU路由更新不及时问题修复；
 - [ING]"ConnectClient#clientLock" 优化，复用连接对象；
 - [ING]初始化枚举改为接口实例，方便扩展；
 

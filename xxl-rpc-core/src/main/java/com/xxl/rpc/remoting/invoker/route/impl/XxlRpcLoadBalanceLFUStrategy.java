@@ -29,9 +29,24 @@ public class XxlRpcLoadBalanceLFUStrategy extends XxlRpcLoadBalance {
             lfuItemMap = new HashMap<String, Integer>();
             jobLfuMap.putIfAbsent(serviceKey, lfuItemMap);   // 避免重复覆盖
         }
+
+        // put new
         for (String address: addressSet) {
             if (!lfuItemMap.containsKey(address) || lfuItemMap.get(address) >1000000 ) {
                 lfuItemMap.put(address, 0);
+            }
+        }
+
+        // remove old
+        List<String> delKeys = new ArrayList<>();
+        for (String existKey: lfuItemMap.keySet()) {
+            if (!addressSet.contains(existKey)) {
+                delKeys.add(existKey);
+            }
+        }
+        if (delKeys.size() > 0) {
+            for (String delKey: delKeys) {
+                lfuItemMap.remove(delKey);
             }
         }
 

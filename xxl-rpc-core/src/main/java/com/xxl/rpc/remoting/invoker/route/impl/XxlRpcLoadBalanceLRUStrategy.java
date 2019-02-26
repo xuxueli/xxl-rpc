@@ -44,10 +44,22 @@ public class XxlRpcLoadBalanceLRUStrategy extends XxlRpcLoadBalance {
             jobLRUMap.putIfAbsent(serviceKey, lruItem);
         }
 
-        // put
+        // put new
         for (String address: addressSet) {
             if (!lruItem.containsKey(address)) {
                 lruItem.put(address, address);
+            }
+        }
+        // remove old
+        List<String> delKeys = new ArrayList<>();
+        for (String existKey: lruItem.keySet()) {
+            if (!addressSet.contains(existKey)) {
+                delKeys.add(existKey);
+            }
+        }
+        if (delKeys.size() > 0) {
+            for (String delKey: delKeys) {
+                lruItem.remove(delKey);
             }
         }
 
