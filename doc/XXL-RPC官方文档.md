@@ -542,6 +542,8 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 新增 nutz 类型示例项目;
 - Server/Client失败尽量响应，避免等到到timeout；
 - 线程隔离：通讯线程池拆分为Fast/Slow两个，针对响应较慢服务方法请求，降级使用Slow线程池；考虑是否可以方法级隔离线程池，避免线程阻塞；
+- rpc时钟参数仅记录，取消时钟校验逻辑；
+- 调用链追踪、监控，熔断，限流，降级；
 
 
 ## 六、其他
