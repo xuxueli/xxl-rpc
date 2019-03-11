@@ -543,7 +543,8 @@ public class Demo2ServiceImpl implements Demo2Service {
 - Server/Client失败尽量响应，避免等到到timeout；
 - 线程隔离：通讯线程池拆分为Fast/Slow两个，针对响应较慢服务方法请求，降级使用Slow线程池；考虑是否可以方法级隔离线程池，避免线程阻塞；
 - rpc时钟参数仅记录，取消时钟校验逻辑；
-- 调用链追踪、监控，熔断，限流，降级；
+- 调用链追踪，监控；结合 xxl-apm 与 xxl-rpc filter共同演进；
+- 限流-熔断-降级，结合xxl-registry与xxl-rpc filter共同演进；
 
 
 ## 六、其他
