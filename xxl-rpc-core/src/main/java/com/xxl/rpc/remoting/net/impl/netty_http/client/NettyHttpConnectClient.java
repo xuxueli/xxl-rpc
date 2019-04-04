@@ -100,9 +100,9 @@ public class NettyHttpConnectClient extends ConnectClient {
     public void send(XxlRpcRequest xxlRpcRequest) throws Exception {
         byte[] requestBytes = serializer.serialize(xxlRpcRequest);
 
-        DefaultFullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.POST, new URI(address).toASCIIString(), Unpooled.wrappedBuffer(requestBytes));
+        DefaultFullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.POST, new URI(address).getRawPath(), Unpooled.wrappedBuffer(requestBytes));
         request.headers().set(HttpHeaderNames.HOST, host);
-        request.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderNames.CONNECTION);
+        request.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
         request.headers().set(HttpHeaderNames.CONTENT_LENGTH, request.content().readableBytes());
 
         this.channel.writeAndFlush(request).sync();
