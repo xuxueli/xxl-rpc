@@ -59,7 +59,7 @@ public class JettyClient extends Client {
         request.content(new BytesContentProvider(requestBytes));
 
         // invoke
-        request.send(new BufferingResponseListener() {
+        request.send(new BufferingResponseListener(5 * 1024 * 1024) {	// maxLength = 5M
 			@Override
 			public void onComplete(Result result) {
 
