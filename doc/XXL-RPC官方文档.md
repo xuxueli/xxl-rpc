@@ -513,6 +513,7 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 1、LRU路由更新不及时问题修复；
 - 2、JettyClient Buffer 默认长度调整为5M；
 - 3、Netty Http客户端配置优化；
+- 4、升级依赖版本，如netty/mina/spring等
 
 
 ### TODO

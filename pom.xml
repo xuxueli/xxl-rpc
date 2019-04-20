@@ -25,13 +25,13 @@
 		<maven.test.skip>true</maven.test.skip>
 
 
-		<slf4j-api.version>1.7.25</slf4j-api.version>
+		<slf4j-api.version>1.7.26</slf4j-api.version>
 		<junit.version>4.12</junit.version>
 
 
-		<netty.version>4.1.33.Final</netty.version>
-		<mina.version>2.0.19</mina.version>
-		<jetty-server.version>9.2.26.v20180806</jetty-server.version>
+		<netty.version>4.1.35.Final</netty.version>
+		<mina.version>2.1.1</mina.version>
+		<jetty-server.version>9.2.27.v20190403</jetty-server.version>
 
 
 		<hessian.version>4.0.60</hessian.version>
@@ -42,12 +42,16 @@
 
 
 		<xxl-registry.version>1.0.2</xxl-registry.version>
-		<zookeeper.version>3.4.13</zookeeper.version>
+		<zookeeper.version>3.4.14</zookeeper.version>
 
 
-		<spring.version>4.3.22.RELEASE</spring.version>
-		<spring-boot.version>1.5.19.RELEASE</spring-boot.version>
+		<spring.version>4.3.23.RELEASE</spring.version>
+		<spring-boot.version>1.5.20.RELEASE</spring-boot.version>
 
+
+		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
+		<maven-javadoc-plugin.version>3.1.0</maven-javadoc-plugin.version>
+		<maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
 	</properties>
 
 	<build>
@@ -87,7 +91,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-source-plugin</artifactId>
-						<version>3.0.1</version>
+						<version>${maven-source-plugin.version}</version>
 						<executions>
 							<execution>
 								<phase>package</phase>
@@ -101,7 +105,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>3.0.1</version>
+						<version>${maven-javadoc-plugin.version}</version>
 						<executions>
 							<execution>
 								<phase>package</phase>
@@ -115,7 +119,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.6</version>
+						<version>${maven-gpg-plugin.version}</version>
 						<configuration>
 							<useAgent>false</useAgent>
 						</configuration>
