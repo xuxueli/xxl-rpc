@@ -515,6 +515,8 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 3、Netty Http客户端配置优化；
 - 4、升级依赖版本，如netty/mina/spring等
 
+### 5.9 版本 v1.4.1 Release Notes[迭代中]
+
 
 ### TODO
 - 提高系统可用性，以部分功能暂时不可达为代价，防止服务整体缓慢或雪崩
