@@ -46,9 +46,6 @@ public class NettyHttpServer extends Server  {
                             .childHandler(new ChannelInitializer<SocketChannel>() {
                                 @Override
                                 public void initChannel(SocketChannel ch) throws Exception {
-                                    /*ch.pipeline().addLast(new HttpResponseEncoder());
-                                    ch.pipeline().addLast(new HttpRequestDecoder());*/
-                                    /*ch.pipeline().addLast(new ChunkedWriteHandler());*/
                                     ch.pipeline().addLast(new HttpServerCodec());
                                     ch.pipeline().addLast(new HttpObjectAggregator(5*1024*1024));  // merge request & reponse to FULL
                                     ch.pipeline().addLast(new NettyHttpServerHandler(xxlRpcProviderFactory, serverHandlerPool));
