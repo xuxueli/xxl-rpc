@@ -3,6 +3,7 @@ package com.xxl.rpc.remoting.net.impl.mina.client;
 import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import org.apache.mina.core.service.IoHandlerAdapter;
+import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,5 +37,19 @@ public class MinaClientHandler extends IoHandlerAdapter {
 		session.closeOnFlush();
 	}
 
+	@Override
+	public void sessionCreated(IoSession session) throws Exception {
+		//super.sessionCreated(session);
+		session.getConfig().setIdleTime(IdleStatus.BOTH_IDLE, 10*60);
+	}
+
+	@Override
+	public void sessionIdle(IoSession session, IdleStatus status) throws Exception {
+		//super.sessionIdle(session, status);
+		if(status == IdleStatus.BOTH_IDLE){
+			session.closeOnFlush();
+			logger.debug(">>>>>>>>>>> xxl-rpc mina client close an idle session.");
+		}
+	}
 
 }
