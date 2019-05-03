@@ -10,6 +10,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
+import io.netty.handler.timeout.IdleStateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -125,8 +126,18 @@ public class NettyHttpServerHandler extends SimpleChannelInboundHandler<FullHttp
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        logger.error(">>>>>>>>>>> xxl-rpc provider netty server caught exception", cause);
+        logger.error(">>>>>>>>>>> xxl-rpc provider netty_http server caught exception", cause);
         ctx.close();
+    }
+
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        if (evt instanceof IdleStateEvent){
+            ctx.channel().close();      // close idle channel
+            logger.debug(">>>>>>>>>>> xxl-rpc provider netty_http server close an idle channel.");
+        } else {
+            super.userEventTriggered(ctx, evt);
+        }
     }
 
 }

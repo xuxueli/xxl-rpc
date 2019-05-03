@@ -14,9 +14,10 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.*;
-
+import io.netty.handler.timeout.IdleStateHandler;
 import java.net.URI;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 /**
  * netty_http
@@ -53,6 +54,7 @@ public class NettyHttpConnectClient extends ConnectClient {
                     @Override
                     public void initChannel(SocketChannel channel) throws Exception {
                         channel.pipeline()
+                                .addLast(new IdleStateHandler(0,0,10, TimeUnit.MINUTES))
                                 .addLast(new HttpClientCodec())
                                 .addLast(new HttpObjectAggregator(5*1024*1024))
                                 .addLast(new NettyHttpClientHandler(xxlRpcInvokerFactory, serializer));

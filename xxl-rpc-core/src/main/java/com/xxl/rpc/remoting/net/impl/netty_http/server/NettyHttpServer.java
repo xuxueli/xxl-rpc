@@ -13,8 +13,9 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
-
+import io.netty.handler.timeout.IdleStateHandler;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * netty_http
@@ -45,10 +46,12 @@ public class NettyHttpServer extends Server  {
                             .channel(NioServerSocketChannel.class)
                             .childHandler(new ChannelInitializer<SocketChannel>() {
                                 @Override
-                                public void initChannel(SocketChannel ch) throws Exception {
-                                    ch.pipeline().addLast(new HttpServerCodec());
-                                    ch.pipeline().addLast(new HttpObjectAggregator(5*1024*1024));  // merge request & reponse to FULL
-                                    ch.pipeline().addLast(new NettyHttpServerHandler(xxlRpcProviderFactory, serverHandlerPool));
+                                public void initChannel(SocketChannel channel) throws Exception {
+                                    channel.pipeline()
+                                            .addLast(new IdleStateHandler(0, 0, 10, TimeUnit.MINUTES))
+                                            .addLast(new HttpServerCodec())
+                                            .addLast(new HttpObjectAggregator(5 * 1024 * 1024))  // merge request & reponse to FULL
+                                            .addLast(new NettyHttpServerHandler(xxlRpcProviderFactory, serverHandlerPool));
                                 }
                             })
                             .childOption(ChannelOption.SO_KEEPALIVE, true);

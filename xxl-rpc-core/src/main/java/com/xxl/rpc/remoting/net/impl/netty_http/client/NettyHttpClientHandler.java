@@ -8,6 +8,7 @@ import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.timeout.IdleStateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,5 +61,14 @@ public class NettyHttpClientHandler extends SimpleChannelInboundHandler<FullHttp
         super.channelInactive(ctx);
     }*/
 
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        if (evt instanceof IdleStateEvent){
+            ctx.channel().close();      // close idle channel
+            logger.debug(">>>>>>>>>>> xxl-rpc netty_http client close an idle channel.");
+        } else {
+            super.userEventTriggered(ctx, evt);
+        }
+    }
 
 }
