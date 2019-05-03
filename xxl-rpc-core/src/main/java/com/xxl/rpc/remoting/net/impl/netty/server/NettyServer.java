@@ -15,8 +15,9 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-
+import io.netty.handler.timeout.IdleStateHandler;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * netty rpc server
@@ -48,6 +49,7 @@ public class NettyServer extends Server {
                                 @Override
                                 public void initChannel(SocketChannel channel) throws Exception {
                                     channel.pipeline()
+                                            .addLast(new IdleStateHandler(0,0,10, TimeUnit.MINUTES))
                                             .addLast(new NettyDecoder(XxlRpcRequest.class, xxlRpcProviderFactory.getSerializer()))
                                             .addLast(new NettyEncoder(XxlRpcResponse.class, xxlRpcProviderFactory.getSerializer()))
                                             .addLast(new NettyServerHandler(xxlRpcProviderFactory, serverHandlerPool));

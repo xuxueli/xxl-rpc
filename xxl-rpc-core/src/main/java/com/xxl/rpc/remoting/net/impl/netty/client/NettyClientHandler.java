@@ -4,6 +4,7 @@ import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.timeout.IdleStateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,5 +36,14 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<XxlRpcRespon
 		ctx.close();
 	}
 
+	@Override
+	public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+		if (evt instanceof IdleStateEvent){
+			ctx.channel().close();      // close idle channel
+			logger.debug(">>>>>>>>>>> xxl-rpc netty client close an idle channel.");
+		} else {
+			super.userEventTriggered(ctx, evt);
+		}
+	}
 
 }
