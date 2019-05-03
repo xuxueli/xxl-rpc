@@ -516,7 +516,8 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 4、升级依赖版本，如netty/mina/spring等
 
 ### 5.9 版本 v1.4.1 Release Notes[迭代中]
-
+- 1、客户端长连优化，修复初始化时服务不可用导致长连冗余创建的问题；
+- [迭代中]超时链接自动销毁；
 
 ### TODO
 - 提高系统可用性，以部分功能暂时不可达为代价，防止服务整体缓慢或雪崩
