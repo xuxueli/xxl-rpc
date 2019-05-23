@@ -515,7 +515,7 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 3、Netty Http客户端配置优化；
 - 4、升级依赖版本，如netty/mina/spring等
 
-### 5.9 版本 v1.4.1 Release Notes[迭代中]
+### 5.9 版本 v1.4.1 Release Notes[2019-05-23]
 - 1、客户端长连优化，修复初始化时服务不可用导致长连冗余创建的问题；
 - 2、升级依赖版本，如netty/mina/jetty/jackson/spring/spring-boot等;
 - 3、空闲链接自动回收：服务端与客户端主动检测空闲链接并回收，及时释放相关资源(netty、mina)；空闲超10min自动释放；
