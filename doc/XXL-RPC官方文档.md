@@ -520,6 +520,9 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 2、升级依赖版本，如netty/mina/jetty/jackson/spring/spring-boot等;
 - 3、空闲链接自动回收：服务端与客户端主动检测空闲链接并回收，及时释放相关资源(netty、mina)；空闲超10min自动释放；
 
+### 5.10 版本 v1.4.2 Release Notes[迭代中]
+
+
 ### TODO
 - 提高系统可用性，以部分功能暂时不可达为代价，防止服务整体缓慢或雪崩
     - 限流=防止负载过高，导致服务雪崩；client、server，双向限流；方法级，QPS限流；在途请求数，流控依据；
