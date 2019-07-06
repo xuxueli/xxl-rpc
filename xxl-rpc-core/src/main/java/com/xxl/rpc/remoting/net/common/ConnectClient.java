@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author xuxueli 2018-10-19
@@ -49,8 +50,8 @@ public abstract class ConnectClient {
 
     }
 
-    private static volatile ConcurrentHashMap<String, ConnectClient> connectClientMap;        // (static) alread addStopCallBack
-    private static volatile ConcurrentHashMap<String, Object> connectClientLockMap = new ConcurrentHashMap<>();
+    private static volatile ConcurrentMap<String, ConnectClient> connectClientMap;        // (static) alread addStopCallBack
+    private static volatile ConcurrentMap<String, Object> connectClientLockMap = new ConcurrentHashMap<>();
     private static ConnectClient getPool(String address, Class<? extends ConnectClient> connectClientImpl,
                                          final XxlRpcReferenceBean xxlRpcReferenceBean) throws Exception {
 

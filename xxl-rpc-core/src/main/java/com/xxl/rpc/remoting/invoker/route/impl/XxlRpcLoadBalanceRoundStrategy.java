@@ -5,6 +5,7 @@ import com.xxl.rpc.remoting.invoker.route.XxlRpcLoadBalance;
 import java.util.Random;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * round
@@ -13,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class XxlRpcLoadBalanceRoundStrategy extends XxlRpcLoadBalance {
 
-    private ConcurrentHashMap<String, Integer> routeCountEachJob = new ConcurrentHashMap<String, Integer>();
+    private ConcurrentMap<String, Integer> routeCountEachJob = new ConcurrentHashMap<String, Integer>();
     private long CACHE_VALID_TIME = 0;
     private int count(String serviceKey) {
         // cache clear
