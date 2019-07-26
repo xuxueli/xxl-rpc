@@ -523,6 +523,7 @@ public class Demo2ServiceImpl implements Demo2Service {
 ### 5.10 版本 v1.4.2 Release Notes[迭代中]
 - 1、代码优化，ConcurrentHashMap变量类型改为ConcurrentMap，避免因不同版本实现不同导致的兼容性问题；
 - 2、Netty Http客户端优化，识别并过滤非法响应数据；
+- 3、升级依赖版本，如netty/mina/hessian/jackson/zookeeper等;
 
 
 ### TODO
