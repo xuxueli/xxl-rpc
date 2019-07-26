@@ -8,6 +8,7 @@ import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.timeout.IdleStateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,12 +33,17 @@ public class NettyHttpClientHandler extends SimpleChannelInboundHandler<FullHttp
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpResponse msg) throws Exception {
 
+        // valid status
+        if (HttpResponseStatus.OK != msg.status()) {
+            throw new XxlRpcException("xxl-rpc response status invalid.");
+        }
+
         // response parse
         byte[] responseBytes = ByteBufUtil.getBytes(msg.content());
 
-        // valid
+        // valid length
         if (responseBytes.length == 0) {
-            throw new XxlRpcException("xxl-rpc request data empty.");
+            throw new XxlRpcException("xxl-rpc response data empty.");
         }
 
         // response deserialize
