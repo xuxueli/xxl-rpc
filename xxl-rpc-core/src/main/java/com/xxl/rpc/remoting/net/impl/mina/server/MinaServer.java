@@ -51,8 +51,7 @@ public class MinaServer extends Server {
 					KeepAliveMessageFactory heartBeatFactory = new KeepAliveMessageFactoryImpl();
 					//心跳超时直接关闭
 					KeepAliveFilter heartBeat = new KeepAliveFilter(heartBeatFactory, IdleStatus.BOTH_IDLE, KeepAliveRequestTimeoutHandler.CLOSE);
-					//设置是否forward到下一个filter
-					/** 是否回发 */
+					//是否回发
 					heartBeat.setForwardEvent(true);
 					//设置心跳频率
 					heartBeat.setRequestInterval(5);
