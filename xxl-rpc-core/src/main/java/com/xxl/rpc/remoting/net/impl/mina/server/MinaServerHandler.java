@@ -90,7 +90,7 @@ public class MinaServerHandler extends IoHandlerAdapter {
 		//super.sessionIdle(session, status);
 		if(status == IdleStatus.BOTH_IDLE){
 			session.closeOnFlush();
-//			logger.debug(">>>>>>>>>>> xxl-rpc provider mina server close an idle session.");
+			logger.debug(">>>>>>>>>>> xxl-rpc provider mina server close an idle session.");
 		}
 	}
 
