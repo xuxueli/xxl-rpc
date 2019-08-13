@@ -34,7 +34,7 @@ public class NettyHttpClientHandler extends SimpleChannelInboundHandler<FullHttp
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpResponse msg) throws Exception {
 
         // valid status
-        if (HttpResponseStatus.OK != msg.status()) {
+        if (!HttpResponseStatus.OK.equals(msg.status())) {
             throw new XxlRpcException("xxl-rpc response status invalid.");
         }
 
