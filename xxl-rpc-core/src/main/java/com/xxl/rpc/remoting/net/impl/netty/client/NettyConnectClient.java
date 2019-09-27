@@ -34,6 +34,7 @@ public class NettyConnectClient extends ConnectClient {
 
     @Override
     public void init(String address, final Serializer serializer, final XxlRpcInvokerFactory xxlRpcInvokerFactory) throws Exception {
+        final NettyConnectClient thisClient = this;
 
         Object[] array = IpUtil.parseIpPort(address);
         String host = (String) array[0];
@@ -48,10 +49,10 @@ public class NettyConnectClient extends ConnectClient {
                     @Override
                     public void initChannel(SocketChannel channel) throws Exception {
                         channel.pipeline()
-                                .addLast(new IdleStateHandler(0,0,Beat.BEAT_INTERVAL, TimeUnit.SECONDS))
+                                .addLast(new IdleStateHandler(0,0,Beat.BEAT_INTERVAL, TimeUnit.SECONDS))    // beat N, close if fail
                                 .addLast(new NettyEncoder(XxlRpcRequest.class, serializer))
                                 .addLast(new NettyDecoder(XxlRpcResponse.class, serializer))
-                                .addLast(new NettyClientHandler(xxlRpcInvokerFactory));
+                                .addLast(new NettyClientHandler(xxlRpcInvokerFactory, thisClient));
                     }
                 })
                 .option(ChannelOption.TCP_NODELAY, true)

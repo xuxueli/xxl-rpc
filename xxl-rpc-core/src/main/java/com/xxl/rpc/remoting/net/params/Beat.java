@@ -7,18 +7,14 @@ package com.xxl.rpc.remoting.net.params;
  */
 public final class Beat {
 
-    public static final int BEAT_INTERVAL = 20;
+    public static final int BEAT_INTERVAL = 30;
     public static final String BEAT_ID = "BEAT_PING_PONG";
 
     public static XxlRpcRequest BEAT_PING;
-    public static XxlRpcResponse BEAT_PONG;
 
     static {
         BEAT_PING = new XxlRpcRequest(){};
         BEAT_PING.setRequestId(BEAT_ID);
-
-        BEAT_PONG = new XxlRpcResponse();
-        BEAT_PONG.setRequestId(BEAT_ID);
     }
 
 }

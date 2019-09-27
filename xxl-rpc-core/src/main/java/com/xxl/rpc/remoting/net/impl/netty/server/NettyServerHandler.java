@@ -71,11 +71,8 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<XxlRpcReques
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (evt instanceof IdleStateEvent){
-            /*ctx.channel().close();      // close idle channel
-            logger.debug(">>>>>>>>>>> xxl-rpc provider netty server close an idle channel.");*/
-
-            ctx.writeAndFlush(Beat.BEAT_PONG).sync();
-            logger.debug(">>>>>>>>>>> xxl-rpc provider netty server send beat-pong.");
+            ctx.channel().close();      // beat 3N, close if idle
+            logger.debug(">>>>>>>>>>> xxl-rpc provider netty server close an idle channel.");
         } else {
             super.userEventTriggered(ctx, evt);
         }
