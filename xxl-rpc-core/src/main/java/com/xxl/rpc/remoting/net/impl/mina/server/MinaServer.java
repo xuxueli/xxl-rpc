@@ -3,7 +3,6 @@ package com.xxl.rpc.remoting.net.impl.mina.server;
 import com.xxl.rpc.remoting.net.Server;
 import com.xxl.rpc.remoting.net.impl.mina.codec.MinaDecoder;
 import com.xxl.rpc.remoting.net.impl.mina.codec.MinaEncoder;
-import com.xxl.rpc.remoting.net.impl.mina.keepalive.KeepAliveMessageFactoryImpl;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import com.xxl.rpc.remoting.provider.XxlRpcProviderFactory;
@@ -15,13 +14,8 @@ import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.ProtocolDecoder;
 import org.apache.mina.filter.codec.ProtocolEncoder;
 import org.apache.mina.filter.executor.ExecutorFilter;
-import org.apache.mina.filter.keepalive.KeepAliveFilter;
-import org.apache.mina.filter.keepalive.KeepAliveMessageFactory;
-import org.apache.mina.filter.keepalive.KeepAliveRequestTimeoutHandler;
 import org.apache.mina.transport.socket.SocketSessionConfig;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
@@ -48,17 +42,32 @@ public class MinaServer extends Server {
 				NioSocketAcceptor acceptor = new NioSocketAcceptor();
 
 				try {
-					KeepAliveMessageFactory heartBeatFactory = new KeepAliveMessageFactoryImpl();
-					//心跳超时直接关闭
-					KeepAliveFilter heartBeat = new KeepAliveFilter(heartBeatFactory, IdleStatus.BOTH_IDLE, KeepAliveRequestTimeoutHandler.CLOSE);
-					//是否回发
+
+					// heartbeat
+					/*KeepAliveFilter heartBeat = new KeepAliveFilter(new KeepAliveMessageFactory() {
+						@Override
+						public boolean isRequest(IoSession ioSession, Object message) {
+							return Beat.BEAT_ID.equalsIgnoreCase(((XxlRpcRequest) message).getRequestId());
+						}
+						@Override
+						public boolean isResponse(IoSession ioSession, Object message) {
+							return Beat.BEAT_ID.equalsIgnoreCase(((XxlRpcResponse) message).getRequestId());
+						}
+						@Override
+						public Object getRequest(IoSession ioSession) {
+							return Beat.BEAT_PING;
+						}
+						@Override
+						public Object getResponse(IoSession ioSession, Object request) {
+							return Beat.BEAT_PONG;
+						}
+					}, IdleStatus.BOTH_IDLE, KeepAliveRequestTimeoutHandler.CLOSE);
 					heartBeat.setForwardEvent(true);
-					//设置心跳频率
-					heartBeat.setRequestInterval(5);
-					heartBeat.setRequestTimeout(10);
-					acceptor.getFilterChain().addLast("heartbeat", heartBeat);
+					heartBeat.setRequestInterval(10);
+					heartBeat.setRequestTimeout(10);*/
 
 					// start server
+					//acceptor.getFilterChain().addLast("heartbeat", heartBeat);
 					acceptor.getFilterChain().addLast("threadPool", new ExecutorFilter(Executors.newCachedThreadPool()));
 					acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(new ProtocolCodecFactory() {
 						@Override
@@ -72,12 +81,12 @@ public class MinaServer extends Server {
 					}));
 					acceptor.setHandler(new MinaServerHandler(xxlRpcProviderFactory, serverHandlerPool));
 
-					SocketSessionConfig config = acceptor.getSessionConfig();
-					config.setTcpNoDelay(true);
-					config.setKeepAlive(true);
+					SocketSessionConfig socketSessionConfig = acceptor.getSessionConfig();
+					socketSessionConfig.setTcpNoDelay(true);
+					socketSessionConfig.setKeepAlive(true);
 					//config.setReuseAddress(true);
-					config.setSoLinger(-1);
-					config.setIdleTime(IdleStatus.BOTH_IDLE, 10);
+					socketSessionConfig.setSoLinger(-1);
+					socketSessionConfig.setIdleTime(IdleStatus.BOTH_IDLE, 60);
 					
 					acceptor.bind(new InetSocketAddress(xxlRpcProviderFactory.getPort()));
 

@@ -2,7 +2,6 @@ package com.xxl.rpc.remoting.net.impl.mina.client;
 
 import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.net.params.Beat;
-import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
@@ -26,25 +25,15 @@ public class MinaClientHandler extends IoHandlerAdapter {
 
 	@Override
 	public void messageReceived(IoSession session, Object message) throws Exception {
-		if (message instanceof XxlRpcResponse){
-			XxlRpcResponse xxlRpcResponse = (XxlRpcResponse) message;
-			if (Beat.BEAT_ID.equalsIgnoreCase(xxlRpcResponse.getRequestId())){
-				return;
-			}
+        XxlRpcResponse xxlRpcResponse = (XxlRpcResponse) message;
 
-			// notify response
-			xxlRpcInvokerFactory.notifyInvokerFuture(xxlRpcResponse.getRequestId(), xxlRpcResponse);
-		}
-		else if (message instanceof XxlRpcRequest){
-			final XxlRpcRequest xxlRpcRequest = (XxlRpcRequest) message;
-			if (Beat.BEAT_ID.equalsIgnoreCase(xxlRpcRequest.getRequestId())){
-				return;
-			}
-			throw new IllegalArgumentException("package IllegalArgument");
-		}
-		else{
-			throw new IllegalArgumentException("package IllegalArgument");
-		}
+        // filter beat
+        if (Beat.BEAT_ID.equalsIgnoreCase(xxlRpcResponse.getRequestId())){
+            return;
+        }
+
+        // notify response
+        xxlRpcInvokerFactory.notifyInvokerFuture(xxlRpcResponse.getRequestId(), xxlRpcResponse);
 	}
 
 	@Override
