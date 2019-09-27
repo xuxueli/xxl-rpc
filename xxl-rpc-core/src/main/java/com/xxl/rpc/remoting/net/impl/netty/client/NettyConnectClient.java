@@ -4,6 +4,7 @@ import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.net.common.ConnectClient;
 import com.xxl.rpc.remoting.net.impl.netty.codec.NettyDecoder;
 import com.xxl.rpc.remoting.net.impl.netty.codec.NettyEncoder;
+import com.xxl.rpc.remoting.net.params.Beat;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import com.xxl.rpc.serialize.Serializer;
@@ -47,7 +48,7 @@ public class NettyConnectClient extends ConnectClient {
                     @Override
                     public void initChannel(SocketChannel channel) throws Exception {
                         channel.pipeline()
-                                .addLast(new IdleStateHandler(0,0,10, TimeUnit.SECONDS))
+                                .addLast(new IdleStateHandler(0,0,Beat.BEAT_INTERVAL, TimeUnit.SECONDS))
                                 .addLast(new NettyEncoder(XxlRpcRequest.class, serializer))
                                 .addLast(new NettyDecoder(XxlRpcResponse.class, serializer))
                                 .addLast(new NettyClientHandler(xxlRpcInvokerFactory));

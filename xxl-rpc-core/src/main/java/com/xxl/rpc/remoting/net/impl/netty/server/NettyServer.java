@@ -3,6 +3,7 @@ package com.xxl.rpc.remoting.net.impl.netty.server;
 import com.xxl.rpc.remoting.net.Server;
 import com.xxl.rpc.remoting.net.impl.netty.codec.NettyDecoder;
 import com.xxl.rpc.remoting.net.impl.netty.codec.NettyEncoder;
+import com.xxl.rpc.remoting.net.params.Beat;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import com.xxl.rpc.remoting.provider.XxlRpcProviderFactory;
@@ -49,7 +50,7 @@ public class NettyServer extends Server {
                                 @Override
                                 public void initChannel(SocketChannel channel) throws Exception {
                                     channel.pipeline()
-                                            .addLast(new IdleStateHandler(0,0,10, TimeUnit.SECONDS))
+                                            .addLast(new IdleStateHandler(0,0, Beat.BEAT_INTERVAL, TimeUnit.SECONDS))
                                             .addLast(new NettyDecoder(XxlRpcRequest.class, xxlRpcProviderFactory.getSerializer()))
                                             .addLast(new NettyEncoder(XxlRpcResponse.class, xxlRpcProviderFactory.getSerializer()))
                                             .addLast(new NettyServerHandler(xxlRpcProviderFactory, serverHandlerPool));

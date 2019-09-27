@@ -6,6 +6,8 @@ package com.xxl.rpc.remoting.net.params;
  * @author xuxueli 2019-09-27
  */
 public final class Beat {
+
+    public static final int BEAT_INTERVAL = 20;
     public static final String BEAT_ID = "BEAT_PING_PONG";
 
     public static XxlRpcRequest BEAT_PING;
