@@ -1,14 +1,13 @@
 package com.xxl.rpc.remoting.net.impl.netty_http.client;
 
 import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
-import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
+import com.xxl.rpc.remoting.net.params.Beat;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import com.xxl.rpc.serialize.Serializer;
 import com.xxl.rpc.util.XxlRpcException;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.timeout.IdleStateEvent;
@@ -26,14 +25,12 @@ public class NettyHttpClientHandler extends SimpleChannelInboundHandler<FullHttp
 
     private XxlRpcInvokerFactory xxlRpcInvokerFactory;
     private Serializer serializer;
-    private DefaultFullHttpRequest beatRequest;
-    public NettyHttpClientHandler(final XxlRpcInvokerFactory xxlRpcInvokerFactory, Serializer serializer,
-                                  DefaultFullHttpRequest beatRequest) {
+    private NettyHttpConnectClient nettyHttpConnectClient;
+    public NettyHttpClientHandler(final XxlRpcInvokerFactory xxlRpcInvokerFactory, Serializer serializer, final NettyHttpConnectClient nettyHttpConnectClient) {
         this.xxlRpcInvokerFactory = xxlRpcInvokerFactory;
         this.serializer = serializer;
-        this.beatRequest = beatRequest;
+        this.nettyHttpConnectClient = nettyHttpConnectClient;
     }
-
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpResponse msg) throws Exception {
@@ -50,12 +47,6 @@ public class NettyHttpClientHandler extends SimpleChannelInboundHandler<FullHttp
         if (responseBytes.length == 0) {
             throw new XxlRpcException("xxl-rpc response data empty.");
         }
-        String decodes = new String(responseBytes);
-        if (decodes.startsWith("<ui><li>")){
-            logger.debug("beat /services  response: {}", decodes);
-            return;
-        }
-
 
         // response deserialize
         XxlRpcResponse xxlRpcResponse = (XxlRpcResponse) serializer.deserialize(responseBytes, XxlRpcResponse.class);
@@ -81,9 +72,11 @@ public class NettyHttpClientHandler extends SimpleChannelInboundHandler<FullHttp
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (evt instanceof IdleStateEvent){
-//            ctx.channel().close();      // close idle channel
-//            logger.debug(">>>>>>>>>>> xxl-rpc netty_http client close an idle channel.");
-            ctx.writeAndFlush(beatRequest).sync();
+            /*ctx.channel().close();      // close idle channel
+            logger.debug(">>>>>>>>>>> xxl-rpc netty_http client close an idle channel.");*/
+
+            nettyHttpConnectClient.send(Beat.BEAT_PING);    // beat N, close if fail(may throw error)
+            logger.debug(">>>>>>>>>>> xxl-rpc netty_http client send beat-ping.");
         } else {
             super.userEventTriggered(ctx, evt);
         }

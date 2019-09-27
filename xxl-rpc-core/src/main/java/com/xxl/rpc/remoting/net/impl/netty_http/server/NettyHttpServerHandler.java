@@ -1,5 +1,6 @@
 package com.xxl.rpc.remoting.net.impl.netty_http.server;
 
+import com.xxl.rpc.remoting.net.params.Beat;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import com.xxl.rpc.remoting.provider.XxlRpcProviderFactory;
@@ -80,6 +81,12 @@ public class NettyHttpServerHandler extends SimpleChannelInboundHandler<FullHttp
                 XxlRpcRequest xxlRpcRequest = (XxlRpcRequest) xxlRpcProviderFactory.getSerializer().deserialize(requestBytes, XxlRpcRequest.class);
                 requestId = xxlRpcRequest.getRequestId();
 
+                // filter beat
+                if (Beat.BEAT_ID.equalsIgnoreCase(xxlRpcRequest.getRequestId())){
+                    logger.debug(">>>>>>>>>>> xxl-rpc provider netty_http server read-beat.");
+                    return;
+                }
+
                 // invoke + response
                 XxlRpcResponse xxlRpcResponse = xxlRpcProviderFactory.invokeService(xxlRpcRequest);
 
@@ -133,9 +140,8 @@ public class NettyHttpServerHandler extends SimpleChannelInboundHandler<FullHttp
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (evt instanceof IdleStateEvent){
-            ctx.channel().close();      // close idle channel
+            ctx.channel().close();      // beat 3N, close if idle
             logger.debug(">>>>>>>>>>> xxl-rpc provider netty_http server close an idle channel.");
-
         } else {
             super.userEventTriggered(ctx, evt);
         }
