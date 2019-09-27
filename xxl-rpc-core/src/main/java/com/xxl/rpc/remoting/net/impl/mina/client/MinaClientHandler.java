@@ -1,6 +1,7 @@
 package com.xxl.rpc.remoting.net.impl.mina.client;
 
 import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
+import com.xxl.rpc.remoting.net.params.Beat;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import org.apache.mina.core.service.IoHandlerAdapter;
@@ -8,8 +9,6 @@ import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static com.xxl.rpc.remoting.net.common.Beat.BEAT_ID;
 
 /**
  * rpc mina handler
@@ -29,7 +28,7 @@ public class MinaClientHandler extends IoHandlerAdapter {
 	public void messageReceived(IoSession session, Object message) throws Exception {
 		if (message instanceof XxlRpcResponse){
 			XxlRpcResponse xxlRpcResponse = (XxlRpcResponse) message;
-			if (BEAT_ID.equalsIgnoreCase(xxlRpcResponse.getRequestId())){
+			if (Beat.BEAT_ID.equalsIgnoreCase(xxlRpcResponse.getRequestId())){
 				return;
 			}
 
@@ -38,7 +37,7 @@ public class MinaClientHandler extends IoHandlerAdapter {
 		}
 		else if (message instanceof XxlRpcRequest){
 			final XxlRpcRequest xxlRpcRequest = (XxlRpcRequest) message;
-			if (BEAT_ID.equalsIgnoreCase(xxlRpcRequest.getRequestId())){
+			if (Beat.BEAT_ID.equalsIgnoreCase(xxlRpcRequest.getRequestId())){
 				return;
 			}
 			throw new IllegalArgumentException("package IllegalArgument");

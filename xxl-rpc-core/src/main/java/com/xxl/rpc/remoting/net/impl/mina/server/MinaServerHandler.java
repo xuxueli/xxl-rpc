@@ -1,5 +1,6 @@
 package com.xxl.rpc.remoting.net.impl.mina.server;
 
+import com.xxl.rpc.remoting.net.params.Beat;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import com.xxl.rpc.remoting.provider.XxlRpcProviderFactory;
@@ -12,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ThreadPoolExecutor;
 
-import static com.xxl.rpc.remoting.net.common.Beat.BEAT_ID;
 
 /**
  * mina server handler
@@ -38,7 +38,7 @@ public class MinaServerHandler extends IoHandlerAdapter {
 		if (message instanceof XxlRpcRequest){
 			// request
 			final XxlRpcRequest xxlRpcRequest = (XxlRpcRequest) message;
-			if (BEAT_ID.equalsIgnoreCase(xxlRpcRequest.getRequestId())){
+			if (Beat.BEAT_ID.equalsIgnoreCase(xxlRpcRequest.getRequestId())){
 				return;
 			}
 			try {
@@ -63,7 +63,7 @@ public class MinaServerHandler extends IoHandlerAdapter {
 		}
 		else if (message instanceof  XxlRpcResponse) {
 			final XxlRpcResponse xxlRpcResponse = (XxlRpcResponse) message;
-			if (BEAT_ID.equalsIgnoreCase(xxlRpcResponse.getRequestId())) {
+			if (Beat.BEAT_ID.equalsIgnoreCase(xxlRpcResponse.getRequestId())) {
 				return;
 			}
 			throw new IllegalArgumentException("package IllegalArgument");
