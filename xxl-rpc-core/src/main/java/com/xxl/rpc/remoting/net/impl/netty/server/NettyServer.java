@@ -49,7 +49,7 @@ public class NettyServer extends Server {
                                 @Override
                                 public void initChannel(SocketChannel channel) throws Exception {
                                     channel.pipeline()
-                                            .addLast(new IdleStateHandler(5,5,10, TimeUnit.SECONDS))
+                                            .addLast(new IdleStateHandler(0,0,10, TimeUnit.SECONDS))
                                             .addLast(new NettyDecoder(XxlRpcRequest.class, xxlRpcProviderFactory.getSerializer()))
                                             .addLast(new NettyEncoder(XxlRpcResponse.class, xxlRpcProviderFactory.getSerializer()))
                                             .addLast(new NettyServerHandler(xxlRpcProviderFactory, serverHandlerPool));

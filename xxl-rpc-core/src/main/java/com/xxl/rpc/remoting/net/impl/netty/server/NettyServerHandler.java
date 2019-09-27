@@ -33,13 +33,15 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<XxlRpcReques
 
     @Override
     public void channelRead0(final ChannelHandlerContext ctx, final XxlRpcRequest xxlRpcRequest) throws Exception {
-        //beat return
+
+        // filter beat
         if (Beat.BEAT_ID.equalsIgnoreCase(xxlRpcRequest.getRequestId())){
+            logger.debug(">>>>>>>>>>> xxl-rpc provider netty server read-beat.");
             return;
         }
 
+        // do invoke
         try {
-            // do invoke
             serverHandlerPool.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -69,9 +71,11 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<XxlRpcReques
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (evt instanceof IdleStateEvent){
-//            ctx.channel().close();      // close idle channel
-//            logger.debug(">>>>>>>>>>> xxl-rpc provider netty server close an idle channel.");
+            /*ctx.channel().close();      // close idle channel
+            logger.debug(">>>>>>>>>>> xxl-rpc provider netty server close an idle channel.");*/
+
             ctx.writeAndFlush(Beat.BEAT_PONG).sync();
+            logger.debug(">>>>>>>>>>> xxl-rpc provider netty server send beat-pong.");
         } else {
             super.userEventTriggered(ctx, evt);
         }
