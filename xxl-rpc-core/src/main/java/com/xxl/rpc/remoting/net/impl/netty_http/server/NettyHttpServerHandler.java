@@ -83,7 +83,7 @@ public class NettyHttpServerHandler extends SimpleChannelInboundHandler<FullHttp
 
                 // filter beat
                 if (Beat.BEAT_ID.equalsIgnoreCase(xxlRpcRequest.getRequestId())){
-                    logger.debug(">>>>>>>>>>> xxl-rpc provider netty_http server read-beat.");
+                    logger.debug(">>>>>>>>>>> xxl-rpc provider netty_http server read beat-ping.");
                     return;
                 }
 

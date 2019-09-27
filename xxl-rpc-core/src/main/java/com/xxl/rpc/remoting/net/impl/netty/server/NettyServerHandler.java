@@ -36,7 +36,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<XxlRpcReques
 
         // filter beat
         if (Beat.BEAT_ID.equalsIgnoreCase(xxlRpcRequest.getRequestId())){
-            logger.debug(">>>>>>>>>>> xxl-rpc provider netty server read-beat.");
+            logger.debug(">>>>>>>>>>> xxl-rpc provider netty server read beat-ping.");
             return;
         }
 
