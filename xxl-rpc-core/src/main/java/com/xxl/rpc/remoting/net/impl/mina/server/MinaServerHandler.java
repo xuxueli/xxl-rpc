@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ThreadPoolExecutor;
 
+import static com.xxl.rpc.remoting.net.common.Beat.BEAT_ID;
+
 /**
  * mina server handler
  *
@@ -33,30 +35,42 @@ public class MinaServerHandler extends IoHandlerAdapter {
 
 	@Override
 	public void messageReceived(final IoSession session, Object message) throws Exception {
+		if (message instanceof XxlRpcRequest){
+			// request
+			final XxlRpcRequest xxlRpcRequest = (XxlRpcRequest) message;
+			if (BEAT_ID.equalsIgnoreCase(xxlRpcRequest.getRequestId())){
+				return;
+			}
+			try {
+				// do invoke
+				serverHandlerPool.execute(new Runnable() {
+					@Override
+					public void run() {
+						// invoke + response
+						XxlRpcResponse xxlRpcResponse = xxlRpcProviderFactory.invokeService(xxlRpcRequest);
 
-		// request
-		final XxlRpcRequest xxlRpcRequest = (XxlRpcRequest) message;
+						session.write(xxlRpcResponse);
+					}
+				});
+			} catch (Exception e) {
+				// catch error
+				XxlRpcResponse xxlRpcResponse = new XxlRpcResponse();
+				xxlRpcResponse.setRequestId(xxlRpcRequest.getRequestId());
+				xxlRpcResponse.setErrorMsg(ThrowableUtil.toString(e));
 
-		try {
-			// do invoke
-			serverHandlerPool.execute(new Runnable() {
-				@Override
-				public void run() {
-					// invoke + response
-					XxlRpcResponse xxlRpcResponse = xxlRpcProviderFactory.invokeService(xxlRpcRequest);
-
-					session.write(xxlRpcResponse);
-				}
-			});
-		} catch (Exception e) {
-			// catch error
-			XxlRpcResponse xxlRpcResponse = new XxlRpcResponse();
-			xxlRpcResponse.setRequestId(xxlRpcRequest.getRequestId());
-			xxlRpcResponse.setErrorMsg(ThrowableUtil.toString(e));
-
-			session.write(xxlRpcResponse);
+				session.write(xxlRpcResponse);
+			}
 		}
-
+		else if (message instanceof  XxlRpcResponse) {
+			final XxlRpcResponse xxlRpcResponse = (XxlRpcResponse) message;
+			if (BEAT_ID.equalsIgnoreCase(xxlRpcResponse.getRequestId())) {
+				return;
+			}
+			throw new IllegalArgumentException("package IllegalArgument");
+		}
+		else {
+			throw new IllegalArgumentException("package IllegalArgument");
+		}
 	}
 	
 	@Override

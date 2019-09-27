@@ -47,7 +47,7 @@ public class NettyConnectClient extends ConnectClient {
                     @Override
                     public void initChannel(SocketChannel channel) throws Exception {
                         channel.pipeline()
-                                .addLast(new IdleStateHandler(0,0,10, TimeUnit.MINUTES))
+                                .addLast(new IdleStateHandler(5,5,10, TimeUnit.SECONDS))
                                 .addLast(new NettyEncoder(XxlRpcRequest.class, serializer))
                                 .addLast(new NettyDecoder(XxlRpcResponse.class, serializer))
                                 .addLast(new NettyClientHandler(xxlRpcInvokerFactory));

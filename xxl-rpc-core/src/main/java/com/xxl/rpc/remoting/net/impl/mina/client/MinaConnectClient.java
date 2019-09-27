@@ -4,16 +4,21 @@ import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.net.common.ConnectClient;
 import com.xxl.rpc.remoting.net.impl.mina.codec.MinaDecoder;
 import com.xxl.rpc.remoting.net.impl.mina.codec.MinaEncoder;
+import com.xxl.rpc.remoting.net.impl.mina.keepalive.KeepAliveMessageFactoryImpl;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import com.xxl.rpc.serialize.Serializer;
 import com.xxl.rpc.util.IpUtil;
 import org.apache.mina.core.future.ConnectFuture;
+import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolCodecFactory;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.ProtocolDecoder;
 import org.apache.mina.filter.codec.ProtocolEncoder;
+import org.apache.mina.filter.keepalive.KeepAliveFilter;
+import org.apache.mina.filter.keepalive.KeepAliveMessageFactory;
+import org.apache.mina.filter.keepalive.KeepAliveRequestTimeoutHandler;
 import org.apache.mina.transport.socket.DefaultSocketSessionConfig;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 
@@ -41,7 +46,20 @@ public class MinaConnectClient extends ConnectClient {
 
 
 		connector = new NioSocketConnector();
-		connector.getFilterChain().addLast("codec", new ProtocolCodecFilter(new ProtocolCodecFactory() {
+
+		KeepAliveMessageFactory heartBeatFactory = new KeepAliveMessageFactoryImpl();
+		//心跳超时直接关闭
+		KeepAliveFilter heartBeat = new KeepAliveFilter(heartBeatFactory, IdleStatus.BOTH_IDLE, KeepAliveRequestTimeoutHandler.CLOSE);
+		//是否回发
+		heartBeat.setForwardEvent(true);
+		//设置心跳频率
+		heartBeat.setRequestInterval(5);
+		heartBeat.setRequestTimeout(10);
+
+		connector.getFilterChain()
+				.addLast("heartbeat", heartBeat);
+		connector.getFilterChain()
+				.addLast("codec", new ProtocolCodecFilter(new ProtocolCodecFactory() {
 			@Override
 			public ProtocolEncoder getEncoder(IoSession session) throws Exception {
 				return new MinaEncoder(XxlRpcRequest.class, serializer);

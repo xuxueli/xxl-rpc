@@ -135,6 +135,7 @@ public class NettyHttpServerHandler extends SimpleChannelInboundHandler<FullHttp
         if (evt instanceof IdleStateEvent){
             ctx.channel().close();      // close idle channel
             logger.debug(">>>>>>>>>>> xxl-rpc provider netty_http server close an idle channel.");
+
         } else {
             super.userEventTriggered(ctx, evt);
         }

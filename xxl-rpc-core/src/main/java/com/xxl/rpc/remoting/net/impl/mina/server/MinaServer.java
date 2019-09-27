@@ -3,6 +3,7 @@ package com.xxl.rpc.remoting.net.impl.mina.server;
 import com.xxl.rpc.remoting.net.Server;
 import com.xxl.rpc.remoting.net.impl.mina.codec.MinaDecoder;
 import com.xxl.rpc.remoting.net.impl.mina.codec.MinaEncoder;
+import com.xxl.rpc.remoting.net.impl.mina.keepalive.KeepAliveMessageFactoryImpl;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import com.xxl.rpc.remoting.provider.XxlRpcProviderFactory;
@@ -14,8 +15,13 @@ import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.ProtocolDecoder;
 import org.apache.mina.filter.codec.ProtocolEncoder;
 import org.apache.mina.filter.executor.ExecutorFilter;
+import org.apache.mina.filter.keepalive.KeepAliveFilter;
+import org.apache.mina.filter.keepalive.KeepAliveMessageFactory;
+import org.apache.mina.filter.keepalive.KeepAliveRequestTimeoutHandler;
 import org.apache.mina.transport.socket.SocketSessionConfig;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
@@ -42,6 +48,16 @@ public class MinaServer extends Server {
 				NioSocketAcceptor acceptor = new NioSocketAcceptor();
 
 				try {
+					KeepAliveMessageFactory heartBeatFactory = new KeepAliveMessageFactoryImpl();
+					//心跳超时直接关闭
+					KeepAliveFilter heartBeat = new KeepAliveFilter(heartBeatFactory, IdleStatus.BOTH_IDLE, KeepAliveRequestTimeoutHandler.CLOSE);
+					//是否回发
+					heartBeat.setForwardEvent(true);
+					//设置心跳频率
+					heartBeat.setRequestInterval(5);
+					heartBeat.setRequestTimeout(10);
+					acceptor.getFilterChain().addLast("heartbeat", heartBeat);
+
 					// start server
 					acceptor.getFilterChain().addLast("threadPool", new ExecutorFilter(Executors.newCachedThreadPool()));
 					acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(new ProtocolCodecFactory() {
@@ -55,7 +71,7 @@ public class MinaServer extends Server {
 						}
 					}));
 					acceptor.setHandler(new MinaServerHandler(xxlRpcProviderFactory, serverHandlerPool));
-					
+
 					SocketSessionConfig config = acceptor.getSessionConfig();
 					config.setTcpNoDelay(true);
 					config.setKeepAlive(true);
