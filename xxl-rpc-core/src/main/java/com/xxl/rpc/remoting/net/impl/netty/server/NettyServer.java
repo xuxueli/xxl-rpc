@@ -37,7 +37,10 @@ public class NettyServer extends Server {
             public void run() {
 
                 // param
-                final ThreadPoolExecutor serverHandlerPool = ThreadPoolUtil.makeServerThreadPool(NettyServer.class.getSimpleName());
+                final ThreadPoolExecutor serverHandlerPool = ThreadPoolUtil.makeServerThreadPool(
+                        NettyServer.class.getSimpleName(),
+                        xxlRpcProviderFactory.getCorePoolSize(),
+                        xxlRpcProviderFactory.getMaxPoolSize());
                 EventLoopGroup bossGroup = new NioEventLoopGroup();
                 EventLoopGroup workerGroup = new NioEventLoopGroup();
 

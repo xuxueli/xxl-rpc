@@ -38,7 +38,10 @@ public class MinaServer extends Server {
 			public void run() {
 
 				// param
-				final ThreadPoolExecutor serverHandlerPool = ThreadPoolUtil.makeServerThreadPool(MinaServer.class.getSimpleName());
+				final ThreadPoolExecutor serverHandlerPool = ThreadPoolUtil.makeServerThreadPool(
+						MinaServer.class.getSimpleName(),
+						xxlRpcProviderFactory.getCorePoolSize(),
+						xxlRpcProviderFactory.getMaxPoolSize());
 				NioSocketAcceptor acceptor = new NioSocketAcceptor();
 
 				try {

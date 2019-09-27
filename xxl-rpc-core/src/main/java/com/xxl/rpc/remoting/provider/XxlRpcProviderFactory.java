@@ -31,6 +31,9 @@ public class XxlRpcProviderFactory {
 	private NetEnum netType;
 	private Serializer serializer;
 
+	private int corePoolSize;
+	private int maxPoolSize;
+
 	private String ip;					// for registry
 	private int port;					// default port
 	private String accessToken;
@@ -42,16 +45,20 @@ public class XxlRpcProviderFactory {
 	public XxlRpcProviderFactory() {
 	}
 	public void initConfig(NetEnum netType,
-						  Serializer serializer,
-						  String ip,
-						  int port,
-						  String accessToken,
+						   Serializer serializer,
+						   int corePoolSize,
+						   int maxPoolSize,
+						   String ip,
+						   int port,
+						   String accessToken,
 						   Class<? extends ServiceRegistry> serviceRegistryClass,
-						  Map<String, String> serviceRegistryParam) {
+						   Map<String, String> serviceRegistryParam) {
 
 		// init
 		this.netType = netType;
 		this.serializer = serializer;
+		this.corePoolSize = corePoolSize;
+		this.maxPoolSize = maxPoolSize;
 		this.ip = ip;
 		this.port = port;
 		this.accessToken = accessToken;
@@ -64,6 +71,10 @@ public class XxlRpcProviderFactory {
 		}
 		if (this.serializer==null) {
 			throw new XxlRpcException("xxl-rpc provider serializer missing.");
+		}
+		if (!(this.corePoolSize>=0 && this.maxPoolSize>0 && this.maxPoolSize>=this.corePoolSize)) {
+			this.corePoolSize = 60;
+			this.maxPoolSize = 300;
 		}
 		if (this.ip == null) {
 			this.ip = IpUtil.getIp();
@@ -82,7 +93,6 @@ public class XxlRpcProviderFactory {
 
 	}
 
-
 	public Serializer getSerializer() {
 		return serializer;
 	}
@@ -91,6 +101,13 @@ public class XxlRpcProviderFactory {
 		return port;
 	}
 
+	public int getCorePoolSize() {
+		return corePoolSize;
+	}
+
+	public int getMaxPoolSize() {
+		return maxPoolSize;
+	}
 
 	// ---------------------- start / stop ----------------------
 

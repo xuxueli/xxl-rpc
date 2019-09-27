@@ -30,10 +30,18 @@ public class JFinalCoreConfig extends JFinalConfig {
 		// init invoker factory
 		final Prop xxlJobProp = PropKit.use("xxl-rpc-sample.properties");
 		xxlRpcProviderFactory = new XxlRpcProviderFactory();
-		xxlRpcProviderFactory.initConfig(NetEnum.NETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(), null, 7080, null, XxlRegistryServiceRegistry.class, new HashMap<String, String>(){{
-			put(XxlRegistryServiceRegistry.XXL_REGISTRY_ADDRESS, xxlJobProp.get("xxl-rpc.registry.xxlregistry.address"));
-			put(XxlRegistryServiceRegistry.ENV, xxlJobProp.get("xxl-rpc.registry.xxlregistry.env"));
-		}});
+		xxlRpcProviderFactory.initConfig(NetEnum.NETTY,
+				Serializer.SerializeEnum.HESSIAN.getSerializer(),
+				-1,
+				-1,
+				null,
+				7080,
+				null,
+				XxlRegistryServiceRegistry.class,
+				new HashMap<String, String>() {{
+					put(XxlRegistryServiceRegistry.XXL_REGISTRY_ADDRESS, xxlJobProp.get("xxl-rpc.registry.xxlregistry.address"));
+					put(XxlRegistryServiceRegistry.ENV, xxlJobProp.get("xxl-rpc.registry.xxlregistry.env"));
+				}});
 
 		// add services
 		xxlRpcProviderFactory.addService(DemoService.class.getName(), null, new DemoServiceImpl());

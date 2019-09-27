@@ -13,10 +13,10 @@ public class ThreadPoolUtil {
      * @param serverType
      * @return
      */
-    public static ThreadPoolExecutor makeServerThreadPool(final String serverType){
+    public static ThreadPoolExecutor makeServerThreadPool(final String serverType, int corePoolSize, int maxPoolSize){
         ThreadPoolExecutor serverHandlerPool = new ThreadPoolExecutor(
-                60,
-                300,
+                corePoolSize,
+                maxPoolSize,
                 60L,
                 TimeUnit.SECONDS,
                 new LinkedBlockingQueue<Runnable>(1000),

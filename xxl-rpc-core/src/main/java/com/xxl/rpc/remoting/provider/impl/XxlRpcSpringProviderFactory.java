@@ -26,6 +26,9 @@ public class XxlRpcSpringProviderFactory extends XxlRpcProviderFactory implement
     private String netType = NetEnum.NETTY.name();
     private String serialize = Serializer.SerializeEnum.HESSIAN.name();
 
+    private int corePoolSize;
+    private int maxPoolSize;
+
     private String ip;          	// for registry
     private int port;				// default port
     private String accessToken;
@@ -41,6 +44,24 @@ public class XxlRpcSpringProviderFactory extends XxlRpcProviderFactory implement
 
     public void setSerialize(String serialize) {
         this.serialize = serialize;
+    }
+
+    @Override
+    public int getCorePoolSize() {
+        return corePoolSize;
+    }
+
+    public void setCorePoolSize(int corePoolSize) {
+        this.corePoolSize = corePoolSize;
+    }
+
+    @Override
+    public int getMaxPoolSize() {
+        return maxPoolSize;
+    }
+
+    public void setMaxPoolSize(int maxPoolSize) {
+        this.maxPoolSize = maxPoolSize;
     }
 
     public void setIp(String ip) {
@@ -73,7 +94,7 @@ public class XxlRpcSpringProviderFactory extends XxlRpcProviderFactory implement
         Serializer serializer = serializeEnum!=null?serializeEnum.getSerializer():null;
 
         // init config
-        super.initConfig(netTypeEnum, serializer, ip, port, accessToken, serviceRegistryClass, serviceRegistryParam);
+        super.initConfig(netTypeEnum, serializer, corePoolSize, maxPoolSize, ip, port, accessToken, serviceRegistryClass, serviceRegistryParam);
     }
 
 

@@ -18,7 +18,7 @@ public class XxlRpcServerApplication {
 
         // init
         XxlRpcProviderFactory providerFactory = new XxlRpcProviderFactory();
-        providerFactory.initConfig(NetEnum.NETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(), null, 7080, null, null, null);
+        providerFactory.initConfig(NetEnum.NETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(), -1, -1, null, 7080, null, null, null);
 
         // add services
         providerFactory.addService(DemoService.class.getName(), null, new DemoServiceImpl());
