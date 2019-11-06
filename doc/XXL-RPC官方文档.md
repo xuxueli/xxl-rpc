@@ -4,7 +4,7 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.xuxueli/xxl-rpc/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.xuxueli/xxl-rpc/)
 [![GitHub release](https://img.shields.io/github/release/xuxueli/xxl-rpc.svg)](https://github.com/xuxueli/xxl-rpc/releases)
 [![License](https://img.shields.io/badge/license-GPLv3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html)
-[![donate](https://img.shields.io/badge/%24-donate-ff69b4.svg?style=flat-square)](http://www.xuxueli.com/page/donate.html)
+[![donate](https://img.shields.io/badge/%24-donate-ff69b4.svg?style=flat-square)](https://www.xuxueli.com/page/donate.html)
 
 
 ## 一、简介
@@ -45,7 +45,7 @@ RPC（Remote Procedure Call Protocol，远程过程调用），调用远程服�
 
 #### 文档地址
 
-- [中文文档](http://www.xuxueli.com/xxl-rpc/)
+- [中文文档](https://www.xuxueli.com/xxl-rpc/)
 
 #### 源码仓库地址
 
@@ -56,7 +56,7 @@ RPC（Remote Procedure Call Protocol，远程过程调用），调用远程服�
 
 
 #### 技术交流
-- [社区交流](http://www.xuxueli.com/page/community.html)
+- [社区交流](https://www.xuxueli.com/page/community.html)
 
 
 ### 1.5 环境
@@ -580,4 +580,4 @@ public class Demo2ServiceImpl implements Demo2Service {
 
 ---
 ### 捐赠
-无论金额多少都足够表达您这份心意，非常感谢 ：）      [前往捐赠](http://www.xuxueli.com/page/donate.html )
+无论金额多少都足够表达您这份心意，非常感谢 ：）      [前往捐赠](https://www.xuxueli.com/page/donate.html )
