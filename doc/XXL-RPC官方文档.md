@@ -280,7 +280,7 @@ System.out.println(userDTO);
 ## 四、系统设计
 
 ### 4.1 系统架构图
-![输入图片说明](https://raw.githubusercontent.com/xuxueli/xxl-rpc/master/doc/images/img_DNq6.png "在这里输入图片标题")
+![输入图片说明](https://www.xuxueli.com/doc/static/xxl-rpc/images/img_DNq6.png "在这里输入图片标题")
 
 ### 4.2 核心思想
 提供稳定高性能的RPC远程服务调用功能，简化分布式服务通讯开发。
@@ -294,7 +294,7 @@ System.out.println(userDTO);
 - 6、admin：服务治理、监控中心：管理服务节点信息，统计服务调用次数、QPS和健康情况；（非必选，暂未整理发布...）
 
 ### 4.4 RPC工作原理剖析
-![输入图片说明](https://raw.githubusercontent.com/xuxueli/xxl-rpc/master/doc/images/img_XEVY.png "在这里输入图片标题")
+![输入图片说明](https://www.xuxueli.com/doc/static/xxl-rpc/images/img_XEVY.png "在这里输入图片标题")
 
 概念：
 - 1、serialization：序列化，通讯数据需要经过序列化，从而支持在网络中传输；
@@ -312,12 +312,12 @@ RPC通讯，可大致划分为四个步骤，可参考上图进行理解：（XX
 - 4、consumer接收响应：consumer接受到相应数据后，首先会deserialization获取原始数据，然后根据stub生成调用返回结果，返回给请求调用处。结束。
 
 ### 4.5 TCP通讯模型
-![输入图片说明](https://raw.githubusercontent.com/xuxueli/xxl-rpc/master/doc/images/img_b1IX.png "在这里输入图片标题")
+![输入图片说明](https://www.xuxueli.com/doc/static/xxl-rpc/images/img_b1IX.png "在这里输入图片标题")
 
 consumer和provider采用NIO方式通讯，其中TC通讯方案可选NETTY或MINA具体选型，高吞吐高并发；但是仅仅依靠单个TCP连接进行数据传输存在瓶颈和风险，因此XXL-RPC在consumer端自身实现了内部连接池，consumer和provider之间为了一个连接池，当尽情底层通讯是会取出一条TCP连接进行通讯（可参考上图）。
 
 ### 4.6 sync-over-async
-![输入图片说明](https://raw.githubusercontent.com/xuxueli/xxl-rpc/master/doc/images/img_pMtS.png "在这里输入图片标题")
+![输入图片说明](https://www.xuxueli.com/doc/static/xxl-rpc/images/img_pMtS.png "在这里输入图片标题")
 
 XXL-RPC采用NIO进行底层通讯，但是NIO是异步通讯模型，调用线程并不会阻塞获取调用结果，因此，XXL-RPC实现了在异步通讯模型上的同步调用，即“sync-over-async”，实现原理如下，可参考上图进行理解：
 
@@ -344,7 +344,7 @@ XXL-RPC的注册中心，是可选组件，支持服务注册并动态发现；
 ##### b、ZK注册中心
 内置“ZK注册中心”，可选组件，结构图如下：
 
-![输入图片说明](https://raw.githubusercontent.com/xuxueli/xxl-rpc/master/doc/images/img_m3Ma.png "在这里输入图片标题")
+![输入图片说明](https://www.xuxueli.com/doc/static/xxl-rpc/images/img_m3Ma.png "在这里输入图片标题")
 
 原理：        
 XXL-RPC中每个服务在zookeeper中对应一个节点，如图"iface name"节点，该服务的每一个provider机器对应"iface name"节点下的一个子节点，如图中"192.168.0.1:9999"、"192.168.0.2:9999"和"192.168.0.3:9999"，子节点类型为zookeeper的EPHMERAL类型，该类型节点有个特点，当机器和zookeeper集群断掉连接后节点将会被移除。consumer底层可以从zookeeper获取到可提供服务的provider集群地址列表，从而可以向其中一个机器发起RPC调用。
