@@ -65,15 +65,19 @@ public class NettyHttpConnectClient extends ConnectClient {
                     }
                 })
                 .option(ChannelOption.SO_KEEPALIVE, true);
-        this.channel = bootstrap.connect(host, port).sync().channel();
-
-        this.serializer = serializer;
+        try{
+            this.channel = bootstrap.connect(host, port).sync().channel();
+        }catch (Exception e){
+            logger.error(">>>>>>>>>>> xxl-rpc netty client caught exception: ",e.getCause());
+        }
 
         // valid
         if (!isValidate()) {
             close();
             return;
         }
+
+        this.serializer = serializer;
 
         logger.debug(">>>>>>>>>>> xxl-rpc netty client proxy, connect to server success at host:{}, port:{}", host, port);
     }
