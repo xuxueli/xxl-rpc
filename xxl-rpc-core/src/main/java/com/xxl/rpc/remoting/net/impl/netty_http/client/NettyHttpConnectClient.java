@@ -64,7 +64,8 @@ public class NettyHttpConnectClient extends ConnectClient {
                                 .addLast(new NettyHttpClientHandler(xxlRpcInvokerFactory, serializer, thisClient));
                     }
                 })
-                .option(ChannelOption.SO_KEEPALIVE, true);
+                .option(ChannelOption.SO_KEEPALIVE, true)
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000);
         this.channel = bootstrap.connect(host, port).sync().channel();
 
         this.serializer = serializer;
