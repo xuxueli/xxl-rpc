@@ -527,6 +527,8 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 4、长连心跳保活：客户端周期性发送心跳请求给服务端；客户端心跳发送失败，或服务端连续三次未收到心跳时，销毁连接；(Netty、NettyHttp以支持；Mina迭代中；)
 - 5、服务线程优化，支持自定义线程参数；
 
+### 5.11 版本 v1.5.0 Release Notes[迭代中]
+
 
 ### TODO
 - 提高系统可用性，以部分功能暂时不可达为代价，防止服务整体缓慢或雪崩
