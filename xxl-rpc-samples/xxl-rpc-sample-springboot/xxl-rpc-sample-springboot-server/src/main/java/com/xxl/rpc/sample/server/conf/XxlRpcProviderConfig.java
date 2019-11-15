@@ -1,7 +1,9 @@
 package com.xxl.rpc.sample.server.conf;
 
 import com.xxl.rpc.registry.impl.XxlRegistryServiceRegistry;
+import com.xxl.rpc.remoting.net.NetEnum;
 import com.xxl.rpc.remoting.provider.impl.XxlRpcSpringProviderFactory;
+import com.xxl.rpc.serialize.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,12 +34,18 @@ public class XxlRpcProviderConfig {
     public XxlRpcSpringProviderFactory xxlRpcSpringProviderFactory() {
 
         XxlRpcSpringProviderFactory providerFactory = new XxlRpcSpringProviderFactory();
-        providerFactory.setPort(port);
-        providerFactory.setServiceRegistryClass(XxlRegistryServiceRegistry.class);
-        providerFactory.setServiceRegistryParam(new HashMap<String, String>(){{
-            put(XxlRegistryServiceRegistry.XXL_REGISTRY_ADDRESS, address);
-            put(XxlRegistryServiceRegistry.ENV, env);
-        }});
+        providerFactory.initConfig(NetEnum.NETTY,
+                Serializer.SerializeEnum.HESSIAN.getSerializer(),
+                -1,
+                -1,
+                null,
+                port,
+                null,
+                XxlRegistryServiceRegistry.class,
+                new HashMap<String, String>() {{
+                    put(XxlRegistryServiceRegistry.XXL_REGISTRY_ADDRESS, address);
+                    put(XxlRegistryServiceRegistry.ENV, env);
+                }});
 
         logger.info(">>>>>>>>>>> xxl-rpc provider config init finish.");
         return providerFactory;
