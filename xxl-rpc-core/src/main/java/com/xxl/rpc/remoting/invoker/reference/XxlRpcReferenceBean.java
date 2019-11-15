@@ -206,6 +206,7 @@ public class XxlRpcReferenceBean {
 	                    xxlRpcRequest.setMethodName(methodName);
 	                    xxlRpcRequest.setParameterTypes(parameterTypes);
 	                    xxlRpcRequest.setParameters(parameters);
+	                    xxlRpcRequest.setVersion(version);
 	                    
 	                    // send
 						if (CallType.SYNC == callType) {
