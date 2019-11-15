@@ -7,8 +7,8 @@
         <a href="https://www.xuxueli.com/xxl-rpc/"><strong>-- Home Page --</strong></a>
         <br>
         <br>
-        <a href="https://travis-ci.org/xuxueli/xxl-rpc">
-            <img src="https://travis-ci.org/xuxueli/xxl-rpc.svg?branch=master" >
+        <a href="https://github.com/xuxueli/xxl-rpc/actions">
+            <img src="https://github.com/xuxueli/xxl-rpc/workflows/Java%20CI/badge.svg" >
         </a>
         <a href="https://maven-badges.herokuapp.com/maven-central/com.xuxueli/xxl-rpc/">
             <img src="https://maven-badges.herokuapp.com/maven-central/com.xuxueli/xxl-rpc/badge.svg" >
