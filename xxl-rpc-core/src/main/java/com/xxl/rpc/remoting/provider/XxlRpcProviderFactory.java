@@ -116,11 +116,6 @@ public class XxlRpcProviderFactory {
 		if (NetUtil.isPortUsed(this.port)) {
 			throw new XxlRpcException("xxl-rpc provider port["+ this.port +"] is used.");
 		}
-		if (this.serviceRegistryInstance != null) {
-			if (this.serviceRegistryParam == null) {
-				throw new XxlRpcException("xxl-rpc provider serviceRegistryParam is missing.");
-			}
-		}
 
 		// init serializerInstance
 		this.serializerInstance = serializer.newInstance();
@@ -132,7 +127,7 @@ public class XxlRpcProviderFactory {
 			@Override
 			public void run() throws Exception {
 				// start registry
-				if (serviceRegistryInstance != null) {
+				if (serviceRegistry != null) {
 					serviceRegistryInstance = serviceRegistry.newInstance();
 					serviceRegistryInstance.start(serviceRegistryParam);
 					if (serviceData.size() > 0) {
