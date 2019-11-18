@@ -108,7 +108,7 @@ public abstract class ConnectClient {
             // set pool
             ConnectClient connectClient_new = connectClientImpl.newInstance();
             try {
-                connectClient_new.init(address, xxlRpcReferenceBean.getSerializer(), xxlRpcReferenceBean.getInvokerFactory());
+                connectClient_new.init(address, xxlRpcReferenceBean.getSerializerInstance(), xxlRpcReferenceBean.getInvokerFactory());
                 connectClientMap.put(address, connectClient_new);
             } catch (Exception e) {
                 connectClient_new.close();

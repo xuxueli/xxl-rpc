@@ -1,11 +1,10 @@
 package com.xxl.rpc.sample.server;
 
-import com.xxl.rpc.remoting.net.NetEnum;
+import com.xxl.rpc.remoting.net.impl.netty.server.NettyServer;
 import com.xxl.rpc.remoting.provider.XxlRpcProviderFactory;
 import com.xxl.rpc.sample.api.DemoService;
 import com.xxl.rpc.sample.server.service.DemoServiceImpl;
-import com.xxl.rpc.serialize.Serializer;
-
+import com.xxl.rpc.serialize.impl.HessianSerializer;
 
 import java.util.concurrent.TimeUnit;
 
@@ -18,7 +17,15 @@ public class XxlRpcServerApplication {
 
         // init
         XxlRpcProviderFactory providerFactory = new XxlRpcProviderFactory();
-        providerFactory.initConfig(NetEnum.NETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(), -1, -1, null, 7080, null, null, null);
+        providerFactory.setServer(NettyServer.class);
+        providerFactory.setSerializer(HessianSerializer.class);
+        providerFactory.setCorePoolSize(-1);
+        providerFactory.setMaxPoolSize(-1);
+        providerFactory.setIp(null);
+        providerFactory.setPort(7080);
+        providerFactory.setAccessToken(null);
+        providerFactory.setServiceRegistry(null);
+        providerFactory.setServiceRegistryParam(null);
 
         // add services
         providerFactory.addService(DemoService.class.getName(), null, new DemoServiceImpl());

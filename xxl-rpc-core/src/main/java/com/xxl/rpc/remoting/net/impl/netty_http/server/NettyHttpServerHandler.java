@@ -78,7 +78,7 @@ public class NettyHttpServerHandler extends SimpleChannelInboundHandler<FullHttp
                 }
 
                 // request deserialize
-                XxlRpcRequest xxlRpcRequest = (XxlRpcRequest) xxlRpcProviderFactory.getSerializer().deserialize(requestBytes, XxlRpcRequest.class);
+                XxlRpcRequest xxlRpcRequest = (XxlRpcRequest) xxlRpcProviderFactory.getSerializerInstance().deserialize(requestBytes, XxlRpcRequest.class);
                 requestId = xxlRpcRequest.getRequestId();
 
                 // filter beat
@@ -91,7 +91,7 @@ public class NettyHttpServerHandler extends SimpleChannelInboundHandler<FullHttp
                 XxlRpcResponse xxlRpcResponse = xxlRpcProviderFactory.invokeService(xxlRpcRequest);
 
                 // response serialize
-                byte[] responseBytes = xxlRpcProviderFactory.getSerializer().serialize(xxlRpcResponse);
+                byte[] responseBytes = xxlRpcProviderFactory.getSerializerInstance().serialize(xxlRpcResponse);
 
                 // response-write
                 writeResponse(ctx, keepAlive, responseBytes);
@@ -105,7 +105,7 @@ public class NettyHttpServerHandler extends SimpleChannelInboundHandler<FullHttp
             xxlRpcResponse.setErrorMsg(ThrowableUtil.toString(e));
 
             // response serialize
-            byte[] responseBytes = xxlRpcProviderFactory.getSerializer().serialize(xxlRpcResponse);
+            byte[] responseBytes = xxlRpcProviderFactory.getSerializerInstance().serialize(xxlRpcResponse);
 
             // response-write
             writeResponse(ctx, keepAlive, responseBytes);

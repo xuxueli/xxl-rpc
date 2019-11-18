@@ -526,7 +526,7 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 5、服务线程优化，支持自定义线程参数；
 - 6、通讯方案收敛：主推Netty和Netty_Http，移除Mina和Jetty内置扩展，如有需求自行扩展维护；
 - 7、序列化方案收敛：主推HESSIAN和HESSIAN1，移除protostuff、KRYO、JACKSON内置扩展，如有需求自行扩展维护；
-- [ING]8、初始化枚举改为接口实例，方便扩展；
+- 8、API优化：初始化枚举改为接口实例，方便扩展；
 
 ### 5.11 版本 v1.5.0 Release Notes[迭代中]
 

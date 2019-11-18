@@ -4,11 +4,11 @@ import com.jfinal.config.*;
 import com.jfinal.kit.Prop;
 import com.jfinal.kit.PropKit;
 import com.xxl.rpc.registry.impl.XxlRegistryServiceRegistry;
-import com.xxl.rpc.remoting.net.NetEnum;
+import com.xxl.rpc.remoting.net.impl.netty.server.NettyServer;
 import com.xxl.rpc.remoting.provider.XxlRpcProviderFactory;
 import com.xxl.rpc.sample.api.DemoService;
 import com.xxl.rpc.sample.server.service.DemoServiceImpl;
-import com.xxl.rpc.serialize.Serializer;
+import com.xxl.rpc.serialize.impl.HessianSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,19 +29,20 @@ public class JFinalCoreConfig extends JFinalConfig {
 
 		// init invoker factory
 		final Prop xxlJobProp = PropKit.use("xxl-rpc-sample.properties");
+
 		xxlRpcProviderFactory = new XxlRpcProviderFactory();
-		xxlRpcProviderFactory.initConfig(NetEnum.NETTY,
-				Serializer.SerializeEnum.HESSIAN.getSerializer(),
-				-1,
-				-1,
-				null,
-				7080,
-				null,
-				XxlRegistryServiceRegistry.class,
-				new HashMap<String, String>() {{
-					put(XxlRegistryServiceRegistry.XXL_REGISTRY_ADDRESS, xxlJobProp.get("xxl-rpc.registry.xxlregistry.address"));
-					put(XxlRegistryServiceRegistry.ENV, xxlJobProp.get("xxl-rpc.registry.xxlregistry.env"));
-				}});
+		xxlRpcProviderFactory.setServer(NettyServer.class);
+		xxlRpcProviderFactory.setSerializer(HessianSerializer.class);
+		xxlRpcProviderFactory.setCorePoolSize(-1);
+		xxlRpcProviderFactory.setMaxPoolSize(-1);
+		xxlRpcProviderFactory.setIp(null);
+		xxlRpcProviderFactory.setPort(7080);
+		xxlRpcProviderFactory.setAccessToken(null);
+		xxlRpcProviderFactory.setServiceRegistry(XxlRegistryServiceRegistry.class);
+		xxlRpcProviderFactory.setServiceRegistryParam(new HashMap<String, String>() {{
+			put(XxlRegistryServiceRegistry.XXL_REGISTRY_ADDRESS, xxlJobProp.get("xxl-rpc.registry.xxlregistry.address"));
+			put(XxlRegistryServiceRegistry.ENV, xxlJobProp.get("xxl-rpc.registry.xxlregistry.env"));
+		}});
 
 		// add services
 		xxlRpcProviderFactory.addService(DemoService.class.getName(), null, new DemoServiceImpl());

@@ -1,6 +1,7 @@
 package com.xxl.rpc.test;
 
 import com.xxl.rpc.serialize.Serializer;
+import com.xxl.rpc.serialize.impl.HessianSerializer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,8 +11,8 @@ import java.util.Map;
  */
 public class SerializerTest {
 
-    public static void main(String[] args) {
-        Serializer serializer = Serializer.SerializeEnum.match("PROTOSTUFF", null).getSerializer();
+    public static void main(String[] args) throws IllegalAccessException, InstantiationException {
+        Serializer serializer = HessianSerializer.class.newInstance();
         System.out.println(serializer);
         try {
             Map<String, String> map = new HashMap<String, String>();

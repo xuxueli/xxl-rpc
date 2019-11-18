@@ -75,21 +75,27 @@ public class XxlRpcSpringInvokerFactory extends InstantiationAwareBeanPostProces
                     XxlRpcReference rpcReference = field.getAnnotation(XxlRpcReference.class);
 
                     // init reference bean
-                    XxlRpcReferenceBean referenceBean = new XxlRpcReferenceBean(
-                            rpcReference.netType(),
-                            rpcReference.serializer().getSerializer(),
-                            rpcReference.callType(),
-                            rpcReference.loadBalance(),
-                            iface,
-                            rpcReference.version(),
-                            rpcReference.timeout(),
-                            rpcReference.address(),
-                            rpcReference.accessToken(),
-                            null,
-                            xxlRpcInvokerFactory
-                    );
+                    XxlRpcReferenceBean referenceBean = new XxlRpcReferenceBean();
+                    referenceBean.setClient(rpcReference.client());
+                    referenceBean.setSerializer(rpcReference.serializer());
+                    referenceBean.setCallType(rpcReference.callType());
+                    referenceBean.setLoadBalance(rpcReference.loadBalance());
+                    referenceBean.setIface(iface);
+                    referenceBean.setVersion(rpcReference.version());
+                    referenceBean.setTimeout(rpcReference.timeout());
+                    referenceBean.setAddress(rpcReference.address());
+                    referenceBean.setAccessToken(rpcReference.accessToken());
+                    referenceBean.setInvokeCallback(null);
+                    referenceBean.setInvokerFactory(xxlRpcInvokerFactory);
 
-                    Object serviceProxy = referenceBean.getObject();
+
+                    // get proxyObj
+                    Object serviceProxy = null;
+                    try {
+                        serviceProxy = referenceBean.getObject();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
 
                     // set bean
                     field.setAccessible(true);

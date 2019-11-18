@@ -58,19 +58,18 @@ public class JFinalCoreConfig extends JFinalConfig {
 				}
 
 				// init reference bean
-				XxlRpcReferenceBean referenceBean = new XxlRpcReferenceBean(
-						rpcReference.netType(),
-						rpcReference.serializer().getSerializer(),
-						rpcReference.callType(),
-						rpcReference.loadBalance(),
-						iface,
-						rpcReference.version(),
-						rpcReference.timeout(),
-						rpcReference.address(),
-						rpcReference.accessToken(),
-						null,
-						xxlRpcInvokerFactory
-				);
+				XxlRpcReferenceBean referenceBean = new XxlRpcReferenceBean();
+				referenceBean.setClient(rpcReference.client());
+				referenceBean.setSerializer(rpcReference.serializer());
+				referenceBean.setCallType(rpcReference.callType());
+				referenceBean.setLoadBalance(rpcReference.loadBalance());
+				referenceBean.setIface(iface);
+				referenceBean.setVersion(rpcReference.version());
+				referenceBean.setTimeout(rpcReference.timeout());
+				referenceBean.setAddress(rpcReference.address());
+				referenceBean.setAccessToken(rpcReference.accessToken());
+				referenceBean.setInvokeCallback(null);
+				referenceBean.setInvokerFactory(xxlRpcInvokerFactory);
 
 				Object serviceProxy = referenceBean.getObject();
 

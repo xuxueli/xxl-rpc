@@ -2,8 +2,10 @@ package com.xxl.rpc.remoting.invoker.annotation;
 
 import com.xxl.rpc.remoting.invoker.call.CallType;
 import com.xxl.rpc.remoting.invoker.route.LoadBalance;
-import com.xxl.rpc.remoting.net.NetEnum;
+import com.xxl.rpc.remoting.net.Client;
+import com.xxl.rpc.remoting.net.impl.netty.client.NettyClient;
 import com.xxl.rpc.serialize.Serializer;
+import com.xxl.rpc.serialize.impl.HessianSerializer;
 
 import java.lang.annotation.*;
 
@@ -17,8 +19,8 @@ import java.lang.annotation.*;
 @Inherited
 public @interface XxlRpcReference {
 
-    NetEnum netType() default NetEnum.NETTY;
-    Serializer.SerializeEnum serializer() default Serializer.SerializeEnum.HESSIAN;
+    Class<? extends Client> client() default NettyClient.class;
+    Class<? extends Serializer> serializer() default HessianSerializer.class;
     CallType callType() default CallType.SYNC;
     LoadBalance loadBalance() default LoadBalance.ROUND;
 

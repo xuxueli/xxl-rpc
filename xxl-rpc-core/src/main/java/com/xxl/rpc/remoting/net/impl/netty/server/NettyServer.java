@@ -54,8 +54,8 @@ public class NettyServer extends Server {
                                 public void initChannel(SocketChannel channel) throws Exception {
                                     channel.pipeline()
                                             .addLast(new IdleStateHandler(0,0, Beat.BEAT_INTERVAL*3, TimeUnit.SECONDS))     // beat 3N, close if idle
-                                            .addLast(new NettyDecoder(XxlRpcRequest.class, xxlRpcProviderFactory.getSerializer()))
-                                            .addLast(new NettyEncoder(XxlRpcResponse.class, xxlRpcProviderFactory.getSerializer()))
+                                            .addLast(new NettyDecoder(XxlRpcRequest.class, xxlRpcProviderFactory.getSerializerInstance()))
+                                            .addLast(new NettyEncoder(XxlRpcResponse.class, xxlRpcProviderFactory.getSerializerInstance()))
                                             .addLast(new NettyServerHandler(xxlRpcProviderFactory, serverHandlerPool));
                                 }
                             })

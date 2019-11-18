@@ -1,12 +1,13 @@
 package com.xxl.rpc.remoting.provider;
 
 import com.xxl.rpc.registry.ServiceRegistry;
-import com.xxl.rpc.remoting.net.NetEnum;
 import com.xxl.rpc.remoting.net.Server;
+import com.xxl.rpc.remoting.net.impl.netty.server.NettyServer;
 import com.xxl.rpc.remoting.net.params.BaseCallback;
 import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 import com.xxl.rpc.serialize.Serializer;
+import com.xxl.rpc.serialize.impl.HessianSerializer;
 import com.xxl.rpc.util.IpUtil;
 import com.xxl.rpc.util.NetUtil;
 import com.xxl.rpc.util.ThrowableUtil;
@@ -28,51 +29,81 @@ public class XxlRpcProviderFactory {
 
 	// ---------------------- config ----------------------
 
-	private NetEnum netType;
-	private Serializer serializer;
+	private Class<? extends Server> server = NettyServer.class;
+	private Class<? extends Serializer> serializer = HessianSerializer.class;
 
-	private int corePoolSize;
-	private int maxPoolSize;
+	private int corePoolSize = 60;
+	private int maxPoolSize = 300;
 
-	private String ip;					// for registry
-	private int port;					// default port
-	private String accessToken;
+	private String ip = null;					// for registry
+	private int port = 7080;					// default port
+	private String accessToken = null;
 
-	private Class<? extends ServiceRegistry> serviceRegistryClass;
-	private Map<String, String> serviceRegistryParam;
+	private Class<? extends ServiceRegistry> serviceRegistry = null;
+	private Map<String, String> serviceRegistryParam = null;
 
-
-	public XxlRpcProviderFactory() {
+	// set
+	public void setServer(Class<? extends Server> server) {
+		this.server = server;
 	}
-	public void initConfig(NetEnum netType,
-						   Serializer serializer,
-						   int corePoolSize,
-						   int maxPoolSize,
-						   String ip,
-						   int port,
-						   String accessToken,
-						   Class<? extends ServiceRegistry> serviceRegistryClass,
-						   Map<String, String> serviceRegistryParam) {
-
-		// init
-		this.netType = netType;
+	public void setSerializer(Class<? extends Serializer> serializer) {
 		this.serializer = serializer;
+	}
+	public void setCorePoolSize(int corePoolSize) {
 		this.corePoolSize = corePoolSize;
+	}
+	public void setMaxPoolSize(int maxPoolSize) {
 		this.maxPoolSize = maxPoolSize;
+	}
+	public void setIp(String ip) {
 		this.ip = ip;
+	}
+	public void setPort(int port) {
 		this.port = port;
+	}
+	public void setAccessToken(String accessToken) {
 		this.accessToken = accessToken;
-		this.serviceRegistryClass = serviceRegistryClass;
+	}
+
+	public void setServiceRegistry(Class<? extends ServiceRegistry> serviceRegistry) {
+		this.serviceRegistry = serviceRegistry;
+	}
+
+	public void setServiceRegistryParam(Map<String, String> serviceRegistryParam) {
 		this.serviceRegistryParam = serviceRegistryParam;
+	}
+
+	// get
+	public Serializer getSerializerInstance() {
+		return serializerInstance;
+	}
+	public int getPort() {
+		return port;
+	}
+	public int getCorePoolSize() {
+		return corePoolSize;
+	}
+	public int getMaxPoolSize() {
+		return maxPoolSize;
+	}
+
+	// ---------------------- start / stop ----------------------
+
+	private Server serverInstance;
+	private Serializer serializerInstance;
+	private ServiceRegistry serviceRegistryInstance;
+	private String serviceAddress;
+
+	public void start() throws Exception {
 
 		// valid
-		if (this.netType==null) {
-			throw new XxlRpcException("xxl-rpc provider netType missing.");
+		if (this.server == null) {
+			throw new XxlRpcException("xxl-rpc provider server missing.");
 		}
 		if (this.serializer==null) {
 			throw new XxlRpcException("xxl-rpc provider serializer missing.");
 		}
-		if (!(this.corePoolSize>=0 && this.maxPoolSize>0 && this.maxPoolSize>=this.corePoolSize)) {
+		if (!(this.corePoolSize>0 && this.maxPoolSize>0 && this.maxPoolSize>=this.corePoolSize)) {
 			this.corePoolSize = 60;
 			this.maxPoolSize = 300;
 		}
@@ -85,72 +116,50 @@ public class XxlRpcProviderFactory {
 		if (NetUtil.isPortUsed(this.port)) {
 			throw new XxlRpcException("xxl-rpc provider port["+ this.port +"] is used.");
 		}
-		if (this.serviceRegistryClass != null) {
+		if (this.serviceRegistryInstance != null) {
 			if (this.serviceRegistryParam == null) {
 				throw new XxlRpcException("xxl-rpc provider serviceRegistryParam is missing.");
 			}
 		}
 
-	}
+		// init serializerInstance
+		this.serializerInstance = serializer.newInstance();
 
-	public Serializer getSerializer() {
-		return serializer;
-	}
-
-	public int getPort() {
-		return port;
-	}
-
-	public int getCorePoolSize() {
-		return corePoolSize;
-	}
-
-	public int getMaxPoolSize() {
-		return maxPoolSize;
-	}
-
-	// ---------------------- start / stop ----------------------
-
-	private Server server;
-	private ServiceRegistry serviceRegistry;
-	private String serviceAddress;
-
-	public void start() throws Exception {
 		// start server
 		serviceAddress = IpUtil.getIpPort(this.ip, port);
-		server = netType.serverClass.newInstance();
-		server.setStartedCallback(new BaseCallback() {		// serviceRegistry started
+		serverInstance = server.newInstance();
+		serverInstance.setStartedCallback(new BaseCallback() {		// serviceRegistry started
 			@Override
 			public void run() throws Exception {
 				// start registry
-				if (serviceRegistryClass != null) {
-					serviceRegistry = serviceRegistryClass.newInstance();
-					serviceRegistry.start(serviceRegistryParam);
+				if (serviceRegistryInstance != null) {
+					serviceRegistryInstance = serviceRegistry.newInstance();
+					serviceRegistryInstance.start(serviceRegistryParam);
 					if (serviceData.size() > 0) {
-						serviceRegistry.registry(serviceData.keySet(), serviceAddress);
+						serviceRegistryInstance.registry(serviceData.keySet(), serviceAddress);
 					}
 				}
 			}
 		});
-		server.setStopedCallback(new BaseCallback() {		// serviceRegistry stoped
+		serverInstance.setStopedCallback(new BaseCallback() {		// serviceRegistry stoped
 			@Override
 			public void run() {
 				// stop registry
-				if (serviceRegistry != null) {
+				if (serviceRegistryInstance != null) {
 					if (serviceData.size() > 0) {
-						serviceRegistry.remove(serviceData.keySet(), serviceAddress);
+						serviceRegistryInstance.remove(serviceData.keySet(), serviceAddress);
 					}
-					serviceRegistry.stop();
-					serviceRegistry = null;
+					serviceRegistryInstance.stop();
+					serviceRegistryInstance = null;
 				}
 			}
 		});
-		server.start(this);
+		serverInstance.start(this);
 	}
 
 	public void  stop() throws Exception {
 		// stop server
-		server.stop();
+		serverInstance.stop();
 	}
 
 

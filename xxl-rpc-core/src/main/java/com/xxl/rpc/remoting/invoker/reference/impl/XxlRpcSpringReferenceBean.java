@@ -1,12 +1,6 @@
 package com.xxl.rpc.remoting.invoker.reference.impl;
 
-import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
-import com.xxl.rpc.remoting.invoker.call.CallType;
-import com.xxl.rpc.remoting.invoker.call.XxlRpcInvokeCallback;
 import com.xxl.rpc.remoting.invoker.reference.XxlRpcReferenceBean;
-import com.xxl.rpc.remoting.invoker.route.LoadBalance;
-import com.xxl.rpc.remoting.net.NetEnum;
-import com.xxl.rpc.serialize.Serializer;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 
@@ -18,113 +12,26 @@ import org.springframework.beans.factory.InitializingBean;
 public class XxlRpcSpringReferenceBean implements FactoryBean<Object>, InitializingBean {
 
 
-    // ---------------------- config ----------------------
-
-    private String netType = NetEnum.NETTY.name();
-    private String serialize = Serializer.SerializeEnum.HESSIAN.name();
-    private String callType = CallType.SYNC.name();
-    private String loadBalance = LoadBalance.ROUND.name();
-
-    private Class<?> iface;
-    private String version;
-
-    private long timeout = 1000;
-
-    private String address;
-    private String accessToken;
-
-    private XxlRpcInvokeCallback invokeCallback;
-
-    private XxlRpcInvokerFactory xxlRpcInvokerFactory;
-
-    // set
-    public void setNetType(String netType) {
-        this.netType = netType;
-    }
-
-    public void setSerialize(String serialize) {
-        this.serialize = serialize;
-    }
-
-    public void setCallType(String callType) {
-        this.callType = callType;
-    }
-
-    public void setLoadBalance(String loadBalance) {
-        this.loadBalance = loadBalance;
-    }
-
-    public void setIface(Class<?> iface) {
-        this.iface = iface;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    public void setTimeout(long timeout) {
-        this.timeout = timeout;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
-
-    public void setInvokeCallback(XxlRpcInvokeCallback invokeCallback) {
-        this.invokeCallback = invokeCallback;
-    }
-
-    public void setXxlRpcInvokerFactory(XxlRpcInvokerFactory xxlRpcInvokerFactory) {
-        this.xxlRpcInvokerFactory = xxlRpcInvokerFactory;
-    }
-
-    // ---------------------- init ----------------------
+    // ---------------------- util ----------------------
 
     private XxlRpcReferenceBean xxlRpcReferenceBean;
-    private void init() {
-
-        // prepare config
-        NetEnum netTypeEnum = NetEnum.autoMatch(netType, null);
-        Serializer.SerializeEnum serializeEnum = Serializer.SerializeEnum.match(serialize, null);
-        Serializer serializer = serializeEnum!=null?serializeEnum.getSerializer():null;
-        CallType callTypeEnum = CallType.match(callType, null);
-        LoadBalance loadBalanceEnum = LoadBalance.match(loadBalance, null);
-
-        // init config
-        xxlRpcReferenceBean = new XxlRpcReferenceBean(
-                netTypeEnum,
-                serializer,
-                callTypeEnum,
-                loadBalanceEnum,
-                iface,
-                version,
-                timeout,
-                address,
-                accessToken,
-                invokeCallback,
-                xxlRpcInvokerFactory);
-
-    }
-
-    // ---------------------- util ----------------------
 
     @Override
     public void afterPropertiesSet() {
-        init();
+
+        // init config
+        this.xxlRpcReferenceBean = new XxlRpcReferenceBean();
     }
 
+
     @Override
-    public Object getObject() {
+    public Object getObject() throws Exception {
         return xxlRpcReferenceBean.getObject();
     }
 
     @Override
     public Class<?> getObjectType() {
-        return xxlRpcReferenceBean.getObjectType();
+        return xxlRpcReferenceBean.getIface();
     }
 
     @Override
