@@ -518,7 +518,7 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 2、升级依赖版本，如netty/mina/jetty/jackson/spring/spring-boot等;
 - 3、空闲链接自动回收：服务端与客户端主动检测空闲链接并回收，及时释放相关资源(netty、mina)；空闲超10min自动释放；
 
-### 5.10 版本 v1.4.2 Release Notes[2019-11-16]
+### 5.10 版本 v1.4.2 Release Notes[2019-11-18]
 - 1、代码优化，ConcurrentHashMap变量类型改为ConcurrentMap，避免因不同版本实现不同导致的兼容性问题；
 - 2、Netty Http客户端优化，识别并过滤非法响应数据；
 - 3、升级依赖版本，如netty/mina/hessian/jackson/zookeeper等;
