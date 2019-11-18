@@ -1,9 +1,5 @@
 package com.xxl.rpc.remoting.net;
 
-import com.xxl.rpc.remoting.net.impl.jetty.client.JettyClient;
-import com.xxl.rpc.remoting.net.impl.jetty.server.JettyServer;
-import com.xxl.rpc.remoting.net.impl.mina.client.MinaClient;
-import com.xxl.rpc.remoting.net.impl.mina.server.MinaServer;
 import com.xxl.rpc.remoting.net.impl.netty.client.NettyClient;
 import com.xxl.rpc.remoting.net.impl.netty.server.NettyServer;
 import com.xxl.rpc.remoting.net.impl.netty_http.client.NettyHttpClient;
@@ -23,19 +19,9 @@ public enum NetEnum {
 	NETTY(NettyServer.class, NettyClient.class),
 
 	/**
-	 * netty http server (servlet no server, ServletServerHandler)
+	 * netty http server
 	 */
-	NETTY_HTTP(NettyHttpServer.class, NettyHttpClient.class),
-
-	/**
-	 * mina tcp server
-	 */
-	MINA(MinaServer.class, MinaClient.class),
-
-	/**
-	 * jetty http server
-	 */
-	JETTY(JettyServer .class, JettyClient .class);
+	NETTY_HTTP(NettyHttpServer.class, NettyHttpClient.class);
 
 
 	public final Class<? extends Server> serverClass;

@@ -15,6 +15,31 @@
 
 	<dependencies>
 
+
+		<!-- ********************** net + serialize + registry (default = netty + hessian + xxl-registry) ********************** -->
+
+		<!-- netty -->
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+			<version>${netty.version}</version>
+		</dependency>
+
+		<!-- hessian -->
+		<dependency>
+			<groupId>com.caucho</groupId>
+			<artifactId>hessian</artifactId>
+			<version>${hessian.version}</version>
+		</dependency>
+
+		<!-- xxl-registry-client -->
+		<dependency>
+			<groupId>com.xuxueli</groupId>
+			<artifactId>xxl-registry-client</artifactId>
+			<version>${xxl-registry.version}</version>
+		</dependency>
+
+
 		<!-- ********************** base ********************** -->
 
 		<!-- slf4j -->
@@ -29,102 +54,6 @@
 			<version>${slf4j-api.version}</version>
 			<scope>test</scope>
 		</dependency>
-
-
-		<!-- ********************** net (default=netty) ********************** -->
-
-		<!-- netty -->
-		<dependency>
-			<groupId>io.netty</groupId>
-			<artifactId>netty-all</artifactId>
-			<version>${netty.version}</version>
-		</dependency>
-
-		<!-- mina -->
-		<dependency>
-			<groupId>org.apache.mina</groupId>
-			<artifactId>mina-core</artifactId>
-			<version>${mina.version}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- jetty (javax.servlet-api) -->
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-server</artifactId>
-			<version>${jetty-server.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-client</artifactId>
-			<version>${jetty-server.version}</version>
-			<scope>provided</scope>
-		</dependency>
-
-
-		<!-- ********************** serialize (default=hessian) ********************** -->
-
-		<!-- hessian -->
-		<dependency>
-			<groupId>com.caucho</groupId>
-			<artifactId>hessian</artifactId>
-			<version>${hessian.version}</version>
-		</dependency>
-
-		<!-- protostuff + objenesis (provided) -->
-		<dependency>
-			<groupId>io.protostuff</groupId>
-			<artifactId>protostuff-core</artifactId>
-			<version>${protostuff.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.protostuff</groupId>
-			<artifactId>protostuff-runtime</artifactId>
-			<version>${protostuff.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.objenesis</groupId>
-			<artifactId>objenesis</artifactId>
-			<version>${objenesis.version}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- kryo (provided) -->
-		<dependency>
-			<groupId>com.esotericsoftware</groupId>
-			<artifactId>kryo</artifactId>
-			<version>${kryo.version}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- jackson (provided) -->
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>${jackson.version}</version>
-			<scope>provided</scope>
-		</dependency>
-
-
-		<!-- ********************** registry  (default=xxl-registry) ********************** -->
-
-		<!-- xxl-registry-client -->
-		<dependency>
-			<groupId>com.xuxueli</groupId>
-			<artifactId>xxl-registry-client</artifactId>
-			<version>${xxl-registry.version}</version>
-		</dependency>
-
-		<!-- zookeeper (provided) -->
-        <dependency>
-            <groupId>org.apache.zookeeper</groupId>
-            <artifactId>zookeeper</artifactId>
-            <version>${zookeeper.version}</version>
-			<scope>provided</scope>
-        </dependency>
 
 
 		<!-- ********************** spring (default=provided) ********************** -->

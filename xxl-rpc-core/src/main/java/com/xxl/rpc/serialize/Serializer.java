@@ -19,10 +19,7 @@ public abstract class Serializer {
 	
 	public enum SerializeEnum {
 		HESSIAN(HessianSerializer.class),
-		HESSIAN1(Hessian1Serializer.class),
-		PROTOSTUFF(ProtostuffSerializer.class),
-		KRYO(KryoSerializer.class),
-		JACKSON(JacksonSerializer.class);
+		HESSIAN1(Hessian1Serializer.class);
 
 		private Class<? extends Serializer> serializerClass;
 		private SerializeEnum (Class<? extends Serializer> serializerClass) {

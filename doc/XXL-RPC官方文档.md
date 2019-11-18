@@ -17,10 +17,10 @@ XXL-RPC 是一个分布式服务框架，提供稳定高性能的RPC远程服务
 - 1、快速接入：接入步骤非常简洁，两分钟即可上手；
 - 2、服务透明：系统完整的封装了底层通信细节，开发时调用远程服务就像调用本地服务，在提供远程调用能力时不损失本地调用的语义简洁性；
 - 3、多调用方案：支持 SYNC、ONEWAY、FUTURE、CALLBACK 等方案；
-- 4、多通讯方案：支持 TCP 和 HTTP 两种通讯方式进行服务调用；其中 TCP 提供可选方案 NETTY 或 MINA ，HTTP 提供可选方案 NETTY_HTTP 或 Jetty；
-- 5、多序列化方案：支持 HESSIAN、HESSIAN1、PROTOSTUFF、KRYO、JACKSON 等方案；
+- 4、多通讯方案：支持 TCP 和 HTTP 两种通讯方式进行服务调用；
+- 5、多序列化方案：支持 HESSIAN、HESSIAN1 等方案；
 - 6、负载均衡/软负载：提供丰富的负载均衡策略，包括：轮询、随机、LRU、LFU、一致性HASH等；
-- 7、注册中心：可选组件，支持服务注册并动态发现；可选择不启用，直接指定服务提供方机器地址通讯；选择启用时，内置可选方案：“XXL-REGISTRY 轻量级注册中心”（推荐）、“ZK注册中心”、“Local注册中心”等；
+- 7、注册中心：可选组件，支持服务注册并动态发现（内置“XXL-REGISTRY 轻量级注册中心”（推荐）、“Local注册中心”等）；可选择不启用，直接指定服务提供方机器地址通讯；
 - 8、服务治理：提供服务治理中心，可在线管理注册的服务信息，如服务锁定、禁用等；
 - 9、服务监控：可在线监控服务调用统计信息以及服务健康状况等（计划中）；
 - 10、容错：服务提供方集群注册时，某个服务节点不可用时将会自动摘除，同时消费方将会移除失效节点将流量分发到其余节点，提高系统容错能力。
@@ -134,9 +134,9 @@ public XxlRpcSpringProviderFactory xxlRpcSpringProviderFactory() {
 
 ProviderFactory 参数 | 说明
 --- | ---
-netType | 服务通讯方案，可选范围：NETTY（默认）、MINA、NETTY_HTTP、JETTY； 
-serialize | 序列化方案，可选范围: HESSIAN（默认）、HESSIAN1、PROTOSTUFF、KRYO、JACKSON；
-ip |  服务方IP，为空自动获取机器IP，支持手动指定；
+netType | 服务通讯方案，可选范围：NETTY（默认）、NETTY_HTTP ;
+serialize | 序列化方案，可选范围: HESSIAN（默认）、HESSIAN1 ;
+ip |  服务方IP，为空自动获取机器IP，支持手动指定
 port | 服务方端口，默认 7080 
 accessToken | 服务鉴权Token，非空时生效；
 serviceRegistryClass | 服务注册中心，可选范围：LocalServiceRegistry.class、ZkServiceRegistry.class；支持灵活自由扩展；
@@ -214,8 +214,8 @@ UserDTO user = demoService.sayHi(name);
 
 “@XxlRpcReference” 注解参数 | 说明
 --- | ---
-netType | 服务通讯方案，可选范围：NETTY（默认）、MINA、NETTY_HTTP、JETTY； 
-serializer | 序列化方案，可选范围: HESSIAN（默认）、HESSIAN1、PROTOSTUFF、KRYO、JACKSON；
+netType | 服务通讯方案，可选范围：NETTY（默认）、NETTY_HTTP； 
+serializer | 序列化方案，可选范围: HESSIAN（默认）、HESSIAN1；
 address | 服务远程地址，ip:port 格式；选填；非空时将会优先实用该服务地址，为空时会从注册中心服务地址发现；
 accessToken | 服务鉴权Token，非空时生效；
 version | 服务版本，默认空；可据此区分同一个“服务API” 的不同版本；
@@ -268,7 +268,7 @@ providerFactory.stop();
 // 参考代码位置：com.xxl.rpc.sample.client.XxlRpcClientAplication
 
 // init client
-DemoService demoService = (DemoService) new XxlRpcReferenceBean(NetEnum.JETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(), CallType.SYNC,
+DemoService demoService = (DemoService) new XxlRpcReferenceBean(NetEnum.NETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(), CallType.SYNC,
         DemoService.class, null, 500, "127.0.0.1:7080", null, null).getObject();
 
 // test
@@ -314,7 +314,7 @@ RPC通讯，可大致划分为四个步骤，可参考上图进行理解：（XX
 ### 4.5 TCP通讯模型
 ![输入图片说明](https://www.xuxueli.com/doc/static/xxl-rpc/images/img_b1IX.png "在这里输入图片标题")
 
-consumer和provider采用NIO方式通讯，其中TC通讯方案可选NETTY或MINA具体选型，高吞吐高并发；但是仅仅依靠单个TCP连接进行数据传输存在瓶颈和风险，因此XXL-RPC在consumer端自身实现了内部连接池，consumer和provider之间为了一个连接池，当尽情底层通讯是会取出一条TCP连接进行通讯（可参考上图）。
+consumer和provider采用NIO方式通讯，其中TCP通讯方案可选NETTY具体选型，高吞吐高并发；但是仅仅依靠单个TCP连接进行数据传输存在瓶颈和风险，因此XXL-RPC在consumer端自身实现了内部连接池，consumer和provider之间为了一个连接池，当尽情底层通讯是会取出一条TCP连接进行通讯（可参考上图）。
 
 ### 4.6 sync-over-async
 ![输入图片说明](https://www.xuxueli.com/doc/static/xxl-rpc/images/img_pMtS.png "在这里输入图片标题")
@@ -351,17 +351,15 @@ XXL-RPC中每个服务在zookeeper中对应一个节点，如图"iface name"节�
 
 
 ### 4.8 在线服务目录  
-服务提供方新增 "/services" 服务目录功能，可查看在线服务列表；暂时仅针对JETTY通讯方案，浏览器访问地址 "{端口地址}/services" 即可。
+服务提供方新增 "/services" 服务目录功能，可查看在线服务列表；暂时仅针对NETTY_HTTP通讯方案，浏览器访问地址 "{端口地址}/services" 即可。
 
 ### 4.9 如何切换“通讯方案”选型
-XXL-RPC提供多中通讯方案：支持 TCP 和 HTTP 两种通讯方式进行服务调用；其中 TCP 提供可选方案 NETTY 或 MINA ，HTTP 提供可选方案 NETTY_HTTP 或 Jetty；
+XXL-RPC提供多中通讯方案：支持 TCP 和 HTTP 两种通讯方式进行服务调用；其中 TCP 提供可选方案 NETTY  ，HTTP 提供可选方案 NETTY_HTTP （新版本移除了Mina和Jetty通讯方案，主推Netty；如果有需要可以参考旧版本；）；
 
 如果需要切换XXL-RPC“通讯方案”，只需要执行以下两个步骤即可：
 - a、引入通讯依赖包，排除掉其他方案依赖，各方案依赖如下：
     - NETTY：依赖 netty-all ；
-    - MINA：依赖 mina-core ；
     - NETTY_HTTP：依赖 netty-all ；
-    - JETTY：依赖 jetty-server + jetty-client；
 - b、修改通讯枚举，需要同时在“服务方”与“消费方”两端一同修改，通讯枚举属性代码位置如下：
     - 服务工厂 "XxlRpcSpringProviderFactory.netType" ：可参考springboot示例组件初始化代码；
     - 服务引用注解 "XxlRpcReference.netType" | 服务Bean对象 "XxlRpcReferenceBean.netType" ：可参考springboot示例组件初始化代码；
@@ -524,8 +522,11 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 1、代码优化，ConcurrentHashMap变量类型改为ConcurrentMap，避免因不同版本实现不同导致的兼容性问题；
 - 2、Netty Http客户端优化，识别并过滤非法响应数据；
 - 3、升级依赖版本，如netty/mina/hessian/jackson/zookeeper等;
-- 4、长连心跳保活：客户端周期性发送心跳请求给服务端；客户端心跳发送失败，或服务端连续三次未收到心跳时，销毁连接；(Netty、NettyHttp以支持；Mina迭代中；)
+- 4、长连心跳保活：客户端周期性发送心跳请求给服务端；客户端心跳发送失败，或服务端连续三次未收到心跳时，销毁连接；
 - 5、服务线程优化，支持自定义线程参数；
+- 6、通讯方案收敛：主推Netty和Netty_Http，移除Mina和Jetty内置扩展，如有需求自行扩展维护；
+- 7、序列化方案收敛：主推HESSIAN和HESSIAN1，移除protostuff、KRYO、JACKSON内置扩展，如有需求自行扩展维护；
+- [ING]8、初始化枚举改为接口实例，方便扩展；
 
 ### 5.11 版本 v1.5.0 Release Notes[迭代中]
 
@@ -562,7 +563,6 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 调用链追踪，监控；结合 xxl-apm 与 xxl-rpc filter共同演进；
 - 限流-熔断-降级，结合xxl-registry与xxl-rpc filter共同演进；
 - [ING]"ConnectClient#clientLock" 优化，复用连接对象；
-- [ING]初始化枚举改为接口实例，方便扩展；
 - 长连心跳、断线重连、空闲连接回收；
 
 
