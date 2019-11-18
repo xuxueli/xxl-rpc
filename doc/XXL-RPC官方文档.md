@@ -519,14 +519,15 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 3、空闲链接自动回收：服务端与客户端主动检测空闲链接并回收，及时释放相关资源(netty、mina)；空闲超10min自动释放；
 
 ### 5.10 版本 v1.4.2 Release Notes[2019-11-18]
-- 1、代码优化，ConcurrentHashMap变量类型改为ConcurrentMap，避免因不同版本实现不同导致的兼容性问题；
-- 2、Netty Http客户端优化，识别并过滤非法响应数据；
-- 3、升级依赖版本，如netty/mina/hessian/jackson/zookeeper等;
-- 4、长连心跳保活：客户端周期性发送心跳请求给服务端；客户端心跳发送失败，或服务端连续三次未收到心跳时，销毁连接；
-- 5、服务线程优化，支持自定义线程参数；
+- 1、长连心跳保活：客户端周期性发送心跳请求给服务端；客户端心跳发送失败，或服务端连续三次未收到心跳时，销毁连接；
+- 2、服务线程优化，支持自定义线程参数；
+- 3、API重构：初始化枚举改为接口实例，方便扩展；
+- 4、代码优化，ConcurrentHashMap变量类型改为ConcurrentMap，避免因不同版本实现不同导致的兼容性问题；
+- 5、Netty Http客户端优化，识别并过滤非法响应数据；
 - 6、通讯方案收敛：主推Netty和Netty_Http，移除Mina和Jetty内置扩展，如有需求自行扩展维护；
 - 7、序列化方案收敛：主推HESSIAN和HESSIAN1，移除protostuff、KRYO、JACKSON内置扩展，如有需求自行扩展维护；
-- 8、API优化：初始化枚举改为接口实例，方便扩展；
+- 8、升级依赖版本，如netty/mina/hessian/jackson/zookeeper等;
+
 
 ### 5.11 版本 v1.5.0 Release Notes[迭代中]
 
