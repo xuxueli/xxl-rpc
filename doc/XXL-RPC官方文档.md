@@ -120,9 +120,15 @@ RPC（Remote Procedure Call Protocol，远程过程调用），调用远程服�
 public XxlRpcSpringProviderFactory xxlRpcSpringProviderFactory() {
 
     XxlRpcSpringProviderFactory providerFactory = new XxlRpcSpringProviderFactory();
+    providerFactory.setServer(NettyServer.class);
+    providerFactory.setSerializer(HessianSerializer.class);
+    providerFactory.setCorePoolSize(-1);
+    providerFactory.setMaxPoolSize(-1);
+    providerFactory.setIp(null);
     providerFactory.setPort(port);
-    providerFactory.setServiceRegistryClass(XxlRegistryServiceRegistry.class);
-    providerFactory.setServiceRegistryParam(new HashMap<String, String>(){{
+    providerFactory.setAccessToken(null);
+    providerFactory.setServiceRegistry(XxlRegistryServiceRegistry.class);
+    providerFactory.setServiceRegistryParam(new HashMap<String, String>() {{
         put(XxlRegistryServiceRegistry.XXL_REGISTRY_ADDRESS, address);
         put(XxlRegistryServiceRegistry.ENV, env);
     }});
@@ -134,13 +140,15 @@ public XxlRpcSpringProviderFactory xxlRpcSpringProviderFactory() {
 
 ProviderFactory 参数 | 说明
 --- | ---
-netType | 服务通讯方案，可选范围：NETTY（默认）、NETTY_HTTP ;
-serialize | 序列化方案，可选范围: HESSIAN（默认）、HESSIAN1 ;
+setServer | 服务通讯方案，可选范围：NettyServer（默认）、NettyHttpServer ;
+setSerializer | 序列化方案，可选范围: HessianSerializer（默认）、Hessian1Serializer ;
+setCorePoolSize | 业务线程池core大小
+setMaxPoolSize | 业务线程是max大小
 ip |  服务方IP，为空自动获取机器IP，支持手动指定
 port | 服务方端口，默认 7080 
 accessToken | 服务鉴权Token，非空时生效；
-serviceRegistryClass | 服务注册中心，可选范围：LocalServiceRegistry.class、ZkServiceRegistry.class；支持灵活自由扩展；
-serviceRegistryParam | 服务注册中心启动参数，参数说明可参考各注册中心实现的 start() 的方法注释；
+setServiceRegistry | 服务注册中心，可选范围：XxlRegistryServiceRegistry.class、LocalServiceRegistry.class；支持灵活自由扩展；
+setServiceRegistryParam | 服务注册中心启动参数，参数说明可参考各注册中心实现的 start() 的方法注释；
 
 
 - 3、开发“服务实现类”
@@ -195,7 +203,7 @@ public XxlRpcSpringInvokerFactory xxlJobExecutor() {
 
 InvokerFactory 参数 | 说明
 --- | ---
-serviceRegistryClass | 服务注册中心，可选范围：LocalServiceRegistry.class、ZkServiceRegistry.class；支持灵活自由扩展；
+serviceRegistryClass | 服务注册中心，可选范围：XxlRegistryServiceRegistry.class、LocalServiceRegistry.class；支持灵活自由扩展；
 serviceRegistryParam | 服务注册中心启动参数，参数说明可参考各注册中心实现的 start() 的方法注释；
 
 - 3、注入并实用远程服务
@@ -214,13 +222,16 @@ UserDTO user = demoService.sayHi(name);
 
 “@XxlRpcReference” 注解参数 | 说明
 --- | ---
-netType | 服务通讯方案，可选范围：NETTY（默认）、NETTY_HTTP； 
+client | 服务通讯方案，可选范围：NettyClient（默认）、NettyHttpClient ; 
 serializer | 序列化方案，可选范围: HESSIAN（默认）、HESSIAN1；
-address | 服务远程地址，ip:port 格式；选填；非空时将会优先实用该服务地址，为空时会从注册中心服务地址发现；
-accessToken | 服务鉴权Token，非空时生效；
+callType | 请求类型，可选范围：SYNC（默认）、ONEWAY、FUTURE、CALLBACK；
+loadBalance | 负载均衡类型，可选范围：ROUND（默认）、RANDOM、LRU、LFU、CONSISTENT_HASH；
 version | 服务版本，默认空；可据此区分同一个“服务API” 的不同版本；
 timeout | 服务超时时间，单位毫秒；
-callType | 请求类型，可选范围：SYNC（默认）、ONEWAY、FUTURE、CALLBACK； 
+address | 服务远程地址，ip:port 格式；选填；非空时将会优先实用该服务地址，为空时会从注册中心服务地址发现；
+accessToken | 服务鉴权Token，非空时生效；
+
+ 
 
 
 #### 2.3.4 测试
@@ -247,7 +258,15 @@ callType | 请求类型，可选范围：SYNC（默认）、ONEWAY、FUTURE、CA
 
 // init
 XxlRpcProviderFactory providerFactory = new XxlRpcProviderFactory();
-providerFactory.initConfig(NetEnum.NETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(), -1, -1, null, 7080, null, null, null);
+providerFactory.setServer(NettyServer.class);
+providerFactory.setSerializer(HessianSerializer.class);
+providerFactory.setCorePoolSize(-1);
+providerFactory.setMaxPoolSize(-1);
+providerFactory.setIp(null);
+providerFactory.setPort(7080);
+providerFactory.setAccessToken(null);
+providerFactory.setServiceRegistry(null);
+providerFactory.setServiceRegistryParam(null);
 
 // add services
 providerFactory.addService(DemoService.class.getName(), null, new DemoServiceImpl());
@@ -268,8 +287,20 @@ providerFactory.stop();
 // 参考代码位置：com.xxl.rpc.sample.client.XxlRpcClientAplication
 
 // init client
-DemoService demoService = (DemoService) new XxlRpcReferenceBean(NetEnum.NETTY, Serializer.SerializeEnum.HESSIAN.getSerializer(), CallType.SYNC,
-        DemoService.class, null, 500, "127.0.0.1:7080", null, null).getObject();
+XxlRpcReferenceBean referenceBean = new XxlRpcReferenceBean();
+referenceBean.setClient(NettyClient.class);
+referenceBean.setSerializer(HessianSerializer.class);
+referenceBean.setCallType(CallType.SYNC);
+referenceBean.setLoadBalance(LoadBalance.ROUND);
+referenceBean.setIface(DemoService.class);
+referenceBean.setVersion(null);
+referenceBean.setTimeout(500);
+referenceBean.setAddress("127.0.0.1:7080");
+referenceBean.setAccessToken(null);
+referenceBean.setInvokeCallback(null);
+referenceBean.setInvokerFactory(null);
+
+DemoService demoService = (DemoService) referenceBean.getObject();
 
 // test
 UserDTO userDTO = demoService.sayHi("[SYNC]jack");
