@@ -19,13 +19,32 @@ import java.util.regex.Pattern;
 public class IpUtil {
     private static final Logger logger = LoggerFactory.getLogger(IpUtil.class);
 
-    private static final String ANYHOST = "0.0.0.0";
-    private static final String LOCALHOST = "127.0.0.1";
+    private static final String ANYHOST_VALUE = "0.0.0.0";
+    private static final String LOCALHOST_VALUE = "127.0.0.1";
     private static final Pattern IP_PATTERN = Pattern.compile("\\d{1,3}(\\.\\d{1,3}){3,5}$");
+
+
 
     private static volatile InetAddress LOCAL_ADDRESS = null;
 
     // ---------------------- valid ----------------------
+
+    private static InetAddress toValidAddress(InetAddress address) {
+        if (address instanceof Inet6Address) {
+            Inet6Address v6Address = (Inet6Address) address;
+            if (isPreferIPV6Address()) {
+                return normalizeV6Address(v6Address);
+            }
+        }
+        if (isValidV4Address(address)) {
+            return address;
+        }
+        return null;
+    }
+
+    private static boolean isPreferIPV6Address() {
+        return Boolean.getBoolean("java.net.preferIPv6Addresses");
+    }
 
     /**
      * valid Inet4Address
@@ -33,45 +52,27 @@ public class IpUtil {
      * @param address
      * @return
      */
-    private static boolean isValidAddress(InetAddress address) {
+    private static boolean isValidV4Address(InetAddress address) {
         if (address == null || address.isLoopbackAddress()) {
             return false;
         }
         String name = address.getHostAddress();
-        return (name != null
-                && !ANYHOST.equals(name)
-                && !LOCALHOST.equals(name)
-                && IP_PATTERN.matcher(name).matches());
+        boolean result = (name != null
+                && IP_PATTERN.matcher(name).matches()
+                && !ANYHOST_VALUE.equals(name)
+                && !LOCALHOST_VALUE.equals(name));
+        return result;
     }
 
-    /**
-     * valid Inet6Address, if an ipv6 address is reachable.
-     *
-     * @param address
-     * @return
-     */
-    private static boolean isValidV6Address(Inet6Address address) {
-        boolean preferIpv6 = Boolean.getBoolean("java.net.preferIPv6Addresses");
-        if (!preferIpv6) {
-            return false;
-        }
-        try {
-            return address.isReachable(100);
-        } catch (IOException e) {
-            // ignore
-        }
-        return false;
-    }
 
     /**
      * normalize the ipv6 Address, convert scope name to scope id.
-     *
      * e.g.
      * convert
-     *   fe80:0:0:0:894:aeec:f37d:23e1%en0
+     * fe80:0:0:0:894:aeec:f37d:23e1%en0
      * to
-     *   fe80:0:0:0:894:aeec:f37d:23e1%5
-     *
+     * fe80:0:0:0:894:aeec:f37d:23e1%5
+     * <p>
      * The %5 after ipv6 address is called scope id.
      * see java doc of {@link Inet6Address} for more details.
      *
@@ -99,17 +100,14 @@ public class IpUtil {
         InetAddress localAddress = null;
         try {
             localAddress = InetAddress.getLocalHost();
-            if (localAddress instanceof Inet6Address) {
-                Inet6Address address = (Inet6Address) localAddress;
-                if (isValidV6Address(address)){
-                    return normalizeV6Address(address);
-                }
-            } else if (isValidAddress(localAddress)) {
-                return localAddress;
+            InetAddress addressItem = toValidAddress(localAddress);
+            if (addressItem != null) {
+                return addressItem;
             }
         } catch (Throwable e) {
             logger.error(e.getMessage(), e);
         }
+
         try {
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
             if (null == interfaces) {
@@ -118,17 +116,21 @@ public class IpUtil {
             while (interfaces.hasMoreElements()) {
                 try {
                     NetworkInterface network = interfaces.nextElement();
+                    if (network.isLoopback() || network.isVirtual() || !network.isUp()) {
+                        continue;
+                    }
                     Enumeration<InetAddress> addresses = network.getInetAddresses();
                     while (addresses.hasMoreElements()) {
                         try {
-                            InetAddress address = addresses.nextElement();
-                            if (address instanceof Inet6Address) {
-                                Inet6Address v6Address = (Inet6Address) address;
-                                if (isValidV6Address(v6Address)){
-                                    return normalizeV6Address(v6Address);
+                            InetAddress addressItem = toValidAddress(addresses.nextElement());
+                            if (addressItem != null) {
+                                try {
+                                    if(addressItem.isReachable(100)){
+                                        return addressItem;
+                                    }
+                                } catch (IOException e) {
+                                    // ignore
                                 }
-                            } else if (isValidAddress(address)) {
-                                return address;
                             }
                         } catch (Throwable e) {
                             logger.error(e.getMessage(), e);

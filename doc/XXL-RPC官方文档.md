@@ -561,6 +561,7 @@ public class Demo2ServiceImpl implements Demo2Service {
 
 
 ### 5.11 版本 v1.5.0 Release Notes[迭代中]
+- 1、IpUtil优化：增加连通性校，过滤明确非法的网卡；
 
 
 ### TODO
