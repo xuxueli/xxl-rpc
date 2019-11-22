@@ -560,7 +560,7 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 8、升级依赖版本，如netty/mina/hessian/jackson/zookeeper等;
 
 
-### 5.11 版本 v1.5.0 Release Notes[迭代中]
+### 5.11 版本 v1.5.0 Release Notes[2019-11-22]
 - 1、IpUtil优化：增加连通性校，过滤明确非法的网卡；
 
 
