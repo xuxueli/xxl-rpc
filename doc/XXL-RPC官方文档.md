@@ -559,9 +559,10 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 7、序列化方案收敛：主推HESSIAN和HESSIAN1，移除protostuff、KRYO、JACKSON内置扩展，如有需求自行扩展维护；
 - 8、升级依赖版本，如netty/mina/hessian/jackson/zookeeper等;
 
-
 ### 5.11 版本 v1.5.0 Release Notes[2019-11-22]
 - 1、IpUtil优化：增加连通性校，过滤明确非法的网卡；
+
+### 5.12 版本 v1.5.1 Release Notes[迭代中]
 
 
 ### TODO

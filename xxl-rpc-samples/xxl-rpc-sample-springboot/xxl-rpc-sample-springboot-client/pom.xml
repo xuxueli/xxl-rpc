@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.xuxueli</groupId>
 		<artifactId>xxl-rpc-sample-springboot</artifactId>
-		<version>1.5.0</version>
+		<version>1.5.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>xxl-rpc-sample-springboot-client</artifactId>
 	<packaging>jar</packaging>
