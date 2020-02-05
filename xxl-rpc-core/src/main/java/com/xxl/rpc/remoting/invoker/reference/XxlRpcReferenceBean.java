@@ -25,6 +25,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.UUID;
@@ -46,6 +48,9 @@ public class XxlRpcReferenceBean {
 	private Class<? extends Serializer> serializer = HessianSerializer.class;
 	private CallType callType = CallType.SYNC;
 	private LoadBalance loadBalance = LoadBalance.ROUND;
+	private List<Filter> filters = Collections.EMPTY_LIST;
+	private static final List<Filter> NECESSARY_FILTER = Arrays
+			.asList(new Filter[]{new GenericFilter(), new MethodFilter()});
 
 	private Class<?> iface = null;
 	private String version = null;
@@ -93,6 +98,9 @@ public class XxlRpcReferenceBean {
 	}
 	public void setInvokerFactory(XxlRpcInvokerFactory invokerFactory) {
 		this.invokerFactory = invokerFactory;
+	}
+	public void setFilters(List<Filter> filters) {
+		this.filters = filters;
 	}
 
 
@@ -166,12 +174,13 @@ public class XxlRpcReferenceBean {
 				new InvocationHandler() {
 					@Override
 					public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-						List<Filter> filters = new ArrayList<>();
+						List<Filter> combineFilters = new ArrayList<>();
+						if (filters != null) {
+							combineFilters.addAll(filters);
+						}
+						combineFilters.addAll(NECESSARY_FILTER);
 
-						filters.add(new GenericFilter());
-						filters.add(new MethodFilter());
-
-						FilterChain filterChain = new FilterChain(filters, new FilterChain.Delegate() {
+						FilterChain filterChain = new FilterChain(combineFilters, new FilterChain.Delegate() {
                             @Override
                             public XxlRpcResponse doInvoke(XxlRpcRequest request) throws Exception {
                                 String className = request.getClassName();	// iface.getName()

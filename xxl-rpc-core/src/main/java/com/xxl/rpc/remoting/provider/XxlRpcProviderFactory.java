@@ -1,5 +1,7 @@
 package com.xxl.rpc.remoting.provider;
 
+import com.xxl.rpc.filter.Filter;
+import com.xxl.rpc.filter.FilterChain;
 import com.xxl.rpc.registry.ServiceRegistry;
 import com.xxl.rpc.remoting.net.Server;
 import com.xxl.rpc.remoting.net.impl.netty.server.NettyServer;
@@ -16,7 +18,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,6 +46,7 @@ public class XxlRpcProviderFactory {
 
 	private Class<? extends ServiceRegistry> serviceRegistry = null;
 	private Map<String, String> serviceRegistryParam = null;
+	private List<Filter> filters = Collections.EMPTY_LIST;
 
 	// set
 	public void setServer(Class<? extends Server> server) {
@@ -63,6 +69,9 @@ public class XxlRpcProviderFactory {
 	}
 	public void setAccessToken(String accessToken) {
 		this.accessToken = accessToken;
+	}
+	public void setFilters(List<Filter> filters) {
+		this.filters = filters;
 	}
 
 	public void setServiceRegistry(Class<? extends ServiceRegistry> serviceRegistry) {
@@ -204,54 +213,63 @@ public class XxlRpcProviderFactory {
 	 * @return
 	 */
 	public XxlRpcResponse invokeService(XxlRpcRequest xxlRpcRequest) {
+        FilterChain filterChain = new FilterChain(filters, new FilterChain.Delegate() {
+            @Override
+            public XxlRpcResponse doInvoke(XxlRpcRequest request) {
+                //  make response
+                XxlRpcResponse xxlRpcResponse = new XxlRpcResponse();
+                xxlRpcResponse.setRequestId(request.getRequestId());
 
-		//  make response
-		XxlRpcResponse xxlRpcResponse = new XxlRpcResponse();
-		xxlRpcResponse.setRequestId(xxlRpcRequest.getRequestId());
+                // match service bean
+                String serviceKey = makeServiceKey(request.getClassName(), request.getVersion());
+                Object serviceBean = serviceData.get(serviceKey);
 
-		// match service bean
-		String serviceKey = makeServiceKey(xxlRpcRequest.getClassName(), xxlRpcRequest.getVersion());
-		Object serviceBean = serviceData.get(serviceKey);
+                // valid
+                if (serviceBean == null) {
+                    xxlRpcResponse.setErrorMsg("The serviceKey[" + serviceKey + "] not found.");
+                    return xxlRpcResponse;
+                }
 
-		// valid
-		if (serviceBean == null) {
-			xxlRpcResponse.setErrorMsg("The serviceKey["+ serviceKey +"] not found.");
-			return xxlRpcResponse;
-		}
+                if (System.currentTimeMillis() - request.getCreateMillisTime() > 3 * 60 * 1000) {
+                    xxlRpcResponse.setErrorMsg("The timestamp difference between admin and executor exceeds the limit.");
+                    return xxlRpcResponse;
+                }
+                if (accessToken != null && accessToken.trim().length() > 0 && !accessToken.trim().equals(request.getAccessToken())) {
+                    xxlRpcResponse.setErrorMsg("The access token[" + request.getAccessToken() + "] is wrong.");
+                    return xxlRpcResponse;
+                }
 
-		if (System.currentTimeMillis() - xxlRpcRequest.getCreateMillisTime() > 3*60*1000) {
-			xxlRpcResponse.setErrorMsg("The timestamp difference between admin and executor exceeds the limit.");
-			return xxlRpcResponse;
-		}
-		if (accessToken!=null && accessToken.trim().length()>0 && !accessToken.trim().equals(xxlRpcRequest.getAccessToken())) {
-			xxlRpcResponse.setErrorMsg("The access token[" + xxlRpcRequest.getAccessToken() + "] is wrong.");
-			return xxlRpcResponse;
-		}
+                try {
+                    // invoke
+                    Class<?> serviceClass = serviceBean.getClass();
+                    String methodName = request.getMethodName();
+                    Class<?>[] parameterTypes = request.getParameterTypes();
+                    Object[] parameters = request.getParameters();
 
-		try {
-			// invoke
-			Class<?> serviceClass = serviceBean.getClass();
-			String methodName = xxlRpcRequest.getMethodName();
-			Class<?>[] parameterTypes = xxlRpcRequest.getParameterTypes();
-			Object[] parameters = xxlRpcRequest.getParameters();
-
-			// TODO: 2020/2/5 server filter
-            Method method = serviceClass.getMethod(methodName, parameterTypes);
-            method.setAccessible(true);
-			Object result = method.invoke(serviceBean, parameters);
+                    Method method = serviceClass.getMethod(methodName, parameterTypes);
+                    method.setAccessible(true);
+                    Object result = method.invoke(serviceBean, parameters);
 
 			/*FastClass serviceFastClass = FastClass.create(serviceClass);
 			FastMethod serviceFastMethod = serviceFastClass.getMethod(methodName, parameterTypes);
 			Object result = serviceFastMethod.invoke(serviceBean, parameters);*/
 
-			xxlRpcResponse.setResult(result);
-		} catch (Throwable t) {
-			// catch error
-			logger.error("xxl-rpc provider invokeService error.", t);
-			xxlRpcResponse.setErrorMsg(ThrowableUtil.toString(t));
-		}
+                    xxlRpcResponse.setResult(result);
+                } catch (Throwable t) {
+                    // catch error
+                    logger.error("xxl-rpc provider invokeService error.", t);
+                    xxlRpcResponse.setErrorMsg(ThrowableUtil.toString(t));
+                }
 
-		return xxlRpcResponse;
-	}
+                return xxlRpcResponse;
+            }
+        });
 
+        try {
+            return filterChain.doFilter(xxlRpcRequest);
+        } catch (Exception e) {
+            throw (e instanceof XxlRpcException) ? (XxlRpcException)e : new XxlRpcException(e);
+        }
+
+    }
 }
