@@ -1,7 +1,7 @@
 package com.xxl.rpc.filter;
 
-import com.xxl.rpc.remoting.invoker.common.Invocation;
-import com.xxl.rpc.util.XxlRpcException;
+import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
+import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 
 /**
  * @author weizibin
@@ -9,6 +9,6 @@ import com.xxl.rpc.util.XxlRpcException;
  */
 public interface Filter {
 
-    Object doFilter(Invocation invocation, FilterChain chain) throws Exception;
+    XxlRpcResponse doFilter(XxlRpcRequest request, FilterChain chain) throws Exception;
 
 }

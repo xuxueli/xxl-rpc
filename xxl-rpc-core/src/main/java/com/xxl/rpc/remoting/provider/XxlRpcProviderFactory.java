@@ -235,6 +235,7 @@ public class XxlRpcProviderFactory {
 			Class<?>[] parameterTypes = xxlRpcRequest.getParameterTypes();
 			Object[] parameters = xxlRpcRequest.getParameters();
 
+			// TODO: 2020/2/5 server filter
             Method method = serviceClass.getMethod(methodName, parameterTypes);
             method.setAccessible(true);
 			Object result = method.invoke(serviceBean, parameters);

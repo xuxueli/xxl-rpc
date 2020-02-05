@@ -1,6 +1,7 @@
 package com.xxl.rpc.filter;
 
-import com.xxl.rpc.remoting.invoker.common.Invocation;
+import com.xxl.rpc.remoting.net.params.XxlRpcRequest;
+import com.xxl.rpc.remoting.net.params.XxlRpcResponse;
 
 import java.util.List;
 
@@ -35,17 +36,17 @@ public class FilterChain {
         return delegate;
     }
 
-    public Object doFilter(Invocation invocation) throws Exception {
+    public XxlRpcResponse doFilter(XxlRpcRequest request) throws Exception {
         if (this.index < filters.size()) {
             Filter filter = filters.get(this.index);
             FilterChain chain = new FilterChain(this, this.index + 1);
-            return filter.doFilter(invocation, chain);
+            return filter.doFilter(request, chain);
         } else {
-            return delegate.doInvoke(invocation);
+            return delegate.doInvoke(request);
         }
     }
 
     public interface Delegate {
-        Object doInvoke(Invocation invocation) throws Exception;
+        XxlRpcResponse doInvoke(XxlRpcRequest request) throws Exception;
     }
 }
