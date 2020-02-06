@@ -1,5 +1,6 @@
 package com.xxl.rpc.remoting.invoker.impl;
 
+import com.xxl.rpc.filter.Filter;
 import com.xxl.rpc.registry.ServiceRegistry;
 import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.invoker.annotation.XxlRpcReference;
@@ -14,10 +15,13 @@ import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessorAdapter;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,7 +37,11 @@ public class XxlRpcSpringInvokerFactory extends InstantiationAwareBeanPostProces
 
     private Class<? extends ServiceRegistry> serviceRegistryClass;          // class.forname
     private Map<String, String> serviceRegistryParam;
+    private List<Filter> filters = Collections.EMPTY_LIST;
 
+    public void setFilters(List<Filter> filters) {
+        this.filters = filters;
+    }
 
     public void setServiceRegistryClass(Class<? extends ServiceRegistry> serviceRegistryClass) {
         this.serviceRegistryClass = serviceRegistryClass;
@@ -87,7 +95,7 @@ public class XxlRpcSpringInvokerFactory extends InstantiationAwareBeanPostProces
                     referenceBean.setAccessToken(rpcReference.accessToken());
                     referenceBean.setInvokeCallback(null);
                     referenceBean.setInvokerFactory(xxlRpcInvokerFactory);
-
+                    referenceBean.setFilters(filters);
 
                     // get proxyObj
                     Object serviceProxy = null;
