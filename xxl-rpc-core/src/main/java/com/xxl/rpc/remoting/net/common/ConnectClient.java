@@ -16,6 +16,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public abstract class ConnectClient {
     protected static transient Logger logger = LoggerFactory.getLogger(ConnectClient.class);
+    protected  static int DEFAULT_IO_THREADS = Math.min(Runtime.getRuntime().availableProcessors() + 1, 32);
 
     // ---------------------- iface ----------------------
 

@@ -16,6 +16,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.timeout.IdleStateHandler;
+import io.netty.util.concurrent.DefaultThreadFactory;
 
 import java.net.URI;
 import java.net.URL;
@@ -28,7 +29,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class NettyHttpConnectClient extends ConnectClient {
 
-    private EventLoopGroup group;
+    private static final EventLoopGroup DEFAULT_HTTP_CONNECT_GROUP =
+            new NioEventLoopGroup(ConnectClient.DEFAULT_IO_THREADS, new DefaultThreadFactory(NettyHttpConnectClient.class.getSimpleName(), true));
     private Channel channel;
 
     private Serializer serializer;
@@ -49,10 +51,8 @@ public class NettyHttpConnectClient extends ConnectClient {
         this.host = url.getHost();
         int port = url.getPort()>-1?url.getPort():80;
 
-
-        this.group = new NioEventLoopGroup();
         Bootstrap bootstrap = new Bootstrap();
-        bootstrap.group(group)
+        bootstrap.group(DEFAULT_HTTP_CONNECT_GROUP)
                 .channel(NioSocketChannel.class)
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
@@ -93,9 +93,7 @@ public class NettyHttpConnectClient extends ConnectClient {
         if (this.channel!=null && this.channel.isActive()) {
             this.channel.close();		// if this.channel.isOpen()
         }
-        if (this.group!=null && !this.group.isShutdown()) {
-            this.group.shutdownGracefully();
-        }
+// can't shutdown DEFAULT_HTTP_CONNECT_GROUP because the method will be invoked when closing one channel but not a client,
         logger.debug(">>>>>>>>>>> xxl-rpc netty client close.");
     }
 
