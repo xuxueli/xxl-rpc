@@ -2,7 +2,7 @@ package com.xxl.rpc.sample.server.service;
 
 import com.xxl.rpc.sample.api.DemoService;
 import com.xxl.rpc.sample.api.dto.UserDTO;
-import com.xxl.rpc.remoting.provider.annotation.XxlRpcService;
+import com.xxl.rpc.core.remoting.provider.annotation.XxlRpcService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

@@ -1,15 +1,15 @@
 package com.xxl.rpc.sample.client;
 
-import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
-import com.xxl.rpc.remoting.invoker.call.CallType;
-import com.xxl.rpc.remoting.invoker.call.XxlRpcInvokeCallback;
-import com.xxl.rpc.remoting.invoker.call.XxlRpcInvokeFuture;
-import com.xxl.rpc.remoting.invoker.reference.XxlRpcReferenceBean;
-import com.xxl.rpc.remoting.invoker.route.LoadBalance;
-import com.xxl.rpc.remoting.net.impl.netty.client.NettyClient;
+import com.xxl.rpc.core.remoting.invoker.XxlRpcInvokerFactory;
+import com.xxl.rpc.core.remoting.invoker.call.CallType;
+import com.xxl.rpc.core.remoting.invoker.call.XxlRpcInvokeCallback;
+import com.xxl.rpc.core.remoting.invoker.call.XxlRpcInvokeFuture;
+import com.xxl.rpc.core.remoting.invoker.reference.XxlRpcReferenceBean;
+import com.xxl.rpc.core.remoting.invoker.route.LoadBalance;
+import com.xxl.rpc.core.remoting.net.impl.netty.client.NettyClient;
 import com.xxl.rpc.sample.api.DemoService;
 import com.xxl.rpc.sample.api.dto.UserDTO;
-import com.xxl.rpc.serialize.impl.HessianSerializer;
+import com.xxl.rpc.core.serialize.impl.HessianSerializer;
 
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;

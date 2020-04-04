@@ -16,13 +16,13 @@
 	<dependencies>
 
 
-		<!-- ********************** net + serialize + registry (default = netty + hessian + xxl-registry) ********************** -->
+		<!-- ********************** net + serialize + registry (default = netty + hessian + xxl-rpc-admin/registry) ********************** -->
 
 		<!-- netty -->
 		<dependency>
 			<groupId>io.netty</groupId>
 			<artifactId>netty-all</artifactId>
-			<version>${netty.version}</version>
+			<version>${netty-all.version}</version>
 		</dependency>
 
 		<!-- hessian -->
@@ -30,13 +30,6 @@
 			<groupId>com.caucho</groupId>
 			<artifactId>hessian</artifactId>
 			<version>${hessian.version}</version>
-		</dependency>
-
-		<!-- xxl-registry-client -->
-		<dependency>
-			<groupId>com.xuxueli</groupId>
-			<artifactId>xxl-registry-client</artifactId>
-			<version>${xxl-registry.version}</version>
 		</dependency>
 
 

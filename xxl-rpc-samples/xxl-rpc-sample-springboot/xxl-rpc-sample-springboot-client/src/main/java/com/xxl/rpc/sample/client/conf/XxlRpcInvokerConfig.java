@@ -1,7 +1,7 @@
 package com.xxl.rpc.sample.client.conf;
 
-import com.xxl.rpc.registry.impl.XxlRegistryServiceRegistry;
-import com.xxl.rpc.remoting.invoker.impl.XxlRpcSpringInvokerFactory;
+import com.xxl.rpc.core.registry.impl.XxlRpcAdminRegister;
+import com.xxl.rpc.core.remoting.invoker.impl.XxlRpcSpringInvokerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,10 +20,10 @@ public class XxlRpcInvokerConfig {
     private Logger logger = LoggerFactory.getLogger(XxlRpcInvokerConfig.class);
 
 
-    @Value("${xxl-rpc.registry.xxlregistry.address}")
+    @Value("${xxl-rpc.registry.xxlrpcadmin.address}")
     private String address;
 
-    @Value("${xxl-rpc.registry.xxlregistry.env}")
+    @Value("${xxl-rpc.registry.xxlrpcadmin.env}")
     private String env;
 
 
@@ -31,10 +31,10 @@ public class XxlRpcInvokerConfig {
     public XxlRpcSpringInvokerFactory xxlJobExecutor() {
 
         XxlRpcSpringInvokerFactory invokerFactory = new XxlRpcSpringInvokerFactory();
-        invokerFactory.setServiceRegistryClass(XxlRegistryServiceRegistry.class);
+        invokerFactory.setServiceRegistryClass(XxlRpcAdminRegister.class);
         invokerFactory.setServiceRegistryParam(new HashMap<String, String>(){{
-            put(XxlRegistryServiceRegistry.XXL_REGISTRY_ADDRESS, address);
-            put(XxlRegistryServiceRegistry.ENV, env);
+            put(XxlRpcAdminRegister.ADMIN_ADDRESS, address);
+            put(XxlRpcAdminRegister.ENV, env);
         }});
 
         logger.info(">>>>>>>>>>> xxl-rpc invoker config init finish.");

@@ -12,7 +12,6 @@
 	<modules>
 		<module>xxl-rpc-sample-frameless</module>
 		<module>xxl-rpc-sample-springboot</module>
-		<module>xxl-rpc-sample-jfinal</module>
 	</modules>
 
 </project>

@@ -11,6 +11,7 @@
 	<url>https://www.xuxueli.com/</url>
 
 	<modules>
+		<module>xxl-rpc-admin</module>
 		<module>xxl-rpc-core</module>
 		<module>xxl-rpc-samples</module>
     </modules>
@@ -19,26 +20,24 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>
-		<maven.compiler.source>1.7</maven.compiler.source>
-		<maven.compiler.target>1.7</maven.compiler.target>
-
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.test.skip>true</maven.test.skip>
 
-
-		<netty.version>4.1.43.Final</netty.version>
+		<netty-all.version>4.1.48.Final</netty-all.version>
 		<hessian.version>4.0.63</hessian.version>
-		<xxl-registry.version>1.1.0</xxl-registry.version>
 
-		<slf4j-api.version>1.7.29</slf4j-api.version>
-		<junit.version>4.12</junit.version>
+		<slf4j-api.version>1.7.30</slf4j-api.version>
+		<junit.version>4.13</junit.version>
 
+		<spring.version>5.2.5.RELEASE</spring.version>
+		<spring-boot.version>2.2.5.RELEASE</spring-boot.version>
 
-		<spring.version>4.3.25.RELEASE</spring.version>
-		<spring-boot.version>1.5.22.RELEASE</spring-boot.version>
+		<mybatis-spring-boot-starter.version>2.1.2</mybatis-spring-boot-starter.version>
+		<mysql-connector-java.version>8.0.19</mysql-connector-java.version>
 
-
-		<maven-source-plugin.version>3.1.0</maven-source-plugin.version>
-		<maven-javadoc-plugin.version>3.1.1</maven-javadoc-plugin.version>
+		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+		<maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
 		<maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
 	</properties>
 
@@ -69,8 +68,8 @@
 		</developer>
 	</developers>
 
-
 	<profiles>
+
 		<profile>
 			<id>release</id>
 			<build>

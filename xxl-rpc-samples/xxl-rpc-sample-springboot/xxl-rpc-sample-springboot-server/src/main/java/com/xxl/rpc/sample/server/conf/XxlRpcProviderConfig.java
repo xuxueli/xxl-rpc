@@ -1,9 +1,9 @@
 package com.xxl.rpc.sample.server.conf;
 
-import com.xxl.rpc.registry.impl.XxlRegistryServiceRegistry;
-import com.xxl.rpc.remoting.net.impl.netty.server.NettyServer;
-import com.xxl.rpc.remoting.provider.impl.XxlRpcSpringProviderFactory;
-import com.xxl.rpc.serialize.impl.HessianSerializer;
+import com.xxl.rpc.core.registry.impl.XxlRpcAdminRegister;
+import com.xxl.rpc.core.remoting.net.impl.netty.server.NettyServer;
+import com.xxl.rpc.core.remoting.provider.impl.XxlRpcSpringProviderFactory;
+import com.xxl.rpc.core.serialize.impl.HessianSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,10 +24,10 @@ public class XxlRpcProviderConfig {
     @Value("${xxl-rpc.remoting.port}")
     private int port;
 
-    @Value("${xxl-rpc.registry.xxlregistry.address}")
+    @Value("${xxl-rpc.registry.xxlrpcadmin.address}")
     private String address;
 
-    @Value("${xxl-rpc.registry.xxlregistry.env}")
+    @Value("${xxl-rpc.registry.xxlrpcadmin.env}")
     private String env;
 
     @Bean
@@ -41,10 +41,10 @@ public class XxlRpcProviderConfig {
         providerFactory.setIp(null);
         providerFactory.setPort(port);
         providerFactory.setAccessToken(null);
-        providerFactory.setServiceRegistry(XxlRegistryServiceRegistry.class);
+        providerFactory.setServiceRegistry(XxlRpcAdminRegister.class);
         providerFactory.setServiceRegistryParam(new HashMap<String, String>() {{
-            put(XxlRegistryServiceRegistry.XXL_REGISTRY_ADDRESS, address);
-            put(XxlRegistryServiceRegistry.ENV, env);
+            put(XxlRpcAdminRegister.ADMIN_ADDRESS, address);
+            put(XxlRpcAdminRegister.ENV, env);
         }});
 
         logger.info(">>>>>>>>>>> xxl-rpc provider config init finish.");
