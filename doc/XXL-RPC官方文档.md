@@ -413,9 +413,11 @@ XXL-RPC的注册中心，是一个可选组件，不强制依赖；支持服务�
     - XxlRpcSpringProviderFactory.serviceRegistryClass：注册中心实现类，可选：XxlRegistryServiceRegistry.class、LocalServiceRegistry.class、ZkServiceRegistry.class
     - XxlRpcSpringProviderFactory.serviceRegistryParam：注册中心启动参数，各种注册中心启动参数不同，可参考其 start 方案了解；
     
-### 4.11 泛化调用
-XXL-RPC 提供 "泛华调用" 支持，服务调用方不依赖服务方提供的API；泛化调用通常用于框架集成，比如 "网关平台、跨语言调用、测试平台" 等；
-开启 "泛华调用" 时服务方不需要做任何调整，仅需要调用方初始化一个泛华调用服务Reference （"XxlRpcGenericService"） 即可。
+
+### 4.10 泛化调用
+XXL-RPC 提供 "泛化调用" 支持，服务调用方不依赖服务方提供的API；泛化调用通常用于框架集成，比如 "网关平台、跨语言调用、测试平台" 等；
+开启 "泛化调用" 时服务方不需要做任何调整，仅需要调用方初始化一个泛化调用服务Reference （"XxlRpcGenericService"） 即可。
+
 
 “XxlRpcGenericService#invoke” 请求参数 | 说明
 --- | ---
@@ -868,7 +870,7 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 - 演进计划：
     - 通讯：remoting模块；TCP、HTTP、HTTP2可选方案；
     - 限流：ratelimit模块；滑动窗口方式，单机限流，请求/响应方双向限流；[ING]
-    - 网关：servlet3 + 泛华调用模块；计划：基于DB轻量级注册中心，服务动态发现，自动转发；
+    - 网关：servlet3 + 泛化调用模块；计划：基于DB轻量级注册中心，服务动态发现，自动转发；
 - admin-服务监控（《xxl-trace》）:
     - tps，99线；
     - 成功率；
