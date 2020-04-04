@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xxl.rpc.admin.dao.IXxlRpcRegistryDataDao" >
+	
+	<resultMap id="xxlRpcRegistryData" type="com.xxl.rpc.admin.core.model.XxlRpcRegistryData" >
+		<result column="id" property="id" />
+		<result column="biz" property="biz" />
+		<result column="env" property="env" />
+		<result column="key" property="key" />
+		<result column="value" property="value" />
+		<result column="updateTime" property="updateTime" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		t.`id`,
+		t.`biz`,
+		t.`env`,
+		t.`key`,
+		t.`value`,
+		t.`updateTime`
+	</sql>
+
+	<update id="refresh" parameterType="com.xxl.rpc.admin.core.model.XxlRpcRegistryData"  >
+		UPDATE xxl_rpc_registry_data AS t
+		SET
+			t.`updateTime` = now()
+		WHERE t.`biz` = #{xxlRpcRegistryData.biz}
+			and t.`env` = #{xxlRpcRegistryData.env}
+			and t.`key` = #{xxlRpcRegistryData.key}
+			and t.`value` = #{xxlRpcRegistryData.value}
+	</update>
+
+	<insert id="add" parameterType="com.xxl.rpc.admin.core.model.XxlRpcRegistryData" >
+		INSERT INTO xxl_rpc_registry_data (
+			`biz`,
+			`env`,
+			`key`,
+			`value`,
+			`updateTime`
+		) VALUES
+		(
+			#{xxlRpcRegistryData.biz},
+			#{xxlRpcRegistryData.env},
+			#{xxlRpcRegistryData.key},
+			#{xxlRpcRegistryData.value},
+			now()
+		)
+	</insert>
+
+	<select id="findData" parameterType="java.util.HashMap" resultMap="xxlRpcRegistryData">
+		SELECT <include refid="Base_Column_List" />
+		FROM xxl_rpc_registry_data AS t
+		where t.biz = #{biz}
+			and t.env = #{env}
+			and t.key = #{key}
+		ORDER BY t.value ASC
+	</select>
+
+	<delete id="cleanData" parameterType="java.util.HashMap" >
+		DELETE FROM xxl_rpc_registry_data
+		WHERE NOW() <![CDATA[ > ]]> DATE_ADD(updateTime, Interval #{timeout} SECOND)
+	</delete>
+
+	<delete id="deleteData" parameterType="java.util.HashMap" >
+		DELETE FROM xxl_rpc_registry_data
+		WHERE `biz` = #{biz}
+			and `env` = #{env}
+			and `key` = #{key}
+	</delete>
+
+	<delete id="deleteDataValue" parameterType="java.util.HashMap" >
+		DELETE FROM xxl_rpc_registry_data
+		WHERE `biz` = #{biz}
+			and `env` = #{env}
+			and `key` = #{key}
+			and `value` = #{value}
+	</delete>
+
+	<select id="count" resultType="java.lang.Integer" >
+		SELECT count(1)
+		FROM xxl_rpc_registry_data
+	</select>
+
+</mapper>

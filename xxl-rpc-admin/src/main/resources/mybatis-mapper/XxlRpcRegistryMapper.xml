@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xxl.rpc.admin.dao.IXxlRpcRegistryDao" >
+	
+	<resultMap id="xxlRpcRegistry" type="com.xxl.rpc.admin.core.model.XxlRpcRegistry" >
+		<result column="id" property="id" />
+		<result column="biz" property="biz" />
+		<result column="env" property="env" />
+		<result column="key" property="key" />
+		<result column="data" property="data" />
+		<result column="status" property="status" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		t.`id`,
+		t.`biz`,
+		t.`env`,
+		t.`key`,
+		t.`data`,
+		t.`status`
+	</sql>
+
+	<select id="pageList" parameterType="java.util.HashMap" resultMap="xxlRpcRegistry">
+		SELECT <include refid="Base_Column_List" />
+		FROM xxl_rpc_registry AS t
+		<trim prefix="WHERE" prefixOverrides="AND | OR" >
+			<if test="biz != null and biz != ''">
+				AND t.biz = #{biz}
+			</if>
+			<if test="env != null and env != ''">
+				AND t.env = #{env}
+			</if>
+			<if test="key != null and key != ''">
+				AND t.key like CONCAT(CONCAT('%', #{key}), '%')
+			</if>
+		</trim>
+		ORDER BY t.biz ASC, t.env ASC, t.key ASC
+		LIMIT #{offset}, #{pagesize}
+	</select>
+
+	<select id="pageListCount" parameterType="java.util.HashMap" resultType="int">
+		SELECT count(1)
+		FROM xxl_rpc_registry AS t
+		<trim prefix="WHERE" prefixOverrides="AND | OR" >
+			<if test="biz != null and biz != ''">
+				AND t.biz = #{biz}
+			</if>
+			<if test="env != null and env != ''">
+				AND t.env = #{env}
+			</if>
+			<if test="key != null and key != ''">
+				AND t.key like CONCAT(CONCAT('%', #{key}), '%')
+			</if>
+		</trim>
+	</select>
+
+	<select id="load" parameterType="java.util.HashMap" resultMap="xxlRpcRegistry">
+		SELECT <include refid="Base_Column_List" />
+		FROM xxl_rpc_registry AS t
+		WHERE t.`biz` = #{biz}
+			and t.`env` = #{env}
+			and t.`key` = #{key}
+	</select>
+
+	<select id="loadById" parameterType="java.util.HashMap" resultMap="xxlRpcRegistry">
+		SELECT <include refid="Base_Column_List" />
+		FROM xxl_rpc_registry AS t
+		WHERE id = #{id}
+	</select>
+
+	<insert id="add" parameterType="com.xxl.rpc.admin.core.model.XxlRpcRegistry" >
+		INSERT INTO xxl_rpc_registry (
+			`biz`,
+			`env`,
+			`key`,
+			`data`,
+			`status`
+		) VALUES
+		(
+			#{xxlRpcRegistry.biz},
+			#{xxlRpcRegistry.env},
+			#{xxlRpcRegistry.key},
+			#{xxlRpcRegistry.data},
+			#{xxlRpcRegistry.status}
+		)
+	</insert>
+
+	<update id="update" parameterType="com.xxl.rpc.admin.core.model.XxlRpcRegistry"  >
+		UPDATE xxl_rpc_registry AS t
+		SET
+			t.`data` = #{xxlRpcRegistry.data},
+			t.`status` = #{xxlRpcRegistry.status}
+		WHERE t.`id` = #{xxlRpcRegistry.id}
+	</update>
+
+	<delete id="delete" parameterType="java.util.HashMap" >
+		DELETE FROM xxl_rpc_registry
+		WHERE id = #{id}
+	</delete>
+
+</mapper>

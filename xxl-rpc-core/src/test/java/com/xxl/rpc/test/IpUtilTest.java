@@ -1,6 +1,6 @@
-package com.xxl.rpc.test;
+package com.xxl.rpc.core.test;
 
-import com.xxl.rpc.util.IpUtil;
+import com.xxl.rpc.core.util.IpUtil;
 
 import java.net.UnknownHostException;
 

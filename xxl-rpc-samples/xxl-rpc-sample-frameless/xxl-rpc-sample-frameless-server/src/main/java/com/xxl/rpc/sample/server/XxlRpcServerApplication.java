@@ -1,10 +1,10 @@
 package com.xxl.rpc.sample.server;
 
-import com.xxl.rpc.remoting.net.impl.netty.server.NettyServer;
-import com.xxl.rpc.remoting.provider.XxlRpcProviderFactory;
+import com.xxl.rpc.core.remoting.net.impl.netty.server.NettyServer;
+import com.xxl.rpc.core.remoting.provider.XxlRpcProviderFactory;
 import com.xxl.rpc.sample.api.DemoService;
 import com.xxl.rpc.sample.server.service.DemoServiceImpl;
-import com.xxl.rpc.serialize.impl.HessianSerializer;
+import com.xxl.rpc.core.serialize.impl.HessianSerializer;
 
 import java.util.concurrent.TimeUnit;
 
