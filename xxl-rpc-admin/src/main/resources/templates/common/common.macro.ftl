@@ -69,7 +69,7 @@
 	<header class="main-header">
         <a href="${request.contextPath}/" class="logo">
             <span class="logo-mini"><b>XXL</b></span>
-			<span class="logo-lg"><b>服务注册中心</b></span>
+			<span class="logo-lg"><b>分布式服务中心</b></span>
 		</a>
         <nav class="navbar navbar-static-top" role="navigation">
 
@@ -102,7 +102,7 @@
 			<ul class="sidebar-menu">
 				<li class="header">导航</li>
                 <li class="nav-click <#if pageName == "index">active</#if>" ><a href="${request.contextPath}/"><i class="fa fa-circle-o text-aqua"></i><span>运行报表</span></a></li>
-                <li class="nav-click <#if pageName == "registry">active</#if>" ><a href="${request.contextPath}/registry"><i class="fa fa-circle-o text-yellow"></i><span>服务注册</span></a></li>
+                <li class="nav-click <#if pageName == "registry">active</#if>" ><a href="${request.contextPath}/registry"><i class="fa fa-circle-o text-yellow"></i><span>服务列表</span></a></li>
                 <li class="nav-click <#if pageName == "help">active</#if>" ><a href="${request.contextPath}/help"><i class="fa fa-circle-o text-gray"></i><span>使用教程</span></a></li>
 			</ul>
 		</section>

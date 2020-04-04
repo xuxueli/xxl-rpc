@@ -2,7 +2,7 @@
 <html>
 <head>
   	<#import "../common/common.macro.ftl" as netCommon>
-    <title>分布式服务注册中心</title>
+    <title>分布式服务中心</title>
 	<@netCommon.commonStyle />
     <!-- DataTables -->
     <link rel="stylesheet" href="${request.contextPath}/static/adminlte/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
@@ -20,7 +20,7 @@
 	<div class="content-wrapper">
 		<!-- Content Header (Page header) -->
 		<section class="content-header">
-			<h1>服务注册<small></small></h1>
+			<h1>服务列表<small></small></h1>
 		</section>
 		
 		<!-- Main content -->

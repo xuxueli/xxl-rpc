@@ -2,7 +2,7 @@
 <html>
 <head>
   	<#import "./common/common.macro.ftl" as netCommon>
-    <title>分布式服务注册中心</title>
+    <title>分布式服务中心</title>
 	<@netCommon.commonStyle />
     <!-- daterangepicker -->
     <link rel="stylesheet" href="${request.contextPath}/static/adminlte/bower_components/bootstrap-daterangepicker/daterangepicker.css">

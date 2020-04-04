@@ -13,10 +13,10 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author xuxueli 2018-11-30
  */
-public class XxlRpcRegistryBaseClientTest {
+public class XxlRpcAdminRegistryBaseClientTest {
 
     public static void main(String[] args) throws InterruptedException {
-        XxlRpcAdminRegistryBaseClient registryClient = new XxlRpcAdminRegistryBaseClient("http://localhost:8080/xxl-rpc-admin/", null, "xxl-rpc", "dev");
+        XxlRpcAdminRegistryBaseClient registryClient = new XxlRpcAdminRegistryBaseClient("http://localhost:8080/xxl-rpc-admin/", null, "xxl-rpc", "test");
 
         // registry test
         List<XxlRpcAdminRegistryDataParamVO> registryDataList = new ArrayList<>();

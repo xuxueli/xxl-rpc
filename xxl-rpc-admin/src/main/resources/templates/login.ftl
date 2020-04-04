@@ -2,18 +2,18 @@
 <html>
 <head>
 	<#import "./common/common.macro.ftl" as netCommon>
-  	<title>分布式服务注册中心</title>
+  	<title>分布式服务中心</title>
 	<@netCommon.commonStyle />
 	<link rel="stylesheet" href="${request.contextPath}/static/adminlte/plugins/iCheck/square/blue.css">
 </head>
 <body class="hold-transition login-page">
 	<div class="login-box">
 		<div class="login-logo">
-            <a><b>XXL</b></a>REGISTRY
+            <a><b>XXL</b></a>RPC
 		</div>
 		<form id="loginForm" method="post" >
 			<div class="login-box-body">
-				<p class="login-box-msg">分布式服务注册中心</p>
+				<p class="login-box-msg">分布式服务中心</p>
 				<div class="form-group has-feedback">
 	            	<input type="text" name="userName" class="form-control" placeholder="请输入登陆账号" value="admin" maxlength="18" >
 	            	<span class="glyphicon glyphicon-envelope form-control-feedback"></span>

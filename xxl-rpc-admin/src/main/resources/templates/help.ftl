@@ -2,7 +2,7 @@
 <html>
 <head>
 	<#import "./common/common.macro.ftl" as netCommon>
-  	<title>分布式服务注册中心</title>
+  	<title>分布式服务中心</title>
 	<@netCommon.commonStyle />
 </head>
 <body class="hold-transition skin-blue sidebar-mini <#if cookieMap?exists && cookieMap["xxlrpc_adminlte_settings"]?exists && "off" == cookieMap["xxlrpc_adminlte_settings"].value >sidebar-collapse</#if> ">
