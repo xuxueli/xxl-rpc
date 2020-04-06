@@ -368,14 +368,14 @@ XXL-RPC的注册中心，是可选组件，支持服务注册并动态发现；
 
 选择启用时，内置可选方案：“XXL-RPC-ADMIN 轻量级服务注册中心”（推荐）、“ZK注册中心”、“Local注册中心”等；
 
-##### a、XXL-RPC-ADMIN 轻量级服务注册中心（推荐）
+** a、XXL-RPC-ADMIN 轻量级服务注册中心（推荐） **
 
 推荐使用内置的 "XXL-RPC-ADMIN" 作为注册中心。非常轻量级，一分钟可完成部署工作。
 
 更易于集群部署、横向扩展，搭建与学习成本更低，推荐采用该方式；
 
 
-##### b、ZK注册中心
+** b、ZK注册中心 **
 内置“ZK注册中心”，可选组件，结构图如下：
 
 ![输入图片说明](https://www.xuxueli.com/doc/static/xxl-rpc/images/img_m3Ma.png "在这里输入图片标题")
@@ -414,7 +414,7 @@ XXL-RPC的注册中心，是一个可选组件，不强制依赖；支持服务�
     - XxlRpcSpringProviderFactory.serviceRegistryParam：注册中心启动参数，各种注册中心启动参数不同，可参考其 start 方案了解；
     
 
-### 4.10 泛化调用
+### 4.11 泛化调用
 XXL-RPC 提供 "泛化调用" 支持，服务调用方不依赖服务方提供的API；泛化调用通常用于框架集成，比如 "网关平台、跨语言调用、测试平台" 等；
 开启 "泛化调用" 时服务方不需要做任何调整，仅需要调用方初始化一个泛化调用服务Reference （"XxlRpcGenericService"） 即可。
 
