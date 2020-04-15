@@ -7,6 +7,7 @@ $(function() {
 	    "serverSide": true,
 		"ajax": {
 			url: base_url + "/registry/pageList",
+            type:"post",
 	        data : function ( d ) {
 				var obj = {};
 				obj.start = d.start;
