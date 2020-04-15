@@ -112,7 +112,7 @@
 
 <#macro commonFooter >
 	<footer class="main-footer">
-		Powered by <b>XXL-RPC</b> 1.5.1-SNAPSHOT
+		Powered by <b>XXL-RPC</b> 1.6.0
 		<div class="pull-right hidden-xs">
 			<strong>Copyright &copy; 2015-${.now?string('yyyy')} &nbsp;
 				<a href="https://www.xuxueli.com/" target="_blank" >xuxueli</a>
