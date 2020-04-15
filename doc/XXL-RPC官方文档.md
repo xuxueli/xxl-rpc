@@ -846,7 +846,7 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 ### 6.11 版本 v1.5.0 Release Notes[2019-11-22]
 - 1、IpUtil优化：增加连通性校，过滤明确非法的网卡；
 
-### 6.12 版本 v1.6.0 Release Notes[迭代中]
+### 6.12 版本 v1.6.0 Release Notes[2020-04-16]
 - 1、为方便维护，合并xxl-registry至xxl-rpc，模块名为xxl-rpc-admin;
 - 2、一致性哈希路由策略优化：默认虚拟节点数量调整为100，提高路由的均衡性；
 - 3、RPC Client端，复用单例EventLoopGroup线程池，降低资源开销；
