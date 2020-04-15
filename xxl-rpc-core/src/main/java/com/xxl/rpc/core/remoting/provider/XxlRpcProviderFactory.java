@@ -35,8 +35,9 @@ public class XxlRpcProviderFactory {
 	private int corePoolSize = 60;
 	private int maxPoolSize = 300;
 
-	private String ip = null;					// for registry
-	private int port = 7080;					// default port
+	private String ip = null;					// server ip, for registry
+	private int port = 7080;					// server default port
+	private String registryAddress;				// default use registryAddress to registry , otherwise use ip:port if registryAddress is null
 	private String accessToken = null;
 
 	private Class<? extends Register> serviceRegistry = null;
@@ -61,10 +62,12 @@ public class XxlRpcProviderFactory {
 	public void setPort(int port) {
 		this.port = port;
 	}
+	public void setRegistryAddress(String registryAddress) {
+		this.registryAddress = registryAddress;
+	}
 	public void setAccessToken(String accessToken) {
 		this.accessToken = accessToken;
 	}
-
 	public void setServiceRegistry(Class<? extends Register> serviceRegistry) {
 		this.serviceRegistry = serviceRegistry;
 	}
@@ -92,7 +95,6 @@ public class XxlRpcProviderFactory {
 	private Server serverInstance;
 	private Serializer serializerInstance;
 	private Register registerInstance;
-	private String serviceAddress;
 
 	public void start() throws Exception {
 
@@ -113,6 +115,9 @@ public class XxlRpcProviderFactory {
 		if (this.port <= 0) {
 			this.port = 7080;
 		}
+		if (this.registryAddress==null || this.registryAddress.trim().length()==0) {
+			this.registryAddress = IpUtil.getIpPort(this.ip, this.port);
+		}
 		if (NetUtil.isPortUsed(this.port)) {
 			throw new XxlRpcException("xxl-rpc provider port["+ this.port +"] is used.");
 		}
@@ -121,7 +126,6 @@ public class XxlRpcProviderFactory {
 		this.serializerInstance = serializer.newInstance();
 
 		// start server
-		serviceAddress = IpUtil.getIpPort(this.ip, port);
 		serverInstance = server.newInstance();
 		serverInstance.setStartedCallback(new BaseCallback() {		// serviceRegistry started
 			@Override
@@ -131,7 +135,7 @@ public class XxlRpcProviderFactory {
 					registerInstance = serviceRegistry.newInstance();
 					registerInstance.start(serviceRegistryParam);
 					if (serviceData.size() > 0) {
-						registerInstance.registry(serviceData.keySet(), serviceAddress);
+						registerInstance.registry(serviceData.keySet(), registryAddress);
 					}
 				}
 			}
@@ -142,7 +146,7 @@ public class XxlRpcProviderFactory {
 				// stop registry
 				if (registerInstance != null) {
 					if (serviceData.size() > 0) {
-						registerInstance.remove(serviceData.keySet(), serviceAddress);
+						registerInstance.remove(serviceData.keySet(), registryAddress);
 					}
 					registerInstance.stop();
 					registerInstance = null;

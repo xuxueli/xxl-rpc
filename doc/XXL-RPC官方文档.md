@@ -855,7 +855,7 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 - 1、为方便维护，合并xxl-registry至xxl-rpc，模块名为xxl-rpc-admin;
 - 2、一致性哈希路由策略优化：默认虚拟节点数量调整为100，提高路由的均衡性；
 - 3、RPC Client端，复用单例EventLoopGroup线程池，降低资源开销；
-- 4、【迭代中】Server端，支持自定义服务地址别名，为空时自动根据IP端口生成；
+- 4、RPC Server端，新增属性 ”注册地址/registryAddress“，优先使用该属性作为注册地址，为空时使用服务 ”IP:PORT“ 作为注册地址。从而更灵活的支持容器类型执行器动态IP和动态映射端口问题。
 
 
 ### TODO
