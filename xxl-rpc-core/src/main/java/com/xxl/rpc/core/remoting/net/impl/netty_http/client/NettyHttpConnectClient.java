@@ -2,6 +2,7 @@ package com.xxl.rpc.core.remoting.net.impl.netty_http.client;
 
 import com.xxl.rpc.core.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.core.remoting.net.common.ConnectClient;
+import com.xxl.rpc.core.remoting.net.params.BaseCallback;
 import com.xxl.rpc.core.remoting.net.params.Beat;
 import com.xxl.rpc.core.remoting.net.params.XxlRpcRequest;
 import com.xxl.rpc.core.serialize.Serializer;
@@ -10,7 +11,6 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -27,19 +27,18 @@ import java.util.concurrent.TimeUnit;
  * @author xuxueli 2015-11-24 22:25:15
  */
 public class NettyHttpConnectClient extends ConnectClient {
+    private static NioEventLoopGroup nioEventLoopGroup;
 
-    private EventLoopGroup group;
     private Channel channel;
 
     private Serializer serializer;
     private String address;
     private String host;
-    private DefaultFullHttpRequest beatRequest;
 
     @Override
     public void init(String address, final Serializer serializer, final XxlRpcInvokerFactory xxlRpcInvokerFactory) throws Exception {
-        final NettyHttpConnectClient thisClient = this;
 
+        // address
         if (!address.toLowerCase().startsWith("http")) {
             address = "http://" + address;	// IP:PORT, need parse to url
         }
@@ -49,10 +48,25 @@ public class NettyHttpConnectClient extends ConnectClient {
         this.host = url.getHost();
         int port = url.getPort()>-1?url.getPort():80;
 
+        // group
+        if (nioEventLoopGroup == null) {
+            synchronized (NettyHttpConnectClient.class) {
+                if (nioEventLoopGroup == null) {
+                    nioEventLoopGroup = new NioEventLoopGroup();
+                    xxlRpcInvokerFactory.addStopCallBack(new BaseCallback() {
+                        @Override
+                        public void run() throws Exception {
+                            nioEventLoopGroup.shutdownGracefully();
+                        }
+                    });
+                }
+            }
+        }
 
-        this.group = new NioEventLoopGroup();
+        // init
+        final NettyHttpConnectClient thisClient = this;
         Bootstrap bootstrap = new Bootstrap();
-        bootstrap.group(group)
+        bootstrap.group(nioEventLoopGroup)
                 .channel(NioSocketChannel.class)
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
@@ -92,9 +106,6 @@ public class NettyHttpConnectClient extends ConnectClient {
     public void close() {
         if (this.channel!=null && this.channel.isActive()) {
             this.channel.close();		// if this.channel.isOpen()
-        }
-        if (this.group!=null && !this.group.isShutdown()) {
-            this.group.shutdownGracefully();
         }
         logger.debug(">>>>>>>>>>> xxl-rpc netty client close.");
     }
