@@ -3,6 +3,8 @@
 [![Actions Status](https://github.com/xuxueli/xxl-rpc/workflows/Java%20CI/badge.svg)](https://github.com/xuxueli/xxl-rpc/actions)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.xuxueli/xxl-rpc/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.xuxueli/xxl-rpc/)
 [![GitHub release](https://img.shields.io/github/release/xuxueli/xxl-rpc.svg)](https://github.com/xuxueli/xxl-rpc/releases)
+[![GitHub stars](https://img.shields.io/github/stars/xuxueli/xxl-rpc)](https://github.com/xuxueli/xxl-rpc/)
+[![Docker Status](https://img.shields.io/docker/pulls/xuxueli/xxl-rpc-admin)](https://hub.docker.com/r/xuxueli/xxl-rpc-admin/)
 [![License](https://img.shields.io/badge/license-GPLv3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html)
 [![donate](https://img.shields.io/badge/%24-donate-ff69b4.svg?style=flat-square)](https://www.xuxueli.com/page/donate.html)
 
@@ -68,7 +70,7 @@ RPC（Remote Procedure Call Protocol，远程过程调用），调用远程服�
 - Tomcat7+
 
 
-## 二、快速入门（springboot版本）
+## 二、快速入门（ springboot版本 + 轻量级注册中心 ）
 
 ### 2.1 准备工作
 解压源码,按照maven格式将源码导入IDE, 使用maven进行编译即可，源码结构如下：
@@ -84,12 +86,82 @@ RPC（Remote Procedure Call Protocol，远程过程调用），调用远程服�
             - /xxl-rpc-sample-springboot-client        ：服务消费方 invoker 调用示例；
             - /xxl-rpc-sample-springboot-server        ：服务提供方 provider 示例;
 
-### 2.2 搭建部署 "服务(注册)中心"【可选】      
+### 2.2 搭建部署 "服务(注册)中心"      
 推荐使用 "xxl-rpc-admin" 作为轻量级服务(注册)中心。非常轻量级，一分钟可完成部署工作。
+注册中心为可选模块，可以不使用注册中心，也可以选型其他注册中心。
 
-搭建步骤可参考章节：5.3 “轻量级服务(注册)中心 xxl-rpc-admin” 快速入门
+#### 2.2.1 初始化“服务(注册)中心数据库”
+请下载项目源码并解压，获取 "调度数据库初始化SQL脚本" 并执行即可。数据库初始化SQL脚本"位置为:
 
-注意：注册中心为可选模块，如果不需要注册中心，或者选型其他注册中心，可以忽略本步骤。
+    /xxl-rpc/doc/db/tables_xxl_rpc.sql
+
+服务(注册)中心支持集群部署，集群情况下各节点务必连接同一个mysql实例;如果mysql做主从,集群节点务必强制走主库;
+
+#### 2.2.2 配置部署“服务(注册)中心”
+
+    服务(注册)中心项目：xxl-rpc-admin
+    作用：一个轻量级分布式服务(注册)中心，拥有"轻量级、秒级注册上线、多环境、跨语言、跨机房"等特性。现已开放源代码，开箱即用。
+
+##### 步骤一：配置项目：
+配置文件地址：
+
+```
+/xxl-rpc/xxl-rpc-admin/src/main/resources/application.properties
+
+```
+
+配置内容说明：
+
+```
+### 数据库配置
+spring.datasource.url=jdbc:mysql://127.0.0.1:3306/xxl_rpc?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai
+
+### 服务注册数据磁盘同步目录
+xxl.rpc.registry.data.filepath=/data/applogs/xxl-rpc/registrydata
+### xxl-rpc, access token
+xxl.rpc.registry.accessToken=
+
+### 登陆信息配置
+xxl.rpc.registry.login.username=admin
+xxl.rpc.registry.login.password=123456
+``` 
+
+##### 步骤二：部署项目：
+
+如果已经正确进行上述配置，可将项目编译打包部署。
+访问地址：http://localhost:8080/xxl-rpc-admin  (该地址接入方项目将会使用到，作为注册地址)，登录后运行界面如下图所示
+
+![输入图片说明](https://www.xuxueli.com/doc/static/xxl-rpc/images/img_01.png "在这里输入图片标题")
+
+至此“服务注册中心”项目已经部署成功。
+
+##### 步骤三：服务注册中心集群（可选）：
+服务注册中心支持集群部署，提升消息系统容灾和可用性。
+
+集群部署时，几点要求和建议：
+- DB配置保持一致；
+- 登陆账号配置保持一致；
+- 建议：推荐通过nginx为集群做负载均衡，分配域名。访问、客户端使用等操作均通过该域名进行。
+
+##### 其他：Docker 镜像方式搭建消息中心：
+- 下载镜像
+
+```
+// Docker地址：https://hub.docker.com/r/xuxueli/xxl-rpc-admin/
+docker pull xuxueli/xxl-rpc-admin
+```
+
+- 创建容器并运行
+
+```
+docker run -p 8080:8080 -v /tmp:/data/applogs --name xxl-rpc-admin  -d xuxueli/xxl-rpc-admin
+
+/**
+* 如需自定义 mysql 等配置，可通过 "PARAMS" 指定，参数格式 RAMS="--key=value  --key2=value2" ；
+* 配置项参考文件：/xxl-rpc/xxl-rpc-admin/src/main/resources/application.properties
+*/
+docker run -e PARAMS="--spring.datasource.url=jdbc:mysql://127.0.0.1:3306/xxl_rpc?Unicode=true&characterEncoding=UTF-8" -p 8080:8080 -v /tmp:/data/applogs --name xxl-rpc-admin  -d xuxueli/xxl-rpc-admin
+```
  
 ### 2.3 项目中使用XXL-RPC
 以示例项目 “xxl-rpc-sample-springboot” 为例讲解；
@@ -166,7 +238,7 @@ setServiceRegistryParam | 服务注册中心启动参数，参数说明可参考
     1、添加 “@Service” 注解：被Spring容器扫描识别为SpringBean；
     2、添加 “@XxlRpcService” 注解：被 “XXL-RPC” 的 ProviderFactory 扫描识别，进行Provider服务注册，如果开启注册中心同时也会进行注册中心服务注册； 
 
-“@XxlRpcService” 注解参数 | 说明
+XxlRpcService 注解参数 | 说明
 --- | ---
 version | 服务版本，默认空；可据此区分同一个“服务API” 的不同版本；
 
@@ -249,7 +321,7 @@ accessToken | 服务鉴权Token，非空时生效；
 
 
 
-## 三、快速入门（frameless 无框架版本）
+## 三、快速入门（ frameless 无框架版本 ）
  
 得益于优良的兼容性与模块化设计，不限制外部框架；除 spring/springboot 环境之外，理论上支持运行在任何Java代码中，甚至main方法直接启动运行；
 
@@ -461,7 +533,7 @@ public class Demo2ServiceImpl implements Demo2Service {
 ## 五、分布式服务(注册)中心详解
 
 ### 5.1 概述
-XXL-RPC_ADMIN（原XXL-REGISTRY） 是一个轻量级分布式服务注册中心，拥有"轻量级、秒级注册上线、多环境、跨语言、跨机房"等特性。现已开放源代码，开箱即用。
+XXL-RPC-ADMIN（原XXL-REGISTRY） 是一个轻量级分布式服务注册中心，拥有"轻量级、秒级注册上线、多环境、跨语言、跨机房"等特性。现已开放源代码，开箱即用。
 
 ### 5.2 特性
 
@@ -481,84 +553,7 @@ XXL-RPC_ADMIN（原XXL-REGISTRY） 是一个轻量级分布式服务注册中心
 - 11、访问令牌（accessToken）：为提升系统安全性，注册中心和客户端进行安全性校验，双方AccessToken匹配才允许通讯；
 
 ### 5.3 “服务(注册)中心 xxl-rpc-admin” 快速入门
-
-#### 5.3.1 配置部署 “轻量级服务(注册)中心 xxl-rpc-admin”【可选模块】    
-推荐使用 "xxl-rpc-admin" 作为轻量级服务（注册）中心。非常轻量级，一分钟可完成部署工作。
-
-注意：注册中心为可选模块，如果不需要注册中心，或者选型其他注册中心，可以忽略本步骤。
-
-#### 5.3.2 初始化“服务(注册)中心数据库”
-请下载项目源码并解压，获取 "调度数据库初始化SQL脚本" 并执行即可。数据库初始化SQL脚本"位置为:
-
-    /xxl-rpc/doc/db/tables_xxl_rpc.sql
-
-服务(注册)中心支持集群部署，集群情况下各节点务必连接同一个mysql实例;如果mysql做主从,集群节点务必强制走主库;
-
-#### 5.3.3 配置部署“服务(注册)中心”
-
-    服务(注册)中心项目：xxl-rpc-admin
-    作用：一个轻量级分布式服务(注册)中心，拥有"轻量级、秒级注册上线、多环境、跨语言、跨机房"等特性。现已开放源代码，开箱即用。
-
-##### 步骤一：配置项目：
-配置文件地址：
-
-```
-/xxl-rpc/xxl-rpc-admin/src/main/resources/application.properties
-
-```
-
-配置内容说明：
-
-```
-### 数据库配置
-spring.datasource.url=jdbc:mysql://192.168.99.100:3306/xxl_rpc?Unicode=true&characterEncoding=UTF-8
-
-### 服务注册数据磁盘同步目录
-xxl.rpc.registry.data.filepath=/data/applogs/xxl-rpc/registrydata
-### xxl-rpc, access token
-xxl.rpc.registry.accessToken=
-
-### 登陆信息配置
-xxl.rpc.registry.login.username=admin
-xxl.rpc.registry.login.password=123456
-``` 
-
-##### 步骤二：部署项目：
-
-如果已经正确进行上述配置，可将项目编译打包部署。
-访问地址：http://localhost:8080/xxl-rpc-admin  (该地址接入方项目将会使用到，作为注册地址)，登录后运行界面如下图所示
-
-![输入图片说明](https://www.xuxueli.com/doc/static/xxl-rpc/images/img_01.png "在这里输入图片标题")
-
-至此“服务注册中心”项目已经部署成功。
-
-##### 步骤三：服务注册中心集群（可选）：
-服务注册中心支持集群部署，提升消息系统容灾和可用性。
-
-集群部署时，几点要求和建议：
-- DB配置保持一致；
-- 登陆账号配置保持一致；
-- 建议：推荐通过nginx为集群做负载均衡，分配域名。访问、客户端使用等操作均通过该域名进行。
-
-##### 其他：Docker 镜像方式搭建消息中心：
-- 下载镜像
-
-```
-// Docker地址：https://hub.docker.com/r/xuxueli/xxl-rpc-admin/
-docker pull xuxueli/xxl-rpc-admin
-```
-
-- 创建容器并运行
-
-```
-docker run -p 8080:8080 -v /tmp:/data/applogs --name xxl-rpc-admin  -d xuxueli/xxl-rpc-admin
-
-/**
-* 如需自定义 mysql 等配置，可通过 "PARAMS" 指定，参数格式 RAMS="--key=value  --key2=value2" ；
-* 配置项参考文件：/xxl-rpc/xxl-rpc-admin/src/main/resources/application.properties
-*/
-docker run -e PARAMS="--spring.datasource.url=jdbc:mysql://127.0.0.1:3306/xxl_rpc?Unicode=true&characterEncoding=UTF-8" -p 8080:8080 -v /tmp:/data/applogs --name xxl-rpc-admin  -d xuxueli/xxl-rpc-admin
-```
+可参考章节：2.2 搭建部署 "服务(注册)中心"      
 
 ### 5.4 接入 "服务注册中心" 示例
 
@@ -571,8 +566,8 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 非Java语言项目，可以借助提供的 RESTFUL 格式API接口实现服务注册与发现功能。
 
 
-### 5.5 注册中心API服务（RESTFUL 格式）
-服务注册中心为支持服务注册与发现功能，提供的 RESTFUL 格式API接口如下：
+### 5.5 注册中心 RESTful API
+服务注册中心为支持服务注册与发现功能，提供的 RESTful 格式API接口如下：
 
 #### 5.5.1、服务注册 & 续约 API
 说明：新服务注册上线1s内广播通知接入方；需要接入方循环续约，否则服务将会过期（三倍于注册中心心跳时间）下线；

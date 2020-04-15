@@ -16,6 +16,12 @@
         <a href="https://github.com/xuxueli/xxl-rpc/releases">
             <img src="https://img.shields.io/github/release/xuxueli/xxl-rpc.svg" >
         </a>
+        <a href="https://github.com/xuxueli/xxl-rpc/">
+            <img src="https://img.shields.io/github/stars/xuxueli/xxl-rpc" >
+        </a>
+        <a href="https://hub.docker.com/r/xuxueli/xxl-rpc-admin/">
+            <img src="https://img.shields.io/docker/pulls/xuxueli/xxl-rpc-admin" >
+        </a>
          <a href="http://www.gnu.org/licenses/gpl-3.0.html">
             <img src="https://img.shields.io/badge/license-GPLv3-blue.svg" >
          </a>
