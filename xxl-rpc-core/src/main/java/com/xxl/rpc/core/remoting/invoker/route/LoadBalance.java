@@ -23,7 +23,7 @@ public enum LoadBalance {
 
     public static LoadBalance match(String name, LoadBalance defaultRouter) {
         for (LoadBalance item : LoadBalance.values()) {
-            if (item.equals(name)) {
+            if (item.name().equals(name)) {
                 return item;
             }
         }
