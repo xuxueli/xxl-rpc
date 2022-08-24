@@ -24,21 +24,20 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.test.skip>true</maven.test.skip>
 
+		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+		<maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version>
+		<maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
+
 		<netty-all.version>4.1.63.Final</netty-all.version>
 		<hessian.version>4.0.66</hessian.version>
 
 		<slf4j-api.version>1.7.36</slf4j-api.version>
-		<junit.version>4.13</junit.version>
 
-		<spring.version>5.3.19</spring.version>
-		<spring-boot.version>2.6.6</spring-boot.version>
+		<spring.version>5.3.22</spring.version>
+		<spring-boot.version>2.7.3</spring-boot.version>
 
 		<mybatis-spring-boot-starter.version>2.2.2</mybatis-spring-boot-starter.version>
-		<mysql-connector-java.version>8.0.28</mysql-connector-java.version>
-
-		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
-		<maven-javadoc-plugin.version>3.3.2</maven-javadoc-plugin.version>
-		<maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
+		<mysql-connector-java.version>8.0.30</mysql-connector-java.version>
 	</properties>
 
 	<build>
