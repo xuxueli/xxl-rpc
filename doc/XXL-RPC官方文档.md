@@ -852,7 +852,7 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 - 3、RPC Client端，复用单例EventLoopGroup线程池，降低资源开销；
 - 4、RPC Server端，新增属性 ”注册地址/registryAddress“，优先使用该属性作为注册地址，为空时使用服务 ”IP:PORT“ 作为注册地址。从而更灵活的支持容器类型执行器动态IP和动态映射端口问题。
 
-### 6.13 版本 v1.6.1 Release Notes[迭代中]
+### 6.13 版本 v1.7.0 Release Notes[迭代中]
 - 1、轮训路由策略优化，修复小概率下并发问题；
 - 2、[迭代中]数据库编码调整为utf8mb4；
 - 3、[迭代中]业务标识和环境标识字段长度上限调整为50；

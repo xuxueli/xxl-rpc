@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.xuxueli</groupId>
 		<artifactId>xxl-rpc</artifactId>
-		<version>1.6.1-SNAPSHOT</version>
+		<version>1.7.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>xxl-rpc-core</artifactId>
 	<packaging>jar</packaging>
@@ -15,9 +15,7 @@
 
 	<dependencies>
 
-
 		<!-- ********************** net + serialize + registry (default = netty + hessian + xxl-rpc-admin/registry) ********************** -->
-
 		<!-- netty -->
 		<dependency>
 			<groupId>io.netty</groupId>
@@ -32,61 +30,27 @@
 			<version>${hessian.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>${gson.version}</version>
+		</dependency>
 
 		<!-- ********************** base ********************** -->
-
 		<!-- slf4j -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>${slf4j-api.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>${slf4j-api.version}</version>
-			<scope>test</scope>
-		</dependency>
-
 
 		<!-- ********************** spring (default=provided) ********************** -->
-
 		<!-- spring -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-beans</artifactId>
-			<version>${spring.version}</version>
-			<scope>provided</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>*</groupId>
-					<artifactId>*</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-			<version>${spring.version}</version>
-			<scope>provided</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>*</groupId>
-					<artifactId>*</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 			<version>${spring.version}</version>
 			<scope>provided</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>*</groupId>
-					<artifactId>*</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 	</dependencies>

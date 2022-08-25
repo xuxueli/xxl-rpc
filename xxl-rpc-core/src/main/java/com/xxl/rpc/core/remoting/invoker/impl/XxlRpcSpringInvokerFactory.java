@@ -13,7 +13,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessorAdapter;
+import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
@@ -26,7 +26,7 @@ import java.util.Set;
  *
  * @author xuxueli 2018-10-19
  */
-public class XxlRpcSpringInvokerFactory extends InstantiationAwareBeanPostProcessorAdapter implements InitializingBean,DisposableBean, BeanFactoryAware {
+public class XxlRpcSpringInvokerFactory implements InitializingBean, DisposableBean, BeanFactoryAware, InstantiationAwareBeanPostProcessor {
     private Logger logger = LoggerFactory.getLogger(XxlRpcSpringInvokerFactory.class);
 
     // ---------------------- config ----------------------
@@ -121,13 +121,12 @@ public class XxlRpcSpringInvokerFactory extends InstantiationAwareBeanPostProces
             }
         }
 
-        return super.postProcessAfterInstantiation(bean, beanName);
+        return true;
     }
 
 
     @Override
     public void destroy() throws Exception {
-
         // stop invoker factory
         xxlRpcInvokerFactory.stop();
     }
@@ -138,4 +137,5 @@ public class XxlRpcSpringInvokerFactory extends InstantiationAwareBeanPostProces
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
         this.beanFactory = beanFactory;
     }
+
 }

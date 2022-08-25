@@ -1,5 +1,5 @@
 #
-# XXL-RPC 1.6.1-SNAPSHOT
+# XXL-RPC 1.7.0-SNAPSHOT
 # Copyright (c) 2015-present, xuxueli.
 
 CREATE database if NOT EXISTS `xxl_rpc` default character set utf8mb4 collate utf8mb4_unicode_ci;
