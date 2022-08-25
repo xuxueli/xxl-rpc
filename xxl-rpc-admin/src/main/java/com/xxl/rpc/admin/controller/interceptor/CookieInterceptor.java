@@ -29,7 +29,6 @@ public class CookieInterceptor implements AsyncHandlerInterceptor {
 			modelAndView.addObject("cookieMap", cookieMap);
 		}
 
-		return true;	// proceed with the next interceptor
 	}
 	
 }

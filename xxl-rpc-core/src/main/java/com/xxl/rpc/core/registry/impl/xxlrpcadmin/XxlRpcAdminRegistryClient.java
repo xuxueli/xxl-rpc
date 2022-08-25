@@ -1,7 +1,7 @@
 package com.xxl.rpc.core.registry.impl.xxlrpcadmin;
 
 import com.xxl.rpc.core.registry.impl.xxlrpcadmin.model.XxlRpcAdminRegistryDataParamVO;
-import com.xxl.rpc.core.registry.impl.xxlrpcadmin.util.json.BasicJson;
+import com.xxl.rpc.core.util.GsonTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -243,7 +243,7 @@ public class XxlRpcAdminRegistryClient {
                 // valid if updated
                 boolean updated = true;
                 TreeSet<String> oldValSet = discoveryData.get(keyItem);
-                if (oldValSet!=null && BasicJson.toJson(oldValSet).equals(BasicJson.toJson(valueSet))) {
+                if (oldValSet!=null && GsonTool.toJson(oldValSet).equals(GsonTool.toJson(valueSet))) {
                     updated = false;
                 }
 

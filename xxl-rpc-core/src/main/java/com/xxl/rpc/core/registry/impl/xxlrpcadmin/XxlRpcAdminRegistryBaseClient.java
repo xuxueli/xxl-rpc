@@ -2,8 +2,8 @@ package com.xxl.rpc.core.registry.impl.xxlrpcadmin;
 
 import com.xxl.rpc.core.registry.impl.xxlrpcadmin.model.XxlRpcAdminRegistryDataParamVO;
 import com.xxl.rpc.core.registry.impl.xxlrpcadmin.model.XxlRpcAdminRegistryParamVO;
-import com.xxl.rpc.core.registry.impl.xxlrpcadmin.util.BasicHttpUtil;
-import com.xxl.rpc.core.registry.impl.xxlrpcadmin.util.json.BasicJson;
+import com.xxl.rpc.core.util.BasicHttpUtil;
+import com.xxl.rpc.core.util.GsonTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,7 +84,7 @@ public class XxlRpcAdminRegistryBaseClient {
         registryParamVO.setEnv(this.env);
         registryParamVO.setRegistryDataList(registryDataList);
 
-        String paramsJson = BasicJson.toJson(registryParamVO);
+        String paramsJson = GsonTool.toJson(registryParamVO);
 
         // result
         Map<String, Object> respObj = requestAndValid(pathUrl, paramsJson, 5);
@@ -105,7 +105,7 @@ public class XxlRpcAdminRegistryBaseClient {
             // parse resopnse
             Map<String, Object> resopnseMap = null;
             try {
-                resopnseMap = BasicJson.parseMap(responseData);
+                resopnseMap = GsonTool.fromJson(responseData, Map.class);
             } catch (Exception e) { }
 
 
@@ -155,7 +155,7 @@ public class XxlRpcAdminRegistryBaseClient {
         registryParamVO.setEnv(this.env);
         registryParamVO.setRegistryDataList(registryDataList);
 
-        String paramsJson = BasicJson.toJson(registryParamVO);
+        String paramsJson = GsonTool.toJson(registryParamVO);
 
         // result
         Map<String, Object> respObj = requestAndValid(pathUrl, paramsJson, 5);
@@ -184,7 +184,7 @@ public class XxlRpcAdminRegistryBaseClient {
         registryParamVO.setEnv(this.env);
         registryParamVO.setKeys(new ArrayList<String>(keys));
 
-        String paramsJson = BasicJson.toJson(registryParamVO);
+        String paramsJson = GsonTool.toJson(registryParamVO);
 
         // result
         Map<String, Object> respObj = requestAndValid(pathUrl, paramsJson, 5);
@@ -220,7 +220,7 @@ public class XxlRpcAdminRegistryBaseClient {
         registryParamVO.setEnv(this.env);
         registryParamVO.setKeys(new ArrayList<String>(keys));
 
-        String paramsJson = BasicJson.toJson(registryParamVO);
+        String paramsJson = GsonTool.toJson(registryParamVO);
 
         // result
         Map<String, Object> respObj = requestAndValid(pathUrl, paramsJson, 60);
