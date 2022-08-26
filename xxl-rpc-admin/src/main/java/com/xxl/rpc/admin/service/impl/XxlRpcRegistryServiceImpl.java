@@ -4,7 +4,6 @@ import com.xxl.rpc.admin.core.model.XxlRpcRegistry;
 import com.xxl.rpc.admin.core.model.XxlRpcRegistryData;
 import com.xxl.rpc.admin.core.model.XxlRpcRegistryMessage;
 import com.xxl.rpc.admin.core.result.ReturnT;
-import com.xxl.rpc.admin.core.util.JacksonUtil;
 import com.xxl.rpc.admin.core.util.PropUtil;
 import com.xxl.rpc.admin.dao.IXxlRpcRegistryDao;
 import com.xxl.rpc.admin.dao.IXxlRpcRegistryDataDao;
@@ -13,6 +12,7 @@ import com.xxl.rpc.admin.service.IXxlRpcRegistryService;
 import com.xxl.rpc.core.registry.impl.xxlrpcadmin.model.XxlRpcAdminRegistryDataItem;
 import com.xxl.rpc.core.registry.impl.xxlrpcadmin.model.XxlRpcAdminRegistryRequest;
 import com.xxl.rpc.core.registry.impl.xxlrpcadmin.model.XxlRpcAdminRegistryResponse;
+import com.xxl.rpc.core.util.GsonTool;
 import com.xxl.rpc.core.util.XxlRpcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +84,7 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
      * send RegistryData Update Message
      */
     private void sendRegistryDataUpdateMessage(XxlRpcRegistry xxlRpcRegistry){
-        String registryUpdateJson = JacksonUtil.writeValueAsString(xxlRpcRegistry);
+        String registryUpdateJson = GsonTool.toJson(xxlRpcRegistry);
 
         XxlRpcRegistryMessage registryMessage = new XxlRpcRegistryMessage();
         registryMessage.setType(0);
@@ -103,9 +103,9 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
             return new ReturnT<String>(ReturnT.FAIL_CODE, "注册Key格式非法[4~255]");
         }
         if (xxlRpcRegistry.getData()==null || xxlRpcRegistry.getData().trim().length()==0) {
-            xxlRpcRegistry.setData(JacksonUtil.writeValueAsString(new ArrayList<String>()));
+            xxlRpcRegistry.setData(GsonTool.toJson(new ArrayList<String>()));
         }
-        List<String> valueList = JacksonUtil.readValue(xxlRpcRegistry.getData(), List.class);
+        List<String> valueList = GsonTool.fromJson(xxlRpcRegistry.getData(), List.class);
         if (valueList == null) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "注册Value数据格式非法；限制为字符串数组JSON格式，如 [address,address2]");
         }
@@ -141,9 +141,9 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
             return new ReturnT<String>(ReturnT.FAIL_CODE, "注册Key格式非法[4~255]");
         }
         if (xxlRpcRegistry.getData()==null || xxlRpcRegistry.getData().trim().length()==0) {
-            xxlRpcRegistry.setData(JacksonUtil.writeValueAsString(new ArrayList<String>()));
+            xxlRpcRegistry.setData(GsonTool.toJson(new ArrayList<String>()));
         }
-        List<String> valueList = JacksonUtil.readValue(xxlRpcRegistry.getData(), List.class);
+        List<String> valueList = GsonTool.fromJson(xxlRpcRegistry.getData(), List.class);
         if (valueList == null) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "注册Value数据格式非法；限制为字符串数组JSON格式，如 [address,address2]");
         }
@@ -336,7 +336,7 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
                 valueList.add(dataItem.getValue());
             }
         }
-        String dataJson = JacksonUtil.writeValueAsString(valueList);
+        String dataJson = GsonTool.toJson(valueList);
 
         // update registry and message
         XxlRpcRegistry xxlRpcRegistry = xxlRpcRegistryDao.load(xxlRpcRegistryData.getEnv(), xxlRpcRegistryData.getKey());
@@ -488,14 +488,14 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
 
                                 if (message.getType() == 0) {   // from registry、add、update、deelete，ne need sync from db, only write
 
-                                    XxlRpcRegistry xxlRpcRegistry = JacksonUtil.readValue(message.getData(), XxlRpcRegistry.class);
+                                    XxlRpcRegistry xxlRpcRegistry = GsonTool.fromJson(message.getData(), XxlRpcRegistry.class);
 
                                     // process data by status
                                     if (xxlRpcRegistry.getStatus() == 1) {
                                         // locked, not updated
                                     } else if (xxlRpcRegistry.getStatus() == 2) {
                                         // disabled, write empty
-                                        xxlRpcRegistry.setData(JacksonUtil.writeValueAsString(new ArrayList<String>()));
+                                        xxlRpcRegistry.setData(GsonTool.toJson(new ArrayList<String>()));
                                     } else {
                                         // default, sync from db （aready sync before message, only write）
                                     }
@@ -570,7 +570,7 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
                                     // locked, not updated
                                 } else if (registryItem.getStatus() == 2) {
                                     // disabled, write empty
-                                    String dataJson = JacksonUtil.writeValueAsString(new ArrayList<String>());
+                                    String dataJson = GsonTool.toJson(new ArrayList<String>());
                                     registryItem.setData(dataJson);
                                 } else {
                                     // default, sync from db
@@ -581,7 +581,7 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
                                             valueList.add(dataItem.getValue());
                                         }
                                     }
-                                    String dataJson = JacksonUtil.writeValueAsString(valueList);
+                                    String dataJson = GsonTool.toJson(valueList);
 
                                     // check update, sync db
                                     if (!registryItem.getData().equals(dataJson)) {
@@ -645,7 +645,7 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
             XxlRpcRegistry fileXxlRpcRegistry = new XxlRpcRegistry();
             fileXxlRpcRegistry.setData(prop.getProperty("data"));
             fileXxlRpcRegistry.setStatus(Integer.valueOf(prop.getProperty("status")));
-            fileXxlRpcRegistry.setDataList(JacksonUtil.readValue(fileXxlRpcRegistry.getData(), List.class));
+            fileXxlRpcRegistry.setDataList(GsonTool.fromJson(fileXxlRpcRegistry.getData(), List.class));
             return fileXxlRpcRegistry;
         }
         return null;
