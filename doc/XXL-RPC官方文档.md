@@ -849,7 +849,7 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 - 2、默认注册中心代码结构重构，废弃冗余 "biz" 属性；
 - 3、依赖版本升级，如netty/spring等;
 - 4、数据库编码调整为utf8mb4；
-- 5、序列化组件由Jackson替换为G送；
+- 5、序列化组件由Jackson替换为Gson；
 - 6、[迭代中]业务标识和环境标识字段长度上限调整为50；
 - 7、[迭代中]restful api序列化组件调整为gson；
 
