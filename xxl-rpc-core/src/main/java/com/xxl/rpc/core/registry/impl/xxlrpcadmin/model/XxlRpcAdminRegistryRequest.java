@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * @author xuxueli 2018-12-03
  */
-public class XxlRpcAdminRegistryParamVO {
+public class XxlRpcAdminRegistryRequest {
 
 
     private String accessToken;
@@ -13,7 +13,7 @@ public class XxlRpcAdminRegistryParamVO {
     private String env;
 
 
-    private List<XxlRpcAdminRegistryDataParamVO> registryDataList;
+    private List<XxlRpcAdminRegistryDataItem> registryDataList;
     private List<String> keys;
 
     public String getBiz() {
@@ -40,11 +40,11 @@ public class XxlRpcAdminRegistryParamVO {
         this.accessToken = accessToken;
     }
 
-    public List<XxlRpcAdminRegistryDataParamVO> getRegistryDataList() {
+    public List<XxlRpcAdminRegistryDataItem> getRegistryDataList() {
         return registryDataList;
     }
 
-    public void setRegistryDataList(List<XxlRpcAdminRegistryDataParamVO> registryDataList) {
+    public void setRegistryDataList(List<XxlRpcAdminRegistryDataItem> registryDataList) {
         this.registryDataList = registryDataList;
     }
 

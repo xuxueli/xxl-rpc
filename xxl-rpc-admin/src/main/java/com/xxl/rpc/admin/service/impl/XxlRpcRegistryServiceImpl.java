@@ -10,6 +10,9 @@ import com.xxl.rpc.admin.dao.IXxlRpcRegistryDao;
 import com.xxl.rpc.admin.dao.IXxlRpcRegistryDataDao;
 import com.xxl.rpc.admin.dao.IXxlRpcRegistryMessageDao;
 import com.xxl.rpc.admin.service.IXxlRpcRegistryService;
+import com.xxl.rpc.core.registry.impl.xxlrpcadmin.model.XxlRpcAdminRegistryDataItem;
+import com.xxl.rpc.core.registry.impl.xxlrpcadmin.model.XxlRpcAdminRegistryRequest;
+import com.xxl.rpc.core.registry.impl.xxlrpcadmin.model.XxlRpcAdminRegistryResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -171,149 +174,164 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
     // ------------------------ remote registry ------------------------
 
     @Override
-    public ReturnT<String> registry(String accessToken, String biz, String env, List<XxlRpcRegistryData> registryDataList) {
+    public XxlRpcAdminRegistryResponse registry(XxlRpcAdminRegistryRequest registryRequest) {
 
         // valid
-        if (this.accessToken!=null && this.accessToken.trim().length()>0 && !this.accessToken.equals(accessToken)) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "AccessToken Invalid");
+        if (this.accessToken!=null && this.accessToken.trim().length()>0 && !this.accessToken.equals(registryRequest.getAccessToken())) {
+            return new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "AccessToken Invalid");
         }
-        if (biz==null || biz.trim().length()<4 || biz.trim().length()>255) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "Biz Invalid[4~255]");
+        if (registryRequest.getBiz()==null || registryRequest.getBiz().trim().length()<4 || registryRequest.getBiz().trim().length()>255) {
+            return new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "Biz Invalid[4~255]");
         }
-        if (env==null || env.trim().length()<2 || env.trim().length()>255) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "Env Invalid[2~255]");
+        if (registryRequest.getEnv()==null || registryRequest.getEnv().trim().length()<2 || registryRequest.getEnv().trim().length()>255) {
+            return new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "Env Invalid[2~255]");
         }
-        if (registryDataList==null || registryDataList.size()==0) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "Registry DataList Invalid");
+        if (registryRequest.getRegistryDataList()==null || registryRequest.getRegistryDataList().size()==0) {
+            return new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "Registry DataList Invalid");
         }
-        for (XxlRpcRegistryData registryData: registryDataList) {
+        for (XxlRpcAdminRegistryDataItem registryData: registryRequest.getRegistryDataList()) {
             if (registryData.getKey()==null || registryData.getKey().trim().length()<4 || registryData.getKey().trim().length()>255) {
-                return new ReturnT<String>(ReturnT.FAIL_CODE, "Registry Key Invalid[4~255]");
+                return new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "Registry Key Invalid[4~255]");
             }
             if (registryData.getValue()==null || registryData.getValue().trim().length()<4 || registryData.getValue().trim().length()>255) {
-                return new ReturnT<String>(ReturnT.FAIL_CODE, "Registry Value Invalid[4~255]");
+                return new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "Registry Value Invalid[4~255]");
             }
         }
 
         // fill + add queue
-        for (XxlRpcRegistryData registryData: registryDataList) {
-            registryData.setBiz(biz);
-            registryData.setEnv(env);
+        List<XxlRpcRegistryData> registryDataList = new ArrayList<>();
+        for (XxlRpcAdminRegistryDataItem dataItem: registryRequest.getRegistryDataList()) {
+            XxlRpcRegistryData registryData = new XxlRpcRegistryData();
+            registryData.setBiz(registryRequest.getBiz());
+            registryData.setEnv(registryRequest.getEnv());
+            registryData.setKey(dataItem.getKey());
+            registryData.setValue(dataItem.getValue());
+
+            registryDataList.add(registryData);
         }
         registryQueue.addAll(registryDataList);
 
-        return ReturnT.SUCCESS;
+        return new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.SUCCESS_CODE, null);
     }
 
     @Override
-    public ReturnT<String> remove(String accessToken, String biz, String env, List<XxlRpcRegistryData> registryDataList) {
+    public XxlRpcAdminRegistryResponse remove(XxlRpcAdminRegistryRequest registryRequest) {
 
         // valid
-        if (this.accessToken!=null && this.accessToken.trim().length()>0 && !this.accessToken.equals(accessToken)) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "AccessToken Invalid");
+        if (this.accessToken!=null && this.accessToken.trim().length()>0 && !this.accessToken.equals(registryRequest.getAccessToken())) {
+            return new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "AccessToken Invalid");
         }
-        if (biz==null || biz.trim().length()<4 || biz.trim().length()>255) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "Biz Invalid[4~255]");
+        if (registryRequest.getBiz()==null || registryRequest.getBiz().trim().length()<4 || registryRequest.getBiz().trim().length()>255) {
+            return new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "Biz Invalid[4~255]");
         }
-        if (env==null || env.trim().length()<2 || env.trim().length()>255) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "Env Invalid[2~255]");
+        if (registryRequest.getEnv()==null || registryRequest.getEnv().trim().length()<2 || registryRequest.getEnv().trim().length()>255) {
+            return new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "Env Invalid[2~255]");
         }
-        if (registryDataList==null || registryDataList.size()==0) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "Registry DataList Invalid");
+        if (registryRequest.getRegistryDataList()==null || registryRequest.getRegistryDataList().size()==0) {
+            return new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "Registry DataList Invalid");
         }
-        for (XxlRpcRegistryData registryData: registryDataList) {
+        for (XxlRpcAdminRegistryDataItem registryData: registryRequest.getRegistryDataList()) {
             if (registryData.getKey()==null || registryData.getKey().trim().length()<4 || registryData.getKey().trim().length()>255) {
-                return new ReturnT<String>(ReturnT.FAIL_CODE, "Registry Key Invalid[4~255]");
+                return new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "Registry Key Invalid[4~255]");
             }
             if (registryData.getValue()==null || registryData.getValue().trim().length()<4 || registryData.getValue().trim().length()>255) {
-                return new ReturnT<String>(ReturnT.FAIL_CODE, "Registry Value Invalid[4~255]");
+                return new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "Registry Value Invalid[4~255]");
             }
         }
 
         // fill + add queue
-        for (XxlRpcRegistryData registryData: registryDataList) {
-            registryData.setBiz(biz);
-            registryData.setEnv(env);
+        List<XxlRpcRegistryData> registryDataList = new ArrayList<>();
+        for (XxlRpcAdminRegistryDataItem dataItem: registryRequest.getRegistryDataList()) {
+            XxlRpcRegistryData registryData = new XxlRpcRegistryData();
+            registryData.setBiz(registryRequest.getBiz());
+            registryData.setEnv(registryRequest.getEnv());
+            registryData.setKey(dataItem.getKey());
+            registryData.setValue(dataItem.getValue());
+
+            registryDataList.add(registryData);
         }
         removeQueue.addAll(registryDataList);
 
-        return ReturnT.SUCCESS;
+        return new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.SUCCESS_CODE, null);
     }
 
     @Override
-    public ReturnT<Map<String, List<String>>> discovery(String accessToken, String biz, String env, List<String> keys) {
+    public XxlRpcAdminRegistryResponse discovery(XxlRpcAdminRegistryRequest registryRequest) {
 
         // valid
-        if (this.accessToken!=null && this.accessToken.trim().length()>0 && !this.accessToken.equals(accessToken)) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, "AccessToken Invalid");
+        if (this.accessToken!=null && this.accessToken.trim().length()>0 && !this.accessToken.equals(registryRequest.getAccessToken())) {
+            return new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "AccessToken Invalid");
         }
-        if (biz==null || biz.trim().length()<2 || biz.trim().length()>255) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, "Biz Invalid[2~255]");
+        if (registryRequest.getBiz()==null || registryRequest.getBiz().trim().length()<4 || registryRequest.getBiz().trim().length()>255) {
+            return new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "Biz Invalid[4~255]");
         }
-        if (env==null || env.trim().length()<2 || env.trim().length()>255) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, "Env Invalid[2~255]");
+        if (registryRequest.getEnv()==null || registryRequest.getEnv().trim().length()<2 || registryRequest.getEnv().trim().length()>255) {
+            return new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "Env Invalid[2~255]");
         }
-        if (keys==null || keys.size()==0) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, "keys Invalid.");
+        if (registryRequest.getKeys()==null || registryRequest.getKeys().size()==0) {
+            return new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "keys Invalid.");
         }
-        for (String key: keys) {
+        for (String key: registryRequest.getKeys()) {
             if (key==null || key.trim().length()<4 || key.trim().length()>255) {
-                return new ReturnT<>(ReturnT.FAIL_CODE, "Key Invalid[4~255]");
+                return new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "Key Invalid[4~255]");
             }
         }
 
-        Map<String, List<String>> result = new HashMap<String, List<String>>();
-        for (String key: keys) {
+        Map<String, TreeSet<String>> result = new HashMap<String, TreeSet<String>>();
+        for (String key: registryRequest.getKeys()) {
+            // key
             XxlRpcRegistryData xxlRpcRegistryData = new XxlRpcRegistryData();
-            xxlRpcRegistryData.setBiz(biz);
-            xxlRpcRegistryData.setEnv(env);
+            xxlRpcRegistryData.setBiz(registryRequest.getBiz());
+            xxlRpcRegistryData.setEnv(registryRequest.getEnv());
             xxlRpcRegistryData.setKey(key);
 
-            List<String> dataList = new ArrayList<String>();
+            // values
+            TreeSet<String> dataList = new TreeSet<String>();
             XxlRpcRegistry fileXxlRpcRegistry = getFileRegistryData(xxlRpcRegistryData);
             if (fileXxlRpcRegistry !=null) {
-                dataList = fileXxlRpcRegistry.getDataList();
+                dataList.addAll(fileXxlRpcRegistry.getDataList());
             }
 
+            // fill
             result.put(key, dataList);
         }
 
-        return new ReturnT<Map<String, List<String>>>(result);
+        return new XxlRpcAdminRegistryResponse(result);
     }
 
     @Override
-    public DeferredResult<ReturnT<String>> monitor(String accessToken, String biz, String env, List<String> keys) {
+    public DeferredResult<XxlRpcAdminRegistryResponse> monitor(XxlRpcAdminRegistryRequest registryRequest) {
 
         // init
-        DeferredResult deferredResult = new DeferredResult(30 * 1000L, new ReturnT<>(ReturnT.SUCCESS_CODE, "Monitor timeout, no key updated."));
+        DeferredResult deferredResult = new DeferredResult(30 * 1000L, new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.SUCCESS_CODE, "Monitor timeout, no key updated."));
 
         // valid
-        if (this.accessToken!=null && this.accessToken.trim().length()>0 && !this.accessToken.equals(accessToken)) {
-            deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "AccessToken Invalid"));
+        if (this.accessToken!=null && this.accessToken.trim().length()>0 && !this.accessToken.equals(registryRequest.getAccessToken())) {
+            deferredResult.setResult(new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "AccessToken Invalid"));
             return deferredResult;
         }
-        if (biz==null || biz.trim().length()<4 || biz.trim().length()>255) {
-            deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "Biz Invalid[4~255]"));
+        if (registryRequest.getBiz()==null || registryRequest.getBiz().trim().length()<4 || registryRequest.getBiz().trim().length()>255) {
+            deferredResult.setResult(new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "Biz Invalid[4~255]"));
             return deferredResult;
         }
-        if (env==null || env.trim().length()<2 || env.trim().length()>255) {
-            deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "Env Invalid[2~255]"));
+        if (registryRequest.getEnv()==null || registryRequest.getEnv().trim().length()<2 || registryRequest.getEnv().trim().length()>255) {
+            deferredResult.setResult(new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "Env Invalid[2~255]"));
             return deferredResult;
         }
-        if (keys==null || keys.size()==0) {
-            deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "keys Invalid."));
+        if (registryRequest.getKeys()==null || registryRequest.getKeys().size()==0) {
+            deferredResult.setResult(new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "keys Invalid."));
             return deferredResult;
         }
-        for (String key: keys) {
+        for (String key: registryRequest.getKeys()) {
             if (key==null || key.trim().length()<4 || key.trim().length()>255) {
-                deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "Key Invalid[4~255]"));
+                deferredResult.setResult(new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "Key Invalid[4~255]"));
                 return deferredResult;
             }
         }
 
         // monitor by client
-        for (String key: keys) {
-            String fileName = parseRegistryDataFileName(biz, env, key);
+        for (String key: registryRequest.getKeys()) {
+            String fileName = parseRegistryDataFileName(registryRequest.getBiz(), registryRequest.getEnv(), key);
 
             List<DeferredResult> deferredResultList = registryDeferredResultMap.get(fileName);
             if (deferredResultList == null) {

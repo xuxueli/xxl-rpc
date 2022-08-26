@@ -1,7 +1,7 @@
 package com.xxl.rpc.core.registry.impl;
 
 import com.xxl.rpc.core.registry.impl.xxlrpcadmin.XxlRpcAdminRegistryClient;
-import com.xxl.rpc.core.registry.impl.xxlrpcadmin.model.XxlRpcAdminRegistryDataParamVO;
+import com.xxl.rpc.core.registry.impl.xxlrpcadmin.model.XxlRpcAdminRegistryDataItem;
 import com.xxl.rpc.core.registry.Register;
 
 import java.util.*;
@@ -51,9 +51,9 @@ public class XxlRpcAdminRegister extends Register {
         }
 
         // init
-        List<XxlRpcAdminRegistryDataParamVO> registryDataList = new ArrayList<>();
+        List<XxlRpcAdminRegistryDataItem> registryDataList = new ArrayList<>();
         for (String key:keys) {
-            registryDataList.add(new XxlRpcAdminRegistryDataParamVO(key, value));
+            registryDataList.add(new XxlRpcAdminRegistryDataItem(key, value));
         }
 
         return xxlRpcAdminRegistryClient.registry(registryDataList);
@@ -66,9 +66,9 @@ public class XxlRpcAdminRegister extends Register {
         }
 
         // init
-        List<XxlRpcAdminRegistryDataParamVO> registryDataList = new ArrayList<>();
+        List<XxlRpcAdminRegistryDataItem> registryDataList = new ArrayList<>();
         for (String key:keys) {
-            registryDataList.add(new XxlRpcAdminRegistryDataParamVO(key, value));
+            registryDataList.add(new XxlRpcAdminRegistryDataItem(key, value));
         }
 
         return xxlRpcAdminRegistryClient.remove(registryDataList);

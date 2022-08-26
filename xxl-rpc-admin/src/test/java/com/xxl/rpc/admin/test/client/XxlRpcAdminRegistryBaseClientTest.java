@@ -2,7 +2,7 @@ package com.xxl.rpc.admin.test.client;
 
 
 import com.xxl.rpc.core.registry.impl.xxlrpcadmin.XxlRpcAdminRegistryBaseClient;
-import com.xxl.rpc.core.registry.impl.xxlrpcadmin.model.XxlRpcAdminRegistryDataParamVO;
+import com.xxl.rpc.core.registry.impl.xxlrpcadmin.model.XxlRpcAdminRegistryDataItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +19,9 @@ public class XxlRpcAdminRegistryBaseClientTest {
         XxlRpcAdminRegistryBaseClient registryClient = new XxlRpcAdminRegistryBaseClient("http://localhost:8080/xxl-rpc-admin/", null, "xxl-rpc", "test");
 
         // registry test
-        List<XxlRpcAdminRegistryDataParamVO> registryDataList = new ArrayList<>();
-        registryDataList.add(new XxlRpcAdminRegistryDataParamVO("service01", "address01"));
-        registryDataList.add(new XxlRpcAdminRegistryDataParamVO("service02", "address02"));
+        List<XxlRpcAdminRegistryDataItem> registryDataList = new ArrayList<>();
+        registryDataList.add(new XxlRpcAdminRegistryDataItem("service01", "address01"));
+        registryDataList.add(new XxlRpcAdminRegistryDataItem("service02", "address02"));
         System.out.println("registry:" + registryClient.registry(registryDataList));
         TimeUnit.SECONDS.sleep(2);
 

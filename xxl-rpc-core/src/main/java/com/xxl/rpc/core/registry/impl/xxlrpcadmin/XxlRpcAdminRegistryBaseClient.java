@@ -1,7 +1,8 @@
 package com.xxl.rpc.core.registry.impl.xxlrpcadmin;
 
-import com.xxl.rpc.core.registry.impl.xxlrpcadmin.model.XxlRpcAdminRegistryDataParamVO;
-import com.xxl.rpc.core.registry.impl.xxlrpcadmin.model.XxlRpcAdminRegistryParamVO;
+import com.xxl.rpc.core.registry.impl.xxlrpcadmin.model.XxlRpcAdminRegistryDataItem;
+import com.xxl.rpc.core.registry.impl.xxlrpcadmin.model.XxlRpcAdminRegistryRequest;
+import com.xxl.rpc.core.registry.impl.xxlrpcadmin.model.XxlRpcAdminRegistryResponse;
 import com.xxl.rpc.core.util.BasicHttpUtil;
 import com.xxl.rpc.core.util.GsonTool;
 import org.slf4j.Logger;
@@ -59,13 +60,13 @@ public class XxlRpcAdminRegistryBaseClient {
      * @param registryDataList
      * @return
      */
-    public boolean registry(List<XxlRpcAdminRegistryDataParamVO> registryDataList){
+    public boolean registry(List<XxlRpcAdminRegistryDataItem> registryDataList){
 
         // valid
         if (registryDataList==null || registryDataList.size()==0) {
             throw new RuntimeException("xxl-rpc registryDataList empty");
         }
-        for (XxlRpcAdminRegistryDataParamVO registryParam: registryDataList) {
+        for (XxlRpcAdminRegistryDataItem registryParam: registryDataList) {
             if (registryParam.getKey()==null || registryParam.getKey().trim().length()<4 || registryParam.getKey().trim().length()>255) {
                 throw new RuntimeException("xxl-rpc registryDataList#key Invalid[4~255]");
             }
@@ -78,7 +79,7 @@ public class XxlRpcAdminRegistryBaseClient {
         String pathUrl = "/api/registry";
 
         // param
-        XxlRpcAdminRegistryParamVO registryParamVO = new XxlRpcAdminRegistryParamVO();
+        XxlRpcAdminRegistryRequest registryParamVO = new XxlRpcAdminRegistryRequest();
         registryParamVO.setAccessToken(this.accessToken);
         registryParamVO.setBiz(this.biz);
         registryParamVO.setEnv(this.env);
@@ -87,42 +88,8 @@ public class XxlRpcAdminRegistryBaseClient {
         String paramsJson = GsonTool.toJson(registryParamVO);
 
         // result
-        Map<String, Object> respObj = requestAndValid(pathUrl, paramsJson, 5);
-        return respObj!=null?true:false;
-    }
-
-    private Map<String, Object> requestAndValid(String pathUrl, String requestBody, int timeout){
-
-        for (String adminAddressUrl: adminAddressArr) {
-            String finalUrl = adminAddressUrl + pathUrl;
-
-            // request
-            String responseData = BasicHttpUtil.postBody(finalUrl, requestBody, timeout);
-            if (responseData == null) {
-                return null;
-            }
-
-            // parse resopnse
-            Map<String, Object> resopnseMap = null;
-            try {
-                resopnseMap = GsonTool.fromJson(responseData, Map.class);
-            } catch (Exception e) { }
-
-
-            // valid resopnse
-            if (resopnseMap==null
-                    || !resopnseMap.containsKey("code")
-                    || !"200".equals(String.valueOf(resopnseMap.get("code")))
-                    ) {
-                logger.warn("XxlRegistryBaseClient response fail, responseData={}", responseData);
-                return null;
-            }
-
-            return resopnseMap;
-        }
-
-
-        return null;
+        XxlRpcAdminRegistryResponse respObj = requestAndValid(pathUrl, paramsJson, 5);
+        return respObj != null;
     }
 
     /**
@@ -131,12 +98,12 @@ public class XxlRpcAdminRegistryBaseClient {
      * @param registryDataList
      * @return
      */
-    public boolean remove(List<XxlRpcAdminRegistryDataParamVO> registryDataList) {
+    public boolean remove(List<XxlRpcAdminRegistryDataItem> registryDataList) {
         // valid
         if (registryDataList==null || registryDataList.size()==0) {
             throw new RuntimeException("xxl-rpc registryDataList empty");
         }
-        for (XxlRpcAdminRegistryDataParamVO registryParam: registryDataList) {
+        for (XxlRpcAdminRegistryDataItem registryParam: registryDataList) {
             if (registryParam.getKey()==null || registryParam.getKey().trim().length()<4 || registryParam.getKey().trim().length()>255) {
                 throw new RuntimeException("xxl-rpc registryDataList#key Invalid[4~255]");
             }
@@ -149,7 +116,7 @@ public class XxlRpcAdminRegistryBaseClient {
         String pathUrl = "/api/remove";
 
         // param
-        XxlRpcAdminRegistryParamVO registryParamVO = new XxlRpcAdminRegistryParamVO();
+        XxlRpcAdminRegistryRequest registryParamVO = new XxlRpcAdminRegistryRequest();
         registryParamVO.setAccessToken(this.accessToken);
         registryParamVO.setBiz(this.biz);
         registryParamVO.setEnv(this.env);
@@ -158,8 +125,8 @@ public class XxlRpcAdminRegistryBaseClient {
         String paramsJson = GsonTool.toJson(registryParamVO);
 
         // result
-        Map<String, Object> respObj = requestAndValid(pathUrl, paramsJson, 5);
-        return respObj!=null?true:false;
+        XxlRpcAdminRegistryResponse respObj = requestAndValid(pathUrl, paramsJson, 5);
+        return respObj != null;
     }
 
     /**
@@ -178,7 +145,7 @@ public class XxlRpcAdminRegistryBaseClient {
         String pathUrl = "/api/discovery";
 
         // param
-        XxlRpcAdminRegistryParamVO registryParamVO = new XxlRpcAdminRegistryParamVO();
+        XxlRpcAdminRegistryRequest registryParamVO = new XxlRpcAdminRegistryRequest();
         registryParamVO.setAccessToken(this.accessToken);
         registryParamVO.setBiz(this.biz);
         registryParamVO.setEnv(this.env);
@@ -187,12 +154,11 @@ public class XxlRpcAdminRegistryBaseClient {
         String paramsJson = GsonTool.toJson(registryParamVO);
 
         // result
-        Map<String, Object> respObj = requestAndValid(pathUrl, paramsJson, 5);
+        XxlRpcAdminRegistryResponse respObj = requestAndValid(pathUrl, paramsJson, 5);
 
         // parse
-        if (respObj!=null && respObj.containsKey("data")) {
-            Map<String, TreeSet<String>> data = (Map<String, TreeSet<String>>) respObj.get("data");
-            return data;
+        if (respObj!=null && respObj.getRegistryData()!=null) {
+            return respObj.getRegistryData();
         }
 
         return null;
@@ -214,7 +180,7 @@ public class XxlRpcAdminRegistryBaseClient {
         String pathUrl = "/api/monitor";
 
         // param
-        XxlRpcAdminRegistryParamVO registryParamVO = new XxlRpcAdminRegistryParamVO();
+        XxlRpcAdminRegistryRequest registryParamVO = new XxlRpcAdminRegistryRequest();
         registryParamVO.setAccessToken(this.accessToken);
         registryParamVO.setBiz(this.biz);
         registryParamVO.setEnv(this.env);
@@ -223,8 +189,42 @@ public class XxlRpcAdminRegistryBaseClient {
         String paramsJson = GsonTool.toJson(registryParamVO);
 
         // result
-        Map<String, Object> respObj = requestAndValid(pathUrl, paramsJson, 60);
-        return respObj!=null?true:false;
+        XxlRpcAdminRegistryResponse respObj = requestAndValid(pathUrl, paramsJson, 60);
+        return respObj != null;
+    }
+
+    // ---------------------- net for registry
+
+
+
+    private XxlRpcAdminRegistryResponse requestAndValid(String pathUrl, String requestBody, int timeout){
+
+        for (String adminAddressUrl: adminAddressArr) {
+            String finalUrl = adminAddressUrl + pathUrl;
+
+            // request
+            String responseData = BasicHttpUtil.postBody(finalUrl, requestBody, timeout);
+            if (responseData == null) {
+                return null;
+            }
+
+            // parse resopnse
+            XxlRpcAdminRegistryResponse resopnseMap = null;
+            try {
+                resopnseMap = GsonTool.fromJson(responseData, XxlRpcAdminRegistryResponse.class);
+            } catch (Exception e) {
+                logger.debug("XxlRegistryBaseClient response error, responseData={}", responseData);
+            }
+
+            // valid resopnse
+            if (resopnseMap != null && resopnseMap.getCode() == XxlRpcAdminRegistryResponse.SUCCESS_CODE) {
+                return resopnseMap;
+            } else {
+                logger.warn("XxlRegistryBaseClient response fail, responseData={}", responseData);
+            }
+        }
+
+        return null;
     }
 
 }

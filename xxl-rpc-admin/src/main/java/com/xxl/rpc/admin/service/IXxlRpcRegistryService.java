@@ -2,11 +2,11 @@ package com.xxl.rpc.admin.service;
 
 
 import com.xxl.rpc.admin.core.model.XxlRpcRegistry;
-import com.xxl.rpc.admin.core.model.XxlRpcRegistryData;
 import com.xxl.rpc.admin.core.result.ReturnT;
+import com.xxl.rpc.core.registry.impl.xxlrpcadmin.model.XxlRpcAdminRegistryRequest;
+import com.xxl.rpc.core.registry.impl.xxlrpcadmin.model.XxlRpcAdminRegistryResponse;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,21 +26,21 @@ public interface IXxlRpcRegistryService {
     /**
      * refresh registry-value, check update and broacase
      */
-    ReturnT<String> registry(String accessToken, String biz, String env, List<XxlRpcRegistryData> registryDataList);
+    XxlRpcAdminRegistryResponse registry(XxlRpcAdminRegistryRequest registryRequest);
 
     /**
      * remove registry-value, check update and broacase
      */
-    ReturnT<String> remove(String accessToken, String biz, String env, List<XxlRpcRegistryData> registryDataList);
+    XxlRpcAdminRegistryResponse remove(XxlRpcAdminRegistryRequest registryRequest);
 
     /**
      * discovery registry-data, read file
      */
-    ReturnT<Map<String, List<String>>> discovery(String accessToken, String biz, String env, List<String> keys);
+    XxlRpcAdminRegistryResponse discovery(XxlRpcAdminRegistryRequest registryRequest);
 
     /**
      * monitor update
      */
-    DeferredResult<ReturnT<String>> monitor(String accessToken, String biz, String env, List<String> keys);
+    DeferredResult<XxlRpcAdminRegistryResponse> monitor(XxlRpcAdminRegistryRequest registryRequest);
 
 }

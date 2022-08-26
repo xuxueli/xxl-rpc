@@ -1,6 +1,6 @@
 package com.xxl.rpc.core.registry.impl.xxlrpcadmin;
 
-import com.xxl.rpc.core.registry.impl.xxlrpcadmin.model.XxlRpcAdminRegistryDataParamVO;
+import com.xxl.rpc.core.registry.impl.xxlrpcadmin.model.XxlRpcAdminRegistryDataItem;
 import com.xxl.rpc.core.util.GsonTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +19,7 @@ public class XxlRpcAdminRegistryClient {
     private static Logger logger = LoggerFactory.getLogger(XxlRpcAdminRegistryClient.class);
 
 
-    private volatile Set<XxlRpcAdminRegistryDataParamVO> registryData = new HashSet<>();
+    private volatile Set<XxlRpcAdminRegistryDataItem> registryData = new HashSet<>();
     private volatile ConcurrentMap<String, TreeSet<String>> discoveryData = new ConcurrentHashMap<>();
 
     private Thread registryThread;
@@ -41,7 +41,7 @@ public class XxlRpcAdminRegistryClient {
                     try {
                         if (registryData.size() > 0) {
 
-                            boolean ret = registryBaseClient.registry(new ArrayList<XxlRpcAdminRegistryDataParamVO>(registryData));
+                            boolean ret = registryBaseClient.registry(new ArrayList<XxlRpcAdminRegistryDataItem>(registryData));
                             logger.debug(">>>>>>>>>>> xxl-rpc, refresh registry data {}, registryData = {}", ret?"success":"fail",registryData);
                         }
                     } catch (Exception e) {
@@ -126,13 +126,13 @@ public class XxlRpcAdminRegistryClient {
      * @param registryDataList
      * @return
      */
-    public boolean registry(List<XxlRpcAdminRegistryDataParamVO> registryDataList){
+    public boolean registry(List<XxlRpcAdminRegistryDataItem> registryDataList){
 
         // valid
         if (registryDataList==null || registryDataList.size()==0) {
             throw new RuntimeException("xxl-rpc registryDataList empty");
         }
-        for (XxlRpcAdminRegistryDataParamVO registryParam: registryDataList) {
+        for (XxlRpcAdminRegistryDataItem registryParam: registryDataList) {
             if (registryParam.getKey()==null || registryParam.getKey().trim().length()<4 || registryParam.getKey().trim().length()>255) {
                 throw new RuntimeException("xxl-rpc registryDataList#key Invalid[4~255]");
             }
@@ -158,12 +158,12 @@ public class XxlRpcAdminRegistryClient {
      * @param registryDataList
      * @return
      */
-    public boolean remove(List<XxlRpcAdminRegistryDataParamVO> registryDataList) {
+    public boolean remove(List<XxlRpcAdminRegistryDataItem> registryDataList) {
         // valid
         if (registryDataList==null || registryDataList.size()==0) {
             throw new RuntimeException("xxl-rpc registryDataList empty");
         }
-        for (XxlRpcAdminRegistryDataParamVO registryParam: registryDataList) {
+        for (XxlRpcAdminRegistryDataItem registryParam: registryDataList) {
             if (registryParam.getKey()==null || registryParam.getKey().trim().length()<4 || registryParam.getKey().trim().length()>255) {
                 throw new RuntimeException("xxl-rpc registryDataList#key Invalid[4~255]");
             }

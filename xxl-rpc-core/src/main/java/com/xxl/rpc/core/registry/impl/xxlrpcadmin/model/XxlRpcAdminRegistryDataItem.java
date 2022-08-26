@@ -5,16 +5,16 @@ import java.util.Objects;
 /**
  * @author xuxueli 2018-12-03
  */
-public class XxlRpcAdminRegistryDataParamVO {
+public class XxlRpcAdminRegistryDataItem {
 
 
     private String key;
     private String value;
 
 
-    public XxlRpcAdminRegistryDataParamVO() {
+    public XxlRpcAdminRegistryDataItem() {
     }
-    public XxlRpcAdminRegistryDataParamVO(String key, String value) {
+    public XxlRpcAdminRegistryDataItem(String key, String value) {
         this.key = key;
         this.value = value;
     }
@@ -41,7 +41,7 @@ public class XxlRpcAdminRegistryDataParamVO {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        XxlRpcAdminRegistryDataParamVO that = (XxlRpcAdminRegistryDataParamVO) o;
+        XxlRpcAdminRegistryDataItem that = (XxlRpcAdminRegistryDataItem) o;
         return Objects.equals(key, that.key) &&
                 Objects.equals(value, that.value);
     }
