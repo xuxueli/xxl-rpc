@@ -214,13 +214,13 @@
 //		// invoke
 //		ContentResponse response = request.send();
 //		if (response.getStatus() != HttpStatus.OK_200) {
-//			throw new RuntimeException("xxl-rpc remoting request fail, http HttpStatus["+ response.getStatus() +"] invalid.");
+//			throw new XxlRpcException("xxl-rpc remoting request fail, http HttpStatus["+ response.getStatus() +"] invalid.");
 //		}
 //
 //		// result
 //		byte[] responseBytes = response.getContent();
 //		if (responseBytes == null || responseBytes.length==0) {
-//			throw new RuntimeException("xxl-rpc remoting request fail, response bytes is empty.");
+//			throw new XxlRpcException("xxl-rpc remoting request fail, response bytes is empty.");
 //		}
 //
 //		return responseBytes;

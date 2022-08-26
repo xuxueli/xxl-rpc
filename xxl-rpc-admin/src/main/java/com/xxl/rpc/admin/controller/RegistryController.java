@@ -32,10 +32,9 @@ public class RegistryController {
     @ResponseBody
     public Map<String, Object> pageList(@RequestParam(required = false, defaultValue = "0") int start,
                                         @RequestParam(required = false, defaultValue = "10") int length,
-                                        String biz,
                                         String env,
                                         String key){
-        return xxlRpcRegistryService.pageList(start, length, biz, env, key);
+        return xxlRpcRegistryService.pageList(start, length, env, key);
     }
 
     @RequestMapping("/delete")

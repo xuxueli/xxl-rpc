@@ -5,7 +5,6 @@
 	
 	<resultMap id="xxlRpcRegistry" type="com.xxl.rpc.admin.core.model.XxlRpcRegistry" >
 		<result column="id" property="id" />
-		<result column="biz" property="biz" />
 		<result column="env" property="env" />
 		<result column="key" property="key" />
 		<result column="data" property="data" />
@@ -14,7 +13,6 @@
 
 	<sql id="Base_Column_List">
 		t.`id`,
-		t.`biz`,
 		t.`env`,
 		t.`key`,
 		t.`data`,
@@ -25,9 +23,6 @@
 		SELECT <include refid="Base_Column_List" />
 		FROM xxl_rpc_registry AS t
 		<trim prefix="WHERE" prefixOverrides="AND | OR" >
-			<if test="biz != null and biz != ''">
-				AND t.biz = #{biz}
-			</if>
 			<if test="env != null and env != ''">
 				AND t.env = #{env}
 			</if>
@@ -35,7 +30,7 @@
 				AND t.key like CONCAT(CONCAT('%', #{key}), '%')
 			</if>
 		</trim>
-		ORDER BY t.biz ASC, t.env ASC, t.key ASC
+		ORDER BY t.env ASC, t.key ASC
 		LIMIT #{offset}, #{pagesize}
 	</select>
 
@@ -43,9 +38,6 @@
 		SELECT count(1)
 		FROM xxl_rpc_registry AS t
 		<trim prefix="WHERE" prefixOverrides="AND | OR" >
-			<if test="biz != null and biz != ''">
-				AND t.biz = #{biz}
-			</if>
 			<if test="env != null and env != ''">
 				AND t.env = #{env}
 			</if>
@@ -58,8 +50,7 @@
 	<select id="load" parameterType="java.util.HashMap" resultMap="xxlRpcRegistry">
 		SELECT <include refid="Base_Column_List" />
 		FROM xxl_rpc_registry AS t
-		WHERE t.`biz` = #{biz}
-			and t.`env` = #{env}
+		WHERE t.`env` = #{env}
 			and t.`key` = #{key}
 	</select>
 
@@ -71,14 +62,12 @@
 
 	<insert id="add" parameterType="com.xxl.rpc.admin.core.model.XxlRpcRegistry" >
 		INSERT INTO xxl_rpc_registry (
-			`biz`,
 			`env`,
 			`key`,
 			`data`,
 			`status`
 		) VALUES
 		(
-			#{xxlRpcRegistry.biz},
 			#{xxlRpcRegistry.env},
 			#{xxlRpcRegistry.key},
 			#{xxlRpcRegistry.data},

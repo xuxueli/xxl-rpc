@@ -94,7 +94,7 @@ public class XxlRpcSpringInvokerFactory implements InitializingBean, DisposableB
                     try {
                         serviceProxy = referenceBean.getObject();
                     } catch (Exception e) {
-                        throw new RuntimeException(e);
+                        throw new XxlRpcException(e);
                     }
 
                     // set bean

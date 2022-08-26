@@ -15,7 +15,7 @@ import java.util.Map;
 public interface IXxlRpcRegistryService {
 
     // admin
-    Map<String,Object> pageList(int start, int length, String biz, String env, String key);
+    Map<String,Object> pageList(int start, int length, String env, String key);
     ReturnT<String> delete(int id);
     ReturnT<String> update(XxlRpcRegistry xxlRpcRegistry);
     ReturnT<String> add(XxlRpcRegistry xxlRpcRegistry);

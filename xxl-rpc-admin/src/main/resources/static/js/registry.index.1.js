@@ -12,7 +12,6 @@ $(function() {
 				var obj = {};
 				obj.start = d.start;
 				obj.length = d.length;
-				obj.biz = $('#biz').val();
 				obj.env = $('#env').val();
                 obj.key = $('#key').val();
 				return obj;
@@ -23,7 +22,6 @@ $(function() {
 	    //"scrollX": true,	// X轴滚动条，取消自适应
 	    "columns": [
 	                { data: 'id'},
-					{ data: 'biz'},
             		{ data: 'env'},
             		{ data: 'key'},
                     {
@@ -164,10 +162,6 @@ $(function() {
 		errorClass : 'help-block',
 		focusInvalid : true,
 		rules : {
-            biz : {
-                required : true ,
-                rangelength:[4,255]
-            },
             env : {
                 required : true ,
                 rangelength:[2,255]
@@ -178,10 +172,6 @@ $(function() {
             }
 		},
 		messages : {
-            biz : {
-                required :'请输入'  ,
-                rangelength: '长度限制为[4~255]'
-            },
             env : {
                 required :'请输入'  ,
                 rangelength: '长度限制为[2~255]'
@@ -254,7 +244,6 @@ $(function() {
         var row = tableData['key' + id ];
 
 		$("#updateModal .form input[name='id']").val( id );
-		$("#updateModal .form input[name='biz']").val( row.biz );
         $("#updateModal .form input[name='env']").val( row.env );
         $("#updateModal .form input[name='key']").val( row.key );
         $("#updateModal .form textarea[name='data']").val( row.data );
@@ -267,10 +256,6 @@ $(function() {
 		errorClass : 'help-block',
 		focusInvalid : true,
         rules : {
-            biz : {
-                required : true ,
-                rangelength:[4,255]
-            },
             env : {
                 required : true ,
                 rangelength:[2,255]
@@ -281,10 +266,6 @@ $(function() {
             }
         },
         messages : {
-            biz : {
-                required :'请输入'  ,
-                rangelength: '长度限制为[4~255]'
-            },
             env : {
                 required :'请输入'  ,
                 rangelength: '长度限制为[2~255]'

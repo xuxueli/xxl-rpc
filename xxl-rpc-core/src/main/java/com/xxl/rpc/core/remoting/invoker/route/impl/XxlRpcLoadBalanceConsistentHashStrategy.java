@@ -1,6 +1,7 @@
 package com.xxl.rpc.core.remoting.invoker.route.impl;
 
 import com.xxl.rpc.core.remoting.invoker.route.XxlRpcLoadBalance;
+import com.xxl.rpc.core.util.XxlRpcException;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -32,14 +33,14 @@ public class XxlRpcLoadBalanceConsistentHashStrategy extends XxlRpcLoadBalance {
         try {
             md5 = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("MD5 not supported", e);
+            throw new XxlRpcException("MD5 not supported", e);
         }
         md5.reset();
         byte[] keyBytes = null;
         try {
             keyBytes = key.getBytes("UTF-8");
         } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException("Unknown string :" + key, e);
+            throw new XxlRpcException("Unknown string :" + key, e);
         }
 
         md5.update(keyBytes);

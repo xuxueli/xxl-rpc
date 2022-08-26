@@ -18,20 +18,17 @@ public interface IXxlRpcRegistryDataDao {
     public int add(@Param("xxlRpcRegistryData") XxlRpcRegistryData xxlRpcRegistryData);
 
 
-    public List<XxlRpcRegistryData> findData(@Param("biz") String biz,
-                                             @Param("env") String env,
+    public List<XxlRpcRegistryData> findData(@Param("env") String env,
                                              @Param("key") String key);
 
     public int cleanData(@Param("timeout") int timeout);
 
-    public int deleteData(@Param("biz") String biz,
-                          @Param("env") String env,
+    public int deleteData(@Param("env") String env,
                           @Param("key") String key);
 
-    public int deleteDataValue(@Param("biz") String biz,
-                          @Param("env") String env,
-                          @Param("key") String key,
-                           @Param("value") String value);
+    public int deleteDataValue(@Param("env") String env,
+                               @Param("key") String key,
+                               @Param("value") String value);
 
     public int count();
 

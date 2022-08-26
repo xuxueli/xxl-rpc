@@ -2,6 +2,7 @@ package com.xxl.rpc.admin.controller.interceptor;
 
 import com.xxl.rpc.admin.controller.annotation.PermessionLimit;
 import com.xxl.rpc.admin.core.util.CookieUtil;
+import com.xxl.rpc.core.util.XxlRpcException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -33,7 +34,7 @@ public class PermissionInterceptor implements AsyncHandlerInterceptor, Initializ
 
         // valid
         if (username==null || username.trim().length()==0 || password==null || password.trim().length()==0) {
-            throw new RuntimeException("权限账号密码不可为空");
+            throw new XxlRpcException("权限账号密码不可为空");
         }
 
         // login token

@@ -14,17 +14,14 @@ public interface IXxlRpcRegistryDao {
 
     public List<XxlRpcRegistry> pageList(@Param("offset") int offset,
                                          @Param("pagesize") int pagesize,
-                                         @Param("biz") String biz,
                                          @Param("env") String env,
                                          @Param("key") String key);
     public int pageListCount(@Param("offset") int offset,
                              @Param("pagesize") int pagesize,
-                             @Param("biz") String biz,
                              @Param("env") String env,
                              @Param("key") String key);
 
-    public XxlRpcRegistry load(@Param("biz") String biz,
-                               @Param("env") String env,
+    public XxlRpcRegistry load(@Param("env") String env,
                                @Param("key") String key);
 
     public XxlRpcRegistry loadById(@Param("id") int id);

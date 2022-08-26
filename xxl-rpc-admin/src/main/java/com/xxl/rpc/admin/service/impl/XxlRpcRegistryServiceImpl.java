@@ -13,6 +13,7 @@ import com.xxl.rpc.admin.service.IXxlRpcRegistryService;
 import com.xxl.rpc.core.registry.impl.xxlrpcadmin.model.XxlRpcAdminRegistryDataItem;
 import com.xxl.rpc.core.registry.impl.xxlrpcadmin.model.XxlRpcAdminRegistryRequest;
 import com.xxl.rpc.core.registry.impl.xxlrpcadmin.model.XxlRpcAdminRegistryResponse;
+import com.xxl.rpc.core.util.XxlRpcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -50,11 +51,11 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
 
 
     @Override
-    public Map<String, Object> pageList(int start, int length, String biz, String env, String key) {
+    public Map<String, Object> pageList(int start, int length, String env, String key) {
 
         // page list
-        List<XxlRpcRegistry> list = xxlRpcRegistryDao.pageList(start, length, biz, env, key);
-        int list_count = xxlRpcRegistryDao.pageListCount(start, length, biz, env, key);
+        List<XxlRpcRegistry> list = xxlRpcRegistryDao.pageList(start, length, env, key);
+        int list_count = xxlRpcRegistryDao.pageListCount(start, length, env, key);
 
         // package result
         Map<String, Object> maps = new HashMap<String, Object>();
@@ -69,7 +70,7 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
         XxlRpcRegistry xxlRpcRegistry = xxlRpcRegistryDao.loadById(id);
         if (xxlRpcRegistry != null) {
             xxlRpcRegistryDao.delete(id);
-            xxlRpcRegistryDataDao.deleteData(xxlRpcRegistry.getBiz(), xxlRpcRegistry.getEnv(), xxlRpcRegistry.getKey());
+            xxlRpcRegistryDataDao.deleteData(xxlRpcRegistry.getEnv(), xxlRpcRegistry.getKey());
 
             // sendRegistryDataUpdateMessage (delete)
             xxlRpcRegistry.setData("");
@@ -95,9 +96,6 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
     public ReturnT<String> update(XxlRpcRegistry xxlRpcRegistry) {
 
         // valid
-        if (xxlRpcRegistry.getBiz()==null || xxlRpcRegistry.getBiz().trim().length()<4 || xxlRpcRegistry.getBiz().trim().length()>255) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "业务线格式非法[4~255]");
-        }
         if (xxlRpcRegistry.getEnv()==null || xxlRpcRegistry.getEnv().trim().length()<2 || xxlRpcRegistry.getEnv().trim().length()>255 ) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "环境格式非法[2~255]");
         }
@@ -136,9 +134,6 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
     public ReturnT<String> add(XxlRpcRegistry xxlRpcRegistry) {
 
         // valid
-        if (xxlRpcRegistry.getBiz()==null || xxlRpcRegistry.getBiz().trim().length()<4 || xxlRpcRegistry.getBiz().trim().length()>255) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "业务线格式非法[4~255]");
-        }
         if (xxlRpcRegistry.getEnv()==null || xxlRpcRegistry.getEnv().trim().length()<2 || xxlRpcRegistry.getEnv().trim().length()>255 ) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "环境格式非法[2~255]");
         }
@@ -154,7 +149,7 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
         }
 
         // valid exist
-        XxlRpcRegistry exist = xxlRpcRegistryDao.load(xxlRpcRegistry.getBiz(), xxlRpcRegistry.getEnv(), xxlRpcRegistry.getKey());
+        XxlRpcRegistry exist = xxlRpcRegistryDao.load(xxlRpcRegistry.getEnv(), xxlRpcRegistry.getKey());
         if (exist != null) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "注册Key请勿重复");
         }
@@ -180,9 +175,6 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
         if (this.accessToken!=null && this.accessToken.trim().length()>0 && !this.accessToken.equals(registryRequest.getAccessToken())) {
             return new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "AccessToken Invalid");
         }
-        if (registryRequest.getBiz()==null || registryRequest.getBiz().trim().length()<4 || registryRequest.getBiz().trim().length()>255) {
-            return new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "Biz Invalid[4~255]");
-        }
         if (registryRequest.getEnv()==null || registryRequest.getEnv().trim().length()<2 || registryRequest.getEnv().trim().length()>255) {
             return new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "Env Invalid[2~255]");
         }
@@ -202,7 +194,6 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
         List<XxlRpcRegistryData> registryDataList = new ArrayList<>();
         for (XxlRpcAdminRegistryDataItem dataItem: registryRequest.getRegistryDataList()) {
             XxlRpcRegistryData registryData = new XxlRpcRegistryData();
-            registryData.setBiz(registryRequest.getBiz());
             registryData.setEnv(registryRequest.getEnv());
             registryData.setKey(dataItem.getKey());
             registryData.setValue(dataItem.getValue());
@@ -221,9 +212,6 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
         if (this.accessToken!=null && this.accessToken.trim().length()>0 && !this.accessToken.equals(registryRequest.getAccessToken())) {
             return new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "AccessToken Invalid");
         }
-        if (registryRequest.getBiz()==null || registryRequest.getBiz().trim().length()<4 || registryRequest.getBiz().trim().length()>255) {
-            return new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "Biz Invalid[4~255]");
-        }
         if (registryRequest.getEnv()==null || registryRequest.getEnv().trim().length()<2 || registryRequest.getEnv().trim().length()>255) {
             return new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "Env Invalid[2~255]");
         }
@@ -243,7 +231,6 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
         List<XxlRpcRegistryData> registryDataList = new ArrayList<>();
         for (XxlRpcAdminRegistryDataItem dataItem: registryRequest.getRegistryDataList()) {
             XxlRpcRegistryData registryData = new XxlRpcRegistryData();
-            registryData.setBiz(registryRequest.getBiz());
             registryData.setEnv(registryRequest.getEnv());
             registryData.setKey(dataItem.getKey());
             registryData.setValue(dataItem.getValue());
@@ -262,9 +249,6 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
         if (this.accessToken!=null && this.accessToken.trim().length()>0 && !this.accessToken.equals(registryRequest.getAccessToken())) {
             return new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "AccessToken Invalid");
         }
-        if (registryRequest.getBiz()==null || registryRequest.getBiz().trim().length()<4 || registryRequest.getBiz().trim().length()>255) {
-            return new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "Biz Invalid[4~255]");
-        }
         if (registryRequest.getEnv()==null || registryRequest.getEnv().trim().length()<2 || registryRequest.getEnv().trim().length()>255) {
             return new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "Env Invalid[2~255]");
         }
@@ -281,7 +265,6 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
         for (String key: registryRequest.getKeys()) {
             // key
             XxlRpcRegistryData xxlRpcRegistryData = new XxlRpcRegistryData();
-            xxlRpcRegistryData.setBiz(registryRequest.getBiz());
             xxlRpcRegistryData.setEnv(registryRequest.getEnv());
             xxlRpcRegistryData.setKey(key);
 
@@ -310,10 +293,6 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
             deferredResult.setResult(new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "AccessToken Invalid"));
             return deferredResult;
         }
-        if (registryRequest.getBiz()==null || registryRequest.getBiz().trim().length()<4 || registryRequest.getBiz().trim().length()>255) {
-            deferredResult.setResult(new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "Biz Invalid[4~255]"));
-            return deferredResult;
-        }
         if (registryRequest.getEnv()==null || registryRequest.getEnv().trim().length()<2 || registryRequest.getEnv().trim().length()>255) {
             deferredResult.setResult(new XxlRpcAdminRegistryResponse(XxlRpcAdminRegistryResponse.FAIL_CODE, "Env Invalid[2~255]"));
             return deferredResult;
@@ -331,7 +310,7 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
 
         // monitor by client
         for (String key: registryRequest.getKeys()) {
-            String fileName = parseRegistryDataFileName(registryRequest.getBiz(), registryRequest.getEnv(), key);
+            String fileName = parseRegistryDataFileName(registryRequest.getEnv(), key);
 
             List<DeferredResult> deferredResultList = registryDeferredResultMap.get(fileName);
             if (deferredResultList == null) {
@@ -350,7 +329,7 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
      */
     private void checkRegistryDataAndSendMessage(XxlRpcRegistryData xxlRpcRegistryData){
         // data json
-        List<XxlRpcRegistryData> xxlRpcRegistryDataList = xxlRpcRegistryDataDao.findData(xxlRpcRegistryData.getBiz(), xxlRpcRegistryData.getEnv(), xxlRpcRegistryData.getKey());
+        List<XxlRpcRegistryData> xxlRpcRegistryDataList = xxlRpcRegistryDataDao.findData(xxlRpcRegistryData.getEnv(), xxlRpcRegistryData.getKey());
         List<String> valueList = new ArrayList<>();
         if (xxlRpcRegistryDataList !=null && xxlRpcRegistryDataList.size()>0) {
             for (XxlRpcRegistryData dataItem: xxlRpcRegistryDataList) {
@@ -360,11 +339,10 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
         String dataJson = JacksonUtil.writeValueAsString(valueList);
 
         // update registry and message
-        XxlRpcRegistry xxlRpcRegistry = xxlRpcRegistryDao.load(xxlRpcRegistryData.getBiz(), xxlRpcRegistryData.getEnv(), xxlRpcRegistryData.getKey());
+        XxlRpcRegistry xxlRpcRegistry = xxlRpcRegistryDao.load(xxlRpcRegistryData.getEnv(), xxlRpcRegistryData.getKey());
         boolean needMessage = false;
         if (xxlRpcRegistry == null) {
             xxlRpcRegistry = new XxlRpcRegistry();
-            xxlRpcRegistry.setBiz(xxlRpcRegistryData.getBiz());
             xxlRpcRegistry.setEnv(xxlRpcRegistryData.getEnv());
             xxlRpcRegistry.setKey(xxlRpcRegistryData.getKey());
             xxlRpcRegistry.setData(dataJson);
@@ -406,7 +384,7 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
 
         // valid
         if (registryDataFilePath==null || registryDataFilePath.trim().length()==0) {
-            throw new RuntimeException("xxl-rpc, registryDataFilePath empty.");
+            throw new XxlRpcException("xxl-rpc, registryDataFilePath empty.");
         }
 
         /**
@@ -465,7 +443,7 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
                             if (xxlRpcRegistryData != null) {
 
                                 // delete
-                                xxlRpcRegistryDataDao.deleteDataValue(xxlRpcRegistryData.getBiz(), xxlRpcRegistryData.getEnv(), xxlRpcRegistryData.getKey(), xxlRpcRegistryData.getValue());
+                                xxlRpcRegistryDataDao.deleteDataValue(xxlRpcRegistryData.getEnv(), xxlRpcRegistryData.getKey(), xxlRpcRegistryData.getValue());
 
                                 // valid file status
                                 XxlRpcRegistry fileXxlRpcRegistry = getFileRegistryData(xxlRpcRegistryData);
@@ -582,7 +560,7 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
                         int pagesize = 1000;
                         List<String> registryDataFileList = new ArrayList<>();
 
-                        List<XxlRpcRegistry> registryList = xxlRpcRegistryDao.pageList(offset, pagesize, null, null, null);
+                        List<XxlRpcRegistry> registryList = xxlRpcRegistryDao.pageList(offset, pagesize, null, null);
                         while (registryList!=null && registryList.size()>0) {
 
                             for (XxlRpcRegistry registryItem: registryList) {
@@ -596,7 +574,7 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
                                     registryItem.setData(dataJson);
                                 } else {
                                     // default, sync from db
-                                    List<XxlRpcRegistryData> xxlRpcRegistryDataList = xxlRpcRegistryDataDao.findData(registryItem.getBiz(), registryItem.getEnv(), registryItem.getKey());
+                                    List<XxlRpcRegistryData> xxlRpcRegistryDataList = xxlRpcRegistryDataDao.findData(registryItem.getEnv(), registryItem.getKey());
                                     List<String> valueList = new ArrayList<String>();
                                     if (xxlRpcRegistryDataList !=null && xxlRpcRegistryDataList.size()>0) {
                                         for (XxlRpcRegistryData dataItem: xxlRpcRegistryDataList) {
@@ -621,7 +599,7 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
 
 
                             offset += 1000;
-                            registryList = xxlRpcRegistryDao.pageList(offset, pagesize, null, null, null);
+                            registryList = xxlRpcRegistryDao.pageList(offset, pagesize, null, null);
                         }
 
                         // clean old registry-data file
@@ -659,7 +637,7 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
     public XxlRpcRegistry getFileRegistryData(XxlRpcRegistryData xxlRpcRegistryData){
 
         // fileName
-        String fileName = parseRegistryDataFileName(xxlRpcRegistryData.getBiz(), xxlRpcRegistryData.getEnv(), xxlRpcRegistryData.getKey());
+        String fileName = parseRegistryDataFileName(xxlRpcRegistryData.getEnv(), xxlRpcRegistryData.getKey());
 
         // read
         Properties prop = PropUtil.loadProp(fileName);
@@ -672,10 +650,9 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
         }
         return null;
     }
-    private String parseRegistryDataFileName(String biz, String env, String key){
+    private String parseRegistryDataFileName(String env, String key){
         // fileName
         String fileName = registryDataFilePath
-                .concat(File.separator).concat(biz)
                 .concat(File.separator).concat(env)
                 .concat(File.separator).concat(key)
                 .concat(".properties");
@@ -686,7 +663,7 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
     public String setFileRegistryData(XxlRpcRegistry xxlRpcRegistry){
 
         // fileName
-        String fileName = parseRegistryDataFileName(xxlRpcRegistry.getBiz(), xxlRpcRegistry.getEnv(), xxlRpcRegistry.getKey());
+        String fileName = parseRegistryDataFileName(xxlRpcRegistry.getEnv(), xxlRpcRegistry.getKey());
 
         // valid repeat update
         Properties existProp = PropUtil.loadProp(fileName);
@@ -704,8 +681,8 @@ public class XxlRpcRegistryServiceImpl implements IXxlRpcRegistryService, Initia
 
         PropUtil.writeProp(prop, fileName);
 
-        logger.info(">>>>>>>>>>> xxl-rpc, setFileRegistryData: biz={}, env={}, key={}, data={}"
-                , xxlRpcRegistry.getBiz(), xxlRpcRegistry.getEnv(), xxlRpcRegistry.getKey(), xxlRpcRegistry.getData());
+        logger.info(">>>>>>>>>>> xxl-rpc, setFileRegistryData: env={}, key={}, data={}"
+                , xxlRpcRegistry.getEnv(), xxlRpcRegistry.getKey(), xxlRpcRegistry.getData());
 
 
         // brocast monitor client

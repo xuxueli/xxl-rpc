@@ -28,9 +28,6 @@
 	    
 	    	<div class="row">
                 <div class="col-xs-3">
-                    <input type="text" class="form-control" id="biz" autocomplete="on" value="${topic!''}" placeholder="请输入业务标识，精确匹配" >
-                </div>
-                <div class="col-xs-3">
                     <input type="text" class="form-control" id="env" autocomplete="on" value="${topic!''}" placeholder="请输入环境标识，精确匹配" >
                 </div>
                 <div class="col-xs-3">
@@ -54,7 +51,6 @@
 				                <thead>
 					            	<tr>
 					                	<th name="id" >ID</th>
-					                  	<th name="biz" >业务标识</th>
                                         <th name="env" >环境标识</th>
                                         <th name="key" >注册Key</th>
                                         <th name="data" >注册信息<#--注册Value有效数据--></th>
@@ -82,10 +78,6 @@
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal form" role="form" >
-                        <div class="form-group">
-                            <label for="lastname" class="col-sm-3 control-label">业务标识 <font color="red">*</font></label>
-                            <div class="col-sm-9"><input type="text" class="form-control" name="biz" maxlength="255" placeholder="请输入业务标识" ></div>
-                        </div>
                         <div class="form-group">
                             <label for="lastname" class="col-sm-3 control-label">环境标识 <font color="red">*</font></label>
                             <div class="col-sm-9"><input type="text" class="form-control" name="env" maxlength="255" placeholder="请输入环境标识" ></div>
@@ -132,10 +124,6 @@
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal form" role="form" >
-                        <div class="form-group">
-                            <label for="lastname" class="col-sm-3 control-label">业务标识 <font color="red">*</font></label>
-                            <div class="col-sm-9"><input type="text" class="form-control" name="biz" maxlength="255" placeholder="请输入业务标识" ></div>
-                        </div>
                         <div class="form-group">
                             <label for="lastname" class="col-sm-3 control-label">环境标识 <font color="red">*</font></label>
                             <div class="col-sm-9"><input type="text" class="form-control" name="env" maxlength="255" placeholder="请输入环境标识" readonly ></div>

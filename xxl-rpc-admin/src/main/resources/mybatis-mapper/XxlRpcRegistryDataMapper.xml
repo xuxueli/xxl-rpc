@@ -5,7 +5,6 @@
 	
 	<resultMap id="xxlRpcRegistryData" type="com.xxl.rpc.admin.core.model.XxlRpcRegistryData" >
 		<result column="id" property="id" />
-		<result column="biz" property="biz" />
 		<result column="env" property="env" />
 		<result column="key" property="key" />
 		<result column="value" property="value" />
@@ -14,7 +13,6 @@
 
 	<sql id="Base_Column_List">
 		t.`id`,
-		t.`biz`,
 		t.`env`,
 		t.`key`,
 		t.`value`,
@@ -25,22 +23,19 @@
 		UPDATE xxl_rpc_registry_data AS t
 		SET
 			t.`updateTime` = now()
-		WHERE t.`biz` = #{xxlRpcRegistryData.biz}
-			and t.`env` = #{xxlRpcRegistryData.env}
+		WHERE t.`env` = #{xxlRpcRegistryData.env}
 			and t.`key` = #{xxlRpcRegistryData.key}
 			and t.`value` = #{xxlRpcRegistryData.value}
 	</update>
 
 	<insert id="add" parameterType="com.xxl.rpc.admin.core.model.XxlRpcRegistryData" >
 		INSERT INTO xxl_rpc_registry_data (
-			`biz`,
 			`env`,
 			`key`,
 			`value`,
 			`updateTime`
 		) VALUES
 		(
-			#{xxlRpcRegistryData.biz},
 			#{xxlRpcRegistryData.env},
 			#{xxlRpcRegistryData.key},
 			#{xxlRpcRegistryData.value},
@@ -51,8 +46,7 @@
 	<select id="findData" parameterType="java.util.HashMap" resultMap="xxlRpcRegistryData">
 		SELECT <include refid="Base_Column_List" />
 		FROM xxl_rpc_registry_data AS t
-		where t.biz = #{biz}
-			and t.env = #{env}
+		where t.env = #{env}
 			and t.key = #{key}
 		ORDER BY t.value ASC
 	</select>
@@ -64,15 +58,13 @@
 
 	<delete id="deleteData" parameterType="java.util.HashMap" >
 		DELETE FROM xxl_rpc_registry_data
-		WHERE `biz` = #{biz}
-			and `env` = #{env}
+		WHERE `env` = #{env}
 			and `key` = #{key}
 	</delete>
 
 	<delete id="deleteDataValue" parameterType="java.util.HashMap" >
 		DELETE FROM xxl_rpc_registry_data
-		WHERE `biz` = #{biz}
-			and `env` = #{env}
+		WHERE `env` = #{env}
 			and `key` = #{key}
 			and `value` = #{value}
 	</delete>

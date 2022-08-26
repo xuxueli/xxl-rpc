@@ -1,10 +1,10 @@
 package com.xxl.rpc.admin.test.dao;
 
 import com.xxl.rpc.admin.core.model.XxlRpcRegistry;
-import com.xxl.rpc.admin.core.util.JacksonUtil;
 import com.xxl.rpc.admin.dao.IXxlRpcRegistryDao;
 import com.xxl.rpc.admin.dao.IXxlRpcRegistryDataDao;
 import com.xxl.rpc.admin.dao.IXxlRpcRegistryMessageDao;
+import com.xxl.rpc.core.util.GsonTool;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,8 +26,8 @@ public class XxlRpcRegistryDaoTest {
 
     @Test
     public void test(){
-        List<XxlRpcRegistry> registryList = xxlRpcRegistryDao.pageList(0, 100, null, null, null);
-        logger.info(JacksonUtil.writeValueAsString(registryList));
+        List<XxlRpcRegistry> registryList = xxlRpcRegistryDao.pageList(0, 100, null, null);
+        logger.info(GsonTool.toJson(registryList));
     }
 
 

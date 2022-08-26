@@ -9,20 +9,10 @@ public class XxlRpcAdminRegistryRequest {
 
 
     private String accessToken;
-    private String biz;
     private String env;
-
 
     private List<XxlRpcAdminRegistryDataItem> registryDataList;
     private List<String> keys;
-
-    public String getBiz() {
-        return biz;
-    }
-
-    public void setBiz(String biz) {
-        this.biz = biz;
-    }
 
     public String getEnv() {
         return env;

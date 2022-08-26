@@ -8,7 +8,6 @@ import java.util.List;
 public class XxlRpcRegistry {
 
     private int id;
-    private String biz;         // 业务标识
     private String env;         // 环境标识
     private String key;         // 注册Key
     private String data;        // 注册Value有效数据
@@ -23,14 +22,6 @@ public class XxlRpcRegistry {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getBiz() {
-        return biz;
-    }
-
-    public void setBiz(String biz) {
-        this.biz = biz;
     }
 
     public String getEnv() {

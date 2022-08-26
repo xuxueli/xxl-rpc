@@ -3,6 +3,7 @@ package com.xxl.rpc.core.registry.impl;
 import com.xxl.rpc.core.registry.impl.xxlrpcadmin.XxlRpcAdminRegistryClient;
 import com.xxl.rpc.core.registry.impl.xxlrpcadmin.model.XxlRpcAdminRegistryDataItem;
 import com.xxl.rpc.core.registry.Register;
+import com.xxl.rpc.core.util.XxlRpcException;
 
 import java.util.*;
 
@@ -15,26 +16,17 @@ public class XxlRpcAdminRegister extends Register {
 
     public static final String ADMIN_ADDRESS = "ADMIN_ADDRESS";
     public static final String ACCESS_TOKEN = "ACCESS_TOKEN";
-    public static final String BIZ = "BIZ";
     public static final String ENV = "ENV";
 
     private XxlRpcAdminRegistryClient xxlRpcAdminRegistryClient;
-    public XxlRpcAdminRegistryClient getXxlRpcAdminRegistryClient() {
-        return xxlRpcAdminRegistryClient;
-    }
 
     @Override
     public void start(Map<String, String> param) {
-        String xxlRegistryAddress = param.get(ADMIN_ADDRESS);
+        String adminAddress = param.get(ADMIN_ADDRESS);
         String accessToken = param.get(ACCESS_TOKEN);
-        String biz = param.get(BIZ);
         String env = param.get(ENV);
 
-        // fill
-        biz = (biz!=null&&biz.trim().length()>0)?biz:"default";
-        env = (env!=null&&env.trim().length()>0)?env:"default";
-
-        xxlRpcAdminRegistryClient = new XxlRpcAdminRegistryClient(xxlRegistryAddress, accessToken, biz, env);
+        xxlRpcAdminRegistryClient = new XxlRpcAdminRegistryClient(adminAddress, accessToken, env);
     }
 
     @Override

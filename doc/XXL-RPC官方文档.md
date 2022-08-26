@@ -577,7 +577,6 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 
 请求参数说明：
  1、accessToken：请求令牌；
- 2、biz：业务标识
  2、env：环境标识
  3、registryDataList：服务注册信息
 
@@ -585,7 +584,6 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
  
     {
         "accessToken" : "xx",
-        "biz" : "xx",
         "env" : "xx",
         "registryDataList" : [{
             "key" : "service01",
@@ -603,7 +601,6 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 
 请求参数说明：
  1、accessToken：请求令牌；
- 2、biz：业务标识
  2、env：环境标识
  3、registryDataList：服务注册信息
 
@@ -611,7 +608,6 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
  
     {
         "accessToken" : "xx",
-        "biz" : "xx",
         "env" : "xx",
         "registryDataList" : [{
             "key" : "service01",
@@ -629,7 +625,6 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 
 请求参数说明：
  1、accessToken：请求令牌；
- 2、biz：业务标识
  2、env：环境标识
  3、keys：服务注册Key列表
  
@@ -637,7 +632,6 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
  
     {
         "accessToken" : "xx",
-        "biz" : "xx",
         "env" : "xx",
         "keys" : [
             "service01",
@@ -655,7 +649,6 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 
 请求参数说明：
  1、accessToken：请求令牌；
- 2、biz：业务标识
  2、env：环境标识
  3、keys：服务注册Key列表
  
@@ -663,7 +656,6 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
  
     {
         "accessToken" : "xx",
-        "biz" : "xx",
         "env" : "xx",
         "keys" : [
             "service01",
@@ -854,9 +846,11 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 
 ### 6.13 版本 v1.7.0 Release Notes[迭代中]
 - 1、轮训路由策略优化，修复小概率下并发问题；
-- 2、[迭代中]数据库编码调整为utf8mb4；
-- 3、[迭代中]业务标识和环境标识字段长度上限调整为50；
-- 4、[迭代中]restful api序列化组件调整为gson；
+- 2、默认注册中心代码结构重构，废弃冗余 "biz" 属性；
+- 3、依赖版本升级，如netty/spring等;
+- 4、数据库编码调整为utf8mb4；
+- 5、[迭代中]业务标识和环境标识字段长度上限调整为50；
+- 6、[迭代中]restful api序列化组件调整为gson；
 
 ### TODO
 - 提高系统可用性，以部分功能暂时不可达为代价，防止服务整体缓慢或雪崩

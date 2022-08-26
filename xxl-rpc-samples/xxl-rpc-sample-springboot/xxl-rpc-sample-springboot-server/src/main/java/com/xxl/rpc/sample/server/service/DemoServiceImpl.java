@@ -23,7 +23,9 @@ public class DemoServiceImpl implements DemoService {
 		String word = MessageFormat.format("Hi {0}, from {1} as {2}",
 				name, DemoServiceImpl.class.getName(), String.valueOf(System.currentTimeMillis()));
 
-		if ("error".equalsIgnoreCase(name)) throw new RuntimeException("test exception.");
+		if ("error".equalsIgnoreCase(name)) {
+			throw new RuntimeException("test exception.");
+		}
 
 		UserDTO userDTO = new UserDTO(name, word);
 		logger.info(userDTO.toString());

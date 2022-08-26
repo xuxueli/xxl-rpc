@@ -5,6 +5,7 @@ import com.xxl.rpc.core.registry.impl.xxlrpcadmin.model.XxlRpcAdminRegistryReque
 import com.xxl.rpc.core.registry.impl.xxlrpcadmin.model.XxlRpcAdminRegistryResponse;
 import com.xxl.rpc.core.util.BasicHttpUtil;
 import com.xxl.rpc.core.util.GsonTool;
+import com.xxl.rpc.core.util.XxlRpcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,33 +22,30 @@ public class XxlRpcAdminRegistryBaseClient {
 
     private String adminAddress;
     private String accessToken;
-    private String biz;
     private String env;
 
     private List<String> adminAddressArr;
 
 
-    public XxlRpcAdminRegistryBaseClient(String adminAddress, String accessToken, String biz, String env) {
-        this.adminAddress = adminAddress;
+    public XxlRpcAdminRegistryBaseClient(String adminAddress, String accessToken, String env) {
+
+        // fill
+        this.adminAddress = adminAddress.trim();
         this.accessToken = accessToken;
-        this.biz = biz;
-        this.env = env;
+        this.env = env.trim();
 
         // valid
-        if (adminAddress==null || adminAddress.trim().length()==0) {
-            throw new RuntimeException("xxl-rpc adminAddress empty");
+        if (this.adminAddress==null || this.adminAddress.trim().length()==0) {
+            throw new XxlRpcException("xxl-rpc, admin registry config[ADMIN_ADDRESS] empty.");
         }
-        if (biz==null || biz.trim().length()<4 || biz.trim().length()>255) {
-            throw new RuntimeException("xxl-rpc biz empty Invalid[4~255]");
-        }
-        if (env==null || env.trim().length()<2 || env.trim().length()>255) {
-            throw new RuntimeException("xxl-rpc biz env Invalid[2~255]");
+        if (this.env==null || this.env.trim().length()<2 || this.env.trim().length()>255) {
+            throw new XxlRpcException("xxl-rpc, admin registry config[ENV] Invalid[2~255].");
         }
 
         // parse
         adminAddressArr = new ArrayList<>();
-        if (adminAddress.contains(",")) {
-            adminAddressArr.addAll(Arrays.asList(adminAddress.split(",")));
+        if (this.adminAddress.contains(",")) {
+            adminAddressArr.addAll(Arrays.asList(this.adminAddress.split(",")));
         } else {
             adminAddressArr.add(adminAddress);
         }
@@ -64,14 +62,14 @@ public class XxlRpcAdminRegistryBaseClient {
 
         // valid
         if (registryDataList==null || registryDataList.size()==0) {
-            throw new RuntimeException("xxl-rpc registryDataList empty");
+            throw new XxlRpcException("xxl-rpc registryDataList empty");
         }
         for (XxlRpcAdminRegistryDataItem registryParam: registryDataList) {
             if (registryParam.getKey()==null || registryParam.getKey().trim().length()<4 || registryParam.getKey().trim().length()>255) {
-                throw new RuntimeException("xxl-rpc registryDataList#key Invalid[4~255]");
+                throw new XxlRpcException("xxl-rpc registryDataList#key Invalid[4~255]");
             }
             if (registryParam.getValue()==null || registryParam.getValue().trim().length()<4 || registryParam.getValue().trim().length()>255) {
-                throw new RuntimeException("xxl-rpc registryDataList#value Invalid[4~255]");
+                throw new XxlRpcException("xxl-rpc registryDataList#value Invalid[4~255]");
             }
         }
 
@@ -81,7 +79,6 @@ public class XxlRpcAdminRegistryBaseClient {
         // param
         XxlRpcAdminRegistryRequest registryParamVO = new XxlRpcAdminRegistryRequest();
         registryParamVO.setAccessToken(this.accessToken);
-        registryParamVO.setBiz(this.biz);
         registryParamVO.setEnv(this.env);
         registryParamVO.setRegistryDataList(registryDataList);
 
@@ -101,14 +98,14 @@ public class XxlRpcAdminRegistryBaseClient {
     public boolean remove(List<XxlRpcAdminRegistryDataItem> registryDataList) {
         // valid
         if (registryDataList==null || registryDataList.size()==0) {
-            throw new RuntimeException("xxl-rpc registryDataList empty");
+            throw new XxlRpcException("xxl-rpc registryDataList empty");
         }
         for (XxlRpcAdminRegistryDataItem registryParam: registryDataList) {
             if (registryParam.getKey()==null || registryParam.getKey().trim().length()<4 || registryParam.getKey().trim().length()>255) {
-                throw new RuntimeException("xxl-rpc registryDataList#key Invalid[4~255]");
+                throw new XxlRpcException("xxl-rpc registryDataList#key Invalid[4~255]");
             }
             if (registryParam.getValue()==null || registryParam.getValue().trim().length()<4 || registryParam.getValue().trim().length()>255) {
-                throw new RuntimeException("xxl-rpc registryDataList#value Invalid[4~255]");
+                throw new XxlRpcException("xxl-rpc registryDataList#value Invalid[4~255]");
             }
         }
 
@@ -118,7 +115,6 @@ public class XxlRpcAdminRegistryBaseClient {
         // param
         XxlRpcAdminRegistryRequest registryParamVO = new XxlRpcAdminRegistryRequest();
         registryParamVO.setAccessToken(this.accessToken);
-        registryParamVO.setBiz(this.biz);
         registryParamVO.setEnv(this.env);
         registryParamVO.setRegistryDataList(registryDataList);
 
@@ -138,7 +134,7 @@ public class XxlRpcAdminRegistryBaseClient {
     public Map<String, TreeSet<String>> discovery(Set<String> keys) {
         // valid
         if (keys==null || keys.size()==0) {
-            throw new RuntimeException("xxl-rpc keys empty");
+            throw new XxlRpcException("xxl-rpc keys empty");
         }
 
         // pathUrl
@@ -147,7 +143,6 @@ public class XxlRpcAdminRegistryBaseClient {
         // param
         XxlRpcAdminRegistryRequest registryParamVO = new XxlRpcAdminRegistryRequest();
         registryParamVO.setAccessToken(this.accessToken);
-        registryParamVO.setBiz(this.biz);
         registryParamVO.setEnv(this.env);
         registryParamVO.setKeys(new ArrayList<String>(keys));
 
@@ -173,7 +168,7 @@ public class XxlRpcAdminRegistryBaseClient {
     public boolean monitor(Set<String> keys) {
         // valid
         if (keys==null || keys.size()==0) {
-            throw new RuntimeException("xxl-rpc keys empty");
+            throw new XxlRpcException("xxl-rpc keys empty");
         }
 
         // pathUrl
@@ -182,7 +177,6 @@ public class XxlRpcAdminRegistryBaseClient {
         // param
         XxlRpcAdminRegistryRequest registryParamVO = new XxlRpcAdminRegistryRequest();
         registryParamVO.setAccessToken(this.accessToken);
-        registryParamVO.setBiz(this.biz);
         registryParamVO.setEnv(this.env);
         registryParamVO.setKeys(new ArrayList<String>(keys));
 
