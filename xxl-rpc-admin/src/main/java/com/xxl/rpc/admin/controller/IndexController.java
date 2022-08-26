@@ -38,7 +38,7 @@ public class IndexController {
 	@RequestMapping("/")
 	public String index(Model model, HttpServletRequest request) {
 
-		int registryNum = xxlRpcRegistryDao.pageListCount(0, 1, null, null, null);
+		int registryNum = xxlRpcRegistryDao.pageListCount(0, 1, null, null);
 		int registryDataNum = xxlRpcRegistryDataDao.count();
 
 		model.addAttribute("registryNum", registryNum);
