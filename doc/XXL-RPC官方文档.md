@@ -693,7 +693,7 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
     - state machine（顺序操作日志副本并保证结果一直）：顺序消费消息，保证本地数据一致，并通过周期全量同步进一步保证一致性；
 
 ### 5.7 版本
-#### 5.7.1 版本 v1.0.0 Release Notes[2018-12-01]
+#### v1.0.0 Release Notes[2018-12-01]
 - 1、轻量级：基于DB与磁盘文件，只需要提供一个DB实例即可，无第三方依赖；
 - 2、实时性：借助内部广播机制，新服务上线、下线，可以在1s内推送给客户端；
 - 3、数据同步：注册中心内部10s会全量同步一次磁盘数据，清理无效服务，确保服务数据实时可用；
@@ -709,13 +709,13 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 - 10、容器化：提供官方docker镜像，并实时更新推送dockerhub，进一步实现 "服务注册中心" 产品开箱即用；
 - 11、long polling 超时时间优化；服务端默认 30s 超时限制；客户端默认 60s 阻塞登台；二者以较小者为准，建议客户端大于服务端。
 
-#### 5.7.2 版本 v1.0.1 Release Notes[2018-12-20]
+#### v1.0.1 Release Notes[2018-12-20]
 - 1、访问令牌（accessToken）：为提升系统安全性，注册中心和客户端进行安全性校验，双方AccessToken匹配才允许通讯；
 - 2、底层通讯参数统一：请求参数统一由 postbody 发送接收，数据格式见公共消息体 "XxlRegistryParamVO"，内部包含 accessToken、biz、env 等属性；
 - 3、环境属性 "env" 长度限制调整为 "2~255" ，兼容 "qa"、"dev" 等短环境标识；
 - 4、升级 pom 依赖至较新版本；
 
-#### 5.7.3 版本 v1.0.2 Release Notes[2018-02-21]
+#### v1.0.2 Release Notes[2018-02-21]
 - 1、服务端空值也支持响应，客户端注册信息发现null值缓存，避免缓存穿透；
 - 2、客户端配置监控逻辑优化，避免异常情况下重试请求太频繁；
 - 3、客户端日志优化：仅变更日志保留为info级别，非核心日志调整为debug级别；
@@ -723,7 +723,7 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 - 5、移除冗余属性，如version等； 
 - 6、服务注册中心全量同步线程优化，对齐起始时间，避免集群节点数据不一致；
 
-#### 5.7.4 版本 v1.1.0 Release Notes[2019-11-16]
+#### v1.1.0 Release Notes[2019-11-16]
 - 1、注册日志文件加载方式优化，修复文件名乱码问题；
 - 2、修复服务注册version不匹配问题；
 - 3、升级依赖版本，如slf4j-api/spring-boot/mybatis/mysql等；
@@ -731,7 +731,7 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 
 
 ## 六、版本更新日志
-### 6.1 版本 v1.1 新特性
+### v1.1 Release Notes
 - 1、快速接入：接入步骤非常简洁，两分钟即可上手；
 - 2、服务透明：系统完整的封装了底层通信细节，开发时调用远程服务就像调用本地服务，在提供远程调用能力时不损失本地调用的语义简洁性；
 - 3、注册中心（可选）：支持使用zookeeper作为服务注册中心，服务注册并动态发现。同时，也可以不使用注册中心，直接指定服务提供方机器地址进行RPC通讯；
@@ -743,7 +743,7 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 - 9、服务监控：可在线监控服务调用统计信息以及服务健康状况等（计划中）；
 - 10、解决1+1问题：传统分布式通讯一般通过nginx或f5做集群服务的流量负载均衡，如hessian，每次请求在到达目标服务机器之前都需要经过负载均衡机器，即1+1，这将会把流量放大一倍。而XXL-RPC将会从消费方至服务提供方建立TCP长连接，每次请求直达目标机器，从而可以避免上述问题；
 
-### 6.2 版本 v1.2.0 [2018-10-26]
+### v1.2.0 Release Notes[2018-10-26]
 - 1、核心模块重度重构：模块化划分、包名重构；
 - 2、轻量级/模块化改造：移除对具体组件的依赖，如ZK、Netty、Mina等，改为可选扩展方式；
 - 3、支持多种请求方式，如：SYNC、ONEWAY、FUTURE、CALLBACK 等；
@@ -755,7 +755,7 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 - 9、推送core到maven中央仓库；
 - 10、服务注册逻辑优化，旧方案以 "iface" 接口包名进行服务注册, 改为结合 "iface + version" 作为 serviceKey 进行注册，便于接口多服务复用；
 
-### 6.3 版本 v1.2.1 Release Notes[2018-11-09]
+### v1.2.1 Release Notes[2018-11-09]
 - 1、内置注册中心选择ZK时逻辑优化，ZK初始化时unlock逻辑调整，优化断线重连特性；
 - 2、除了springboot类型示例；新增无框架示例项目 "xxl-rpc-sample-frameless"。不依赖第三方框架，只需main方法即可启动运行；
 - 3、选型http通讯方式时，校验为IP端口格式地址则主动添加地址前缀；
@@ -763,7 +763,7 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 - 5、http通讯方式选型jetty时，线程池升级为QueuedThreadPool，修复jetty9.4版本server自动销毁问题；
 - 6、Server新增 "/services" 目录功能，可查看在线服务列表；
 
-### 6.4 版本 v1.2.2 Release Notes[2018-11-26]
+### v1.2.2 Release Notes[2018-11-26]
 - 1、默认通讯方案切换为 Netty，可选方案依赖均调整为 provided 类型；提供强制依赖最小精简选型组合 "netty + hessian + 无注册中心(推荐采用：XXL-RPC原生注册中心)"；
 - 2、XXL-RPC原生注册中心：底层抽象注册中心模块，并原生提供自研基于DB的注册中心，真正实现开箱即用，更轻量级、降低第三方依赖；至今XXL-RPC以提供三种注册中心具体实现："XXL-RPC原生注册中心方案"，"ZK方案"，"Local方案"；其中"XXL-RPC原生注册中心方案"特性如下：
     - 轻量级：基于DB与磁盘文件，只需要提供一个DB实例即可，无第三方依赖；
@@ -784,14 +784,14 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 - 9、Netty销毁逻辑优化；
 - 10、扩展第三方注册中心ZK底层逻辑优化，避免旧注册信息无法清理的问题；
 
-### 6.5 版本 v1.3.0 Release Notes[2018-12-02]
+### v1.3.0 Release Notes[2018-12-02]
 - 1、原生注册中心拆分为独立项目 "xxl-registry"（https://github.com/xuxueli/xxl-registry ），提供服务注册restful服务，并提送响应client端依赖用于简化接入难度；
 - 2、NativeServiceRegistry 更名为 XxlRegistryServiceRegistry；
 - 3、POM依赖升级，冗余POM清理；
 - 4、代码优化：XxlRpcInvokerFactory 移除 static 代码块及相关组件，进一步实现组件无状态；
 - 5、服务注册逻辑优化，避免地址重复生成；
 
-### 6.6 版本 v1.3.1 Release Notes[2018-12-21]
+### v1.3.1 Release Notes[2018-12-21]
 - 1、负载均衡/软负载：提供丰富的负载均衡策略，包括：轮询、随机、LRU、LFU、一致性HASH等；
 - 2、服务发现注册逻辑优化：支持批量注册、摘除，升级 xxl-registry 至 v1.0.1；
 - 3、新增jfinal类型示例项目 "xxl-rpc-sample-jfinal" 支持jfinal项目快速接入分布式RPC服务功能；高兼容性，原则上支持任务框架，甚至main方法直接运行；
@@ -805,7 +805,7 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 - 11、升级多项pom依赖至较新稳定版本；
 
 
-### 6.7 版本 v1.3.2 Release Notes[2019-02-21]
+### v1.3.2 Release Notes[2019-02-21]
 - 1、泛化调用：服务调用方不依赖服务方提供的API；
 - 2、新增通讯方案 "NETTY_HTTP"；
 - 3、新增序列化方案 "KRYO"；
@@ -814,18 +814,18 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 - 6、通讯连接池address参数优化，出IP:PORT格式外兼容支持常规URL格式地址；
 - 7、线程名称优化，便于适配监控快速进行线程定位；
 
-### 6.8 版本 v1.4.0 Release Notes[2019-04-20]
+### v1.4.0 Release Notes[2019-04-20]
 - 1、LRU路由更新不及时问题修复；
 - 2、JettyClient Buffer 默认长度调整为5M；
 - 3、Netty Http客户端配置优化；
 - 4、升级依赖版本，如netty/mina/spring等
 
-### 6.9 版本 v1.4.1 Release Notes[2019-05-23]
+### v1.4.1 Release Notes[2019-05-23]
 - 1、客户端长连优化，修复初始化时服务不可用导致长连冗余创建的问题；
 - 2、升级依赖版本，如netty/mina/jetty/jackson/spring/spring-boot等;
 - 3、空闲链接自动回收：服务端与客户端主动检测空闲链接并回收，及时释放相关资源(netty、mina)；空闲超10min自动释放；
 
-### 6.10 版本 v1.4.2 Release Notes[2019-11-18]
+### v1.4.2 Release Notes[2019-11-18]
 - 1、长连心跳保活：客户端周期性发送心跳请求给服务端保活；服务端连续三次未收到心跳时，销毁连接；
 - 2、服务线程优化，支持自定义线程参数；
 - 3、API重构：初始化枚举改为接口实例，方便扩展；
@@ -835,16 +835,16 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 - 7、序列化方案收敛：主推HESSIAN和HESSIAN1，移除protostuff、KRYO、JACKSON内置扩展，如有需求自行扩展维护；
 - 8、升级依赖版本，如netty/mina/hessian/jackson/zookeeper等;
 
-### 6.11 版本 v1.5.0 Release Notes[2019-11-22]
+### v1.5.0 Release Notes[2019-11-22]
 - 1、IpUtil优化：增加连通性校，过滤明确非法的网卡；
 
-### 6.12 版本 v1.6.0 Release Notes[2020-04-15]
+### v1.6.0 Release Notes[2020-04-15]
 - 1、为方便维护，合并xxl-registry至xxl-rpc，模块名为xxl-rpc-admin;
 - 2、一致性哈希路由策略优化：默认虚拟节点数量调整为100，提高路由的均衡性；
 - 3、RPC Client端，复用单例EventLoopGroup线程池，降低资源开销；
 - 4、RPC Server端，新增属性 ”注册地址/registryAddress“，优先使用该属性作为注册地址，为空时使用服务 ”IP:PORT“ 作为注册地址。从而更灵活的支持容器类型执行器动态IP和动态映射端口问题。
 
-### 6.13 版本 v1.7.0 Release Notes[2022-10-02]
+### v1.7.0 Release Notes[2022-10-02]
 - 1、开源协议：由 GPLv3 调整为 Apache2.0 开源协议；
 - 2、路由策略：轮训路由策略代码优化，修复小概率下并发问题；
 - 3、代码重构：默认注册中心代码结构重构，废弃冗余 "biz" 属性；
@@ -853,10 +853,10 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 - 6、restful api：序列化组件调整为Gson；
 - 7、服务磁盘注册数据：序列化组件调整为Gson；
 
-### 6.14 v1.7.1 Release Notes[规划中]
+### v1.7.1 Release Notes[规划中]
 - 1、[迭代中]环境标识字段长度上限调整为50；
 
-### TODO
+### TODO LIST
 - 提高系统可用性，以部分功能暂时不可达为代价，防止服务整体缓慢或雪崩
     - 限流=防止负载过高，导致服务雪崩；client、server，双向限流；方法级，QPS限流；在途请求数，流控依据；
     - 降级=10s内超阈值（异常、超时）；拒绝服务、默认值；
