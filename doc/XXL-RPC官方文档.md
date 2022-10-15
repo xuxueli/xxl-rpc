@@ -5,7 +5,7 @@
 [![GitHub release](https://img.shields.io/github/release/xuxueli/xxl-rpc.svg)](https://github.com/xuxueli/xxl-rpc/releases)
 [![GitHub stars](https://img.shields.io/github/stars/xuxueli/xxl-rpc)](https://github.com/xuxueli/xxl-rpc/)
 [![Docker Status](https://img.shields.io/docker/pulls/xuxueli/xxl-rpc-admin)](https://hub.docker.com/r/xuxueli/xxl-rpc-admin/)
-[![License](https://img.shields.io/badge/license-GPLv3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html)
+![License](https://img.shields.io/github/license/xuxueli/xxl-rpc.svg)
 [![donate](https://img.shields.io/badge/%24-donate-ff69b4.svg?style=flat-square)](https://www.xuxueli.com/page/donate.html)
 
 [TOCM]
@@ -912,7 +912,7 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 ### 7.3 开源协议和版权
 产品开源免费，并且将持续提供免费的社区技术支持。个人或企业内部可自由的接入和使用。
 
-- Licensed under the GNU General Public License (GPL) v3.
+- Licensed under the Apache License, Version 2.0.
 - Copyright (c) 2015-present, xuxueli.
 
 ---
