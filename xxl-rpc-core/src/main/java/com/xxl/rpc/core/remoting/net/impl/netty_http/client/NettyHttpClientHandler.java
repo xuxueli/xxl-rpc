@@ -9,10 +9,13 @@ import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.timeout.IdleStateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Objects;
 
 /**
  * netty_http
@@ -38,6 +41,14 @@ public class NettyHttpClientHandler extends SimpleChannelInboundHandler<FullHttp
         // valid status
         if (!HttpResponseStatus.OK.equals(msg.status())) {
             throw new XxlRpcException("xxl-rpc response status invalid.");
+        }
+
+        HttpHeaders headers = msg.headers();
+        String connection = headers.get("connection");
+        if (Objects.equals("close", connection)) {
+            logger.warn(">>>>>>>>>>> xxl-rpc netty_http client received close");
+            ctx.close();
+            return;
         }
 
         // response parse
