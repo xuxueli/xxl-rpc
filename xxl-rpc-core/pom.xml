@@ -29,18 +29,18 @@
 			<scope>provided</scope>
 		</dependency>-->
 
-		<!-- hessian -->
-		<dependency>
-			<groupId>com.caucho</groupId>
-			<artifactId>hessian</artifactId>
-			<version>${hessian.version}</version>
-		</dependency>
-
 		<!-- gson -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 			<version>${gson.version}</version>
+		</dependency>
+
+		<!-- hessian -->
+		<dependency>
+			<groupId>com.caucho</groupId>
+			<artifactId>hessian</artifactId>
+			<version>${hessian.version}</version>
 		</dependency>
 
 		<!-- ********************** base ********************** -->

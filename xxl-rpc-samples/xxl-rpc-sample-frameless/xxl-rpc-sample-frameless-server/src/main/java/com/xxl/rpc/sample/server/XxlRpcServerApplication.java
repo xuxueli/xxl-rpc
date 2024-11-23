@@ -21,9 +21,9 @@ public class XxlRpcServerApplication {
         providerFactory.setSerializer(HessianSerializer.class);
         providerFactory.setCorePoolSize(-1);
         providerFactory.setMaxPoolSize(-1);
-        providerFactory.setIp(null);
         providerFactory.setPort(7080);
         providerFactory.setAccessToken(null);
+        // without registry center
         providerFactory.setServiceRegistry(null);
         providerFactory.setServiceRegistryParam(null);
 

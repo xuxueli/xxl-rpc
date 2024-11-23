@@ -853,9 +853,20 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 - 6、restful api：序列化组件调整为Gson；
 - 7、服务磁盘注册数据：序列化组件调整为Gson；
 
-### v1.7.1 Release Notes[2024-10-02]
+### v1.7.1 Release Notes[2024-11-24]
 - 1、【优化】环境标识字段长度调整，上限调整为50；
 - 2、【升级】多个项目依赖升级至较新稳定版本，涉及netty、gson、springboot、mybatis等；
+- 3、【合并】合并 [PR-55](https://github.com/xuxueli/xxl-rpc/pull/55)，解决OpenTelemetry集成问题；
+- 4、【合并】合并 [PR-53](https://github.com/xuxueli/xxl-rpc/pull/53)，调整NettyConnectClient类锁问题；
+- 5、【合并】合并 [PR-51](https://github.com/xuxueli/xxl-rpc/pull/51)，解决解决RST异常问题；
+
+### v1.8.0 Release Notes[迭代中]
+- 1、【TODO】注册维度调整为appkey，降低服务注册压力、提升稳定性；
+- 2、【TODO】通讯报文长度可配置；
+- 3、【TODO】客户端参数调整，iface只保留服务元数据，注册信息统一上提至公共factory；
+- 4、【TODO】路由对象支持可配置，当前根据iface，太固定；
+- 5、【TODO】
+
 
 ### TODO LIST
 - 提高系统可用性，以部分功能暂时不可达为代价，防止服务整体缓慢或雪崩

@@ -38,22 +38,56 @@ public class XxlRpcReferenceBean {
 
 	// ---------------------- config ----------------------
 
+	/**
+	 * client, for network
+	 */
 	private Class<? extends Client> client = NettyClient.class;
+
+	/**
+	 * serializer, process request and response
+	 */
 	private Class<? extends Serializer> serializer = HessianSerializer.class;
+
+	/**
+	 * request type
+	 */
 	private CallType callType = CallType.SYNC;
+
+	/**
+	 * flow load balance
+	 */
 	private LoadBalance loadBalance = LoadBalance.ROUND;
 
+	/**
+	 * service reqeust timeout
+	 */
+	private long timeout = 1000;
+
+	/**
+	 * service metadata
+	 */
 	private Class<?> iface = null;
 	private String version = null;
 
-	private long timeout = 1000;
-
+	/**
+	 * service address
+	 */
 	private String address = null;
+
+	/**
+	 * network security (optional)
+	 */
 	private String accessToken = null;
 
-	private XxlRpcInvokeCallback invokeCallback = null;
+	/**
+	 * support callback
+	 */
+	private XxlRpcInvokeCallback invokeCallback;
 
-	private XxlRpcInvokerFactory invokerFactory = null;
+	/**
+	 * support registry (TODO-待废弃；1、客户端reference只维护服务元数据，注册信息统一维护在Factory；2、服务注册上升到 appkey 纬度；)
+	 */
+	private XxlRpcInvokerFactory invokerFactory;
 
 
 	// set

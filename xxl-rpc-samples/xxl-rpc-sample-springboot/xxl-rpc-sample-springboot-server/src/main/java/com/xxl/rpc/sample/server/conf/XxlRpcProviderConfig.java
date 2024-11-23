@@ -38,7 +38,6 @@ public class XxlRpcProviderConfig {
         providerFactory.setSerializer(HessianSerializer.class);
         providerFactory.setCorePoolSize(-1);
         providerFactory.setMaxPoolSize(-1);
-        providerFactory.setIp(null);
         providerFactory.setPort(port);
         providerFactory.setAccessToken(null);
         providerFactory.setServiceRegistry(XxlRpcAdminRegister.class);

@@ -29,17 +29,42 @@ public class XxlRpcProviderFactory {
 
 	// ---------------------- config ----------------------
 
+	/**
+	 * server, for network
+	 */
 	private Class<? extends Server> server = NettyServer.class;
+
+	/**
+	 * serializer, process request and response
+	 */
 	private Class<? extends Serializer> serializer = HessianSerializer.class;
 
+	/**
+	 * server port (generate address)
+	 */
+	private int port = 7080;
+
+	/**
+	 * handler thread-pool config
+	 */
 	private int corePoolSize = 60;
 	private int maxPoolSize = 300;
 
-	private String ip = null;					// server ip, for registry
-	private int port = 7080;					// server default port
-	private String registryAddress;				// default use registryAddress to registry , otherwise use ip:port if registryAddress is null
-	private String accessToken = null;
+	/**
+	 * network security (optional)
+	 */
+	private String accessToken;
+	// sign = md5(data + secretKey)
+	// private String secretKey;
 
+	/**
+	 * register data (optional), will use "ip:port" if not exists
+	 */
+	private String registryAddress;
+
+	/**
+	 * register center config
+	 */
 	private Class<? extends Register> serviceRegistry = null;
 	private Map<String, String> serviceRegistryParam = null;
 
@@ -55,9 +80,6 @@ public class XxlRpcProviderFactory {
 	}
 	public void setMaxPoolSize(int maxPoolSize) {
 		this.maxPoolSize = maxPoolSize;
-	}
-	public void setIp(String ip) {
-		this.ip = ip;
 	}
 	public void setPort(int port) {
 		this.port = port;
@@ -109,14 +131,12 @@ public class XxlRpcProviderFactory {
 			this.corePoolSize = 60;
 			this.maxPoolSize = 300;
 		}
-		if (this.ip == null) {
-			this.ip = IpUtil.getIp();
-		}
+		String ip = IpUtil.getIp();
 		if (this.port <= 0) {
 			this.port = 7080;
 		}
-		if (this.registryAddress==null || this.registryAddress.trim().length()==0) {
-			this.registryAddress = IpUtil.getIpPort(this.ip, this.port);
+		if (this.registryAddress==null || this.registryAddress.trim().isEmpty()) {
+			this.registryAddress = IpUtil.getIpPort(ip, this.port);
 		}
 		if (NetUtil.isPortUsed(this.port)) {
 			throw new XxlRpcException("xxl-rpc provider port["+ this.port +"] is used.");
