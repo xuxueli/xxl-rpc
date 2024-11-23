@@ -45,6 +45,10 @@ public class Hessian1Serializer extends Serializer {
 		ByteArrayInputStream is = new ByteArrayInputStream(bytes);
 		HessianInput hi = new HessianInput(is);
 		try {
+			// non-serializable objects are allowed.
+			hi.getSerializerFactory().setAllowNonSerializable(false);
+
+			// process
 			Object result = hi.readObject();
 			return result;
 		} catch (IOException e) {

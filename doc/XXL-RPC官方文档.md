@@ -859,6 +859,7 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 - 3、【合并】合并 [PR-55](https://github.com/xuxueli/xxl-rpc/pull/55)，解决OpenTelemetry集成问题；
 - 4、【合并】合并 [PR-53](https://github.com/xuxueli/xxl-rpc/pull/53)，调整NettyConnectClient类锁问题；
 - 5、【合并】合并 [PR-51](https://github.com/xuxueli/xxl-rpc/pull/51)，解决解决RST异常问题；
+- 6、【优化】Hessian启用NonSerializable拦截，安全性提升。
 
 ### v1.8.0 Release Notes[迭代中]
 - 1、【TODO】注册维度调整为appkey，降低服务注册压力、提升稳定性；
