@@ -7,7 +7,7 @@
 	<packaging>pom</packaging>
 
 	<name>${project.artifactId}</name>
-	<description>A high performance, distributed RPC framework.</description>
+	<description>A high performance distributed RPC framework.</description>
 	<url>https://www.xuxueli.com/</url>
 
 	<modules>
@@ -17,28 +17,31 @@
     </modules>
 
 	<properties>
+		<!-- env -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.test.skip>true</maven.test.skip>
-
-		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
-		<maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version>
-		<maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
-
-		<netty-all.version>4.1.63.Final</netty-all.version>
+		<!-- plugin -->
+		<maven-source-plugin.version>3.3.1</maven-source-plugin.version>
+		<maven-javadoc-plugin.version>3.11.1</maven-javadoc-plugin.version>
+		<maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
+		<!-- base -->
+		<slf4j-api.version>2.0.16</slf4j-api.version>
+		<junit-jupiter.version>5.11.3</junit-jupiter.version>
+		<!-- net -->
+		<netty.version>4.1.115.Final</netty.version>
+		<gson.version>2.11.0</gson.version>
+		<!-- serialize -->
 		<hessian.version>4.0.66</hessian.version>
-		<gson.version>2.9.1</gson.version>
-
-		<slf4j-api.version>2.0.3</slf4j-api.version>
-
-		<spring.version>5.3.23</spring.version>
-		<spring-boot.version>2.7.4</spring-boot.version>
-
-		<mybatis-spring-boot-starter.version>2.2.2</mybatis-spring-boot-starter.version>
-		<mysql-connector-java.version>8.0.30</mysql-connector-java.version>
+		<!-- spring -->
+		<spring.version>5.3.39</spring.version>
+		<spring-boot.version>2.7.18</spring-boot.version>
+		<!-- database -->
+		<mybatis-spring-boot-starter.version>2.3.2</mybatis-spring-boot-starter.version>
+		<mysql-connector-j.version>9.1.0</mysql-connector-j.version>
 	</properties>
 
 	<build>
@@ -72,6 +75,12 @@
 
 		<profile>
 			<id>release</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<modules>
+				<module>xxl-rpc-core</module>
+			</modules>
 			<build>
 				<plugins>
 					<!-- Source -->

@@ -853,8 +853,9 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 - 6、restful api：序列化组件调整为Gson；
 - 7、服务磁盘注册数据：序列化组件调整为Gson；
 
-### v1.7.1 Release Notes[规划中]
-- 1、[迭代中]环境标识字段长度上限调整为50；
+### v1.7.1 Release Notes[2024-10-02]
+- 1、【优化】环境标识字段长度调整，上限调整为50；
+- 2、【升级】多个项目依赖升级至较新稳定版本，涉及netty、gson、springboot、mybatis等；
 
 ### TODO LIST
 - 提高系统可用性，以部分功能暂时不可达为代价，防止服务整体缓慢或雪崩
