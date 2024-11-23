@@ -42,7 +42,7 @@ public class NettyConnectClient extends ConnectClient {
 
         // group
         if (nioEventLoopGroup == null) {
-            synchronized (NettyHttpConnectClient.class) {
+            synchronized (NettyConnectClient.class) {
                 if (nioEventLoopGroup == null) {
                     nioEventLoopGroup = new NioEventLoopGroup();
                     xxlRpcInvokerFactory.addStopCallBack(new BaseCallback() {
