@@ -858,9 +858,9 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 - 2、【优化】Hessian启用NonSerializable拦截，安全性提升。
 - 3、【优化】服务注册环境标识字段长度调整，上限调整为50；
 - 4、【优化】代码重构；
-- 4、【合并】合并 [PR-55](https://github.com/xuxueli/xxl-rpc/pull/55)，解决OpenTelemetry集成问题；
-- 5、【合并】合并 [PR-53](https://github.com/xuxueli/xxl-rpc/pull/53)，调整NettyConnectClient类锁问题；
-- 6、【合并】合并 [PR-51](https://github.com/xuxueli/xxl-rpc/pull/51)，解决解决RST异常问题；
+- 5、【合并】合并 [PR-55](https://github.com/xuxueli/xxl-rpc/pull/55)，解决OpenTelemetry集成问题；
+- 6、【合并】合并 [PR-53](https://github.com/xuxueli/xxl-rpc/pull/53)，调整NettyConnectClient类锁问题；
+- 7、【合并】合并 [PR-51](https://github.com/xuxueli/xxl-rpc/pull/51)，解决解决RST异常问题；
 
 
 ### v1.8.0 Release Notes[迭代中]
