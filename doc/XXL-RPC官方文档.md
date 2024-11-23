@@ -854,12 +854,14 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 - 7、服务磁盘注册数据：序列化组件调整为Gson；
 
 ### v1.7.1 Release Notes[2024-11-24]
-- 1、【优化】环境标识字段长度调整，上限调整为50；
-- 2、【升级】多个项目依赖升级至较新稳定版本，涉及netty、gson、springboot、mybatis等；
-- 3、【合并】合并 [PR-55](https://github.com/xuxueli/xxl-rpc/pull/55)，解决OpenTelemetry集成问题；
-- 4、【合并】合并 [PR-53](https://github.com/xuxueli/xxl-rpc/pull/53)，调整NettyConnectClient类锁问题；
-- 5、【合并】合并 [PR-51](https://github.com/xuxueli/xxl-rpc/pull/51)，解决解决RST异常问题；
-- 6、【优化】Hessian启用NonSerializable拦截，安全性提升。
+- 1、【升级】多个项目依赖升级至较新稳定版本，涉及netty、gson、springboot、mybatis等；
+- 2、【优化】Hessian启用NonSerializable拦截，安全性提升。
+- 3、【优化】服务注册环境标识字段长度调整，上限调整为50；
+- 4、【优化】代码重构；
+- 4、【合并】合并 [PR-55](https://github.com/xuxueli/xxl-rpc/pull/55)，解决OpenTelemetry集成问题；
+- 5、【合并】合并 [PR-53](https://github.com/xuxueli/xxl-rpc/pull/53)，调整NettyConnectClient类锁问题；
+- 6、【合并】合并 [PR-51](https://github.com/xuxueli/xxl-rpc/pull/51)，解决解决RST异常问题；
+
 
 ### v1.8.0 Release Notes[迭代中]
 - 1、【TODO】注册维度调整为appkey，降低服务注册压力、提升稳定性；

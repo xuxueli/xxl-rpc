@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentMap;
  * @author xuxueli 2018-10-19
  */
 public abstract class ConnectClient {
-    protected static transient Logger logger = LoggerFactory.getLogger(ConnectClient.class);
+    protected static Logger logger = LoggerFactory.getLogger(ConnectClient.class);
 
     // ---------------------- iface ----------------------
 
@@ -60,12 +60,12 @@ public abstract class ConnectClient {
             synchronized (ConnectClient.class) {
                 if (connectClientMap == null) {
                     // init
-                    connectClientMap = new ConcurrentHashMap<String, ConnectClient>();
+                    connectClientMap = new ConcurrentHashMap<>();
                     // stop callback
                     xxlRpcReferenceBean.getInvokerFactory().addStopCallBack(new BaseCallback() {
                         @Override
-                        public void run() throws Exception {
-                            if (connectClientMap.size() > 0) {
+                        public void run() {
+                            if (!connectClientMap.isEmpty()) {
                                 for (String key: connectClientMap.keySet()) {
                                     ConnectClient clientPool = connectClientMap.get(key);
                                     clientPool.close();
