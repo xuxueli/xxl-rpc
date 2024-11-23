@@ -14,4 +14,8 @@
 		<module>xxl-rpc-sample-springboot</module>
 	</modules>
 
+	<properties>
+		<maven.deploy.skip>true</maven.deploy.skip>
+	</properties>
+
 </project>

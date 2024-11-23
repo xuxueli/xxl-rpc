@@ -15,6 +15,10 @@
     <description>xxl-rpc-admin (XXL-REGISTRY), A lightweight distributed service registry and discovery platform.</description>
     <url>https://www.xuxueli.com/</url>
 
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
