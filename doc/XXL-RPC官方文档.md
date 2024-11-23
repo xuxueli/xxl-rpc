@@ -866,7 +866,7 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 - 2、【TODO】通讯报文长度可配置；
 - 3、【TODO】客户端参数调整，iface只保留服务元数据，注册信息统一上提至公共factory；
 - 4、【TODO】路由对象支持可配置，当前根据iface，太固定；
-- 5、【TODO】
+- 5、【TODO】客户端并发锁超时优化；
 
 
 ### TODO LIST

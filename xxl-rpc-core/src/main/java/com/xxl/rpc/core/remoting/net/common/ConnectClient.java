@@ -56,6 +56,7 @@ public abstract class ConnectClient {
 
         // init base compont, avoid repeat init
         if (connectClientMap == null) {
+            // TODO，待锁超时优化
             synchronized (ConnectClient.class) {
                 if (connectClientMap == null) {
                     // init
