@@ -77,7 +77,7 @@ public class LoginService {
         if (user == null) {
             return new ResponseBuilder<String>().fail( I18nUtil.getString("login_param_unvalid") ).build();
         }
-        if (user.getStatus() != UserStatuEnum.NORMAL.getStatus()) {
+        if (user.getStatus() != UserStatuEnum.NORMAL.getValue()) {
             return new ResponseBuilder<String>().fail( I18nUtil.getString("login_status_invalid") ).build();
         }
         String passwordMd5 = DigestUtils.md5DigestAsHex(password.getBytes());

@@ -14,7 +14,7 @@ public class Message implements Serializable {
     /**
     * id
     */
-    private int id;
+    private long id;
 
     /**
     * 消息类型：0-注册更新
@@ -37,11 +37,11 @@ public class Message implements Serializable {
     private Date updateTime;
 
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

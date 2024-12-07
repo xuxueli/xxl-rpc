@@ -9,22 +9,26 @@ public enum UserStatuEnum {
     NORMAL(0, "正常"),
     INACTIVE(1, "停用");
 
-    private int status;
+    private int value;
     private String desc;
 
-    UserStatuEnum(int status, String desc) {
-        this.status = status;
+    UserStatuEnum(int value, String desc) {
+        this.value = value;
         this.desc = desc;
     }
-    public int getStatus() {
-        return status;
+
+    public int getValue() {
+        return value;
     }
-    public void setStatus(int status) {
-        this.status = status;
+
+    public void setValue(int value) {
+        this.value = value;
     }
+
     public String getDesc() {
         return desc;
     }
+
     public void setDesc(String desc) {
         this.desc = desc;
     }

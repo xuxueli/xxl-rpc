@@ -6,6 +6,7 @@ import com.xxl.rpc.admin.model.dto.LoginUserDTO;
 import com.xxl.rpc.admin.model.dto.ResourceDTO;
 import com.xxl.rpc.admin.util.I18nUtil;
 import com.xxl.rpc.admin.service.impl.LoginService;
+import com.xxl.tool.core.StringTool;
 import com.xxl.tool.exception.BizException;
 import com.xxl.tool.freemarker.FreemarkerTool;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 权限拦截
@@ -59,19 +61,18 @@ public class PermissionInterceptor implements AsyncHandlerInterceptor {
 		}
 		request.setAttribute(LoginService.LOGIN_IDENTITY_KEY, loginUser);
 
-		// valid role
-		if (RoleEnum.matchByValue(permission.role()) == RoleEnum.ADMIN) {
-			// admin user
-			if (RoleEnum.matchByValue(loginUser.getRole()) == RoleEnum.ADMIN) {
+		// valid permission
+		if (StringTool.isNotBlank(permission.value())) {
+			// need permisson
+			RoleEnum roleEnum = RoleEnum.matchByValue(loginUser.getRole());
+			if (roleEnum != null && roleEnum.getPermissions().contains(permission.value())) {
 				return true;
 			} else {
 				throw new BizException(I18nUtil.getString("system_permission_limit"));
 			}
-		} else {
-			// normal user, pass
-			return true;
 		}
 
+		return true;
 	}
 
 	@Override
@@ -82,26 +83,19 @@ public class PermissionInterceptor implements AsyncHandlerInterceptor {
 			modelAndView.addObject("I18nUtil", FreemarkerTool.generateStaticModel(I18nUtil.class.getName()));
 
 			// default menu
-			List<ResourceDTO> resourceDTOList = new ArrayList<>();
-			resourceDTOList.addAll(Arrays.asList(
+			List<ResourceDTO> resourceDTOList = Arrays.asList(
 					new ResourceDTO(1, 0, "首页",0, "", "/index", "fa fa-home", 1, 0),
-					new ResourceDTO(2, 0, "应用管理",0, "", "/application", " fa-cloud", 2, 0),
-					new ResourceDTO(3, 0, "注册节点管理",0, "", "/instance", " fa-cubes", 3, 0),
+					new ResourceDTO(2, 0, "服务注册列表",0, "", "/instance", " fa-cubes", 2, 0),
+					new ResourceDTO(3, 0, "应用管理",0, "ADMIN", "/application", " fa-cloud", 3, 0),
+					new ResourceDTO(4, 0, "环境管理",0, "ADMIN", "/environment", "fa-cog", 4, 0),
+					new ResourceDTO(5, 0, "用户管理",0, "ADMIN", "/user", "fa-users", 5, 0),
 					new ResourceDTO(6, 0, "帮助中心",0, "", "/help", "fa-book", 6, 0)
-			));
-			if (loginService.isAdmin(request)) {
-				resourceDTOList.addAll(Arrays.asList(
-						new ResourceDTO(4, 0, "环境管理",0, "", "/environment", "fa-cog", 4, 0),
-						new ResourceDTO(5, 0, "用户管理",0, "", "/user", "fa-users", 5, 0)
-				));
+			);
+			// valid
+			if (!loginService.isAdmin(request)) {
+				resourceDTOList = resourceDTOList.stream().filter(resourceDTO -> resourceDTO.getType() == 1).collect(Collectors.toList());
 			}
-			resourceDTOList.sort(new Comparator<ResourceDTO>() {
-				@Override
-				public int compare(ResourceDTO o1, ResourceDTO o2) {
-					return o1.getOrder() - o2.getOrder();
-				}
-			});
-
+			resourceDTOList.stream().sorted(Comparator.comparing(ResourceDTO::getOrder)).collect(Collectors.toList());
 
 			modelAndView.addObject("resourceList", resourceDTOList);
 

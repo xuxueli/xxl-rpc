@@ -182,7 +182,7 @@ $(function() {
 				rangelength:[4, 100]
 			},
 			accessToken : {
-				required : true,
+				required : false,
 				rangelength:[4, 50],
 				accessTokenValid: true
 			}
@@ -290,7 +290,7 @@ $(function() {
 				rangelength:[4, 100]
 			},
 			accessToken : {
-				required : true,
+				required : false,
 				rangelength:[4, 50],
 				accessTokenValid: true
 			}

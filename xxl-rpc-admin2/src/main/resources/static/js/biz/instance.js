@@ -1,5 +1,9 @@
 $(function() {
 
+	// select2
+	$("#addModal .form select[name='appname']").select2()
+	$("#updateModal .form select[name='appname']").select2()
+
 	// ---------- ---------- ---------- main table  ---------- ---------- ----------
 	// init date tables
 	$.dataTableSelect.init();
@@ -8,13 +12,13 @@ $(function() {
 		"processing" : true, 
 	    "serverSide": true,
 		"ajax": {
-			url: base_url + "/environment/pageList",
+			url: base_url + "/instance/pageList",
 			type:"post",
 			// request data
 	        data : function ( d ) {
 	        	var obj = {};
+                obj.appname = $('#data_filter .appname').val();
                 obj.env = $('#data_filter .env').val();
-                obj.name = $('#data_filter .name').val();
 	        	obj.start = d.start;
 	        	obj.length = d.length;
                 return obj;
@@ -48,26 +52,47 @@ $(function() {
 				}
 			},
 			{
-				"title": 'Env（环境标识）',
+				"title": 'Env',
 				"data": 'env',
-				"width":'30%'
+				"width":'5%'
 			},
 			{
-				"title": '环境名称',
-				"data": 'name',
-				"width":'30%'
+				"title": 'AppName',
+				"data": 'appname',
+				"width":'15%'
 			},
 			{
-				"title": '环境描述',
-				"data": 'desc',
-				"width":'35%',
+				"title": '分组',
+				"data": 'group',
+				"width":'10%'
+			},
+			{
+				"title": 'IP:PORT',
+				"data": 'ip',
+				"width":'15%',
 				"render": function ( data, type, row ) {
-					var result = data.length<20
-						?data
-						:data.substring(0, 20) + '...';
-					return '<span title="'+ data +'">'+ result +'</span>';
+					return row.ip + ":" + row.port
 				}
-			}
+			},
+			{
+				"title": '注册模式',
+				"data": 'registerModel',
+				"width":'10%',
+				"render": function ( data, type, row ) {
+					var ret = data;
+					$("#addModal .form select[name='registerModel']").children("option").each(function() {
+						if ($(this).val() === row.registerModel+"") {
+							ret = $(this).html();
+						}
+					});
+					return ret;
+				}
+			},
+			{
+				"title": '最后注册心跳时间',
+				"data": 'registerHeartbeat',
+				"width":'12%'
+			},
 		],
 		"language" : {
 			"sProcessing" : I18n.dataTable_sProcessing ,
@@ -124,7 +149,7 @@ $(function() {
 
 			$.ajax({
 				type : 'POST',
-				url : base_url + "/environment/delete",
+				url : base_url + "/instance/delete",
 				data : {
 					"ids" : selectIds
 				},
@@ -151,10 +176,10 @@ $(function() {
 
 	// ---------- ---------- ---------- add operation ---------- ---------- ----------
 	// add validator method
-	jQuery.validator.addMethod("envValid", function(value, element) {
-		var valid = /^[a-z][a-z]*$/;
+	jQuery.validator.addMethod("groupValid", function(value, element) {
+		var valid = /^[a-z][a-z0-9]*$/;
 		return this.optional(element) || valid.test(value);
-	}, '限制由小写字母组成' );
+	}, '限制小写字母开头，由小写字母、数字组成' );
 	// add
 	$("#data_operation .add").click(function(){
 		$('#addModal').modal({backdrop: false, keyboard: false}).modal('show');
@@ -164,32 +189,32 @@ $(function() {
         errorClass : 'help-block',
         focusInvalid : true,  
         rules : {
-			env : {
-				required : true,
-                rangelength:[4, 10],
-				envValid: true
+			group : {
+				required : false,
+                rangelength:[4, 30],
+				groupValid: true
 			},
-			name : {
+			ip : {
                 required : true,
-				rangelength:[4, 20]
+				rangelength:[9, 46]
             },
-			desc : {
+			port : {
 				required : true,
-				rangelength:[4, 100]
+				range:[1000, 65535]
 			}
         }, 
         messages : {
-			env : {
+			group : {
             	required : I18n.system_please_input,
-                rangelength: I18n.system_lengh_limit + "[4-20]"
+                rangelength: I18n.system_lengh_limit + "[4-30]"
             },
-			name : {
+			ip : {
                 required : I18n.system_please_input,
-                rangelength: I18n.system_lengh_limit + "[4-20]"
+                rangelength: I18n.system_lengh_limit + "[9-46]"
             },
-			desc : {
+			port : {
 				required : I18n.system_please_input,
-				rangelength: I18n.system_lengh_limit + "[2-20]"
+				rangelength: I18n.system_num_range + "[1000-65535]"
 			}
         },
 		highlight : function(element) {  
@@ -208,7 +233,7 @@ $(function() {
 			var paramData = $("#addModal .form").serializeArray();
 
 			// post
-        	$.post(base_url + "/environment/insert", paramData, function(data, status) {
+        	$.post(base_url + "/instance/insert", paramData, function(data, status) {
     			if (data.code == "200") {
 					$('#addModal').modal('hide');
 
@@ -245,9 +270,12 @@ $(function() {
 
 		// base data
 		$("#updateModal .form input[name='id']").val( row.id );
-		$("#updateModal .form input[name='env']").val( row.env );
-		$("#updateModal .form input[name='name']").val( row.name );
-		$("#updateModal .form textarea[name='desc']").val( row.desc );
+		$("#updateModal .form select[name='env']").val( row.env );
+		$("#updateModal .form select[name='appname']").val( row.appname );
+		$("#updateModal .form input[name='group']").val( row.group );
+		$("#updateModal .form input[name='ip']").val( row.ip );
+		$("#updateModal .form input[name='port']").val( row.port );
+		$("#updateModal .form select[name='registerModel']").val( row.registerModel );
 
 		// show
 		$('#updateModal').modal({backdrop: false, keyboard: false}).modal('show');
@@ -274,6 +302,11 @@ $(function() {
 			desc : {
 				required : true,
 				rangelength:[4, 100]
+			},
+			accessToken : {
+				required : true,
+				rangelength:[4, 50],
+				accessTokenValid: true
 			}
 		},
 		messages : {
@@ -283,7 +316,11 @@ $(function() {
 			},
 			desc : {
 				required : I18n.system_please_input,
-				rangelength: I18n.system_lengh_limit + "[2-20]"
+				rangelength: I18n.system_lengh_limit + "[4-100]"
+			},
+			accessToken : {
+				required : I18n.system_please_input,
+				rangelength: I18n.system_lengh_limit + "[4-50]"
 			}
 		},
         submitHandler : function(form) {
@@ -291,7 +328,7 @@ $(function() {
 			// request
 			var paramData = $("#updateModal .form").serializeArray();
 
-            $.post(base_url + "/environment/update", paramData, function(data, status) {
+            $.post(base_url + "/instance/update", paramData, function(data, status) {
                 if (data.code == "200") {
                     $('#updateModal').modal('hide');
 

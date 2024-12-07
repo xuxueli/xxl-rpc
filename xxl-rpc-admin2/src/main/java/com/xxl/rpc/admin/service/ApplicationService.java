@@ -38,4 +38,9 @@ public interface ApplicationService {
     */
     public PageModel<Application> pageList(int offset, int pagesize);
 
+    /**
+     * find all
+     */
+    Response<List<Application>> findAll();
+
 }

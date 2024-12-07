@@ -1,6 +1,7 @@
 package com.xxl.rpc.admin.controller.biz;
 
 import com.xxl.rpc.admin.annotation.Permission;
+import com.xxl.rpc.admin.constant.consts.Consts;
 import com.xxl.rpc.admin.constant.enums.RoleEnum;
 import com.xxl.rpc.admin.constant.enums.UserStatuEnum;
 import com.xxl.rpc.admin.model.dto.LoginUserDTO;
@@ -34,7 +35,7 @@ public class UserController {
     private LoginService loginService;
 
     @RequestMapping
-    @Permission(role = ADMIN_ROLE)
+    @Permission(Consts.ADMIN_PERMISSION)
     public String index(Model model) {
 
         model.addAttribute("UserStatuEnum", UserStatuEnum.values());
@@ -45,7 +46,7 @@ public class UserController {
 
     @RequestMapping("/pageList")
     @ResponseBody
-    @Permission(role = ADMIN_ROLE)
+    @Permission(Consts.ADMIN_PERMISSION)
     public Response<PageModel<UserDTO>> pageList(@RequestParam(required = false, defaultValue = "0") int start,
                                                  @RequestParam(required = false, defaultValue = "10") int length,
                                                  String username,
@@ -57,14 +58,14 @@ public class UserController {
 
     @RequestMapping("/add")
     @ResponseBody
-    @Permission(role = ADMIN_ROLE)
+    @Permission(Consts.ADMIN_PERMISSION)
     public Response<String> add(UserDTO xxlJobUser) {
         return userService.insert(xxlJobUser);
     }
 
     @RequestMapping("/update")
     @ResponseBody
-    @Permission(role = ADMIN_ROLE)
+    @Permission(Consts.ADMIN_PERMISSION)
     public Response<String> update(HttpServletRequest request, UserDTO xxlJobUser) {
         LoginUserDTO loginUser = loginService.getLoginUser(request);
         return userService.update(xxlJobUser, loginUser);
@@ -72,7 +73,7 @@ public class UserController {
 
     @RequestMapping("/delete")
     @ResponseBody
-    @Permission(role = ADMIN_ROLE)
+    @Permission(Consts.ADMIN_PERMISSION)
     public Response<String> delete(HttpServletRequest request,
                                    @RequestParam("ids[]") List<Integer> ids) {
         LoginUserDTO loginUser = loginService.getLoginUser(request);

@@ -49,4 +49,9 @@ public interface ApplicationMapper {
     */
     public int pageListCount(@Param("offset") int offset, @Param("pagesize") int pagesize);
 
+    /**
+     * find all
+     */
+    public List<Application> findAll();
+
 }

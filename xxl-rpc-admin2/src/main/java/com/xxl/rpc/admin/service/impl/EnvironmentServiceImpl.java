@@ -40,7 +40,7 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 
 		// valid
 		if (xxlRpcEnvironmentMapper.loadByEnv(environment.getEnv()) != null) {
-			return new ResponseBuilder<String>().fail("ENV（环境标识）已存在，请更换").build();
+			return new ResponseBuilder<String>().fail("Env（环境标识）已存在，请更换").build();
 		};
 
 		// invoke
@@ -102,6 +102,12 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		pageModel.setTotalCount(totalCount);
 
 		return pageModel;
+	}
+
+	@Override
+	public Response<List<Environment>> findAll() {
+		List<Environment> environmentList = xxlRpcEnvironmentMapper.findAll();
+		return new ResponseBuilder<List<Environment>>().success(environmentList).build();
 	}
 
 }

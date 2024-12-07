@@ -43,7 +43,7 @@
 					<div class="row" id="data_filter" >
 						<div class="col-xs-3">
 							<div class="input-group">
-								<span class="input-group-addon">ENV（环境标识）</span>
+								<span class="input-group-addon">Env（环境标识）</span>
 								<input type="text" class="form-control env" autocomplete="on" >
 							</div>
 						</div>
@@ -90,8 +90,8 @@
 						<div class="modal-body">
 							<form class="form-horizontal form" role="form" >
 								<div class="form-group">
-									<label for="lastname" class="col-sm-2 control-label">ENV<font color="red">*</font></label>
-									<div class="col-sm-8"><input type="text" class="form-control" name="env" placeholder="${I18n.system_please_input}ENV（环境标识）" maxlength="10" ></div>
+									<label for="lastname" class="col-sm-2 control-label">Env<font color="red">*</font></label>
+									<div class="col-sm-8"><input type="text" class="form-control" name="env" placeholder="${I18n.system_please_input}Env（环境标识）" maxlength="10" ></div>
 								</div>
 								<div class="form-group">
 									<label for="lastname" class="col-sm-2 control-label">环境名称<font color="red">*</font></label>
@@ -125,8 +125,8 @@
 						<div class="modal-body">
 							<form class="form-horizontal form" role="form" >
 								<div class="form-group">
-									<label for="lastname" class="col-sm-2 control-label">ENV<font color="red">*</font></label>
-									<div class="col-sm-8"><input type="text" class="form-control" name="env" placeholder="${I18n.system_please_input}ENV（环境标识）" maxlength="10" readonly ></div>
+									<label for="lastname" class="col-sm-2 control-label">Env<font color="red">*</font></label>
+									<div class="col-sm-8"><input type="text" class="form-control" name="env" placeholder="${I18n.system_please_input}Env（环境标识）" maxlength="10" readonly ></div>
 								</div>
 								<div class="form-group">
 									<label for="lastname" class="col-sm-2 control-label">环境名称<font color="red">*</font></label>

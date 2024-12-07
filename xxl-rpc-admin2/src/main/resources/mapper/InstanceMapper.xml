@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.xxl.rpc.admin.mapper.EnvironmentMapper">
+<mapper namespace="com.xxl.rpc.admin.mapper.InstanceMapper">
 
-    <resultMap id="Environment" type="com.xxl.rpc.admin.model.entity.Environment" >
+    <resultMap id="Instance" type="com.xxl.rpc.admin.model.entity.Instance" >
         <result column="id" property="id" />
         <result column="env" property="env" />
-        <result column="name" property="name" />
-        <result column="desc" property="desc" />
+        <result column="appname" property="appname" />
+        <result column="group" property="group" />
+        <result column="ip" property="ip" />
+        <result column="port" property="port" />
+        <result column="register_model" property="registerModel" />
+        <result column="register_heartbeat" property="registerHeartbeat" />
         <result column="add_time" property="addTime" />
         <result column="update_time" property="updateTime" />
     </resultMap>
@@ -15,31 +19,43 @@
     <sql id="Base_Column_List">
         t.`id`,
         t.`env`,
-        t.`name`,
-        t.`desc`,
+        t.`appname`,
+        t.`group`,
+        t.`ip`,
+        t.`port`,
+        t.`register_model`,
+        t.`register_heartbeat`,
         t.`add_time`,
         t.`update_time`
     </sql>
 
     <insert id="insert" parameterType="java.util.Map" >
-        INSERT INTO xxl_rpc_environment (
+        INSERT INTO xxl_rpc_instance (
             `env`,
-            `name`,
-            `desc`,
+            `appname`,
+            `group`,
+            `ip`,
+            `port`,
+            `register_model`,
+            `register_heartbeat`,
             `add_time`,
             `update_time`
         )
         VALUES(
-                  #{environment.env} ,
-                  #{environment.name} ,
-                  #{environment.desc} ,
-                  NOW() ,
-                  NOW()
-              )
+              #{instance.env} ,
+              #{instance.appname} ,
+              #{instance.group} ,
+              #{instance.ip} ,
+              #{instance.port} ,
+              #{instance.registerModel} ,
+              NOW() ,
+              NOW() ,
+              NOW()
+          )
     </insert>
 
     <delete id="delete" parameterType="java.util.Map" >
-        DELETE FROM xxl_rpc_environment
+        DELETE FROM xxl_rpc_instance
         WHERE `id` in
         <foreach collection="ids" item="item" open="(" close=")" separator="," >
             #{item}
@@ -47,35 +63,28 @@
     </delete>
 
     <update id="update" parameterType="java.util.Map" >
-        UPDATE xxl_rpc_environment
+        UPDATE xxl_rpc_instance
         SET
-            `name` = #{environment.name},
-            `desc` = #{environment.desc},
+            `register_model` = #{instance.registerModel},
             `update_time` = NOW()
-        WHERE `id` = #{environment.id}
+        WHERE `id` = #{instance.id}
     </update>
 
-    <select id="load" parameterType="java.util.Map" resultMap="Environment">
+    <select id="load" parameterType="java.util.Map" resultMap="Instance">
         SELECT <include refid="Base_Column_List" />
-        FROM xxl_rpc_environment AS t
+        FROM xxl_rpc_instance AS t
         WHERE t.`id` = #{id}
     </select>
 
-    <select id="loadByEnv" parameterType="java.util.Map" resultMap="Environment">
+    <select id="pageList" parameterType="java.util.Map" resultMap="Instance">
         SELECT <include refid="Base_Column_List" />
-        FROM xxl_rpc_environment AS t
-        WHERE t.`env` = #{env}
-    </select>
-
-    <select id="pageList" parameterType="java.util.Map" resultMap="Environment">
-        SELECT <include refid="Base_Column_List" />
-        FROM xxl_rpc_environment AS t
+        FROM xxl_rpc_instance AS t
         <trim prefix="WHERE" prefixOverrides="AND | OR" >
             <if test="env != null and env != ''">
                 AND t.env like CONCAT(CONCAT('%', #{env}), '%')
             </if>
-            <if test="name != null and name != ''">
-                AND t.name like CONCAT(CONCAT('%', #{name}), '%')
+            <if test="appname != null and appname != ''">
+                AND t.appname like CONCAT(CONCAT('%', #{appname}), '%')
             </if>
         </trim>
         LIMIT #{offset}, #{pagesize}
@@ -83,20 +92,15 @@
 
     <select id="pageListCount" parameterType="java.util.Map" resultType="int">
         SELECT count(1)
-        FROM xxl_rpc_environment AS t
+        FROM xxl_rpc_instance AS t
         <trim prefix="WHERE" prefixOverrides="AND | OR" >
             <if test="env != null and env != ''">
                 AND t.env like CONCAT(CONCAT('%', #{env}), '%')
             </if>
-            <if test="name != null and name != ''">
-                AND t.name like CONCAT(CONCAT('%', #{name}), '%')
+            <if test="appname != null and appname != ''">
+                AND t.appname like CONCAT(CONCAT('%', #{appname}), '%')
             </if>
         </trim>
-    </select>
-
-    <select id="findAll" parameterType="java.util.Map" resultMap="Environment">
-        SELECT <include refid="Base_Column_List" />
-        FROM xxl_rpc_environment AS t
     </select>
 
 </mapper>

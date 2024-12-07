@@ -38,4 +38,9 @@ public interface EnvironmentService {
     */
     public PageModel<Environment> pageList(int offset, int pagesize, String env, String name);
 
+    /**
+     * find all
+     */
+    public Response<List<Environment>> findAll();
+
 }

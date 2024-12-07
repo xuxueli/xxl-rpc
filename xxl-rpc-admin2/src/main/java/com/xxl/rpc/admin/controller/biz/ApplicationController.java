@@ -1,6 +1,7 @@
 package com.xxl.rpc.admin.controller.biz;
 
 import com.xxl.rpc.admin.annotation.Permission;
+import com.xxl.rpc.admin.constant.consts.Consts;
 import com.xxl.rpc.admin.model.entity.Application;
 import com.xxl.rpc.admin.service.ApplicationService;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,8 @@ import javax.annotation.Resource;
 import com.xxl.tool.response.Response;
 import com.xxl.tool.response.PageModel;
 import com.xxl.tool.response.ResponseBuilder;
+
+import static com.xxl.rpc.admin.controller.biz.UserController.ADMIN_ROLE;
 
 /**
 * Service Controller
@@ -64,7 +67,7 @@ public class ApplicationController {
     */
     @RequestMapping("/insert")
     @ResponseBody
-    @Permission(role = "ADMIN")
+    @Permission(Consts.ADMIN_PERMISSION)
     public Response<String> insert(Application service){
         return applicationService.insert(service);
     }
@@ -74,7 +77,7 @@ public class ApplicationController {
     */
     @RequestMapping("/delete")
     @ResponseBody
-    @Permission(role = "ADMIN")
+    @Permission(Consts.ADMIN_PERMISSION)
     public Response<String> delete(@RequestParam("ids[]") List<Integer> ids){
         return applicationService.delete(ids);
     }
@@ -84,7 +87,7 @@ public class ApplicationController {
     */
     @RequestMapping("/update")
     @ResponseBody
-    @Permission(role = "ADMIN")
+    @Permission(Consts.ADMIN_PERMISSION)
     public Response<String> update(Application service){
         return applicationService.update(service);
     }

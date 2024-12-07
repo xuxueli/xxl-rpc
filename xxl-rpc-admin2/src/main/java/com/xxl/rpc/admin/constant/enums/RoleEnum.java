@@ -1,5 +1,9 @@
 package com.xxl.rpc.admin.constant.enums;
 
+import java.util.*;
+
+import static com.xxl.rpc.admin.constant.consts.Consts.ADMIN_PERMISSION;
+
 /**
  * role enum
  *
@@ -7,15 +11,17 @@ package com.xxl.rpc.admin.constant.enums;
  */
 public enum RoleEnum {
 
-    ADMIN("ADMIN", "管理员"),
-    NORMAL("NORMAL", "普通用户");
+    ADMIN("ADMIN", "管理员", Arrays.asList(ADMIN_PERMISSION)),
+    NORMAL("NORMAL", "普通用户", new ArrayList<>());
 
     private String value;
     private String desc;
+    private List<String> permissions;
 
-    RoleEnum(String value, String desc) {
+    RoleEnum(String value, String desc, List<String> permissions) {
         this.value = value;
         this.desc = desc;
+        this.permissions = permissions;
     }
 
     public String getValue() {
@@ -32,6 +38,14 @@ public enum RoleEnum {
 
     public void setDesc(String desc) {
         this.desc = desc;
+    }
+
+    public List<String> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(List<String> permissions) {
+        this.permissions = permissions;
     }
 
     // tool

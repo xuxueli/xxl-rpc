@@ -1,6 +1,7 @@
 package com.xxl.rpc.admin.controller.biz;
 
 import com.xxl.rpc.admin.annotation.Permission;
+import com.xxl.rpc.admin.constant.consts.Consts;
 import com.xxl.rpc.admin.model.entity.Environment;
 import com.xxl.rpc.admin.service.EnvironmentService;
 import org.springframework.stereotype.Controller;
@@ -34,7 +35,7 @@ public class EnvironmentController {
     * 页面
     */
     @RequestMapping
-    @Permission(role = ADMIN_ROLE)
+    @Permission(Consts.ADMIN_PERMISSION)
     public String index(Model model) {
         return "biz/environment";
     }
@@ -44,7 +45,7 @@ public class EnvironmentController {
     */
     @RequestMapping("/pageList")
     @ResponseBody
-    @Permission(role = ADMIN_ROLE)
+    @Permission(Consts.ADMIN_PERMISSION)
     public Response<PageModel<Environment>> pageList(@RequestParam(required = true, defaultValue = "0") int offset,
                                                      @RequestParam(required = true, defaultValue = "10") int pagesize,
                                                      @RequestParam(required = false) String env,
@@ -58,7 +59,7 @@ public class EnvironmentController {
     */
     @RequestMapping("/load")
     @ResponseBody
-    @Permission(role = ADMIN_ROLE)
+    @Permission(Consts.ADMIN_PERMISSION)
     public Response<Environment> load(int id){
         return environmentService.load(id);
     }
@@ -68,7 +69,7 @@ public class EnvironmentController {
     */
     @RequestMapping("/insert")
     @ResponseBody
-    @Permission(role = ADMIN_ROLE)
+    @Permission(Consts.ADMIN_PERMISSION)
     public Response<String> insert(Environment xxlRpcEnvironment){
         return environmentService.insert(xxlRpcEnvironment);
     }
@@ -78,7 +79,7 @@ public class EnvironmentController {
     */
     @RequestMapping("/delete")
     @ResponseBody
-    @Permission(role = ADMIN_ROLE)
+    @Permission(Consts.ADMIN_PERMISSION)
     public Response<String> delete(@RequestParam("ids[]") List<Integer> ids){
         return environmentService.delete(ids);
     }
@@ -88,7 +89,7 @@ public class EnvironmentController {
     */
     @RequestMapping("/update")
     @ResponseBody
-    @Permission(role = ADMIN_ROLE)
+    @Permission(Consts.ADMIN_PERMISSION)
     public Response<String> update(Environment xxlRpcEnvironment){
         return environmentService.update(xxlRpcEnvironment);
     }

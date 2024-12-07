@@ -28,11 +28,6 @@ public @interface Permission {
 	String value() default "";
 
 	/**
-	 * role (need login)
-	 */
-	String role() default "";
-
-	/**
 	 * need login
 	 */
 	boolean login() default true;

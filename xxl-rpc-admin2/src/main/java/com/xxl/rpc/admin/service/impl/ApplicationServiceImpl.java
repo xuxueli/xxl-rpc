@@ -33,8 +33,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 		if (application == null
 				|| StringTool.isBlank(application.getAppname())
 				|| StringTool.isBlank(application.getName())
-				|| StringTool.isBlank(application.getDesc())
-				|| StringTool.isBlank(application.getAccessToken())) {
+				|| StringTool.isBlank(application.getDesc())) {
 			return new ResponseBuilder<String>().fail("必要参数缺失").build();
         }
 
@@ -68,8 +67,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 		if (application == null
 				|| StringTool.isBlank(application.getAppname())
 				|| StringTool.isBlank(application.getName())
-				|| StringTool.isBlank(application.getDesc())
-				|| StringTool.isBlank(application.getAccessToken())) {
+				|| StringTool.isBlank(application.getDesc())) {
 			return new ResponseBuilder<String>().fail("必要参数缺失").build();
 		}
 
@@ -103,6 +101,12 @@ public class ApplicationServiceImpl implements ApplicationService {
 		pageModel.setTotalCount(totalCount);
 
 		return pageModel;
+	}
+
+	@Override
+	public Response<List<Application>> findAll() {
+		List<Application> applicationList = applicationMapper.findAll();
+		return new ResponseBuilder<List<Application>>().success(applicationList).build();
 	}
 
 }

@@ -55,4 +55,8 @@ public interface EnvironmentMapper {
                              @Param("env") String env,
                              @Param("name") String name);
 
+    /**
+     * find all
+     */
+    List<Environment> findAll();
 }

@@ -32,7 +32,7 @@ public interface MessageMapper {
     /**
     * Load查询
     */
-    public Message load(@Param("id") int id);
+    public Message load(@Param("id") long id);
 
     /**
     * 分页查询Data

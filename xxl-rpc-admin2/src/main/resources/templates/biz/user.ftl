@@ -48,7 +48,7 @@
 								<select class="form-control status" >
 									<option value="-1" >${I18n.system_all}</option>
 									<#list UserStatuEnum as item>
-										<option value="${item.status}" >${item.desc}</option>
+										<option value="${item.value}" >${item.desc}</option>
 									</#list>
 								</select>
 							</div>
@@ -108,7 +108,7 @@
 									<div class="col-sm-4">
 										<select class="form-control" name="status" >
 											<#list UserStatuEnum as item>
-												<option value="${item.status}" >${item.desc}</option>
+												<option value="${item.value}" >${item.desc}</option>
 											</#list>
 										</select>
 									</div>
@@ -163,7 +163,7 @@
 									<div class="col-sm-4">
 										<select class="form-control" name="status" >
 											<#list UserStatuEnum as item>
-												<option value="${item.status}" >${item.desc}</option>
+												<option value="${item.value}" >${item.desc}</option>
 											</#list>
 										</select>
 									</div>
