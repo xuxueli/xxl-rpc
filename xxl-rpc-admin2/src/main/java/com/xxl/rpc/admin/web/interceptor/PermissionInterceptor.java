@@ -85,13 +85,13 @@ public class PermissionInterceptor implements AsyncHandlerInterceptor {
 			List<ResourceDTO> resourceDTOList = new ArrayList<>();
 			resourceDTOList.addAll(Arrays.asList(
 					new ResourceDTO(1, 0, "首页",0, "", "/index", "fa fa-home", 1, 0),
-					new ResourceDTO(2, 0, "服务信息管理",0, "", "/service", " fa-cloud", 2, 0),
+					new ResourceDTO(2, 0, "应用管理",0, "", "/application", " fa-cloud", 2, 0),
 					new ResourceDTO(3, 0, "注册节点管理",0, "", "/instance", " fa-cubes", 3, 0),
 					new ResourceDTO(6, 0, "帮助中心",0, "", "/help", "fa-book", 6, 0)
 			));
 			if (loginService.isAdmin(request)) {
 				resourceDTOList.addAll(Arrays.asList(
-						new ResourceDTO(4, 0, "服务环境管理",0, "", "/environment", "fa-cog", 4, 0),
+						new ResourceDTO(4, 0, "环境管理",0, "", "/environment", "fa-cog", 4, 0),
 						new ResourceDTO(5, 0, "用户管理",0, "", "/user", "fa-users", 5, 0)
 				));
 			}

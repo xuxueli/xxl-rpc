@@ -43,7 +43,7 @@
                     <div class="info-box">
                         <span class="info-box-icon bg-aqua"><i class="fa fa-cloud"></i></span>
                         <div class="info-box-content">
-                            <span class="info-box-text">服务数量</span>
+                            <span class="info-box-text">应用数量</span>
                             <span class="info-box-number">256</span>
                         </div>
                     </div>
@@ -52,7 +52,7 @@
                     <div class="info-box">
                         <span class="info-box-icon bg-red"><i class="fa fa-cubes"></i></span>
                         <div class="info-box-content">
-                            <span class="info-box-text">注册节点数量</span>
+                            <span class="info-box-text">应用注册节点数量</span>
                             <span class="info-box-number">2048</span>
                         </div>
                     </div>
@@ -61,7 +61,7 @@
                     <div class="info-box">
                         <span class="info-box-icon bg-green"><i class="ion ion-ios-gear-outline"></i></span>
                         <div class="info-box-content">
-                            <span class="info-box-text">服务环境</span>
+                            <span class="info-box-text">环境数量</span>
                             <span class="info-box-number">3</span>
                         </div>
                     </div>
@@ -69,9 +69,41 @@
             </div>
             <!-- 报表摘要 end --->
 
-            <!-- 个人信息区域 start -->
+            <!-- 常用功能区域 start -->
             <div class="row">
+                <div class="col-md-12">
+                    <!-- 常用功能 -->
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">常用功能</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <strong><i class="fa fa-cloud margin-r-5"></i>应用管理</strong>
+                            <p class="text-muted">
+                                提供应用定义、管理能力，支持通过应用维度聚合分析服务注册信息、节点健康信息等。
+                            </p>
 
+                            <hr>
+                            <strong><i class="fa fa-cubes margin-r-5"></i>注册节点管理</strong>
+                            <p class="text-muted">
+                                提供服务注册节点管理能力，支持实时分析查看服务注册信息，以及针对注册节点人工运营管控能力。
+                            </p>
+
+                            <hr>
+                            <strong><i class="fa fa-cog margin-r-5"></i>环境管理</strong>
+                            <p class="text-muted">
+                                提供环境定义、管理能力，如测试环境、预发布环境和生产环境等，借助环境进行服务资源隔离。
+                            </p>
+
+                            <hr>
+                            <strong><i class="fa fa-book margin-r-5"></i> 帮助中心</strong>
+                            <p>提供内容丰富、干练易懂的操作文档，辅助快速上手项目。</p>
+
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                </div>
 
             </div>
             <!-- 个人信息区域 end -->

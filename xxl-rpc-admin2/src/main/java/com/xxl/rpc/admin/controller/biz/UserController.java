@@ -26,6 +26,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/user")
 public class UserController {
+    public static final String ADMIN_ROLE = "ADMIN";
 
     @Resource
     private UserService userService;
@@ -33,7 +34,7 @@ public class UserController {
     private LoginService loginService;
 
     @RequestMapping
-    @Permission(role = "ADMIN")
+    @Permission(role = ADMIN_ROLE)
     public String index(Model model) {
 
         model.addAttribute("UserStatuEnum", UserStatuEnum.values());
@@ -44,7 +45,7 @@ public class UserController {
 
     @RequestMapping("/pageList")
     @ResponseBody
-    @Permission(role = "ADMIN")
+    @Permission(role = ADMIN_ROLE)
     public Response<PageModel<UserDTO>> pageList(@RequestParam(required = false, defaultValue = "0") int start,
                                                  @RequestParam(required = false, defaultValue = "10") int length,
                                                  String username,
@@ -56,14 +57,14 @@ public class UserController {
 
     @RequestMapping("/add")
     @ResponseBody
-    @Permission(role = "ADMIN")
+    @Permission(role = ADMIN_ROLE)
     public Response<String> add(UserDTO xxlJobUser) {
         return userService.insert(xxlJobUser);
     }
 
     @RequestMapping("/update")
     @ResponseBody
-    @Permission(role = "ADMIN")
+    @Permission(role = ADMIN_ROLE)
     public Response<String> update(HttpServletRequest request, UserDTO xxlJobUser) {
         LoginUserDTO loginUser = loginService.getLoginUser(request);
         return userService.update(xxlJobUser, loginUser);
@@ -71,7 +72,7 @@ public class UserController {
 
     @RequestMapping("/delete")
     @ResponseBody
-    @Permission(role = "ADMIN")
+    @Permission(role = ADMIN_ROLE)
     public Response<String> delete(HttpServletRequest request,
                                    @RequestParam("ids[]") List<Integer> ids) {
         LoginUserDTO loginUser = loginService.getLoginUser(request);

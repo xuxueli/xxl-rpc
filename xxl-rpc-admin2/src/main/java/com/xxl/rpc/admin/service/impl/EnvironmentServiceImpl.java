@@ -40,7 +40,7 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 
 		// valid
 		if (xxlRpcEnvironmentMapper.loadByEnv(environment.getEnv()) != null) {
-			return new ResponseBuilder<String>().fail("环境标识已存在，请更换").build();
+			return new ResponseBuilder<String>().fail("ENV（环境标识）已存在，请更换").build();
 		};
 
 		// invoke

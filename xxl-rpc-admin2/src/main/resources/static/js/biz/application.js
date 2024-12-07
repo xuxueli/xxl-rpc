@@ -8,12 +8,12 @@ $(function() {
 		"processing" : true, 
 	    "serverSide": true,
 		"ajax": {
-			url: base_url + "/environment/pageList",
+			url: base_url + "/application/pageList",
 			type:"post",
 			// request data
 	        data : function ( d ) {
 	        	var obj = {};
-                obj.env = $('#data_filter .env').val();
+                obj.appname = $('#data_filter .appname').val();
                 obj.name = $('#data_filter .name').val();
 	        	obj.start = d.start;
 	        	obj.length = d.length;
@@ -48,17 +48,17 @@ $(function() {
 				}
 			},
 			{
-				"title": 'ENV（环境标识）',
-				"data": 'env',
+				"title": 'AppName（应用标识）',
+				"data": 'appname',
 				"width":'30%'
 			},
 			{
-				"title": '环境名称',
+				"title": '应用名称',
 				"data": 'name',
 				"width":'30%'
 			},
 			{
-				"title": '环境描述',
+				"title": '服务描述',
 				"data": 'desc',
 				"width":'35%',
 				"render": function ( data, type, row ) {
@@ -124,7 +124,7 @@ $(function() {
 
 			$.ajax({
 				type : 'POST',
-				url : base_url + "/environment/delete",
+				url : base_url + "/application/delete",
 				data : {
 					"ids" : selectIds
 				},
@@ -151,10 +151,14 @@ $(function() {
 
 	// ---------- ---------- ---------- add operation ---------- ---------- ----------
 	// add validator method
-	jQuery.validator.addMethod("envValid", function(value, element) {
-		var valid = /^[a-z][a-z]*$/;
+	jQuery.validator.addMethod("appnameValid", function(value, element) {
+		var valid = /^[a-z][a-z0-9-]*$/;
 		return this.optional(element) || valid.test(value);
-	}, '限制由小写字母组成' );
+	}, '限制小写字母开头，由小写字母、数字和中划线组成' );
+	jQuery.validator.addMethod("accessTokenValid", function(value, element) {
+		var valid = /^[a-z][a-z0-9]*$/;
+		return this.optional(element) || valid.test(value);
+	}, '限制小写字母开头，由小写字母、数字组成' );
 	// add
 	$("#data_operation .add").click(function(){
 		$('#addModal').modal({backdrop: false, keyboard: false}).modal('show');
@@ -164,10 +168,10 @@ $(function() {
         errorClass : 'help-block',
         focusInvalid : true,  
         rules : {
-			env : {
+			appname : {
 				required : true,
-                rangelength:[4, 10],
-				envValid: true
+                rangelength:[4, 30],
+				appnameValid: true
 			},
 			name : {
                 required : true,
@@ -176,12 +180,17 @@ $(function() {
 			desc : {
 				required : true,
 				rangelength:[4, 100]
+			},
+			accessToken : {
+				required : true,
+				rangelength:[4, 50],
+				accessTokenValid: true
 			}
         }, 
         messages : {
-			env : {
+			appname : {
             	required : I18n.system_please_input,
-                rangelength: I18n.system_lengh_limit + "[4-20]"
+                rangelength: I18n.system_lengh_limit + "[4-30]"
             },
 			name : {
                 required : I18n.system_please_input,
@@ -189,7 +198,11 @@ $(function() {
             },
 			desc : {
 				required : I18n.system_please_input,
-				rangelength: I18n.system_lengh_limit + "[2-20]"
+				rangelength: I18n.system_lengh_limit + "[4-100]"
+			},
+			accessToken : {
+				required : I18n.system_please_input,
+				rangelength: I18n.system_lengh_limit + "[4-50]"
 			}
         },
 		highlight : function(element) {  
@@ -208,7 +221,7 @@ $(function() {
 			var paramData = $("#addModal .form").serializeArray();
 
 			// post
-        	$.post(base_url + "/environment/insert", paramData, function(data, status) {
+        	$.post(base_url + "/application/insert", paramData, function(data, status) {
     			if (data.code == "200") {
 					$('#addModal').modal('hide');
 
@@ -245,9 +258,10 @@ $(function() {
 
 		// base data
 		$("#updateModal .form input[name='id']").val( row.id );
-		$("#updateModal .form input[name='env']").val( row.env );
+		$("#updateModal .form input[name='appname']").val( row.appname );
 		$("#updateModal .form input[name='name']").val( row.name );
 		$("#updateModal .form textarea[name='desc']").val( row.desc );
+		$("#updateModal .form input[name='accessToken']").val( row.accessToken );
 
 		// show
 		$('#updateModal').modal({backdrop: false, keyboard: false}).modal('show');
@@ -274,6 +288,11 @@ $(function() {
 			desc : {
 				required : true,
 				rangelength:[4, 100]
+			},
+			accessToken : {
+				required : true,
+				rangelength:[4, 50],
+				accessTokenValid: true
 			}
 		},
 		messages : {
@@ -283,7 +302,11 @@ $(function() {
 			},
 			desc : {
 				required : I18n.system_please_input,
-				rangelength: I18n.system_lengh_limit + "[2-20]"
+				rangelength: I18n.system_lengh_limit + "[4-100]"
+			},
+			accessToken : {
+				required : I18n.system_please_input,
+				rangelength: I18n.system_lengh_limit + "[4-50]"
 			}
 		},
         submitHandler : function(form) {
@@ -291,7 +314,7 @@ $(function() {
 			// request
 			var paramData = $("#updateModal .form").serializeArray();
 
-            $.post(base_url + "/environment/update", paramData, function(data, status) {
+            $.post(base_url + "/application/update", paramData, function(data, status) {
                 if (data.code == "200") {
                     $('#updateModal').modal('hide');
 

@@ -16,6 +16,8 @@ import com.xxl.tool.response.Response;
 import com.xxl.tool.response.PageModel;
 import com.xxl.tool.response.ResponseBuilder;
 
+import static com.xxl.rpc.admin.controller.biz.UserController.ADMIN_ROLE;
+
 /**
 * Environment Controller
 *
@@ -32,7 +34,7 @@ public class EnvironmentController {
     * 页面
     */
     @RequestMapping
-    @Permission(role = "ADMIN")
+    @Permission(role = ADMIN_ROLE)
     public String index(Model model) {
         return "biz/environment";
     }
@@ -42,7 +44,7 @@ public class EnvironmentController {
     */
     @RequestMapping("/pageList")
     @ResponseBody
-    @Permission(role = "ADMIN")
+    @Permission(role = ADMIN_ROLE)
     public Response<PageModel<Environment>> pageList(@RequestParam(required = true, defaultValue = "0") int offset,
                                                      @RequestParam(required = true, defaultValue = "10") int pagesize,
                                                      @RequestParam(required = false) String env,
@@ -56,7 +58,7 @@ public class EnvironmentController {
     */
     @RequestMapping("/load")
     @ResponseBody
-    @Permission(role = "ADMIN")
+    @Permission(role = ADMIN_ROLE)
     public Response<Environment> load(int id){
         return environmentService.load(id);
     }
@@ -66,7 +68,7 @@ public class EnvironmentController {
     */
     @RequestMapping("/insert")
     @ResponseBody
-    @Permission(role = "ADMIN")
+    @Permission(role = ADMIN_ROLE)
     public Response<String> insert(Environment xxlRpcEnvironment){
         return environmentService.insert(xxlRpcEnvironment);
     }
@@ -76,7 +78,7 @@ public class EnvironmentController {
     */
     @RequestMapping("/delete")
     @ResponseBody
-    @Permission(role = "ADMIN")
+    @Permission(role = ADMIN_ROLE)
     public Response<String> delete(@RequestParam("ids[]") List<Integer> ids){
         return environmentService.delete(ids);
     }
@@ -86,7 +88,7 @@ public class EnvironmentController {
     */
     @RequestMapping("/update")
     @ResponseBody
-    @Permission(role = "ADMIN")
+    @Permission(role = ADMIN_ROLE)
     public Response<String> update(Environment xxlRpcEnvironment){
         return environmentService.update(xxlRpcEnvironment);
     }
