@@ -62,7 +62,9 @@ public class RegistryServiceImpl implements RegistryService {
      *                  - 方法1：找到监听client，推送变更；
      * 2、client：
      *      - 能力：
-     *          - 注册：30s/次，定时心跳；
+     *          - 注册：30s/
+     *
+     *          次，定时心跳；
      *          - 注销：注销时处理；
      *          - 全量查询：3min/次，全量md5对比，不一致查询数据；
      *          - 实时监听：通过 【RegistryClientHelpler】监听变化

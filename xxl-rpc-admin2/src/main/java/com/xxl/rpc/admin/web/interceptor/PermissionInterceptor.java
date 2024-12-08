@@ -88,8 +88,9 @@ public class PermissionInterceptor implements AsyncHandlerInterceptor {
 					new ResourceDTO(2, 0, "服务注册列表",0, "", "/instance", " fa-cubes", 2, 0),
 					new ResourceDTO(3, 0, "应用管理",0, "ADMIN", "/application", " fa-cloud", 3, 0),
 					new ResourceDTO(4, 0, "环境管理",0, "ADMIN", "/environment", "fa-cog", 4, 0),
-					new ResourceDTO(5, 0, "用户管理",0, "ADMIN", "/user", "fa-users", 5, 0),
-					new ResourceDTO(6, 0, "帮助中心",0, "", "/help", "fa-book", 6, 0)
+					new ResourceDTO(5, 0, "鉴权管理",0, "ADMIN", "/accesstoken", "fa-key", 5, 0),
+					new ResourceDTO(6, 0, "用户管理",0, "ADMIN", "/user", "fa-users", 6, 0),
+					new ResourceDTO(7, 0, "帮助中心",0, "", "/help", "fa-book", 7, 0)
 			);
 			// valid
 			if (!loginService.isAdmin(request)) {

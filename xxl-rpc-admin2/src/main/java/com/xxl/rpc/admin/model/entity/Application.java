@@ -32,11 +32,6 @@ public class Application implements Serializable {
     private String desc;
 
     /**
-    * 应用 access token
-    */
-    private String accessToken;
-
-    /**
     * 新增时间
     */
     private Date addTime;
@@ -77,14 +72,6 @@ public class Application implements Serializable {
 
     public void setDesc(String desc) {
         this.desc = desc;
-    }
-
-    public String getAccessToken() {
-        return accessToken;
-    }
-
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
     }
 
     public Date getAddTime() {

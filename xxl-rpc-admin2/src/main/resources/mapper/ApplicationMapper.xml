@@ -8,7 +8,6 @@
         <result column="appname" property="appname" />
         <result column="name" property="name" />
         <result column="desc" property="desc" />
-        <result column="access_token" property="accessToken" />
         <result column="add_time" property="addTime" />
         <result column="update_time" property="updateTime" />
     </resultMap>
@@ -18,7 +17,6 @@
         t.`appname`,
         t.`name`,
         t.`desc`,
-        t.`access_token`,
         t.`add_time`,
         t.`update_time`
     </sql>
@@ -28,7 +26,6 @@
             `appname`,
             `name`,
             `desc`,
-            `access_token`,
             `add_time`,
             `update_time`
         )
@@ -36,7 +33,6 @@
                   #{application.appname} ,
                   #{application.name} ,
                   #{application.desc} ,
-                  #{application.accessToken} ,
                   NOW() ,
                   NOW()
               )
@@ -55,7 +51,6 @@
         SET
             `name` = #{application.name},
             `desc` = #{application.desc},
-            `access_token` = #{application.accessToken},
             `update_time` = NOW()
         WHERE `id` = #{application.id}
     </update>

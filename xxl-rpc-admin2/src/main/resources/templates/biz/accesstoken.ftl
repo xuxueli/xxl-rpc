@@ -19,7 +19,7 @@
 
 	<!-- left -->
 	<#-- biz start（2/5 left） -->
-	<@netCommon.commonLeft "/application" />
+	<@netCommon.commonLeft "/accesstoken" />
 	<#-- biz end（2/5 left） -->
 
 	<!-- right start -->
@@ -28,7 +28,7 @@
 		<!-- content-header -->
 		<section class="content-header">
 			<#-- biz start（3/5 name） -->
-			<h1>应用管理</h1>
+			<h1>AccessToken管理</h1>
 			<#-- biz end（3/5 name） -->
 		</section>
 
@@ -41,16 +41,10 @@
 			<div class="box" style="margin-bottom:9px;">
 				<div class="box-body">
 					<div class="row" id="data_filter" >
-						<div class="col-xs-3">
+						<div class="col-xs-6">
 							<div class="input-group">
-								<span class="input-group-addon">AppName</span>
-								<input type="text" class="form-control appname" autocomplete="on" >
-							</div>
-						</div>
-						<div class="col-xs-3">
-							<div class="input-group">
-								<span class="input-group-addon">应用名称</span>
-								<input type="text" class="form-control name" autocomplete="on" >
+								<span class="input-group-addon">AccessToken</span>
+								<input type="text" class="form-control accessToken" autocomplete="on" >
 							</div>
 						</div>
 						<div class="col-xs-1">
@@ -90,16 +84,18 @@
 						<div class="modal-body">
 							<form class="form-horizontal form" role="form" >
 								<div class="form-group">
-									<label for="lastname" class="col-sm-3 control-label">AppName<font color="red">*</font></label>
-									<div class="col-sm-9"><input type="text" class="form-control" name="appname" placeholder="${I18n.system_please_input}AppName" maxlength="30" ></div>
+									<label for="lastname" class="col-sm-3 control-label">AccessToken<font color="black">*</font></label>
+									<div class="col-sm-9"><input type="text" class="form-control" name="accessToken" placeholder="${I18n.system_please_input}AccessToken" maxlength="50" ></div>
 								</div>
 								<div class="form-group">
-									<label for="lastname" class="col-sm-3 control-label">应用名称<font color="red">*</font></label>
-									<div class="col-sm-9"><input type="text" class="form-control" name="name" placeholder="${I18n.system_please_input}应用名称" maxlength="20" ></div>
-								</div>
-								<div class="form-group">
-									<label for="lastname" class="col-sm-3 control-label">应用描述<font color="red">*</font></label>
-									<div class="col-sm-9"><textarea type="text" class="form-control" name="desc" placeholder="${I18n.system_please_input}应用描述" maxlength="100" ></textarea></div>
+									<label for="lastname" class="col-sm-3 control-label">生效状态<font color="red">*</font></label>
+									<div class="col-sm-9">
+										<select class="form-control" name="status" >
+											<#list AccessTokenStatuEnum as item>
+												<option value="${item.value}" >${item.desc}</option>
+											</#list>
+										</select>
+									</div>
 								</div>
 
 								<div class="form-group" style="text-align:center;border-top: 1px solid #e4e4e4;">
@@ -125,16 +121,18 @@
 						<div class="modal-body">
 							<form class="form-horizontal form" role="form" >
 								<div class="form-group">
-									<label for="lastname" class="col-sm-3 control-label">AppName<font color="red">*</font></label>
-									<div class="col-sm-9"><input type="text" class="form-control" name="appname" placeholder="${I18n.system_please_input}AppName" maxlength="30" readonly ></div>
+									<label for="lastname" class="col-sm-3 control-label">AccessToken<font color="black">*</font></label>
+									<div class="col-sm-9"><input type="text" class="form-control" name="accessToken" placeholder="${I18n.system_please_input}AccessToken" maxlength="50" readonly ></div>
 								</div>
 								<div class="form-group">
-									<label for="lastname" class="col-sm-3 control-label">应用名称<font color="red">*</font></label>
-									<div class="col-sm-9"><input type="text" class="form-control" name="name" placeholder="${I18n.system_please_input}应用名称" maxlength="20" ></div>
-								</div>
-								<div class="form-group">
-									<label for="lastname" class="col-sm-3 control-label">应用描述<font color="red">*</font></label>
-									<div class="col-sm-9"><textarea type="text" class="form-control" name="desc" placeholder="${I18n.system_please_input}应用描述" maxlength="100" ></textarea></div>
+									<label for="lastname" class="col-sm-3 control-label">生效状态<font color="red">*</font></label>
+									<div class="col-sm-9">
+										<select class="form-control" name="status" >
+											<#list AccessTokenStatuEnum as item>
+												<option value="${item.value}" >${item.desc}</option>
+											</#list>
+										</select>
+									</div>
 								</div>
 
 								<div class="form-group" style="text-align:center;border-top: 1px solid #e4e4e4;">
@@ -168,7 +166,7 @@
 <script src="${request.contextPath}/static/adminlte/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
 
 <script src="${request.contextPath}/static/js/common/datatables.select.js"></script>
-<script src="${request.contextPath}/static/js/biz/application.js"></script>
+<script src="${request.contextPath}/static/js/biz/accesstoken.js"></script>
 <#-- biz end（5/5 script） -->
 
 </body>
