@@ -13,7 +13,6 @@ CREATE TABLE `xxl_rpc_application` (
     `appname`       varchar(30)     NOT NULL COMMENT 'AppName（应用唯一标识）',
     `name`          varchar(20)     NOT NULL COMMENT '应用名称',
     `desc`          varchar(100)    NOT NULL COMMENT '应用描述',
-    `access_token`  varchar(50)     DEFAULT NULL COMMENT '应用AccessToken',
     `add_time`      datetime        NOT NULL COMMENT '新增时间',
     `update_time`   datetime        NOT NULL COMMENT '更新时间',
     PRIMARY KEY (`id`),
@@ -69,20 +68,31 @@ CREATE TABLE `xxl_rpc_user` (
     `update_time`   datetime    NOT NULL COMMENT '更新时间',
     PRIMARY KEY (`id`),
     UNIQUE KEY `i_username` (`username`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='XXL-RPC 用户表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
+
+CREATE TABLE `xxl_rpc_access_token` (
+   `id`             bigint(20)      NOT NULL AUTO_INCREMENT,
+   `access_token`   varchar(50)     NOT NULL COMMENT '注册发现AccessToken',
+   `status`         tinyint(4)      NOT NULL COMMENT '状态：0-正常、1-禁用',
+   `add_time`       datetime        NOT NULL COMMENT '新增时间',
+   `update_time`    datetime        NOT NULL COMMENT '更新时间',
+   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='注册发现AccessToken';
 
 ## —————————————————————— init data ——————————————————
 INSERT INTO `xxl_rpc_user`(`id`, `username`, `password`, `user_token`, `status`, `real_name`, `role`, `add_time`, `update_time`)
     VALUES (1, 'admin', 'e10adc3949ba59abbe56e057f20f883e', '', 0, 'Jack', 'ADMIN', now(), now()),
            (2, 'user', 'e10adc3949ba59abbe56e057f20f883e', '', 0, 'Lucy', 'NORMAL', now(), now());
+INSERT INTO `xxl_rpc_access_token` (id, `access_token`, `status`, add_time, update_time)
+VALUES (1, 'defaultaccesstoken', 0, now(), now());
 
 INSERT INTO `xxl_rpc_environment` (id, env, name, `desc`, add_time, update_time)
 VALUES  (1, 'test', '测试环境', '用于开发者和测试人员进行单元测试、集成测试等，以确保代码的功能正确无误', now(), now()),
         (2, 'stage', '预发布环境', '预发布或模拟生产环境，用于进行用户验收测试(UAT)和最终的系统检查', now(), now()),
         (3, 'prod', '生产环境', '应用程序实际运行并面向外部用户的环境', now(), now());
 
-INSERT INTO `xxl_rpc_application` (id, appname, name, `desc`, access_token, add_time, update_time)
-VALUES (1, 'app01', '测试应用', '测试应用', 'default', '2024-12-07 16:41:57', '2024-12-07 16:41:57');
+INSERT INTO `xxl_rpc_application` (id, appname, name, `desc`, add_time, update_time)
+VALUES (1, 'app01', '测试应用', '测试应用', now(), now());
 
 
 /*
