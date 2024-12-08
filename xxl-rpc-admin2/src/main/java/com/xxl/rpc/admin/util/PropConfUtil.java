@@ -14,10 +14,10 @@ import java.util.Arrays;
  */
 
 @Component
-public class XxlRpcPropUtil implements InitializingBean {
+public class PropConfUtil implements InitializingBean {
 
-    private static XxlRpcPropUtil single = null;
-    public static XxlRpcPropUtil getSingle() {
+    private static PropConfUtil single = null;
+    public static PropConfUtil getSingle() {
         return single;
     }
 
@@ -30,11 +30,18 @@ public class XxlRpcPropUtil implements InitializingBean {
     @Value("${xxl.rpc.i18n}")
     private String i18n;
 
+    @Value("${xxl.rpc.admin.registrydata.filepath}")
+    private String registrydataFilepath;
+
     public String getI18n() {
         if (!Arrays.asList("zh_CN", "zh_TC", "en").contains(i18n)) {
             return "zh_CN";
         }
         return i18n;
+    }
+
+    public String getRegistrydataFilepath() {
+        return registrydataFilepath;
     }
 
 }

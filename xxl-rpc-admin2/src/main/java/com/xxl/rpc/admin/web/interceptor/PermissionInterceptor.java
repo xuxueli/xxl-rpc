@@ -93,7 +93,9 @@ public class PermissionInterceptor implements AsyncHandlerInterceptor {
 			);
 			// valid
 			if (!loginService.isAdmin(request)) {
-				resourceDTOList = resourceDTOList.stream().filter(resourceDTO -> resourceDTO.getType() == 1).collect(Collectors.toList());
+				resourceDTOList = resourceDTOList.stream()
+						.filter(resourceDTO -> StringTool.isBlank(resourceDTO.getPermission() ))	// normal user had no permission
+						.collect(Collectors.toList());
 			}
 			resourceDTOList.stream().sorted(Comparator.comparing(ResourceDTO::getOrder)).collect(Collectors.toList());
 

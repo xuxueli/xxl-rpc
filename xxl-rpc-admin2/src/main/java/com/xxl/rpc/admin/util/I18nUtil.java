@@ -30,7 +30,7 @@ public class I18nUtil {
         }
         try {
             // build i18n prop
-            String i18n = XxlRpcPropUtil.getSingle().getI18n();
+            String i18n = PropConfUtil.getSingle().getI18n();
             String i18nFile = MessageFormat.format("i18n/message_{0}.properties", i18n);
 
             // load prop

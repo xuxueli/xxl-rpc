@@ -44,7 +44,7 @@
                         <span class="info-box-icon bg-aqua"><i class="fa fa-cloud"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text">应用数量</span>
-                            <span class="info-box-number">256</span>
+                            <span class="info-box-number">***</span>
                         </div>
                     </div>
                 </div>
@@ -52,8 +52,8 @@
                     <div class="info-box">
                         <span class="info-box-icon bg-red"><i class="fa fa-cubes"></i></span>
                         <div class="info-box-content">
-                            <span class="info-box-text">应用注册节点数量</span>
-                            <span class="info-box-number">2048</span>
+                            <span class="info-box-text">注册节点数量</span>
+                            <span class="info-box-number">***</span>
                         </div>
                     </div>
                 </div>
@@ -62,7 +62,7 @@
                         <span class="info-box-icon bg-green"><i class="ion ion-ios-gear-outline"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text">环境数量</span>
-                            <span class="info-box-number">3</span>
+                            <span class="info-box-number">*</span>
                         </div>
                     </div>
                 </div>
