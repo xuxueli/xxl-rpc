@@ -99,7 +99,7 @@
 						<div class="modal-body">
 							<form class="form-horizontal form" role="form" >
 								<div class="form-group">
-									<label for="lastname" class="col-sm-3 control-label">Env/环境<font color="red">*</font></label>
+									<label for="lastname" class="col-sm-3 control-label">Env<font color="red">*</font></label>
 									<div class="col-sm-6">
 										<select class="form-control" name="env" >
 											<#list environmentList as item>
@@ -119,11 +119,7 @@
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="lastname" class="col-sm-3 control-label">自定义Group<font color="black">*</font></label>
-									<div class="col-sm-6"><input type="text" class="form-control" name="group" placeholder="${I18n.system_please_input}Tag" maxlength="20" ></div>
-								</div>
-								<div class="form-group">
-									<label for="lastname" class="col-sm-3 control-label">注册Ip地址<font color="red">*</font></label>
+									<label for="lastname" class="col-sm-3 control-label">注册Ip<font color="red">*</font></label>
 									<div class="col-sm-9"><input type="text" class="form-control" name="ip" placeholder="${I18n.system_please_input}Ip" maxlength="46" ></div>
 								</div>
 								<div class="form-group">
@@ -139,6 +135,10 @@
 											</#list>
 										</select>
 									</div>
+								</div>
+								<div class="form-group">
+									<label for="lastname" class="col-sm-3 control-label">扩展信息<font color="black">*</font></label>
+									<div class="col-sm-9"><textarea type="text" class="form-control" name="extendInfo" placeholder="${I18n.system_please_input}" maxlength="500" ></textarea></div>
 								</div>
 
 
@@ -165,7 +165,7 @@
 						<div class="modal-body">
 							<form class="form-horizontal form" role="form" >
 								<div class="form-group">
-									<label for="lastname" class="col-sm-3 control-label">Env/环境<font color="red">*</font></label>
+									<label for="lastname" class="col-sm-3 control-label">Env<font color="red">*</font></label>
 									<div class="col-sm-6">
 										<select class="form-control" name="env" disabled >
 											<#list environmentList as item>
@@ -185,11 +185,7 @@
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="lastname" class="col-sm-3 control-label">自定义Group<font color="black">*</font></label>
-									<div class="col-sm-6"><input type="text" class="form-control" name="group" placeholder="${I18n.system_please_input}Tag" maxlength="20" readonly ></div>
-								</div>
-								<div class="form-group">
-									<label for="lastname" class="col-sm-3 control-label">注册Ip地址<font color="red">*</font></label>
+									<label for="lastname" class="col-sm-3 control-label">注册Ip<font color="red">*</font></label>
 									<div class="col-sm-9"><input type="text" class="form-control" name="ip" placeholder="${I18n.system_please_input}Ip" maxlength="46" readonly ></div>
 								</div>
 								<div class="form-group">
@@ -205,6 +201,10 @@
 											</#list>
 										</select>
 									</div>
+								</div>
+								<div class="form-group">
+									<label for="lastname" class="col-sm-3 control-label">扩展信息<font color="black">*</font></label>
+									<div class="col-sm-9"><textarea type="text" class="form-control" name="extendInfo" placeholder="${I18n.system_please_input}" maxlength="500" ></textarea></div>
 								</div>
 
 

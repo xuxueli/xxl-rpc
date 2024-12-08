@@ -27,11 +27,6 @@ public class Instance implements Serializable {
     private String appname;
 
     /**
-     * 注册分组
-     */
-    private String group;
-
-    /**
      * 注册节点IP
      */
     private String ip;
@@ -50,6 +45,11 @@ public class Instance implements Serializable {
      * 节点最后心跳时间，动态注册时判定是否过期
      */
     private Date registerHeartbeat;
+
+    /**
+     * 扩展信息
+     */
+    private String extendInfo;
 
     /**
      * 新增时间
@@ -86,14 +86,6 @@ public class Instance implements Serializable {
         this.appname = appname;
     }
 
-    public String getGroup() {
-        return group;
-    }
-
-    public void setGroup(String group) {
-        this.group = group;
-    }
-
     public String getIp() {
         return ip;
     }
@@ -124,6 +116,14 @@ public class Instance implements Serializable {
 
     public void setRegisterHeartbeat(Date registerHeartbeat) {
         this.registerHeartbeat = registerHeartbeat;
+    }
+
+    public String getExtendInfo() {
+        return extendInfo;
+    }
+
+    public void setExtendInfo(String extendInfo) {
+        this.extendInfo = extendInfo;
     }
 
     public Date getAddTime() {

@@ -30,11 +30,6 @@ public class InstanceDTO implements Serializable {
     private String appname;
 
     /**
-     * 注册分组
-     */
-    private String group;
-
-    /**
      * 注册节点IP
      */
     private String ip;
@@ -43,7 +38,6 @@ public class InstanceDTO implements Serializable {
      * 注册节点端口号
      */
     private int port;
-
 
     /**
      * 注册模式
@@ -54,6 +48,11 @@ public class InstanceDTO implements Serializable {
      * 节点最后心跳时间，动态注册时判定是否过期
      */
     //private Date registerHeartbeat;
+
+    /**
+     * 扩展信息
+     */
+    private String extendInfo;
 
     /**
      * 新增时间
@@ -71,10 +70,10 @@ public class InstanceDTO implements Serializable {
         this.id = instance.getId();
         this.env = instance.getEnv();
         this.appname = instance.getAppname();
-        this.group = instance.getGroup();
         this.ip = instance.getIp();
         this.port = instance.getPort();
         this.registerModel = instance.getRegisterModel();
+        this.extendInfo = instance.getExtendInfo();
         this.addTime = instance.getAddTime();
         this.updateTime = instance.getUpdateTime();
 
@@ -110,14 +109,6 @@ public class InstanceDTO implements Serializable {
         this.appname = appname;
     }
 
-    public String getGroup() {
-        return group;
-    }
-
-    public void setGroup(String group) {
-        this.group = group;
-    }
-
     public String getIp() {
         return ip;
     }
@@ -140,6 +131,14 @@ public class InstanceDTO implements Serializable {
 
     public void setRegisterModel(int registerModel) {
         this.registerModel = registerModel;
+    }
+
+    public String getExtendInfo() {
+        return extendInfo;
+    }
+
+    public void setExtendInfo(String extendInfo) {
+        this.extendInfo = extendInfo;
     }
 
     public Date getAddTime() {

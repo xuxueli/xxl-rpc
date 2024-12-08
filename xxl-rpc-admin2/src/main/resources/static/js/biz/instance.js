@@ -54,22 +54,17 @@ $(function() {
 			{
 				"title": 'Env',
 				"data": 'env',
-				"width":'5%'
+				"width":'10%'
 			},
 			{
 				"title": 'AppName',
 				"data": 'appname',
-				"width":'15%'
-			},
-			{
-				"title": '分组',
-				"data": 'group',
-				"width":'10%'
+				"width":'20%'
 			},
 			{
 				"title": 'IP:PORT',
 				"data": 'ip',
-				"width":'15%',
+				"width":'20%',
 				"render": function ( data, type, row ) {
 					return row.ip + ":" + row.port
 				}
@@ -91,7 +86,18 @@ $(function() {
 			{
 				"title": '最后注册心跳时间',
 				"data": 'registerHeartbeat',
-				"width":'12%'
+				"width":'15%'
+			},
+			{
+				"title": '扩展信息',
+				"data": 'extendInfo',
+				"width":'15%',
+				"render": function ( data, type, row ) {
+					var result = data.length<10
+						?data
+						:data.substring(0, 10) + '...';
+					return "<span title='"+ data +"'>"+ result +"</span>";
+				}
 			},
 		],
 		"language" : {
@@ -176,11 +182,6 @@ $(function() {
 
 	// ---------- ---------- ---------- add operation ---------- ---------- ----------
 	// add validator method
-	jQuery.validator.addMethod("groupValid", function(value, element) {
-		var valid = /^[a-z][a-z0-9]*$/;
-		return this.optional(element) || valid.test(value);
-	}, '限制小写字母开头，由小写字母、数字组成' );
-	// add
 	$("#data_operation .add").click(function(){
 		$('#addModal').modal({backdrop: false, keyboard: false}).modal('show');
 	});
@@ -189,11 +190,6 @@ $(function() {
         errorClass : 'help-block',
         focusInvalid : true,  
         rules : {
-			group : {
-				required : false,
-                rangelength:[4, 30],
-				groupValid: true
-			},
 			ip : {
                 required : true,
 				rangelength:[9, 46]
@@ -204,10 +200,6 @@ $(function() {
 			}
         }, 
         messages : {
-			group : {
-            	required : I18n.system_please_input,
-                rangelength: I18n.system_lengh_limit + "[4-30]"
-            },
 			ip : {
                 required : I18n.system_please_input,
                 rangelength: I18n.system_lengh_limit + "[9-46]"
@@ -272,10 +264,10 @@ $(function() {
 		$("#updateModal .form input[name='id']").val( row.id );
 		$("#updateModal .form select[name='env']").val( row.env );
 		$("#updateModal .form select[name='appname']").val( row.appname );
-		$("#updateModal .form input[name='group']").val( row.group );
 		$("#updateModal .form input[name='ip']").val( row.ip );
 		$("#updateModal .form input[name='port']").val( row.port );
 		$("#updateModal .form select[name='registerModel']").val( row.registerModel );
+		$("#updateModal .form textarea[name='extendInfo']").val( row.extendInfo );
 
 		// show
 		$('#updateModal').modal({backdrop: false, keyboard: false}).modal('show');

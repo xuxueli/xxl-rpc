@@ -34,16 +34,16 @@ CREATE TABLE `xxl_rpc_instance` (
    `id`                 bigint(20)      NOT NULL AUTO_INCREMENT,
    `env`                varchar(10)     NOT NULL COMMENT 'Env（环境唯一标识）',
    `appname`            varchar(30)     NOT NULL COMMENT 'AppName（应用唯一标识）',
-   `group`              varchar(20)     DEFAULT NULL COMMENT '注册分组',
    `ip`                 varchar(46)     NOT NULL COMMENT '注册节点IP',
    `port`               int(11)         NOT NULL COMMENT '注册节点端口号',
    `register_model`     tinyint(4)      NOT NULL DEFAULT '0' COMMENT '注册模式：0-动态注册、1-持久化注册、2-禁用注册',
    `register_heartbeat` datetime        DEFAULT NULL COMMENT '节点最后心跳时间，动态注册时判定是否过期',
+   `extend_info`        varchar(500)    DEFAULT NULL COMMENT '扩展信息',
    `add_time`           datetime        NOT NULL COMMENT '新增时间',
    `update_time`        datetime        NOT NULL COMMENT '更新时间',
    PRIMARY KEY (`id`),
-   KEY `I_appname` (`appname`),
-   UNIQUE KEY `i_instance` (`appname`, `env`, `group`, `ip`, `port`) USING BTREE
+   UNIQUE KEY `uni_instance` (`env`, `appname`, `ip`, `port`) USING BTREE,
+   KEY `i_e_a` (`env`, `appname`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='应用注册实例';
 
 CREATE TABLE `xxl_rpc_message` (
