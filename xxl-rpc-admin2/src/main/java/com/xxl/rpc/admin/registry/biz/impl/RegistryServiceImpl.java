@@ -1,10 +1,12 @@
-package com.xxl.rpc.admin.service.impl;
+package com.xxl.rpc.admin.registry.biz.impl;
 
-import com.xxl.rpc.admin.model.dto.RegistryRequest;
-import com.xxl.rpc.admin.model.dto.RegistryResponse;
-import com.xxl.rpc.admin.service.RegistryService;
+import com.xxl.rpc.admin.registry.biz.RegistryService;
+import com.xxl.rpc.admin.registry.config.XxlRpcAdminRegistry;
+import com.xxl.rpc.admin.registry.model.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
+
+import javax.annotation.Resource;
 
 /**
  * Registry Service
@@ -12,6 +14,74 @@ import org.springframework.web.context.request.async.DeferredResult;
  */
 @Service
 public class RegistryServiceImpl implements RegistryService {
+
+    @Resource
+    private XxlRpcAdminRegistry xxlRpcRegistry;
+
+
+    @Override
+    public OpenApiResponse<String> register(RegisterRequest request) {
+        // valid token
+        if (!validToken(request.getAccessToken())) {
+            return new OpenApiResponse<String>(OpenApiResponse.FAIL_CODE, "accessToken Invalid.");
+        }
+
+        // TODO
+
+        return null;
+    }
+
+    @Override
+    public OpenApiResponse<String> unregister(RegisterRequest request) {
+        // valid token
+        if (!validToken(request.getAccessToken())) {
+            return new OpenApiResponse<String>(OpenApiResponse.FAIL_CODE, "accessToken Invalid.");
+        }
+
+        // TODO
+
+        return null;
+    }
+
+    @Override
+    public OpenApiResponse<DiscoveryResponse> discovery(DiscoveryRequest request) {
+        // valid token
+        if (!validToken(request.getAccessToken())) {
+            return new OpenApiResponse<DiscoveryResponse>(OpenApiResponse.FAIL_CODE, "accessToken Invalid.");
+        }
+
+        // TODO
+        //xxlRpcRegistry.getRegistryCacheHelpler().getInstanceList()
+
+        return null;
+    }
+
+    @Override
+    public DeferredResult<DiscoveryResponse> monitor(DiscoveryRequest request) {
+        // deferredResult
+        DeferredResult deferredResult = new DeferredResult(30 * 1000L, new DiscoveryResponse(DiscoveryResponse.SUCCESS_CODE, "Monitor timeout, no key updated."));
+
+        // valid token
+        if (!validToken(request.getAccessToken())) {
+            deferredResult.setResult(new DiscoveryResponse(DiscoveryResponse.FAIL_CODE, "AccessToken Invalid"));
+            return deferredResult;
+        }
+
+        // TODO
+
+        return null;
+    }
+
+    /**
+     * valid accessToken
+     *
+     * @param accessToken
+     * @return
+     */
+    private boolean validToken(String accessToken) {
+        // TODO，注意性能，accessToken 需要LocalCache缓存防护
+        return false;
+    }
 
     /**
      * 1、server：
@@ -87,24 +157,5 @@ public class RegistryServiceImpl implements RegistryService {
      *          - 方法1：根据服务信息，查询注册明细；
      */
 
-    @Override
-    public RegistryResponse registry(RegistryRequest registryRequest) {
-        return null;
-    }
-
-    @Override
-    public RegistryResponse remove(RegistryRequest registryRequest) {
-        return null;
-    }
-
-    @Override
-    public RegistryResponse discovery(RegistryRequest registryRequest) {
-        return null;
-    }
-
-    @Override
-    public DeferredResult<RegistryResponse> monitor(RegistryRequest registryRequest) {
-        return null;
-    }
 
 }

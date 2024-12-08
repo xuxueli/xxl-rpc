@@ -1,29 +1,17 @@
-package com.xxl.rpc.admin.model.dto;
+package com.xxl.rpc.admin.registry.model;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * @author xuxueli 2018-12-03
  */
-public class RegistryRequest implements Serializable {
+public class RegisterInstance implements Serializable {
     public static final long serialVersionUID = 42L;
-
-
-    /**
-     * Env（环境唯一标识）
-     */
-    private String env;
 
     /**
      * AppName（应用唯一标识）
      */
     private String appname;
-
-    /**
-     * 注册分组
-     */
-    private String group;
 
     /**
      * 注册节点IP
@@ -35,14 +23,10 @@ public class RegistryRequest implements Serializable {
      */
     private int port;
 
-
-    public String getEnv() {
-        return env;
-    }
-
-    public void setEnv(String env) {
-        this.env = env;
-    }
+    /**
+     * 扩展信息
+     */
+    private String extendInfo;
 
     public String getAppname() {
         return appname;
@@ -50,14 +34,6 @@ public class RegistryRequest implements Serializable {
 
     public void setAppname(String appname) {
         this.appname = appname;
-    }
-
-    public String getGroup() {
-        return group;
-    }
-
-    public void setGroup(String group) {
-        this.group = group;
     }
 
     public String getIp() {
@@ -74,6 +50,14 @@ public class RegistryRequest implements Serializable {
 
     public void setPort(int port) {
         this.port = port;
+    }
+
+    public String getExtendInfo() {
+        return extendInfo;
+    }
+
+    public void setExtendInfo(String extendInfo) {
+        this.extendInfo = extendInfo;
     }
 
 }

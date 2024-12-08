@@ -9,9 +9,9 @@
         <result column="appname" property="appname" />
         <result column="ip" property="ip" />
         <result column="port" property="port" />
+        <result column="extend_info" property="extendInfo" />
         <result column="register_model" property="registerModel" />
         <result column="register_heartbeat" property="registerHeartbeat" />
-        <result column="extend_info" property="extendInfo" />
         <result column="add_time" property="addTime" />
         <result column="update_time" property="updateTime" />
     </resultMap>
@@ -22,9 +22,9 @@
         t.`appname`,
         t.`ip`,
         t.`port`,
+        t.`extend_info`,
         t.`register_model`,
         t.`register_heartbeat`,
-        t.`extend_info`,
         t.`add_time`,
         t.`update_time`
     </sql>
@@ -35,9 +35,9 @@
             `appname`,
             `ip`,
             `port`,
+            `extend_info`,
             `register_model`,
             `register_heartbeat`,
-            `extend_info`,
             `add_time`,
             `update_time`
         )
@@ -46,9 +46,9 @@
               #{instance.appname} ,
               #{instance.ip} ,
               #{instance.port} ,
+              #{instance.extendInfo} ,
               #{instance.registerModel} ,
               NOW() ,
-              #{instance.extendInfo} ,
               NOW() ,
               NOW()
           )
