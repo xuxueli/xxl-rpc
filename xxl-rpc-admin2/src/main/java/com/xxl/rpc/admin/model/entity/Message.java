@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
-*  XxlRpcMessage Entity
+*  Message Entity
 *
 *  Created by xuxueli on '2024-12-07 15:34:24'.
 */

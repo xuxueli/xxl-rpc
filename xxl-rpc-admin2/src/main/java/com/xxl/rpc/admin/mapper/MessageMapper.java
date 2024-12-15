@@ -4,6 +4,7 @@ import com.xxl.rpc.admin.model.entity.Message;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -43,5 +44,22 @@ public interface MessageMapper {
     * 分页查询Count
     */
     public int pageListCount(@Param("offset") int offset, @Param("pagesize") int pagesize);
+
+    /**
+     * 查询有效消息
+     *
+     * @param addTimeValid  有效消息时间，晚于该时间才判定有效消息
+     * @param excludeMsgIds 已处理消息ID，避免重复处理
+     * @return
+     */
+    public List<Message> queryValidMessage(@Param("addTimeValid") Date addTimeValid, @Param("excludeMsgIds") List<Integer> excludeMsgIds);
+
+    /**
+     * 清理无效消息
+     *
+     * @param addTimeValid  有效消息时间，晚于该时间才判定有效消息
+     * @return
+     */
+    public int cleanMessageInValid(@Param("addTimeValid") Date addTimeValid);
 
 }

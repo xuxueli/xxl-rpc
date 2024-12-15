@@ -1,8 +1,11 @@
 package com.xxl.rpc.admin.registry.thread;
 
 import com.xxl.rpc.admin.constant.enums.InstanceRegisterModelEnum;
+import com.xxl.rpc.admin.constant.enums.MessageTypeEnum;
 import com.xxl.rpc.admin.model.dto.InstanceCacheDTO;
+import com.xxl.rpc.admin.model.dto.MessageForRegistryDTO;
 import com.xxl.rpc.admin.model.entity.Instance;
+import com.xxl.rpc.admin.model.entity.Message;
 import com.xxl.rpc.admin.registry.config.XxlRpcAdminRegistry;
 import com.xxl.rpc.admin.registry.model.OpenApiResponse;
 import com.xxl.tool.core.CollectionTool;
@@ -129,15 +132,15 @@ public class RegistryCacheHelpler {
                         ConcurrentMap<String, String> registryCacheMd5StoreNew = new ConcurrentHashMap<>();
 
                         // b、load all env-appname
+                        Date registerHeartbeatValid = DateTool.addSeconds(new Date(), -1 * REGISTRY_BEAT_TIME * 3);
                         List<Instance> envAndAppNameList = XxlRpcAdminRegistry.getInstance().getInstanceMapper().queryEnvAndAppName();
                         logger.info(">>>>>>>>>>> xxl-rpc admin, RegistryCacheHelpler - fullSyncThread start, envAndAppNameList:{}", envAndAppNameList);
-                        Date registerHeartbeatValid = DateTool.addSeconds(new Date(), -1 * REGISTRY_BEAT_TIME * 3);
 
+                        // c、process each env-appname
                         if (CollectionTool.isNotEmpty(envAndAppNameList)) {
-                            // c、process each env-appname
                             for (Instance instance : envAndAppNameList) {
                                 // make key
-                                String envAppNameKey = instance.getEnv() + "##" + instance.getAppname();
+                                String envAppNameKey = String.format("%s##%s", instance.getEnv(), instance.getAppname());
                                 List<InstanceCacheDTO> cacheValue = new ArrayList<>();
 
                                 // load value
@@ -156,9 +159,12 @@ public class RegistryCacheHelpler {
                                             .collect(Collectors.toList());
                                 }
 
+                                // make value-md5
+                                String cacheValueMd5 = Md5Tool.md5(GsonTool.toJson(cacheValue));
+
                                 // set data
                                 registryCacheStoreNew.put(envAppNameKey, cacheValue);
-                                registryCacheMd5StoreNew.put(envAppNameKey, Md5Tool.md5(GsonTool.toJson(cacheValue)));      // only match md5, speed up match process
+                                registryCacheMd5StoreNew.put(envAppNameKey, cacheValueMd5);      // only match md5, speed up match process
                             }
                         }
 
@@ -167,10 +173,10 @@ public class RegistryCacheHelpler {
                          *
                          * Diff判定逻辑：以旧CacheMap为基础遍历；新Key不存在，不一致；新Key存在但Value不同，不一致；
                          */
-                        List<String> envAppnameList = registryCacheMd5Store.keySet().stream()
+                        List<String> envAppnameDiffList = registryCacheMd5Store.keySet().stream()
                                 .filter(item -> !registryCacheMd5StoreNew.containsKey(item) || !registryCacheMd5StoreNew.get(item).equals(registryCacheMd5Store.get(item)))
                                 .collect(Collectors.toList());
-                        pushClient(envAppnameList);
+                        pushClient(envAppnameDiffList);
 
                         // e、replace with new data
                         registryCacheStore = registryCacheStoreNew;
@@ -204,18 +210,74 @@ public class RegistryCacheHelpler {
         messageListenThread = startThread(new Runnable() {
             @Override
             public void run() {
+                // 实时监听广播消息，根据消息类型实时更新指定注册数据，从DB 同步至 registryCacheStore；单条数据维度覆盖更新；
                 while (!toStop) {
                     try {
+                        // a、Detect real-time messages。 Onceper second
+                        Date msgTimeValid = DateTool.addSeconds(new Date(), -1 * 10);
+                        List<Message> messageList = XxlRpcAdminRegistry.getInstance().getMessageMapper()
+                                .queryValidMessage(msgTimeValid, readedMessageIds.size()>50?readedMessageIds.subList(0, 50):readedMessageIds);
+                        List<String> envAppnameDiffList = new ArrayList<>();
 
-                        // TODO，实时监听广播消息，根据消息类型实时更新指定注册数据，从DB 同步至 registryCacheStore
-                        // a、间隔：1s/次，实时检测广播消息；无消息则跳过；
-                        // XxlRpcAdminRegistry.getInstance().getMessageMapper().queryMessage(readedMessageIds);   // 已读消息入参，幂等过滤
+                        // b、parse all registry-message-dto, by message-data
+                        if (CollectionTool.isNotEmpty(messageList)) {
+                            // filter registry-message
+                            List<Message> registryMessageList = messageList.stream()
+                                    .filter(item->item.getType()== MessageTypeEnum.REGISTRY.getValue())
+                                    .collect(Collectors.toList());
+                            // convert to registry-message-dto（env-appname）
+                            List<MessageForRegistryDTO> messageForRegistryDTOList = registryMessageList.stream()
+                                    .map(item-> (GsonTool.fromJson(item.getData(), MessageForRegistryDTO.class))
+                                    )
+                                    .collect(Collectors.toList());
 
+                            // c、process each env-appname   // TODO，抽象
+                            if (CollectionTool.isNotEmpty(messageForRegistryDTOList)) {
+                                Date registerHeartbeatValid = DateTool.addSeconds(new Date(), -1 * REGISTRY_BEAT_TIME * 3);
+                                for (MessageForRegistryDTO messageForRegistryDTO: messageForRegistryDTOList) {
+                                    // make key
+                                    String envAppNameKey = String.format("%s##%s", messageForRegistryDTO.getEnv(), messageForRegistryDTO.getAppname());
+                                    List<InstanceCacheDTO> cacheValue = new ArrayList<>();
 
-                        // TODO，消息定期清理，DB + 本次消费记录
-                        // clean old message
+                                    // load value
+                                    List<Instance> instanceCacheDTOList = XxlRpcAdminRegistry.getInstance().getInstanceMapper().queryByEnvAndAppNameValid(
+                                            messageForRegistryDTO.getEnv(),
+                                            messageForRegistryDTO.getAppname(),
+                                            InstanceRegisterModelEnum.AUTO.getValue(),
+                                            InstanceRegisterModelEnum.PERSISTENT.getValue(),
+                                            registerHeartbeatValid);
+                                    if (CollectionTool.isNotEmpty(instanceCacheDTOList)){
+                                        // convert to cache-dto, and sort by "ip:port"
+                                        cacheValue = instanceCacheDTOList
+                                                .stream()
+                                                .map(InstanceCacheDTO::new)
+                                                .sorted(Comparator.comparing(InstanceCacheDTO::getSortKey))     // sort， for md5 match
+                                                .collect(Collectors.toList());
+                                    }
+
+                                    // make value-md5
+                                    String cacheValueMd5 = Md5Tool.md5(GsonTool.toJson(cacheValue));
+
+                                    // set data
+                                    if (!registryCacheMd5Store.get(envAppNameKey).equals(cacheValueMd5)) {
+                                        registryCacheStore.put(envAppNameKey, cacheValue);
+                                        registryCacheMd5Store.put(envAppNameKey, cacheValueMd5);      // only match md5, speed up match process
+
+                                        envAppnameDiffList.add(envAppNameKey);
+                                    }
+                                }
+                            }
+                        }
+
+                        // d、push client
+                        if (CollectionTool.isNotEmpty(envAppnameDiffList)) {
+                            pushClient(envAppnameDiffList);
+                        }
+
+                        // e、clean old message， Avoid too often clean
                         if ( (System.currentTimeMillis()/1000) % REGISTRY_BEAT_TIME ==0) {
-                            // xxlRpcRegistryMessageDao.cleanMessage(registryBeatTime);
+                            msgTimeValid = DateTool.addSeconds(new Date(), -1 * 10);
+                            XxlRpcAdminRegistry.getInstance().getMessageMapper().cleanMessageInValid(msgTimeValid);
                             readedMessageIds.clear();
                         }
 
@@ -241,8 +303,8 @@ public class RegistryCacheHelpler {
     /**
      * find changed-data, push client
      */
-    private void pushClient(List<String> envAppnameList){
-        if (CollectionTool.isEmpty(envAppnameList)) {
+    private void pushClient(List<String> envAppnameDiffList){
+        if (CollectionTool.isEmpty(envAppnameDiffList)) {
             return;
         }
 
