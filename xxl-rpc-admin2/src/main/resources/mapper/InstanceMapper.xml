@@ -105,4 +105,33 @@
         </trim>
     </select>
 
+    <select id="queryEnvAndAppNameValid" parameterType="java.util.Map" resultMap="Instance">
+        SELECT DISTINCT t.env, t.appname
+        FROM xxl_rpc_instance AS t
+    </select>
+
+    <select id="pageListValid" parameterType="java.util.Map" resultMap="Instance">
+        SELECT <include refid="Base_Column_List" />
+        FROM xxl_rpc_instance AS t
+        WHERE t.register_model = #{persistentRegisterModel}
+           OR (
+                t.register_model = #{autoRegisterModel}
+                AND t.register_heartbeat IS NOT NULL
+                AND t.register_heartbeat <![CDATA[ > ]]> #{registerHeartbeatValid}
+        )
+        ORDER BY t.`id` DESC
+        LIMIT #{offset}, #{pagesize}
+    </select>
+    <select id="pageListValidCount" parameterType="java.util.Map" resultType="int" >
+        SELECT count(1)
+        FROM xxl_rpc_instance AS t
+        WHERE t.register_model = #{persistentRegisterModel}
+        OR (
+        t.register_model = #{autoRegisterModel}
+        AND t.register_heartbeat IS NOT NULL
+        AND t.register_heartbeat <![CDATA[ > ]]> #{registerHeartbeatValid}
+        )
+        ORDER BY t.`id` DESC
+    </select>
+
 </mapper>

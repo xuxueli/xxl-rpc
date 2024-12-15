@@ -1,5 +1,8 @@
 package com.xxl.rpc.admin.registry.config;
 
+import com.xxl.rpc.admin.mapper.ApplicationMapper;
+import com.xxl.rpc.admin.mapper.EnvironmentMapper;
+import com.xxl.rpc.admin.mapper.InstanceMapper;
 import com.xxl.rpc.admin.registry.thread.RegisterHelper;
 import com.xxl.rpc.admin.registry.thread.RegistryCacheHelpler;
 import com.xxl.rpc.admin.registry.thread.RegistryDeferredResultHelpler;
@@ -9,6 +12,8 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.annotation.Resource;
+
 /**
  * registry config
  *
@@ -17,6 +22,32 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class XxlRpcAdminRegistry implements InitializingBean, DisposableBean {
     private static Logger logger = LoggerFactory.getLogger(XxlRpcAdminRegistry.class);
+
+    // ---------------------- instance ----------------------
+    private static XxlRpcAdminRegistry instance;
+    public static XxlRpcAdminRegistry getInstance() {
+        return instance;
+    }
+
+    // ---------------------- helper ----------------------
+    @Resource
+    private InstanceMapper instanceMapper;
+    @Resource
+    private ApplicationMapper applicationMapper;
+    @Resource
+    private EnvironmentMapper environmentMapper;
+
+    public InstanceMapper getInstanceMapper() {
+        return instanceMapper;
+    }
+    public ApplicationMapper getApplicationMapper() {
+        return applicationMapper;
+    }
+    public EnvironmentMapper getEnvironmentMapper() {
+        return environmentMapper;
+    }
+
+    // ---------------------- helper ----------------------
 
     /**
      * 1、RegistryCacheHelpler
@@ -48,6 +79,9 @@ public class XxlRpcAdminRegistry implements InitializingBean, DisposableBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        // base init
+        instance = this;
+
         // 1、RegistryCacheHelpler
         try {
             registryCacheHelpler = new RegistryCacheHelpler();

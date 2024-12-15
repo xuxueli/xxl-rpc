@@ -1,7 +1,12 @@
 package com.xxl.rpc.admin.registry.thread;
 
+import com.xxl.rpc.admin.constant.enums.InstanceRegisterModelEnum;
+import com.xxl.rpc.admin.model.dto.InstanceCacheDTO;
 import com.xxl.rpc.admin.model.entity.Instance;
+import com.xxl.rpc.admin.registry.config.XxlRpcAdminRegistry;
 import com.xxl.rpc.admin.registry.model.OpenApiResponse;
+import com.xxl.tool.core.CollectionTool;
+import com.xxl.tool.core.DateTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,6 +14,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static com.xxl.rpc.admin.registry.model.OpenApiResponse.SUCCESS_CODE;
 
@@ -53,7 +59,7 @@ public class RegistryCacheHelpler {
      *          禁用注册：无效
      * </pre>
      */
-    private volatile ConcurrentMap<String, List<Instance>> registryCacheStore = new ConcurrentHashMap<>();
+    private volatile ConcurrentMap<String, List<InstanceCacheDTO>> registryCacheStore = new ConcurrentHashMap<>();
     /**
      * 注册信息本地缓存：MD5摘要
      *
@@ -91,7 +97,7 @@ public class RegistryCacheHelpler {
 
     /**
      * 全量同步
-     * 1、范围：DB中全量注册数据，同步至 registryCacheStore
+     * 1、范围：DB中全量注册数据，同步至 registryCacheStore；整个Map覆盖更新；
      * 2、间隔：10倍心跳（REGISTRY_BEAT_TIME * 10）；
      * 3、过滤：过滤掉无效数据；
      */
@@ -99,7 +105,7 @@ public class RegistryCacheHelpler {
 
     /**
      * 增量同步
-     * 1、说明：DB中部分注册数据，UpdateTime在 三倍心跳时间内（REGISTRY_BEAT_TIME * 3），同步至 registryCacheStore
+     * 1、说明：DB中部分注册数据，UpdateTime在 三倍心跳时间内（REGISTRY_BEAT_TIME * 3），同步至 registryCacheStore；部分缓存Key维度覆盖方式；
      * 2、间隔：1倍心跳（REGISTRY_BEAT_TIME * 1）；
      * 3、过滤：过滤掉无效数据；
      */
@@ -107,7 +113,7 @@ public class RegistryCacheHelpler {
 
     /**
      * 实时同步
-     * 1、说明：实时监听广播消息，根据消息类型实时更新指定注册数据，从DB 同步至 registryCacheStore
+     * 1、说明：实时监听广播消息，根据消息类型实时更新指定注册数据，从DB 同步至 registryCacheStore；单条数据维度覆盖更新；
      * 2、间隔：1s/次，实时检测广播消息；无消息则跳过；
      * 3、过滤：过滤掉无效数据；
      */
@@ -124,11 +130,49 @@ public class RegistryCacheHelpler {
                 while (!toStop) {
                     try {
                         // 1、TODO,DB中全量注册数据，同步至 registryCacheStore,
-                        // TODO 过滤掉无效数据
 
-                        // TODO，发现不一致数据，客户端推送
-                        pushClient();
 
+                        // 重新初始化Map：分组，分组全部缓存构建，整个缓存结构覆盖更新；Diff，EnvAppKey维度，推送变更；
+                        List<Instance> envAndAppNameList = XxlRpcAdminRegistry.getInstance().getInstanceMapper().queryEnvAndAppNameValid();
+                        Date registerHeartbeatValid = DateTool.addSeconds(new Date(), -1 * REGISTRY_BEAT_TIME * 3);
+
+
+                        //env##appname
+
+                        // query count
+                        int pageSize = 500;
+                        int dataCount = XxlRpcAdminRegistry.getInstance().getInstanceMapper().pageListValidCount(
+                                0,
+                                100,
+                                InstanceRegisterModelEnum.AUTO.getValue(),
+                                InstanceRegisterModelEnum.PERSISTENT.getValue(),
+                                registerHeartbeatValid);
+
+                        if (dataCount > 0) {
+                            for (int i = 0; i < dataCount; i+=pageSize) {
+                                // page data
+                                //int end = Math.min(i + pageSize, dataCount);
+                                List<Instance> instanceList =  XxlRpcAdminRegistry.getInstance().getInstanceMapper().pageListValid(
+                                        i,
+                                        pageSize,
+                                        InstanceRegisterModelEnum.AUTO.getValue(),
+                                        InstanceRegisterModelEnum.PERSISTENT.getValue(),
+                                        registerHeartbeatValid);
+                                if (CollectionTool.isEmpty(instanceList)) {
+                                    break;
+                                }
+                                // cache data
+                                List<InstanceCacheDTO> instanceCacheDTOList = instanceList.stream().map(InstanceCacheDTO::new).collect(Collectors.toList());
+                            }
+
+                            //registryCacheStore.
+                            //registryCacheMd5Store;
+
+
+
+                            // TODO，发现不一致数据，客户端推送
+                            pushClient();
+                        }
 
                         // first full-sycs success, warmUp
                         if (!warmUp) {
