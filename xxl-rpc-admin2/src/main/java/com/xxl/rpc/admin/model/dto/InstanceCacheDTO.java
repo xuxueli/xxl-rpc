@@ -3,7 +3,6 @@ package com.xxl.rpc.admin.model.dto;
 import com.xxl.rpc.admin.model.entity.Instance;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  *  Instance Cache DTO
@@ -12,11 +11,6 @@ import java.util.Date;
  */
 public class InstanceCacheDTO implements Serializable {
     private static final long serialVersionUID = 42L;
-
-    /**
-     * id
-     */
-    private long id;
 
     /**
      * Env（环境唯一标识）
@@ -46,20 +40,11 @@ public class InstanceCacheDTO implements Serializable {
     public InstanceCacheDTO() {
     }
     public InstanceCacheDTO(Instance instance) {
-        this.id = instance.getId();
         this.env = instance.getEnv();
         this.appname = instance.getAppname();
         this.ip = instance.getIp();
         this.port = instance.getPort();
         this.extendInfo = instance.getExtendInfo();
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getEnv() {
@@ -100,6 +85,27 @@ public class InstanceCacheDTO implements Serializable {
 
     public void setExtendInfo(String extendInfo) {
         this.extendInfo = extendInfo;
+    }
+
+    @Override
+    public String toString() {
+        return "InstanceCacheDTO{" +
+                "env='" + env + '\'' +
+                ", appname='" + appname + '\'' +
+                ", ip='" + ip + '\'' +
+                ", port=" + port +
+                ", extendInfo='" + extendInfo + '\'' +
+                '}';
+    }
+
+    // tool
+
+    /**
+     * get sort key
+     * @return
+     */
+    public String getSortKey(){
+        return ip + ":" + port;
     }
 
 }

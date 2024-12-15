@@ -141,4 +141,21 @@ public class Instance implements Serializable {
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
+
+    @Override
+    public String toString() {
+        return "Instance{" +
+                "id=" + id +
+                ", env='" + env + '\'' +
+                ", appname='" + appname + '\'' +
+                ", ip='" + ip + '\'' +
+                ", port=" + port +
+                ", extendInfo='" + extendInfo + '\'' +
+                ", registerModel=" + registerModel +
+                ", registerHeartbeat=" + registerHeartbeat +
+                ", addTime=" + addTime +
+                ", updateTime=" + updateTime +
+                '}';
+    }
+
 }

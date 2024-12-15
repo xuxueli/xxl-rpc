@@ -3,6 +3,7 @@ package com.xxl.rpc.admin.registry.config;
 import com.xxl.rpc.admin.mapper.ApplicationMapper;
 import com.xxl.rpc.admin.mapper.EnvironmentMapper;
 import com.xxl.rpc.admin.mapper.InstanceMapper;
+import com.xxl.rpc.admin.mapper.MessageMapper;
 import com.xxl.rpc.admin.registry.thread.RegisterHelper;
 import com.xxl.rpc.admin.registry.thread.RegistryCacheHelpler;
 import com.xxl.rpc.admin.registry.thread.RegistryDeferredResultHelpler;
@@ -36,6 +37,8 @@ public class XxlRpcAdminRegistry implements InitializingBean, DisposableBean {
     private ApplicationMapper applicationMapper;
     @Resource
     private EnvironmentMapper environmentMapper;
+    @Resource
+    private MessageMapper messageMapper;
 
     public InstanceMapper getInstanceMapper() {
         return instanceMapper;
@@ -45,6 +48,9 @@ public class XxlRpcAdminRegistry implements InitializingBean, DisposableBean {
     }
     public EnvironmentMapper getEnvironmentMapper() {
         return environmentMapper;
+    }
+    public MessageMapper getMessageMapper() {
+        return messageMapper;
     }
 
     // ---------------------- helper ----------------------

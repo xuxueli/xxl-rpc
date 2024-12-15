@@ -55,7 +55,7 @@ public interface InstanceMapper {
     /**
      * 查询全部服务组（env + appname）
      */
-    public List<Instance> queryEnvAndAppNameValid();
+    public List<Instance> queryEnvAndAppName();
 
     /**
      * 分页查询Data，生效数据
@@ -65,19 +65,11 @@ public interface InstanceMapper {
      *      2、PERSISTENT：存在记录即可；
      *      3、DISABLE：忽略，不生效；
      */
-    public List<Instance> pageListValid(@Param("offset") int offset,
-                                        @Param("pagesize") int pagesize,
-                                        @Param("autoRegisterModel") int autoRegisterModel,
-                                        @Param("persistentRegisterModel") int persistentRegisterModel,
-                                        @Param("registerHeartbeatValid") Date registerHeartbeatValid);
+    public List<Instance> queryByEnvAndAppNameValid(@Param("env") String env,
+                                                    @Param("appname") String appname,
+                                                    @Param("autoRegisterModel") int autoRegisterModel,
+                                                    @Param("persistentRegisterModel") int persistentRegisterModel,
+                                                    @Param("registerHeartbeatValid") Date registerHeartbeatValid);
 
-    /**
-     * 分页查询Data，生效数据, Count
-     */
-    public int pageListValidCount(@Param("offset") int offset,
-                                  @Param("pagesize") int pagesize,
-                                  @Param("autoRegisterModel") int autoRegisterModel,
-                                  @Param("persistentRegisterModel") int persistentRegisterModel,
-                                  @Param("registerHeartbeatValid") Date registerHeartbeatValid);
 
 }

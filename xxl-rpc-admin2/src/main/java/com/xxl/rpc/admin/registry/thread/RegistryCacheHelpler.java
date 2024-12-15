@@ -7,6 +7,8 @@ import com.xxl.rpc.admin.registry.config.XxlRpcAdminRegistry;
 import com.xxl.rpc.admin.registry.model.OpenApiResponse;
 import com.xxl.tool.core.CollectionTool;
 import com.xxl.tool.core.DateTool;
+import com.xxl.tool.encrypt.Md5Tool;
+import com.xxl.tool.gson.GsonTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,8 +24,8 @@ import static com.xxl.rpc.admin.registry.model.OpenApiResponse.SUCCESS_CODE;
  * registry cache helper
  *
  * 功能：
- * 1、注册信息本地（伪分布式）缓存能力：全（全量缓存）、准（全量更新 + 增量更新）、实时（秒级广播）；
- * 2、缓存数据变更、主动推动客户端能力：“全量 + 增量 + 实时” 检测不一致时，各节点匹配监听的client，并主动推送；（触发 RegistryDeferredResultHelpler 周知客户端）
+ * 1、注册信息本地（伪分布式）缓存能力：全量缓存 + 增量更新(实时/秒级广播）；
+ * 2、缓存数据变更、主动推动客户端能力：“全量 + 增量/实时” 检测不一致时，各节点匹配监听的client，并主动推送；（触发 RegistryDeferredResultHelpler 周知客户端）
  *
  * 面向：
  * 1、服务consumer：提供注册信息查询能力、注册变更推送能力；
@@ -98,21 +100,13 @@ public class RegistryCacheHelpler {
     /**
      * 全量同步
      * 1、范围：DB中全量注册数据，同步至 registryCacheStore；整个Map覆盖更新；
-     * 2、间隔：10倍心跳（REGISTRY_BEAT_TIME * 10）；
+     * 2、间隔：3倍心跳（REGISTRY_BEAT_TIME * 3）；
      * 3、过滤：过滤掉无效数据；
      */
     private Thread fullSyncThread;
 
     /**
-     * 增量同步
-     * 1、说明：DB中部分注册数据，UpdateTime在 三倍心跳时间内（REGISTRY_BEAT_TIME * 3），同步至 registryCacheStore；部分缓存Key维度覆盖方式；
-     * 2、间隔：1倍心跳（REGISTRY_BEAT_TIME * 1）；
-     * 3、过滤：过滤掉无效数据；
-     */
-    private Thread incrSyncThread;
-
-    /**
-     * 实时同步
+     * 增量(实时)同步
      * 1、说明：实时监听广播消息，根据消息类型实时更新指定注册数据，从DB 同步至 registryCacheStore；单条数据维度覆盖更新；
      * 2、间隔：1s/次，实时检测广播消息；无消息则跳过；
      * 3、过滤：过滤掉无效数据；
@@ -127,52 +121,62 @@ public class RegistryCacheHelpler {
         fullSyncThread = startThread(new Runnable() {
             @Override
             public void run() {
+                // DB中全量注册数据，同步至 registryCacheStore；整个Map覆盖更新；
                 while (!toStop) {
                     try {
-                        // 1、TODO,DB中全量注册数据，同步至 registryCacheStore,
+                        // a、init new map
+                        ConcurrentMap<String, List<InstanceCacheDTO>> registryCacheStoreNew = new ConcurrentHashMap<>();
+                        ConcurrentMap<String, String> registryCacheMd5StoreNew = new ConcurrentHashMap<>();
 
-
-                        // 重新初始化Map：分组，分组全部缓存构建，整个缓存结构覆盖更新；Diff，EnvAppKey维度，推送变更；
-                        List<Instance> envAndAppNameList = XxlRpcAdminRegistry.getInstance().getInstanceMapper().queryEnvAndAppNameValid();
+                        // b、load all env-appname
+                        List<Instance> envAndAppNameList = XxlRpcAdminRegistry.getInstance().getInstanceMapper().queryEnvAndAppName();
+                        logger.info(">>>>>>>>>>> xxl-rpc admin, RegistryCacheHelpler - fullSyncThread start, envAndAppNameList:{}", envAndAppNameList);
                         Date registerHeartbeatValid = DateTool.addSeconds(new Date(), -1 * REGISTRY_BEAT_TIME * 3);
 
+                        if (CollectionTool.isNotEmpty(envAndAppNameList)) {
+                            // c、process each env-appname
+                            for (Instance instance : envAndAppNameList) {
+                                // make key
+                                String envAppNameKey = instance.getEnv() + "##" + instance.getAppname();
+                                List<InstanceCacheDTO> cacheValue = new ArrayList<>();
 
-                        //env##appname
-
-                        // query count
-                        int pageSize = 500;
-                        int dataCount = XxlRpcAdminRegistry.getInstance().getInstanceMapper().pageListValidCount(
-                                0,
-                                100,
-                                InstanceRegisterModelEnum.AUTO.getValue(),
-                                InstanceRegisterModelEnum.PERSISTENT.getValue(),
-                                registerHeartbeatValid);
-
-                        if (dataCount > 0) {
-                            for (int i = 0; i < dataCount; i+=pageSize) {
-                                // page data
-                                //int end = Math.min(i + pageSize, dataCount);
-                                List<Instance> instanceList =  XxlRpcAdminRegistry.getInstance().getInstanceMapper().pageListValid(
-                                        i,
-                                        pageSize,
+                                // load value
+                                List<Instance> instanceCacheDTOList = XxlRpcAdminRegistry.getInstance().getInstanceMapper().queryByEnvAndAppNameValid(
+                                        instance.getEnv(),
+                                        instance.getAppname(),
                                         InstanceRegisterModelEnum.AUTO.getValue(),
                                         InstanceRegisterModelEnum.PERSISTENT.getValue(),
                                         registerHeartbeatValid);
-                                if (CollectionTool.isEmpty(instanceList)) {
-                                    break;
+                                if (CollectionTool.isNotEmpty(instanceCacheDTOList)){
+                                    // convert to cache-dto, and sort by "ip:port"
+                                    cacheValue = instanceCacheDTOList
+                                            .stream()
+                                            .map(InstanceCacheDTO::new)
+                                            .sorted(Comparator.comparing(InstanceCacheDTO::getSortKey))     // sort， for md5 match
+                                            .collect(Collectors.toList());
                                 }
-                                // cache data
-                                List<InstanceCacheDTO> instanceCacheDTOList = instanceList.stream().map(InstanceCacheDTO::new).collect(Collectors.toList());
+
+                                // set data
+                                registryCacheStoreNew.put(envAppNameKey, cacheValue);
+                                registryCacheMd5StoreNew.put(envAppNameKey, Md5Tool.md5(GsonTool.toJson(cacheValue)));      // only match md5, speed up match process
                             }
-
-                            //registryCacheStore.
-                            //registryCacheMd5Store;
-
-
-
-                            // TODO，发现不一致数据，客户端推送
-                            pushClient();
                         }
+
+                        /**
+                         * d、Diff识别不一致数据，客户端推送
+                         *
+                         * Diff判定逻辑：以旧CacheMap为基础遍历；新Key不存在，不一致；新Key存在但Value不同，不一致；
+                         */
+                        List<String> envAppnameList = registryCacheMd5Store.keySet().stream()
+                                .filter(item -> !registryCacheMd5StoreNew.containsKey(item) || !registryCacheMd5StoreNew.get(item).equals(registryCacheMd5Store.get(item)))
+                                .collect(Collectors.toList());
+                        pushClient(envAppnameList);
+
+                        // e、replace with new data
+                        registryCacheStore = registryCacheStoreNew;
+                        registryCacheMd5Store = registryCacheMd5StoreNew;
+                        logger.info(">>>>>>>>>>> xxl-rpc admin, RegistryCacheHelpler - fullSyncThread finish, registryCacheStore:{}, registryCacheMd5Store",
+                                registryCacheStore, registryCacheMd5Store);
 
                         // first full-sycs success, warmUp
                         if (!warmUp) {
@@ -185,7 +189,7 @@ public class RegistryCacheHelpler {
                         }
                     }
                     try {
-                        TimeUnit.SECONDS.sleep(REGISTRY_BEAT_TIME * 10);
+                        TimeUnit.SECONDS.sleep(REGISTRY_BEAT_TIME * 3);
                     } catch (Throwable e) {
                         if (!toStop) {
                             logger.error(">>>>>>>>>>> xxl-rpc, admin RegistryCacheHelpler-fullSyncThread error2:{}", e.getMessage(), e);
@@ -196,35 +200,6 @@ public class RegistryCacheHelpler {
             }
         }, "xxl-rpc, admin RegistryCacheHelpler-fullSyncThread");
 
-        // 2、incrSyncThread
-        incrSyncThread = startThread(new Runnable() {
-            @Override
-            public void run() {
-                while (!toStop) {
-                    try {
-                        // 2、TODO DB中部分注册数据，UpdateTime在 三倍心跳时间内（REGISTRY_BEAT_TIME * 3），同步至 registryCacheStore
-                        // TODO 过滤掉无效数据
-
-                        // TODO，发现不一致数据，客户端推送
-                        pushClient();
-
-                    } catch (Throwable e) {
-                        if (!toStop) {
-                            logger.error(">>>>>>>>>>> xxl-rpc, admin RegistryCacheHelpler-fullSyncThread error:{}", e.getMessage(), e);
-                        }
-                    }
-                    try {
-                        TimeUnit.SECONDS.sleep(REGISTRY_BEAT_TIME);
-                    } catch (Throwable e) {
-                        if (!toStop) {
-                            logger.error(">>>>>>>>>>> xxl-rpc, admin RegistryCacheHelpler-fullSyncThread error2:{}", e.getMessage(), e);
-                        }
-                    }
-                }
-                logger.info(">>>>>>>>>>> xxl-rpc, admin RegistryCacheHelpler-fullSyncThread stop");
-            }
-        }, "xxl-rpc, admin RegistryCacheHelpler-incrSyncThread");
-
         // 3、messageListenThread
         messageListenThread = startThread(new Runnable() {
             @Override
@@ -233,7 +208,9 @@ public class RegistryCacheHelpler {
                     try {
 
                         // TODO，实时监听广播消息，根据消息类型实时更新指定注册数据，从DB 同步至 registryCacheStore
-                        // 2、间隔：1s/次，实时检测广播消息；无消息则跳过；
+                        // a、间隔：1s/次，实时检测广播消息；无消息则跳过；
+                        // XxlRpcAdminRegistry.getInstance().getMessageMapper().queryMessage(readedMessageIds);   // 已读消息入参，幂等过滤
+
 
                         // TODO，消息定期清理，DB + 本次消费记录
                         // clean old message
@@ -264,7 +241,11 @@ public class RegistryCacheHelpler {
     /**
      * find changed-data, push client
      */
-    private void pushClient(){
+    private void pushClient(List<String> envAppnameList){
+        if (CollectionTool.isEmpty(envAppnameList)) {
+            return;
+        }
+
         // TODO，发现不一致数据，客户端推送
     }
 
@@ -282,9 +263,7 @@ public class RegistryCacheHelpler {
 
         // stop thread
         stopThread(fullSyncThread);
-        stopThread(incrSyncThread);
         stopThread(messageListenThread);
-
     }
 
 
