@@ -1,10 +1,15 @@
 package com.xxl.rpc.sample.server;
 
-import com.xxl.rpc.core.remoting.net.impl.netty.server.NettyServer;
-import com.xxl.rpc.core.remoting.provider.XxlRpcProviderFactory;
+import com.xxl.rpc.core.factory.XxlRpcFactory;
+import com.xxl.rpc.core.factory.config.BaseConfig;
+import com.xxl.rpc.core.provider.config.ProviderConfig;
+import com.xxl.rpc.core.register.config.RegisterConfig;
+import com.xxl.rpc.core.register.impl.LocalRegister;
+import com.xxl.rpc.core.remoting.impl.netty.server.NettyServer;
+import com.xxl.rpc.core.provider.ProviderFactory;
 import com.xxl.rpc.sample.api.DemoService;
 import com.xxl.rpc.sample.server.service.DemoServiceImpl;
-import com.xxl.rpc.core.serialize.impl.HessianSerializer;
+import com.xxl.rpc.core.serializer.impl.HessianSerializer;
 
 import java.util.concurrent.TimeUnit;
 
@@ -16,29 +21,21 @@ public class XxlRpcServerApplication {
     public static void main(String[] args) throws Exception {
 
         // init
-        XxlRpcProviderFactory providerFactory = new XxlRpcProviderFactory();
-        providerFactory.setServer(NettyServer.class);
-        providerFactory.setSerializer(HessianSerializer.class);
-        providerFactory.setCorePoolSize(-1);
-        providerFactory.setMaxPoolSize(-1);
-        providerFactory.setPort(7080);
-        providerFactory.setAccessToken(null);
-        // without registry center
-        providerFactory.setServiceRegistry(null);
-        providerFactory.setServiceRegistryParam(null);
+        XxlRpcFactory factory = new XxlRpcFactory();
+        factory.setBaseConfig(new BaseConfig("test", "client01"));
+        factory.setProviderConfig(new ProviderConfig(NettyServer.class, HessianSerializer.class, -1, -1, 7080, null));
+
+        factory.start();
 
         // add services
-        providerFactory.addService(DemoService.class.getName(), null, new DemoServiceImpl());
-
-        // start
-        providerFactory.start();
+        factory.getProvider().addService(DemoService.class.getName(), null, new DemoServiceImpl());
 
         while (!Thread.currentThread().isInterrupted()) {
             TimeUnit.HOURS.sleep(1);
         }
 
         // stop
-        providerFactory.stop();
+        factory.stop();
 
     }
 

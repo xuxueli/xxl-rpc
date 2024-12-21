@@ -1,7 +1,7 @@
 package com.xxl.rpc.core.test;
 
-import com.xxl.rpc.core.serialize.Serializer;
-import com.xxl.rpc.core.serialize.impl.HessianSerializer;
+import com.xxl.rpc.core.serializer.Serializer;
+import com.xxl.rpc.core.serializer.impl.HessianSerializer;
 
 import java.util.HashMap;
 import java.util.Map;

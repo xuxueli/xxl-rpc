@@ -2,7 +2,7 @@ package com.xxl.rpc.sample.client.controller;
 
 import com.xxl.rpc.sample.api.DemoService;
 import com.xxl.rpc.sample.api.dto.UserDTO;
-import com.xxl.rpc.core.remoting.invoker.annotation.XxlRpcReference;
+import com.xxl.rpc.core.invoker.annotation.XxlRpcReference;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class IndexController {
 	
-	@XxlRpcReference
+	@XxlRpcReference(appname = "xxl-rpc-sample-springboot-server")
 	private DemoService demoService;
 
 

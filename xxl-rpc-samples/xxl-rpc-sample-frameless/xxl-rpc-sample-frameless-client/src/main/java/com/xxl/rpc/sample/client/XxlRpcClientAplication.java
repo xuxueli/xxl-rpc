@@ -1,16 +1,24 @@
 package com.xxl.rpc.sample.client;
 
-import com.xxl.rpc.core.remoting.invoker.XxlRpcInvokerFactory;
-import com.xxl.rpc.core.remoting.invoker.call.CallType;
-import com.xxl.rpc.core.remoting.invoker.call.XxlRpcInvokeCallback;
-import com.xxl.rpc.core.remoting.invoker.call.XxlRpcInvokeFuture;
-import com.xxl.rpc.core.remoting.invoker.reference.XxlRpcReferenceBean;
-import com.xxl.rpc.core.remoting.invoker.route.LoadBalance;
-import com.xxl.rpc.core.remoting.net.impl.netty.client.NettyClient;
+import com.xxl.rpc.core.factory.XxlRpcFactory;
+import com.xxl.rpc.core.factory.config.BaseConfig;
+import com.xxl.rpc.core.invoker.call.CallType;
+import com.xxl.rpc.core.invoker.call.XxlRpcInvokeCallback;
+import com.xxl.rpc.core.invoker.call.XxlRpcInvokeFuture;
+import com.xxl.rpc.core.invoker.config.InvokerConfig;
+import com.xxl.rpc.core.invoker.reference.XxlRpcReferenceBean;
+import com.xxl.rpc.core.invoker.route.LoadBalance;
+import com.xxl.rpc.core.register.impl.LocalRegister;
+import com.xxl.rpc.core.register.model.RegisterInstance;
+import com.xxl.rpc.core.remoting.impl.netty.client.NettyClient;
 import com.xxl.rpc.sample.api.DemoService;
 import com.xxl.rpc.sample.api.dto.UserDTO;
-import com.xxl.rpc.core.serialize.impl.HessianSerializer;
+import com.xxl.rpc.core.serializer.impl.HessianSerializer;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.TreeSet;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -21,20 +29,29 @@ public class XxlRpcClientAplication {
 
 	public static void main(String[] args) throws Exception {
 
-		/*String serviceKey = XxlRpcProviderFactory.makeServiceKey(DemoService.class.getName(), null);
-		XxlRpcInvokerFactory.getInstance().getServiceRegistry().registry(new HashSet<String>(Arrays.asList(serviceKey)), "127.0.0.1:7080");*/
+		// factory
+		XxlRpcFactory factory = new XxlRpcFactory();
+		factory.setBaseConfig(new BaseConfig("test", "client01"));
+		factory.setInvokerConfig(new InvokerConfig());
+		factory.setRegister(new LocalRegister(new HashMap(){
+			{
+				RegisterInstance registerInstance = new RegisterInstance("test", "server01", "localhost", 7080, null);
+				put("server01", new TreeSet<>(Collections.singletonList(registerInstance)));
+			}
+		}));
 
-		// test
-		testSYNC();
-		testFUTURE();
-		testCALLBACK();
-		testONEWAY();
+		factory.start();
 
-		TimeUnit.SECONDS.sleep(2);
+		// test rpc
+		testSYNC(factory);
+		testFUTURE(factory);
+		testCALLBACK(factory);
+		testONEWAY(factory);
 
-		// stop client invoker factory (default by getInstance, exist inner thread, need destory)
-		XxlRpcInvokerFactory.getInstance().stop();
+		TimeUnit.SECONDS.sleep(5);
 
+		// stop
+		factory.stop();
 	}
 
 
@@ -42,7 +59,7 @@ public class XxlRpcClientAplication {
 	/**
 	 * CallType.SYNC
 	 */
-	public static void testSYNC() throws Exception {
+	public static void testSYNC(XxlRpcFactory factory) throws Exception {
 		// init client
 		XxlRpcReferenceBean referenceBean = new XxlRpcReferenceBean();
 		referenceBean.setClient(NettyClient.class);
@@ -52,12 +69,11 @@ public class XxlRpcClientAplication {
 		referenceBean.setIface(DemoService.class);
 		referenceBean.setVersion(null);
 		referenceBean.setTimeout(500);
-		referenceBean.setAddress("127.0.0.1:7080");
-		referenceBean.setAccessToken(null);
-		referenceBean.setInvokeCallback(null);
-		referenceBean.setInvokerFactory(null);
+		referenceBean.setAppname("server01");
+		//referenceBean.setAddress("127.0.0.1:7080");
+		//referenceBean.setAccessToken(null);
 
-		DemoService demoService = (DemoService) referenceBean.getObject();
+		DemoService demoService = (DemoService) referenceBean.getObject(factory);
 
 		// test
         UserDTO userDTO = demoService.sayHi("[SYNC]jack");
@@ -80,7 +96,7 @@ public class XxlRpcClientAplication {
 	/**
 	 * CallType.FUTURE
 	 */
-	public static void testFUTURE() throws Exception {
+	public static void testFUTURE(XxlRpcFactory factory) throws Exception {
 		// client test
 		XxlRpcReferenceBean referenceBean = new XxlRpcReferenceBean();
 		referenceBean.setClient(NettyClient.class);
@@ -90,12 +106,11 @@ public class XxlRpcClientAplication {
 		referenceBean.setIface(DemoService.class);
 		referenceBean.setVersion(null);
 		referenceBean.setTimeout(500);
-		referenceBean.setAddress("127.0.0.1:7080");
-		referenceBean.setAccessToken(null);
-		referenceBean.setInvokeCallback(null);
-		referenceBean.setInvokerFactory(null);
+		referenceBean.setAppname("server01");
+		//referenceBean.setAddress("127.0.0.1:7080");
+		//referenceBean.setAccessToken(null);
 
-		DemoService demoService = (DemoService) referenceBean.getObject();
+		DemoService demoService = (DemoService) referenceBean.getObject(factory);
 
 		// test
 		demoService.sayHi("[FUTURE]jack" );
@@ -109,7 +124,7 @@ public class XxlRpcClientAplication {
 	/**
 	 * CallType.CALLBACK
 	 */
-	public static void testCALLBACK() throws Exception {
+	public static void testCALLBACK(XxlRpcFactory factory) throws Exception {
 		// client test
 		XxlRpcReferenceBean referenceBean = new XxlRpcReferenceBean();
 		referenceBean.setClient(NettyClient.class);
@@ -119,12 +134,11 @@ public class XxlRpcClientAplication {
 		referenceBean.setIface(DemoService.class);
 		referenceBean.setVersion(null);
 		referenceBean.setTimeout(500);
-		referenceBean.setAddress("127.0.0.1:7080");
-		referenceBean.setAccessToken(null);
-		referenceBean.setInvokeCallback(null);
-		referenceBean.setInvokerFactory(null);
+		referenceBean.setAppname("server01");
+		//referenceBean.setAddress("127.0.0.1:7080");
+		//referenceBean.setAccessToken(null);
 
-		DemoService demoService = (DemoService) referenceBean.getObject();
+		DemoService demoService = (DemoService) referenceBean.getObject(factory);
 
 
         // test
@@ -147,7 +161,7 @@ public class XxlRpcClientAplication {
 	/**
 	 * CallType.ONEWAY
 	 */
-	public static void testONEWAY() throws Exception {
+	public static void testONEWAY(XxlRpcFactory factory) throws Exception {
 		// client test
 		XxlRpcReferenceBean referenceBean = new XxlRpcReferenceBean();
 		referenceBean.setClient(NettyClient.class);
@@ -157,12 +171,11 @@ public class XxlRpcClientAplication {
 		referenceBean.setIface(DemoService.class);
 		referenceBean.setVersion(null);
 		referenceBean.setTimeout(500);
-		referenceBean.setAddress("127.0.0.1:7080");
-		referenceBean.setAccessToken(null);
-		referenceBean.setInvokeCallback(null);
-		referenceBean.setInvokerFactory(null);
+		referenceBean.setAppname("server01");
+		//referenceBean.setAddress("127.0.0.1:7080");
+		//referenceBean.setAccessToken(null);
 
-		DemoService demoService = (DemoService) referenceBean.getObject();
+		DemoService demoService = (DemoService) referenceBean.getObject(factory);
 
 		// test
         demoService.sayHi("[ONEWAY]jack");
