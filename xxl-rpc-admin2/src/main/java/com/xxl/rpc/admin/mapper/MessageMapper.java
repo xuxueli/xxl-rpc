@@ -48,18 +48,23 @@ public interface MessageMapper {
     /**
      * 查询有效消息
      *
-     * @param addTimeValid  有效消息时间，晚于该时间才判定有效消息
-     * @param excludeMsgIds 已处理消息ID，避免重复处理
+     * @param msgTimeValidStart     有效消息开始时间，处于区间内才判定有效消息
+     * @param msgTimeValidEnd       有效消息开始时间，处于区间内才判定有效消息
+     * @param excludeMsgIds         已处理消息ID，避免重复处理
      * @return
      */
-    public List<Message> queryValidMessage(@Param("addTimeValid") Date addTimeValid, @Param("excludeMsgIds") List<Integer> excludeMsgIds);
+    public List<Message> queryValidMessage(@Param("msgTimeValidStart") Date msgTimeValidStart,
+                                           @Param("msgTimeValidEnd") Date msgTimeValidEnd,
+                                           @Param("excludeMsgIds") List<Long> excludeMsgIds);
 
     /**
      * 清理无效消息
      *
-     * @param addTimeValid  有效消息时间，晚于该时间才判定有效消息
+     * @param msgTimeValidStart 有效消息开始时间，处于区间内才判定有效消息
+     * @param msgTimeValidEnd   有效消息开始时间，处于区间内才判定有效消息
      * @return
      */
-    public int cleanMessageInValid(@Param("addTimeValid") Date addTimeValid);
+    public int cleanMessageInValid(@Param("msgTimeValidStart") Date msgTimeValidStart,
+                                   @Param("msgTimeValidEnd") Date msgTimeValidEnd);
 
 }

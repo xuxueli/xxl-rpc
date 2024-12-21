@@ -1,7 +1,7 @@
 package com.xxl.rpc.admin.registry.biz.impl;
 
 import com.xxl.rpc.admin.registry.biz.RegistryService;
-import com.xxl.rpc.admin.registry.config.XxlRpcAdminRegistry;
+import com.xxl.rpc.admin.registry.config.RegistryFactory;
 import com.xxl.rpc.admin.registry.model.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
@@ -16,7 +16,7 @@ import javax.annotation.Resource;
 public class RegistryServiceImpl implements RegistryService {
 
     @Resource
-    private XxlRpcAdminRegistry xxlRpcRegistry;
+    private RegistryFactory xxlRpcRegistry;
 
 
     @Override

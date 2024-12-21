@@ -64,7 +64,7 @@ public class RegisterHelper {
                     @Override
                     public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
                         r.run();
-                        logger.warn(">>>>>>>>>>> xxl-rpc, admin RegisterHelper-registerOrUnregisterThreadPool, registry or unregister too fast, match threadpool rejected handler.");
+                        logger.warn(">>>>>>>>>>> xxl-rpc, RegisterHelper-registerOrUnregisterThreadPool, registry or unregister too fast, match threadpool rejected handler.");
                     }
                 });
 
@@ -78,7 +78,7 @@ public class RegisterHelper {
 
                     } catch (Throwable e) {
                         if (!toStop) {
-                            logger.error(">>>>>>>>>>> xxl-rpc, admin RegistryCacheHelpler-fullSyncThread error:{}", e.getMessage(), e);
+                            logger.error(">>>>>>>>>>> xxl-rpc, RegistryCacheHelpler-fullSyncThread error:{}", e.getMessage(), e);
                         }
                     }
                     try {
@@ -86,7 +86,7 @@ public class RegisterHelper {
                         TimeUnit.HOURS.sleep(EXPIRED_TO_CLEAN_TIME);
                     } catch (Throwable e) {
                         if (!toStop) {
-                            logger.error(">>>>>>>>>>> xxl-rpc, admin RegistryCacheHelpler-fullSyncThread error2:{}", e.getMessage(), e);
+                            logger.error(">>>>>>>>>>> xxl-rpc, RegistryCacheHelpler-fullSyncThread error2:{}", e.getMessage(), e);
                         }
                     }
                 }

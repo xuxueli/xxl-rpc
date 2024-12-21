@@ -85,14 +85,14 @@ public class RegistryDeferredResultHelpler {
 
                     } catch (Throwable e) {
                         if (!toStop) {
-                            logger.error(">>>>>>>>>>> xxl-rpc, admin RegistryDeferredResultHelpler-deferredResultMonitorThread error:{}", e.getMessage(), e);
+                            logger.error(">>>>>>>>>>> xxl-rpc, RegistryDeferredResultHelpler-deferredResultMonitorThread error:{}", e.getMessage(), e);
                         }
                     }
                     try {
                         TimeUnit.SECONDS.sleep(RegistryCacheHelpler.REGISTRY_BEAT_TIME * 3);
                     } catch (Throwable e) {
                         if (!toStop) {
-                            logger.error(">>>>>>>>>>> xxl-rpc, admin RegistryDeferredResultHelpler-deferredResultMonitorThread error2:{}", e.getMessage(), e);
+                            logger.error(">>>>>>>>>>> xxl-rpc, RegistryDeferredResultHelpler-deferredResultMonitorThread error2:{}", e.getMessage(), e);
                         }
                     }
                 }
@@ -111,10 +111,10 @@ public class RegistryDeferredResultHelpler {
     /**
      * pushClient
      *
-     * @param object
+     * @param envAppnameList
      * @return
      */
-    public String pushClient(Object object){
+    public String pushClient(List<String> envAppnameList){
 
         // fileName
         String fileName = "";

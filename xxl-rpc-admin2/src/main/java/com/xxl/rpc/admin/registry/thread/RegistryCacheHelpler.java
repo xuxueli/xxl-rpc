@@ -6,12 +6,14 @@ import com.xxl.rpc.admin.model.dto.InstanceCacheDTO;
 import com.xxl.rpc.admin.model.dto.MessageForRegistryDTO;
 import com.xxl.rpc.admin.model.entity.Instance;
 import com.xxl.rpc.admin.model.entity.Message;
-import com.xxl.rpc.admin.registry.config.XxlRpcAdminRegistry;
+import com.xxl.rpc.admin.registry.config.RegistryFactory;
 import com.xxl.rpc.admin.registry.model.OpenApiResponse;
 import com.xxl.tool.core.CollectionTool;
 import com.xxl.tool.core.DateTool;
+import com.xxl.tool.core.StringTool;
 import com.xxl.tool.encrypt.Md5Tool;
 import com.xxl.tool.gson.GsonTool;
+import org.apache.tomcat.util.modeler.Registry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +23,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static com.xxl.rpc.admin.registry.model.OpenApiResponse.SUCCESS_CODE;
+import static com.xxl.rpc.admin.registry.model.OpenApiResponse.FAIL_CODE;
 
 /**
  * registry cache helper
@@ -98,7 +100,7 @@ public class RegistryCacheHelpler {
     /**
      * message filtering to avoid duplicate processing
      */
-    private volatile List<Integer> readedMessageIds = Collections.synchronizedList(new ArrayList<Integer>());
+    private volatile List<Long> readedMessageIds = Collections.synchronizedList(new ArrayList());
 
     /**
      * 全量同步
@@ -132,34 +134,18 @@ public class RegistryCacheHelpler {
                         ConcurrentMap<String, String> registryCacheMd5StoreNew = new ConcurrentHashMap<>();
 
                         // b、load all env-appname
-                        Date registerHeartbeatValid = DateTool.addSeconds(new Date(), -1 * REGISTRY_BEAT_TIME * 3);
-                        List<Instance> envAndAppNameList = XxlRpcAdminRegistry.getInstance().getInstanceMapper().queryEnvAndAppName();
-                        logger.info(">>>>>>>>>>> xxl-rpc admin, RegistryCacheHelpler - fullSyncThread start, envAndAppNameList:{}", envAndAppNameList);
+                        List<Instance> envAndAppNameList = RegistryFactory.getInstance().getInstanceMapper().queryEnvAndAppName();
 
                         // c、process each env-appname
                         if (CollectionTool.isNotEmpty(envAndAppNameList)) {
                             for (Instance instance : envAndAppNameList) {
-                                // make key
-                                String envAppNameKey = String.format("%s##%s", instance.getEnv(), instance.getAppname());
-                                List<InstanceCacheDTO> cacheValue = new ArrayList<>();
+                                // build key
+                                String envAppNameKey = buildCacheKey(instance.getEnv(), instance.getAppname());
 
-                                // load value
-                                List<Instance> instanceCacheDTOList = XxlRpcAdminRegistry.getInstance().getInstanceMapper().queryByEnvAndAppNameValid(
-                                        instance.getEnv(),
-                                        instance.getAppname(),
-                                        InstanceRegisterModelEnum.AUTO.getValue(),
-                                        InstanceRegisterModelEnum.PERSISTENT.getValue(),
-                                        registerHeartbeatValid);
-                                if (CollectionTool.isNotEmpty(instanceCacheDTOList)){
-                                    // convert to cache-dto, and sort by "ip:port"
-                                    cacheValue = instanceCacheDTOList
-                                            .stream()
-                                            .map(InstanceCacheDTO::new)
-                                            .sorted(Comparator.comparing(InstanceCacheDTO::getSortKey))     // sort， for md5 match
-                                            .collect(Collectors.toList());
-                                }
+                                // build validValud
+                                List<InstanceCacheDTO> cacheValue = buildValidCache(instance.getEnv(), instance.getAppname());
 
-                                // make value-md5
+                                // build validValud-md5
                                 String cacheValueMd5 = Md5Tool.md5(GsonTool.toJson(cacheValue));
 
                                 // set data
@@ -176,33 +162,36 @@ public class RegistryCacheHelpler {
                         List<String> envAppnameDiffList = registryCacheMd5Store.keySet().stream()
                                 .filter(item -> !registryCacheMd5StoreNew.containsKey(item) || !registryCacheMd5StoreNew.get(item).equals(registryCacheMd5Store.get(item)))
                                 .collect(Collectors.toList());
-                        pushClient(envAppnameDiffList);
+                        if (CollectionTool.isNotEmpty(envAppnameDiffList)) {
+                            logger.error(">>>>>>>>>>> xxl-rpc, RegistryCacheHelpler-fullSyncThread find envAppnameDiffList:{}", envAppnameDiffList);
+                            pushClient(envAppnameDiffList);
+                        }
 
                         // e、replace with new data
                         registryCacheStore = registryCacheStoreNew;
                         registryCacheMd5Store = registryCacheMd5StoreNew;
-                        logger.info(">>>>>>>>>>> xxl-rpc admin, RegistryCacheHelpler - fullSyncThread finish, registryCacheStore:{}, registryCacheMd5Store",
+                        logger.info(">>>>>>>>>>> xxl-rpc, RegistryCacheHelpler - fullSyncThread success, registryCacheStore:{}, registryCacheMd5Store:{}",
                                 registryCacheStore, registryCacheMd5Store);
 
                         // first full-sycs success, warmUp
                         if (!warmUp) {
                             warmUp = true;
-                            logger.info(">>>>>>>>>>> xxl-rpc, admin RegistryCacheHelpler-fullSyncThread warmUp finish");
+                            logger.info(">>>>>>>>>>> xxl-rpc, RegistryCacheHelpler-fullSyncThread warmUp finish");
                         }
                     } catch (Throwable e) {
                         if (!toStop) {
-                            logger.error(">>>>>>>>>>> xxl-rpc, admin RegistryCacheHelpler-fullSyncThread error:{}", e.getMessage(), e);
+                            logger.error(">>>>>>>>>>> xxl-rpc, RegistryCacheHelpler-fullSyncThread error:{}", e.getMessage(), e);
                         }
                     }
                     try {
                         TimeUnit.SECONDS.sleep(REGISTRY_BEAT_TIME * 3);
                     } catch (Throwable e) {
                         if (!toStop) {
-                            logger.error(">>>>>>>>>>> xxl-rpc, admin RegistryCacheHelpler-fullSyncThread error2:{}", e.getMessage(), e);
+                            logger.error(">>>>>>>>>>> xxl-rpc, RegistryCacheHelpler-fullSyncThread error2:{}", e.getMessage(), e);
                         }
                     }
                 }
-                logger.info(">>>>>>>>>>> xxl-rpc, admin RegistryCacheHelpler-fullSyncThread stop");
+                logger.info(">>>>>>>>>>> xxl-rpc, RegistryCacheHelpler-fullSyncThread stop");
             }
         }, "xxl-rpc, admin RegistryCacheHelpler-fullSyncThread");
 
@@ -213,10 +202,12 @@ public class RegistryCacheHelpler {
                 // 实时监听广播消息，根据消息类型实时更新指定注册数据，从DB 同步至 registryCacheStore；单条数据维度覆盖更新；
                 while (!toStop) {
                     try {
-                        // a、Detect real-time messages。 Onceper second
-                        Date msgTimeValid = DateTool.addSeconds(new Date(), -1 * 10);
-                        List<Message> messageList = XxlRpcAdminRegistry.getInstance().getMessageMapper()
-                                .queryValidMessage(msgTimeValid, readedMessageIds.size()>50?readedMessageIds.subList(0, 50):readedMessageIds);
+                        // a、detect real-time messages, Once per second
+                        Date msgTimeValidStart = DateTool.addSeconds(new Date(), -1 * 10);
+                        Date msgTimeValidEnd = DateTool.addMinutes(msgTimeValidStart, 5);
+                        List<Long> excludeMsgIds = readedMessageIds.size()>50?readedMessageIds.subList(0, 50):readedMessageIds;
+
+                        List<Message> messageList = RegistryFactory.getInstance().getMessageMapper().queryValidMessage(msgTimeValidStart, msgTimeValidEnd, excludeMsgIds);
                         List<String> envAppnameDiffList = new ArrayList<>();
 
                         // b、parse all registry-message-dto, by message-data
@@ -225,76 +216,70 @@ public class RegistryCacheHelpler {
                             List<Message> registryMessageList = messageList.stream()
                                     .filter(item->item.getType()== MessageTypeEnum.REGISTRY.getValue())
                                     .collect(Collectors.toList());
-                            // convert to registry-message-dto（env-appname）
-                            List<MessageForRegistryDTO> messageForRegistryDTOList = registryMessageList.stream()
-                                    .map(item-> (GsonTool.fromJson(item.getData(), MessageForRegistryDTO.class))
-                                    )
-                                    .collect(Collectors.toList());
 
-                            // c、process each env-appname   // TODO，抽象
-                            if (CollectionTool.isNotEmpty(messageForRegistryDTOList)) {
-                                Date registerHeartbeatValid = DateTool.addSeconds(new Date(), -1 * REGISTRY_BEAT_TIME * 3);
+                            // c、process each env-appname
+                            if (CollectionTool.isNotEmpty(registryMessageList)) {
+                                // convert to registry-message-dto（env-appname）
+                                List<MessageForRegistryDTO> messageForRegistryDTOList = registryMessageList.stream()
+                                        .map(item-> (GsonTool.fromJson(item.getData(), MessageForRegistryDTO.class))
+                                        )
+                                        .collect(Collectors.toList());
+
                                 for (MessageForRegistryDTO messageForRegistryDTO: messageForRegistryDTOList) {
-                                    // make key
-                                    String envAppNameKey = String.format("%s##%s", messageForRegistryDTO.getEnv(), messageForRegistryDTO.getAppname());
-                                    List<InstanceCacheDTO> cacheValue = new ArrayList<>();
+                                    // build key
+                                    String envAppNameKey = buildCacheKey(messageForRegistryDTO.getEnv(), messageForRegistryDTO.getAppname());
 
-                                    // load value
-                                    List<Instance> instanceCacheDTOList = XxlRpcAdminRegistry.getInstance().getInstanceMapper().queryByEnvAndAppNameValid(
-                                            messageForRegistryDTO.getEnv(),
-                                            messageForRegistryDTO.getAppname(),
-                                            InstanceRegisterModelEnum.AUTO.getValue(),
-                                            InstanceRegisterModelEnum.PERSISTENT.getValue(),
-                                            registerHeartbeatValid);
-                                    if (CollectionTool.isNotEmpty(instanceCacheDTOList)){
-                                        // convert to cache-dto, and sort by "ip:port"
-                                        cacheValue = instanceCacheDTOList
-                                                .stream()
-                                                .map(InstanceCacheDTO::new)
-                                                .sorted(Comparator.comparing(InstanceCacheDTO::getSortKey))     // sort， for md5 match
-                                                .collect(Collectors.toList());
-                                    }
+                                    // build validValud
+                                    List<InstanceCacheDTO> cacheValue = buildValidCache(messageForRegistryDTO.getEnv(), messageForRegistryDTO.getAppname());
 
-                                    // make value-md5
+                                    // build validValud-md5
                                     String cacheValueMd5 = Md5Tool.md5(GsonTool.toJson(cacheValue));
 
-                                    // set data
-                                    if (!registryCacheMd5Store.get(envAppNameKey).equals(cacheValueMd5)) {
-                                        registryCacheStore.put(envAppNameKey, cacheValue);
-                                        registryCacheMd5Store.put(envAppNameKey, cacheValueMd5);      // only match md5, speed up match process
+                                    // set data (key exists and not match)
+                                    if (CollectionTool.isNotEmpty(cacheValue)) {
+                                        if (!cacheValueMd5.equals(registryCacheMd5Store.get(envAppNameKey))) {
+                                            registryCacheStore.put(envAppNameKey, cacheValue);
+                                            registryCacheMd5Store.put(envAppNameKey, cacheValueMd5);      // only match md5, speed up match process
 
-                                        envAppnameDiffList.add(envAppNameKey);
+                                            // discovery diff
+                                            envAppnameDiffList.add(envAppNameKey);
+                                        }
+                                    } else {
+                                        logger.info(">>>>>>>>>>> xxl-rpc, RegistryCacheHelpler-messageListenThread offline envAppNameKey:{}", envAppNameKey);
                                     }
                                 }
                             }
+
+                            // avoid repeat message
+                            readedMessageIds.addAll(messageList.stream().map(Message::getId).collect(Collectors.toList()));
                         }
 
                         // d、push client
                         if (CollectionTool.isNotEmpty(envAppnameDiffList)) {
+                            logger.error(">>>>>>>>>>> xxl-rpc, RegistryCacheHelpler-messageListenThread find envAppnameDiffList:{}", envAppnameDiffList);
                             pushClient(envAppnameDiffList);
                         }
 
                         // e、clean old message， Avoid too often clean
                         if ( (System.currentTimeMillis()/1000) % REGISTRY_BEAT_TIME ==0) {
-                            msgTimeValid = DateTool.addSeconds(new Date(), -1 * 10);
-                            XxlRpcAdminRegistry.getInstance().getMessageMapper().cleanMessageInValid(msgTimeValid);
+                            RegistryFactory.getInstance().getMessageMapper().cleanMessageInValid(msgTimeValidStart, msgTimeValidEnd);
                             readedMessageIds.clear();
                         }
 
                     } catch (Throwable e) {
                         if (!toStop) {
-                            logger.error(">>>>>>>>>>> xxl-rpc, admin RegistryCacheHelpler-fullSyncThread error:{}", e.getMessage(), e);
+                            logger.error(">>>>>>>>>>> xxl-rpc, RegistryCacheHelpler-messageListenThread error:{}", e.getMessage(), e);
                         }
                     }
                     try {
                         TimeUnit.SECONDS.sleep(1);
                     } catch (Throwable e) {
                         if (!toStop) {
-                            logger.error(">>>>>>>>>>> xxl-rpc, admin RegistryCacheHelpler-fullSyncThread error2:{}", e.getMessage(), e);
+                            logger.error(">>>>>>>>>>> xxl-rpc, RegistryCacheHelpler-messageListenThread error2:{}", e.getMessage(), e);
                         }
                     }
                 }
-                logger.info("xxl-rpc, admin RegistryCacheHelpler-fullSyncThread");
+                logger.info("xxl-rpc, admin RegistryCacheHelpler-messageListenThread");
             }
         }, "xxl-rpc, admin RegistryCacheHelpler-messageListenThread");
 
@@ -304,11 +289,13 @@ public class RegistryCacheHelpler {
      * find changed-data, push client
      */
     private void pushClient(List<String> envAppnameDiffList){
+        // valid
         if (CollectionTool.isEmpty(envAppnameDiffList)) {
             return;
         }
-
-        // TODO，发现不一致数据，客户端推送
+        // do push
+        RegistryFactory.getInstance().getRegistryDeferredResultHelpler().pushClient(envAppnameDiffList);
+        logger.info("xxl-rpc, admin RegistryCacheHelpler-pushClient, envAppnameDiffList:{}", envAppnameDiffList);
     }
 
     /**
@@ -363,6 +350,8 @@ public class RegistryCacheHelpler {
         }
     }
 
+    // ---------------------- tool ----------------------
+
     /**
      * make cache key
      *
@@ -370,40 +359,96 @@ public class RegistryCacheHelpler {
      * @param appname
      * @return
      */
-    private String makeCacheKey(String env, String appname){
-        return env.concat("@").concat(appname);
+    private String buildCacheKey(String env, String appname){
+        return String.format("%s##%s", env, appname);
     }
 
     /**
-     * filter valid instance
+     * build valid cache
+     *
+     * @param env
+     * @param appname
      * @return
      */
-    private boolean filterValidInstance(){
-        // 4、TODO，过滤有效注册实例
-        return false;
+    private List<InstanceCacheDTO> buildValidCache(String env, String appname){
+        // result
+        List<InstanceCacheDTO> cacheValue = new ArrayList<>();
+
+        // query valid instance
+        Date registerHeartbeatValid = DateTool.addSeconds(new Date(), -1 * REGISTRY_BEAT_TIME * 3);
+        List<Instance> instanceCacheDTOList = RegistryFactory.getInstance().getInstanceMapper().queryByEnvAndAppNameValid(
+                env,
+                appname,
+                InstanceRegisterModelEnum.AUTO.getValue(),
+                InstanceRegisterModelEnum.PERSISTENT.getValue(),
+                registerHeartbeatValid);
+
+        // parse cache
+        if (CollectionTool.isNotEmpty(instanceCacheDTOList)){
+            // convert to cache-dto, and sort by "ip:port"
+            cacheValue = instanceCacheDTOList
+                    .stream()
+                    .map(InstanceCacheDTO::new)
+                    .sorted(Comparator.comparing(InstanceCacheDTO::getSortKey))     // sort， for md5 match
+                    .collect(Collectors.toList());
+        }
+
+        return cacheValue;
     }
 
 
     // ---------------------- helper ----------------------
 
     /**
-     * get instance list
+     * find OnLine Instance
      *
      * @param env
      * @param appname
      * @return
      */
-    public OpenApiResponse<List<Instance>> getInstanceList(String env, String appname){
-
-        // TODO，未预热，无法查询
+    public OpenApiResponse<List<InstanceCacheDTO>> findOnLineInstance(String env, String appname){
+        // valid
         if (!warmUp) {
-            // 返回无法提供服务
+            return new OpenApiResponse<>(FAIL_CODE, "RegistryCacheHelpler not warm-up yet. try again later");
+        }
+        if (StringTool.isBlank(env) || StringTool.isBlank(appname)) {
+            return new OpenApiResponse<>(FAIL_CODE, "env or appname is blank");
         }
 
-        // 5、TODO，缓存查询逻辑
-        String key = makeCacheKey(env, appname);
+        // build key
+        String envAppNameKey = buildCacheKey(env, appname);
+
+        // build validValud
+        List<InstanceCacheDTO> cacheValue = registryCacheStore.get(envAppNameKey);
+
         // registryCacheStore.get(key)
-        return new OpenApiResponse<List<Instance>>(SUCCESS_CODE, null);
+        return new OpenApiResponse<>(cacheValue);
+    }
+
+    /**
+     * find OnLine Instance-MD5
+     *
+     * @param env
+     * @param appname
+     * @return
+     */
+    public OpenApiResponse<String> findOnLineInstanceMd5(String env, String appname){
+        // valid
+        if (!warmUp) {
+            return new OpenApiResponse<>(FAIL_CODE, "RegistryCacheHelpler not warm-up yet. try again later");
+        }
+        if (StringTool.isBlank(env) || StringTool.isBlank(appname)) {
+            return new OpenApiResponse<>(FAIL_CODE, "env or appname is blank");
+        }
+
+        // build key
+        String envAppNameKey = buildCacheKey(env, appname);
+
+        // build validValud
+        String cacheValueMd5 = registryCacheMd5Store.get(envAppNameKey);
+
+        // registryCacheStore.get(key)
+        return new OpenApiResponse<>(cacheValueMd5);
     }
 
 }

@@ -21,12 +21,12 @@ import javax.annotation.Resource;
  * @author xuxueli
  */
 @Configuration
-public class XxlRpcAdminRegistry implements InitializingBean, DisposableBean {
-    private static Logger logger = LoggerFactory.getLogger(XxlRpcAdminRegistry.class);
+public class RegistryFactory implements InitializingBean, DisposableBean {
+    private static Logger logger = LoggerFactory.getLogger(RegistryFactory.class);
 
     // ---------------------- instance ----------------------
-    private static XxlRpcAdminRegistry instance;
-    public static XxlRpcAdminRegistry getInstance() {
+    private static RegistryFactory instance;
+    public static RegistryFactory getInstance() {
         return instance;
     }
 

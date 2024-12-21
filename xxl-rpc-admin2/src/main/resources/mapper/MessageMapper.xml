@@ -72,19 +72,18 @@
         SELECT <include refid="Base_Column_List" />
         FROM xxl_rpc_message AS t
         WHERE
-        t.`add_time` <![CDATA[ > ]]> #{addTimeValid}
+        t.`add_time` BETWEEN #{msgTimeValidStart} AND #{msgTimeValidEnd}
             <if test="excludeMsgIds!=null and excludeMsgIds.size()>0">
                 AND t.`id` NOT IN
                 <foreach collection="excludeMsgIds" item="item" open="(" close=")" separator="," >
                     #{item}
                 </foreach>
             </if>
-        LIMIT #{offset}, #{pagesize}
     </select>
 
     <delete id="cleanMessageInValid" parameterType="java.util.Map" >
-        DELETE FROM xxl_rpc_message
-        WHERE t.`add_time` <![CDATA[ < ]]> #{addTimeValid}
+        DELETE FROM xxl_rpc_message AS t
+        WHERE t.`add_time` NOT BETWEEN #{msgTimeValidStart} AND #{msgTimeValidEnd}
     </delete>
 
 </mapper>

@@ -25,9 +25,8 @@ public class OpenApiResponse<T> implements Serializable {
         this.code = code;
         this.msg = msg;
     }
-    public OpenApiResponse(int code, String msg, T data) {
-        this.code = code;
-        this.msg = msg;
+    public OpenApiResponse(T data) {
+        this.code = SUCCESS_CODE;
         this.data = data;
     }
 
