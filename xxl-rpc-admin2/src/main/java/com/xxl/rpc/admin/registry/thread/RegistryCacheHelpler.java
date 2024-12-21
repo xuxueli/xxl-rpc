@@ -7,7 +7,7 @@ import com.xxl.rpc.admin.model.dto.MessageForRegistryDTO;
 import com.xxl.rpc.admin.model.entity.Instance;
 import com.xxl.rpc.admin.model.entity.Message;
 import com.xxl.rpc.admin.registry.config.RegistryFactory;
-import com.xxl.rpc.admin.registry.model.OpenApiResponse;
+import com.xxl.rpc.admin.registry.model.*;
 import com.xxl.tool.core.CollectionTool;
 import com.xxl.tool.core.DateTool;
 import com.xxl.tool.core.StringTool;
@@ -193,7 +193,7 @@ public class RegistryCacheHelpler {
                 }
                 logger.info(">>>>>>>>>>> xxl-rpc, RegistryCacheHelpler-fullSyncThread stop");
             }
-        }, "xxl-rpc, admin RegistryCacheHelpler-fullSyncThread");
+        }, ">>>>>>>>>>> xxl-rpc, RegistryCacheHelpler-fullSyncThread");
 
         // 3、messageListenThread
         messageListenThread = startThread(new Runnable() {
@@ -245,7 +245,7 @@ public class RegistryCacheHelpler {
                                             envAppnameDiffList.add(envAppNameKey);
                                         }
                                     } else {
-                                        logger.info(">>>>>>>>>>> xxl-rpc, RegistryCacheHelpler-messageListenThread offline envAppNameKey:{}", envAppNameKey);
+                                        logger.info(">>>>>>>>>>> xxl-rpc, RegistryCacheHelpler-messageListenThread offline-pass envAppNameKey:{}", envAppNameKey);
                                     }
                                 }
                             }
@@ -279,7 +279,7 @@ public class RegistryCacheHelpler {
                         }
                     }
                 }
-                logger.info("xxl-rpc, admin RegistryCacheHelpler-messageListenThread");
+                logger.info(">>>>>>>>>>> xxl-rpc, RegistryCacheHelpler-messageListenThread");
             }
         }, "xxl-rpc, admin RegistryCacheHelpler-messageListenThread");
 
@@ -295,7 +295,7 @@ public class RegistryCacheHelpler {
         }
         // do push
         RegistryFactory.getInstance().getRegistryDeferredResultHelpler().pushClient(envAppnameDiffList);
-        logger.info("xxl-rpc, admin RegistryCacheHelpler-pushClient, envAppnameDiffList:{}", envAppnameDiffList);
+        logger.info(">>>>>>>>>>> xxl-rpc, RegistryCacheHelpler-pushClient, envAppnameDiffList:{}", envAppnameDiffList);
     }
 
     /**
@@ -359,7 +359,7 @@ public class RegistryCacheHelpler {
      * @param appname
      * @return
      */
-    private String buildCacheKey(String env, String appname){
+    public static String buildCacheKey(String env, String appname){
         return String.format("%s##%s", env, appname);
     }
 
@@ -406,23 +406,20 @@ public class RegistryCacheHelpler {
      * @param appname
      * @return
      */
-    public OpenApiResponse<List<InstanceCacheDTO>> findOnLineInstance(String env, String appname){
+    private List<InstanceCacheDTO> findOnLineInstance(String env, String appname){
         // valid
         if (!warmUp) {
-            return new OpenApiResponse<>(FAIL_CODE, "RegistryCacheHelpler not warm-up yet. try again later");
+            return null;
         }
         if (StringTool.isBlank(env) || StringTool.isBlank(appname)) {
-            return new OpenApiResponse<>(FAIL_CODE, "env or appname is blank");
+            return null;
         }
 
         // build key
         String envAppNameKey = buildCacheKey(env, appname);
 
-        // build validValud
-        List<InstanceCacheDTO> cacheValue = registryCacheStore.get(envAppNameKey);
-
-        // registryCacheStore.get(key)
-        return new OpenApiResponse<>(cacheValue);
+        // get Instance
+        return registryCacheStore.get(envAppNameKey);
     }
 
     /**
@@ -432,23 +429,54 @@ public class RegistryCacheHelpler {
      * @param appname
      * @return
      */
-    public OpenApiResponse<String> findOnLineInstanceMd5(String env, String appname){
+    private String findOnLineInstanceMd5(String env, String appname){
         // valid
         if (!warmUp) {
-            return new OpenApiResponse<>(FAIL_CODE, "RegistryCacheHelpler not warm-up yet. try again later");
+            return null;
         }
         if (StringTool.isBlank(env) || StringTool.isBlank(appname)) {
-            return new OpenApiResponse<>(FAIL_CODE, "env or appname is blank");
+            return null;
         }
 
         // build key
         String envAppNameKey = buildCacheKey(env, appname);
 
-        // build validValud
-        String cacheValueMd5 = registryCacheMd5Store.get(envAppNameKey);
+        // get Instance-MD5
+        return registryCacheMd5Store.get(envAppNameKey);
+    }
 
-        // registryCacheStore.get(key)
-        return new OpenApiResponse<>(cacheValueMd5);
+    /**
+     * discovery OnLine Instance
+     *
+     * @param request
+     * @return
+     */
+    public DiscoveryResponse discoveryOnLineInstance(DiscoveryRequest request) {
+        // valid
+        if (request == null || CollectionTool.isEmpty(request.getAppnameList())) {
+            return null;
+        }
+
+        // query data
+        Map<String, List<InstanceCacheDTO>> discoveryData = new HashMap<>();
+        Map<String, String> discoveryDataMd5 = new HashMap<>();
+        for (String appname : request.getAppnameList()) {
+            String onLineInstanceMd5 = findOnLineInstanceMd5(request.getEnv(), appname);
+            if (StringTool.isNotBlank(onLineInstanceMd5)) {
+                // set md5
+                discoveryDataMd5.put(appname, onLineInstanceMd5);
+                // set detail
+                if (!request.isSimpleQuery()) {
+                    discoveryData.put(appname, findOnLineInstance(request.getEnv(), appname));
+                }
+            }
+        }
+
+        // build response
+        DiscoveryResponse response = new DiscoveryResponse();
+        response.setDiscoveryData(discoveryData);
+        response.setDiscoveryDataMd5(discoveryDataMd5);
+        return response;
     }
 
 }

@@ -29,8 +29,8 @@
         VALUES(
                   #{message.type} ,
                   #{message.data} ,
-                  NOW() ,
-                  NOW()
+                  #{message.addTime} ,
+                  #{message.updateTime}
               )
     </insert>
 

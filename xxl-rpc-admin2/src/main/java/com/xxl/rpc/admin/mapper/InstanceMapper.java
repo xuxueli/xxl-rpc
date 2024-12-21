@@ -72,4 +72,28 @@ public interface InstanceMapper {
                                                     @Param("registerHeartbeatValid") Date registerHeartbeatValid);
 
 
+    /**
+     * 删除自动注册的实例
+     *
+     * 删除逻辑：
+     *      1、仅 AUTO 注册类型节点允许删除；
+     *
+     * @param instance
+     * @return
+     */
+    int deleteAutoInstance(@Param("instance") Instance instance);
+
+    /**
+     * 新增自动注册的实例
+     *
+     * 新增逻辑：
+     *      1、联合主键：env + appname + ip + port；如果已存在，则更新注册时间；
+     *      2、若不存在 联合主键 数据，则新增 AUTO 类型节点；若存在 联合主键 数据，说明存在其他类型节点，只更新注册时间；
+     *      3、返回值：// 0-fail; 1-save suc; 2-update suc;
+     *
+     * @param instance
+     * @return
+     */
+    int addAutoInstance(@Param("instance") Instance instance);
+
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author xuxueli 2018-11-29
@@ -31,9 +32,12 @@ public class OpenApiController {
     @RequestMapping("/{uri}")
     @ResponseBody
     @Permission(login = false)
-    public Object api(@PathVariable("uri") String uri, @RequestBody(required = false) String data){
+    public Object api(HttpServletRequest httpServletRequest, @PathVariable("uri") String uri, @RequestBody(required = false) String data){
 
         // valid
+        if (!"POST".equalsIgnoreCase(httpServletRequest.getMethod())) {
+            return new OpenApiResponse<String>(OpenApiResponse.FAIL_CODE, "invalid request, HttpMethod not support.");
+        }
         if (uri==null || uri.trim().isEmpty()) {
             return new OpenApiResponse(OpenApiResponse.FAIL_CODE, "invalid request, uri-mapping empty.");
         }

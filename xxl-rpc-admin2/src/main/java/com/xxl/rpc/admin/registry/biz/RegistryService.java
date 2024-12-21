@@ -44,6 +44,6 @@ public interface RegistryService {
      *      1、support client monitor，long-polling
      *      2、push client when registry changed
      */
-    DeferredResult<DiscoveryResponse> monitor(DiscoveryRequest request);
+    DeferredResult<OpenApiResponse<String>> monitor(DiscoveryRequest request);
 
 }

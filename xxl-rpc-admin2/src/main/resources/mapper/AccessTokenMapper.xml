@@ -78,4 +78,10 @@
         </trim>
     </select>
 
+    <select id="queryValidityAccessToken" parameterType="java.util.Map" resultMap="AccessToken">
+        SELECT <include refid="Base_Column_List" />
+        FROM xxl_rpc_access_token AS t
+        WHERE t.`status` = #{status}
+    </select>
+
 </mapper>

@@ -12,14 +12,29 @@ public class DiscoveryRequest extends OpenApiRequest implements Serializable {
     /**
      * instance list which want discovery
      */
-    private List<DiscoveryInstance> instanceList;
+    private List<String> appnameList;
 
-    public List<DiscoveryInstance> getInstanceList() {
-        return instanceList;
+    /**
+     * simple Query
+     *      true: only summary data (md5)
+     *      false: query all data (detail + md5)
+     */
+    private boolean simpleQuery;
+
+    public List<String> getAppnameList() {
+        return appnameList;
     }
 
-    public void setInstanceList(List<DiscoveryInstance> instanceList) {
-        this.instanceList = instanceList;
+    public void setAppnameList(List<String> appnameList) {
+        this.appnameList = appnameList;
+    }
+
+    public boolean isSimpleQuery() {
+        return simpleQuery;
+    }
+
+    public void setSimpleQuery(boolean simpleQuery) {
+        this.simpleQuery = simpleQuery;
     }
 
 }

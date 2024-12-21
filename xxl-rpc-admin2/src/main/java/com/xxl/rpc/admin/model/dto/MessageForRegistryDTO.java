@@ -1,5 +1,7 @@
 package com.xxl.rpc.admin.model.dto;
 
+import com.xxl.rpc.admin.model.entity.Instance;
+
 import java.io.Serializable;
 
 /**
@@ -25,6 +27,13 @@ public class MessageForRegistryDTO implements Serializable {
      */
     private String appname;
 
+    public MessageForRegistryDTO() {
+    }
+    public MessageForRegistryDTO(Instance instance) {
+        this.instanceId = instance.getId();
+        this.env = instance.getEnv();
+        this.appname = instance.getAppname();
+    }
 
     public long getInstanceId() {
         return instanceId;

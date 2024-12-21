@@ -1,7 +1,10 @@
 package com.xxl.rpc.admin.registry.thread;
 
 
+import com.xxl.rpc.admin.registry.model.DiscoveryRequest;
 import com.xxl.rpc.admin.registry.model.OpenApiResponse;
+import com.xxl.tool.core.CollectionTool;
+import com.xxl.tool.core.MapTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.async.DeferredResult;
@@ -9,7 +12,9 @@ import org.springframework.web.context.request.async.DeferredResult;
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * registry DeferredResult helpler
@@ -39,7 +44,7 @@ public class RegistryDeferredResultHelpler {
      *              格式：DeferredResult，客户端注册
      * </pre>
      */
-    private volatile Map<String, List<DeferredResult>> registryDeferredResultMap = new ConcurrentHashMap<>();
+    private volatile Map<String, CopyOnWriteArrayList<DeferredResult>> registryDeferredResultMap = new ConcurrentHashMap<>();
 
     /**
      * registry monitor (will remove instance that expired more than 1 day)
@@ -57,32 +62,25 @@ public class RegistryDeferredResultHelpler {
      */
     public void start() {
 
-        // 2、deferredResultMonitorThread， for clean
+        // deferredResultMonitorThread， for clean
         deferredResultMonitorThread = RegistryCacheHelpler.startThread(new Runnable() {
             @Override
             public void run() {
                 while (!toStop) {
                     try {
-                        // TODO, clean dead DeferredResult
-                        if (!registryDeferredResultMap.isEmpty()) {
-                            for (Map.Entry<String, List<DeferredResult>> entry : registryDeferredResultMap.entrySet()) {
-
-                                if (entry.getValue().size() > 0) {
-                                    List<DeferredResult> toRemove = new ArrayList<>();
-                                    for (DeferredResult deferredResult : entry.getValue()) {
-                                        if (deferredResult.isSetOrExpired()) {
-                                            toRemove.add(deferredResult);
-                                        }
-                                    }
-
-                                    entry.getValue().removeAll(toRemove);
+                        // clean dead DeferredResult
+                        if (MapTool.isNotEmpty(registryDeferredResultMap)) {
+                            for (Map.Entry<String, CopyOnWriteArrayList<DeferredResult>> entry : registryDeferredResultMap.entrySet()) {
+                                String key = entry.getKey();
+                                CopyOnWriteArrayList<DeferredResult> deferredResultList = entry.getValue();
+                                if (CollectionTool.isNotEmpty(deferredResultList)) {
+                                    List<DeferredResult> toRemove = deferredResultList.stream().filter(item->item.isSetOrExpired()).collect(Collectors.toList());
+                                    deferredResultList.removeAll(toRemove);     // thread-safe write
+                                } else {
+                                    registryDeferredResultMap.remove(key);
                                 }
-
                             }
                         }
-
-
-
                     } catch (Throwable e) {
                         if (!toStop) {
                             logger.error(">>>>>>>>>>> xxl-rpc, RegistryDeferredResultHelpler-deferredResultMonitorThread error:{}", e.getMessage(), e);
@@ -96,14 +94,23 @@ public class RegistryDeferredResultHelpler {
                         }
                     }
                 }
-                logger.info("xxl-rpc, admin RegistryDeferredResultHelpler-deferredResultMonitorThread finish.");
+                logger.info(">>>>>>>>>>> xxl-rpc, RegistryDeferredResultHelpler-deferredResultMonitorThread finish.");
             }
-        }, "xxl-rpc, admin RegistryDeferredResultHelpler-deferredResultMonitorThread");
+        }, "xxl-rpc, RegistryDeferredResultHelpler-deferredResultMonitorThread");
 
     }
 
     public void stop() {
+        // mark stop
+        toStop = true;
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (Throwable e) {
+            logger.error(e.getMessage(), e);
+        }
 
+        // stop thread
+        RegistryCacheHelpler.stopThread(deferredResultMonitorThread);
     }
 
     // ---------------------- helper ----------------------
@@ -114,24 +121,21 @@ public class RegistryDeferredResultHelpler {
      * @param envAppnameList
      * @return
      */
-    public String pushClient(List<String> envAppnameList){
-
-        // fileName
-        String fileName = "";
-
-        // valid repeat update
-
-        // brocast monitor client
-        List<DeferredResult> deferredResultList = registryDeferredResultMap.get(fileName);
-        if (deferredResultList != null) {
-            registryDeferredResultMap.remove(fileName);
-            for (DeferredResult deferredResult: deferredResultList) {
-
-                deferredResult.setResult(new OpenApiResponse<>(OpenApiResponse.SUCCESS_CODE, "Monitor key update."));
-            }
+    public void pushClient(List<String> envAppnameList){
+        if (CollectionTool.isEmpty(envAppnameList)) {
+            return;
         }
 
-        return new File(fileName).getPath();
+        // find client and push
+        for (String envAppname: envAppnameList) {
+            List<DeferredResult> deferredResultList = registryDeferredResultMap.get(envAppname);
+            if (CollectionTool.isNotEmpty(deferredResultList)) {
+                registryDeferredResultMap.remove(envAppname);   // thread-safe write
+                for (DeferredResult deferredResult: deferredResultList) {
+                    deferredResult.setResult(new OpenApiResponse<>(OpenApiResponse.SUCCESS_CODE, "Monitor key("+ envAppname +") update."));
+                }
+            }
+        }
     }
 
     /**
@@ -140,26 +144,25 @@ public class RegistryDeferredResultHelpler {
      * @param request
      * @return
      */
-    public DeferredResult<Object> monitor(Object request) {
+    public DeferredResult<OpenApiResponse<String>> monitor(DiscoveryRequest request) {
 
         // init
-        DeferredResult deferredResult = new DeferredResult(30 * 1000L, new OpenApiResponse<>(OpenApiResponse.SUCCESS_CODE, "Monitor timeout, no key updated."));
+        DeferredResult deferredResult = new DeferredResult(30 * 1000L, new OpenApiResponse<String>(OpenApiResponse.SUCCESS_CODE, "Monitor timeout, no key updated."));
 
         // valid
+        if (request == null) {
+            deferredResult.setResult(new OpenApiResponse<String>(OpenApiResponse.FAIL_CODE, "request invalid"));
+            return deferredResult;
+        }
 
 
         // monitor by client
-        // TODO，伪代码
-        for (String key: Arrays.asList(request.toString().split(","))) {
-            String fileName = "";
-
-            List<DeferredResult> deferredResultList = registryDeferredResultMap.get(fileName);
-            if (deferredResultList == null) {
-                deferredResultList = new ArrayList<>();
-                registryDeferredResultMap.put(fileName, deferredResultList);
-            }
-
-            deferredResultList.add(deferredResult);
+        for (String appname: request.getAppnameList()) {
+            // monitor key, same as cache key
+            String cacheKey = RegistryCacheHelpler.buildCacheKey(request.getEnv(), appname);
+            registryDeferredResultMap
+                    .computeIfAbsent(cacheKey, k -> new CopyOnWriteArrayList<>())       // thread-safe write, put list
+                    .add(deferredResult);                                                     // thread-safe write, add list-data
         }
 
         return deferredResult;

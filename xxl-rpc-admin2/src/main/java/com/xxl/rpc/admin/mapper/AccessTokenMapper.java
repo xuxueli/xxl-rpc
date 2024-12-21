@@ -48,4 +48,10 @@ public interface AccessTokenMapper {
                              @Param("pagesize") int pagesize,
                              @Param("accessToken") String accessToken);
 
+    /**
+    * 查询有效AccessToken
+    */
+    List<AccessToken> queryValidityAccessToken(@Param("status") int status);
+
+
 }

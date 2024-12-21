@@ -1,5 +1,7 @@
 package com.xxl.rpc.admin.registry.biz.impl;
 
+import com.xxl.rpc.admin.mapper.AccessTokenMapper;
+import com.xxl.rpc.admin.model.entity.AccessToken;
 import com.xxl.rpc.admin.registry.biz.RegistryService;
 import com.xxl.rpc.admin.registry.config.RegistryFactory;
 import com.xxl.rpc.admin.registry.model.*;
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * Registry Service
@@ -15,72 +18,53 @@ import javax.annotation.Resource;
 @Service
 public class RegistryServiceImpl implements RegistryService {
 
-    @Resource
-    private RegistryFactory xxlRpcRegistry;
-
 
     @Override
     public OpenApiResponse<String> register(RegisterRequest request) {
         // valid token
-        if (!validToken(request.getAccessToken())) {
-            return new OpenApiResponse<String>(OpenApiResponse.FAIL_CODE, "accessToken Invalid.");
+        if (!RegistryFactory.getInstance().getAccessTokenHelpler().validRequestToken(request)) {
+            return new OpenApiResponse<>(OpenApiResponse.FAIL_CODE, "accessToken Invalid.");
         }
 
-        // TODO
-
-        return null;
+        // invoke
+        RegistryFactory.getInstance().getRegisterHelper().registry(request);
+        return new OpenApiResponse<>(OpenApiResponse.SUCCESS_CODE, null);
     }
 
     @Override
     public OpenApiResponse<String> unregister(RegisterRequest request) {
         // valid token
-        if (!validToken(request.getAccessToken())) {
-            return new OpenApiResponse<String>(OpenApiResponse.FAIL_CODE, "accessToken Invalid.");
+        if (!RegistryFactory.getInstance().getAccessTokenHelpler().validRequestToken(request)) {
+            return new OpenApiResponse<>(OpenApiResponse.FAIL_CODE, "accessToken Invalid.");
         }
 
-        // TODO
-
-        return null;
+        // invoke
+        RegistryFactory.getInstance().getRegisterHelper().unregister(request);
+        return new OpenApiResponse<>(OpenApiResponse.SUCCESS_CODE, null);
     }
 
     @Override
-    public OpenApiResponse<DiscoveryResponse> discovery(DiscoveryRequest request) {
+    public DiscoveryResponse discovery(DiscoveryRequest request) {
         // valid token
-        if (!validToken(request.getAccessToken())) {
-            return new OpenApiResponse<DiscoveryResponse>(OpenApiResponse.FAIL_CODE, "accessToken Invalid.");
+        if (!RegistryFactory.getInstance().getAccessTokenHelpler().validRequestToken(request)) {
+            return new DiscoveryResponse(OpenApiResponse.FAIL_CODE, "accessToken Invalid.");
         }
 
-        // TODO
-        //xxlRpcRegistry.getRegistryCacheHelpler().getInstanceList()
-
-        return null;
+        // invoke
+        return RegistryFactory.getInstance().getRegistryCacheHelpler().discoveryOnLineInstance(request);
     }
 
     @Override
-    public DeferredResult<DiscoveryResponse> monitor(DiscoveryRequest request) {
-        // deferredResult
-        DeferredResult deferredResult = new DeferredResult(30 * 1000L, new DiscoveryResponse(DiscoveryResponse.SUCCESS_CODE, "Monitor timeout, no key updated."));
-
+    public DeferredResult<OpenApiResponse<String>> monitor(DiscoveryRequest request) {
         // valid token
-        if (!validToken(request.getAccessToken())) {
-            deferredResult.setResult(new DiscoveryResponse(DiscoveryResponse.FAIL_CODE, "AccessToken Invalid"));
+        if (!RegistryFactory.getInstance().getAccessTokenHelpler().validRequestToken(request)) {
+            DeferredResult deferredResult = new DeferredResult(30 * 1000L, new DiscoveryResponse(DiscoveryResponse.SUCCESS_CODE, "Monitor timeout, no key updated."));
+            deferredResult.setResult(new DiscoveryResponse(DiscoveryResponse.FAIL_CODE, "accessToken Invalid."));
             return deferredResult;
         }
 
-        // TODO
-
-        return null;
-    }
-
-    /**
-     * valid accessToken
-     *
-     * @param accessToken
-     * @return
-     */
-    private boolean validToken(String accessToken) {
-        // TODO，注意性能，accessToken 需要LocalCache缓存防护
-        return false;
+        // invoke
+        return RegistryFactory.getInstance().getRegistryDeferredResultHelpler().monitor(request);
     }
 
     /**

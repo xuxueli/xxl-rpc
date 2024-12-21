@@ -1,8 +1,20 @@
 package com.xxl.rpc.admin.registry.thread;
 
+import com.xxl.rpc.admin.constant.enums.InstanceRegisterModelEnum;
+import com.xxl.rpc.admin.constant.enums.MessageTypeEnum;
+import com.xxl.rpc.admin.model.dto.MessageForRegistryDTO;
+import com.xxl.rpc.admin.model.entity.Instance;
+import com.xxl.rpc.admin.model.entity.Message;
+import com.xxl.rpc.admin.registry.config.RegistryFactory;
 import com.xxl.rpc.admin.registry.model.OpenApiResponse;
+import com.xxl.rpc.admin.registry.model.RegisterInstance;
+import com.xxl.rpc.admin.registry.model.RegisterRequest;
+import com.xxl.tool.core.StringTool;
+import com.xxl.tool.gson.GsonTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Date;
 import java.util.concurrent.*;
 
 /**
@@ -57,7 +69,7 @@ public class RegisterHelper {
                 new ThreadFactory() {
                     @Override
                     public Thread newThread(Runnable r) {
-                        return new Thread(r, "xxl-rpc, admin RegisterHelper-registerOrUnregisterThreadPool-" + r.hashCode());
+                        return new Thread(r, "xxl-rpc, RegisterHelper-registerOrUnregisterThreadPool-" + r.hashCode());
                     }
                 },
                 new RejectedExecutionHandler() {
@@ -90,7 +102,7 @@ public class RegisterHelper {
                         }
                     }
                 }
-                logger.info("xxl-rpc, admin RegistryCacheHelpler-fullSyncThread");
+                logger.info(">>>>>>>>>>> xxl-rpc, RegistryCacheHelpler-fullSyncThread");
             }
         }, "xxl-rpc, admin RegistryCacheHelpler-messageListenThread");
 
@@ -117,8 +129,6 @@ public class RegisterHelper {
 
         // 2、registryMonitorThread
         RegistryCacheHelpler.stopThread(registryMonitorThread);
-
-
     }
 
     // ---------------------- helper ----------------------
@@ -126,47 +136,97 @@ public class RegisterHelper {
     /**
      * registry
      *
-     * @param object
+     * @param request
      * @return
      */
-    public OpenApiResponse<String> registry(Object object) {
+    public OpenApiResponse<String> registry(RegisterRequest request) {
         // valid
-        // TODO
+        if (request == null) {
+            return new OpenApiResponse<>(OpenApiResponse.FAIL_CODE, "RegisterRequest is null.");
+        }
+        if (StringTool.isBlank(request.getEnv())
+                || request.getInstance() == null
+                || StringTool.isBlank(request.getInstance().getAppname())
+                || StringTool.isBlank(request.getInstance().getIp())
+                || request.getInstance().getPort()<1){
+            return new OpenApiResponse<>(OpenApiResponse.FAIL_CODE, "RegisterRequest param invalid.");
+        }
 
         // async execute
         registerOrUnregisterThreadPool.execute(new Runnable() {
             @Override
             public void run() {
+                // save
+                Instance instance = new Instance();
+                instance.setEnv(request.getEnv());
+                instance.setAppname(request.getInstance().getAppname());
+                instance.setIp(request.getInstance().getIp());
+                instance.setPort(request.getInstance().getPort());
+                instance.setExtendInfo(request.getInstance().getExtendInfo());
+                instance.setRegisterModel(InstanceRegisterModelEnum.AUTO.getValue());
+                instance.setRegisterHeartbeat(new Date());
 
-                // TODO, registry logic
-
+                int ret = RegistryFactory.getInstance().getInstanceMapper().addAutoInstance(instance);
+                if (ret > 0) {
+                    // message
+                    Message message = new Message();
+                    message.setType(MessageTypeEnum.REGISTRY.getValue());
+                    message.setData(GsonTool.toJson(new MessageForRegistryDTO(instance)));      // convert
+                    message.setAddTime(new Date());
+                    message.setUpdateTime(new Date());
+                    RegistryFactory.getInstance().getMessageMapper().insert(message);
+                }
             }
         });
 
-        return null;
+        return new OpenApiResponse<>(OpenApiResponse.SUCCESS_CODE, null);
     }
 
     /**
      * unregister
      *
-     * @param object
+     * @param request
      * @return
      */
-    public OpenApiResponse<String> unregister(Object object) {
+    public OpenApiResponse<String> unregister(RegisterRequest request) {
         // valid
-        // TODO
+        if (request == null) {
+            return new OpenApiResponse<>(OpenApiResponse.FAIL_CODE, "RegisterRequest is null.");
+        }
+        if (StringTool.isBlank(request.getEnv())
+                || request.getInstance() == null
+                || StringTool.isBlank(request.getInstance().getAppname())
+                || StringTool.isBlank(request.getInstance().getIp())
+                || request.getInstance().getPort()<1){
+            return new OpenApiResponse<>(OpenApiResponse.FAIL_CODE, "RegisterRequest param invalid.");
+        }
 
         // async execute
         registerOrUnregisterThreadPool.execute(new Runnable() {
             @Override
             public void run() {
+                // delete
+                Instance instance = new Instance();
+                instance.setEnv(request.getEnv());
+                instance.setAppname(request.getInstance().getAppname());
+                instance.setIp(request.getInstance().getIp());
+                instance.setPort(request.getInstance().getPort());
+                instance.setRegisterModel(InstanceRegisterModelEnum.AUTO.getValue());
 
-                // TODO, registry logic
-
+                int ret = RegistryFactory.getInstance().getInstanceMapper().deleteAutoInstance(instance);
+                if (ret > 0) {
+                    // message
+                    Message message = new Message();
+                    message.setType(MessageTypeEnum.REGISTRY.getValue());
+                    message.setData(GsonTool.toJson(new MessageForRegistryDTO(instance)));      // convert
+                    message.setAddTime(new Date());
+                    message.setUpdateTime(new Date());
+                    RegistryFactory.getInstance().getMessageMapper().insert(message);
+                }
             }
         });
 
-        return null;
+        return new OpenApiResponse<>(OpenApiResponse.SUCCESS_CODE, null);
     }
 
 }

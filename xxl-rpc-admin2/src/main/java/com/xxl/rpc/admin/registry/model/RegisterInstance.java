@@ -24,9 +24,18 @@ public class RegisterInstance implements Serializable {
     private int port;
 
     /**
-     * 扩展信息
+     * 扩展信息（可选）
      */
     private String extendInfo;
+
+    public RegisterInstance() {
+    }
+    public RegisterInstance(String appname, String ip, int port, String extendInfo) {
+        this.appname = appname;
+        this.ip = ip;
+        this.port = port;
+        this.extendInfo = extendInfo;
+    }
 
     public String getAppname() {
         return appname;

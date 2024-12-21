@@ -1,9 +1,7 @@
 package com.xxl.rpc.admin.registry.config;
 
-import com.xxl.rpc.admin.mapper.ApplicationMapper;
-import com.xxl.rpc.admin.mapper.EnvironmentMapper;
-import com.xxl.rpc.admin.mapper.InstanceMapper;
-import com.xxl.rpc.admin.mapper.MessageMapper;
+import com.xxl.rpc.admin.mapper.*;
+import com.xxl.rpc.admin.registry.thread.AccessTokenHelpler;
 import com.xxl.rpc.admin.registry.thread.RegisterHelper;
 import com.xxl.rpc.admin.registry.thread.RegistryCacheHelpler;
 import com.xxl.rpc.admin.registry.thread.RegistryDeferredResultHelpler;
@@ -39,6 +37,8 @@ public class RegistryFactory implements InitializingBean, DisposableBean {
     private EnvironmentMapper environmentMapper;
     @Resource
     private MessageMapper messageMapper;
+    @Resource
+    private AccessTokenMapper accessTokenMapper;
 
     public InstanceMapper getInstanceMapper() {
         return instanceMapper;
@@ -51,6 +51,9 @@ public class RegistryFactory implements InitializingBean, DisposableBean {
     }
     public MessageMapper getMessageMapper() {
         return messageMapper;
+    }
+    public AccessTokenMapper getAccessTokenMapper() {
+        return accessTokenMapper;
     }
 
     // ---------------------- helper ----------------------
@@ -70,6 +73,11 @@ public class RegistryFactory implements InitializingBean, DisposableBean {
      */
     private RegistryDeferredResultHelpler registryDeferredResultHelpler;
 
+    /**
+     * 4、AccessTokenHelpler
+     */
+    private AccessTokenHelpler accessTokenHelpler;
+
 
     public RegistryCacheHelpler getRegistryCacheHelpler() {
         return registryCacheHelpler;
@@ -81,6 +89,10 @@ public class RegistryFactory implements InitializingBean, DisposableBean {
 
     public RegistryDeferredResultHelpler getRegistryDeferredResultHelpler() {
         return registryDeferredResultHelpler;
+    }
+
+    public AccessTokenHelpler getAccessTokenHelpler() {
+        return accessTokenHelpler;
     }
 
     @Override
@@ -111,6 +123,14 @@ public class RegistryFactory implements InitializingBean, DisposableBean {
         } catch (Throwable e) {
             logger.error("XxlRpcRegistry - RegistryDeferredResultHelpler: start error", e);
         }
+
+        // 4、AccessTokenHelpler
+        try {
+            accessTokenHelpler = new AccessTokenHelpler();
+            accessTokenHelpler.start();
+        } catch (Throwable e) {
+            logger.error("XxlRpcRegistry - AccessTokenHelpler: start error", e);
+        }
     }
 
     @Override
@@ -134,6 +154,13 @@ public class RegistryFactory implements InitializingBean, DisposableBean {
             registryDeferredResultHelpler.stop();
         } catch (Throwable e) {
             logger.error("XxlRpcRegistry - RegistryDeferredResultHelpler: stop error", e);
+        }
+
+        // 4、AccessTokenHelpler
+        try {
+            accessTokenHelpler.stop();
+        } catch (Throwable e) {
+            logger.error("XxlRpcRegistry - AccessTokenHelpler: stop error", e);
         }
 
     }

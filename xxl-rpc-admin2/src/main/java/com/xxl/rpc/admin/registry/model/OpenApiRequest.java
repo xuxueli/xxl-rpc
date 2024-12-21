@@ -13,7 +13,7 @@ public class OpenApiRequest {
     private String accessToken;
 
     /**
-     * Env（环境唯一标识）
+     * Env
      */
     private String env;
 
