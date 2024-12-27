@@ -1,7 +1,7 @@
 package com.xxl.rpc.admin.web.error;
 
+import com.alibaba.fastjson2.JSON;
 import com.xxl.tool.exception.BizException;
-import com.xxl.tool.gson.GsonTool;
 import com.xxl.tool.response.Response;
 import com.xxl.tool.response.ResponseBuilder;
 import org.slf4j.Logger;
@@ -51,7 +51,7 @@ public class WebHandlerExceptionResolver implements HandlerExceptionResolver {
 		if (isJson) {
 			try {
 				response.setContentType("application/json;charset=utf-8");
-				response.getWriter().print(GsonTool.toJson(errorResult));
+				response.getWriter().print(JSON.toJSONString(errorResult));
 			} catch (IOException e) {
 				logger.error(e.getMessage(), e);
 			}

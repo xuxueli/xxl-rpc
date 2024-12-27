@@ -11,7 +11,7 @@ import java.text.MessageFormat;
  * @author xuxueli
  */
 public class DemoServiceImpl implements DemoService {
-	private static Logger logger = LoggerFactory.getLogger(DemoServiceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(DemoServiceImpl.class);
 
 	@Override
 	public UserDTO sayHi(String name) {
@@ -27,6 +27,13 @@ public class DemoServiceImpl implements DemoService {
 		logger.info(userDTO.toString());
 
 		return userDTO;
+	}
+
+	@Override
+	public UserDTO sayHi2(UserDTO userDTO) {
+		UserDTO userDTO2 =new UserDTO("Jack", "Hi " + userDTO.getName());
+		logger.info(userDTO2.toString());
+		return userDTO2;
 	}
 
 }

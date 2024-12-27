@@ -11,11 +11,10 @@ import com.xxl.rpc.core.invoker.route.LoadBalance;
 import com.xxl.rpc.core.register.impl.LocalRegister;
 import com.xxl.rpc.core.register.model.RegisterInstance;
 import com.xxl.rpc.core.remoting.impl.netty.client.NettyClient;
+import com.xxl.rpc.core.serializer.impl.JsonbSerializer;
 import com.xxl.rpc.sample.api.DemoService;
 import com.xxl.rpc.sample.api.dto.UserDTO;
-import com.xxl.rpc.core.serializer.impl.HessianSerializer;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.TreeSet;
@@ -35,7 +34,7 @@ public class XxlRpcClientAplication {
 		factory.setInvokerConfig(new InvokerConfig());
 		factory.setRegister(new LocalRegister(new HashMap(){
 			{
-				RegisterInstance registerInstance = new RegisterInstance("test", "server01", "localhost", 7080, null);
+				RegisterInstance registerInstance = new RegisterInstance("test", "server01", "127.0.0.1", 7080, null);
 				put("server01", new TreeSet<>(Collections.singletonList(registerInstance)));
 			}
 		}));
@@ -63,7 +62,7 @@ public class XxlRpcClientAplication {
 		// init client
 		XxlRpcReferenceBean referenceBean = new XxlRpcReferenceBean();
 		referenceBean.setClient(NettyClient.class);
-		referenceBean.setSerializer(HessianSerializer.class);
+		referenceBean.setSerializer(JsonbSerializer.class);
 		referenceBean.setCallType(CallType.SYNC);
 		referenceBean.setLoadBalance(LoadBalance.ROUND);
 		referenceBean.setIface(DemoService.class);
@@ -76,7 +75,8 @@ public class XxlRpcClientAplication {
 		DemoService demoService = (DemoService) referenceBean.getObject(factory);
 
 		// test
-        UserDTO userDTO = demoService.sayHi("[SYNC]jack");
+        //UserDTO userDTO = demoService.sayHi("[SYNC]jack");
+		UserDTO userDTO = demoService.sayHi2(new UserDTO("[SYNC]jack", "hello"));
 		System.out.println(userDTO);
 
 
@@ -100,7 +100,7 @@ public class XxlRpcClientAplication {
 		// client test
 		XxlRpcReferenceBean referenceBean = new XxlRpcReferenceBean();
 		referenceBean.setClient(NettyClient.class);
-		referenceBean.setSerializer(HessianSerializer.class);
+		referenceBean.setSerializer(JsonbSerializer.class);
 		referenceBean.setCallType(CallType.FUTURE);
 		referenceBean.setLoadBalance(LoadBalance.ROUND);
 		referenceBean.setIface(DemoService.class);
@@ -113,7 +113,8 @@ public class XxlRpcClientAplication {
 		DemoService demoService = (DemoService) referenceBean.getObject(factory);
 
 		// test
-		demoService.sayHi("[FUTURE]jack" );
+		//demoService.sayHi("[FUTURE]jack" );
+		demoService.sayHi2(new UserDTO("[FUTURE]jack", "hello"));
         Future<UserDTO> userDTOFuture = XxlRpcInvokeFuture.getFuture(UserDTO.class);
 		UserDTO userDTO = userDTOFuture.get();
 
@@ -128,7 +129,7 @@ public class XxlRpcClientAplication {
 		// client test
 		XxlRpcReferenceBean referenceBean = new XxlRpcReferenceBean();
 		referenceBean.setClient(NettyClient.class);
-		referenceBean.setSerializer(HessianSerializer.class);
+		referenceBean.setSerializer(JsonbSerializer.class);
 		referenceBean.setCallType(CallType.CALLBACK);
 		referenceBean.setLoadBalance(LoadBalance.ROUND);
 		referenceBean.setIface(DemoService.class);
@@ -154,7 +155,8 @@ public class XxlRpcClientAplication {
             }
         });
 
-        demoService.sayHi("[CALLBACK]jack");
+        //demoService.sayHi("[CALLBACK]jack");
+		demoService.sayHi2(new UserDTO("[CALLBACK]jack", "hello"));
 	}
 
 
@@ -165,7 +167,7 @@ public class XxlRpcClientAplication {
 		// client test
 		XxlRpcReferenceBean referenceBean = new XxlRpcReferenceBean();
 		referenceBean.setClient(NettyClient.class);
-		referenceBean.setSerializer(HessianSerializer.class);
+		referenceBean.setSerializer(JsonbSerializer.class);
 		referenceBean.setCallType(CallType.ONEWAY);
 		referenceBean.setLoadBalance(LoadBalance.ROUND);
 		referenceBean.setIface(DemoService.class);
@@ -178,7 +180,8 @@ public class XxlRpcClientAplication {
 		DemoService demoService = (DemoService) referenceBean.getObject(factory);
 
 		// test
-        demoService.sayHi("[ONEWAY]jack");
+        //demoService.sayHi("[ONEWAY]jack");
+		demoService.sayHi2(new UserDTO("[ONEWAY]jack", "hello"));
 	}
 
 }

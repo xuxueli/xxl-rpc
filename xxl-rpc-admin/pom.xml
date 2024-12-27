@@ -78,10 +78,11 @@
 			<artifactId>xxl-tool</artifactId>
 			<version>${xxl-tool.version}</version>
 		</dependency>
+		<!-- fastjson2 -->
 		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>${gson.version}</version>
+			<groupId>com.alibaba.fastjson2</groupId>
+			<artifactId>fastjson2</artifactId>
+			<version>${fastjson2.version}</version>
 		</dependency>
 
 	</dependencies>

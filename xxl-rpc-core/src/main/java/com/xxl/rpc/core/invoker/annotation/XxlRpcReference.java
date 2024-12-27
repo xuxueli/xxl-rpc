@@ -5,7 +5,7 @@ import com.xxl.rpc.core.invoker.route.LoadBalance;
 import com.xxl.rpc.core.remoting.Client;
 import com.xxl.rpc.core.remoting.impl.netty.client.NettyClient;
 import com.xxl.rpc.core.serializer.Serializer;
-import com.xxl.rpc.core.serializer.impl.HessianSerializer;
+import com.xxl.rpc.core.serializer.impl.JsonbSerializer;
 
 import java.lang.annotation.*;
 
@@ -45,7 +45,7 @@ public @interface XxlRpcReference {
      *
      * @return
      */
-    Class<? extends Serializer> serializer() default HessianSerializer.class;
+    Class<? extends Serializer> serializer() default JsonbSerializer.class;
 
     /**
      * callType

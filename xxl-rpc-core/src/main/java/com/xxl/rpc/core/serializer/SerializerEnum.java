@@ -1,8 +1,6 @@
 package com.xxl.rpc.core.serializer;
 
-import com.xxl.rpc.core.serializer.impl.GsonSerializer;
-import com.xxl.rpc.core.serializer.impl.Hessian1Serializer;
-import com.xxl.rpc.core.serializer.impl.HessianSerializer;
+import com.xxl.rpc.core.serializer.impl.JsonbSerializer;
 import com.xxl.rpc.core.util.XxlRpcException;
 
 /**
@@ -12,11 +10,9 @@ import com.xxl.rpc.core.util.XxlRpcException;
  */
 public enum SerializerEnum {
 
-    HESSIAN(HessianSerializer.class),
-    HESSIAN1(Hessian1Serializer.class),
-    GSON(GsonSerializer.class);
+    JSONB(JsonbSerializer.class);
 
-    // JDK、FST、Kryo、Protobuf、Thrift、Hession、Avro
+    // FASTJSON-JSONB、JDK、FST、Kryo、Protobuf、Thrift、Hession、Avro
 
     private Class<? extends Serializer> serializerClass;
 

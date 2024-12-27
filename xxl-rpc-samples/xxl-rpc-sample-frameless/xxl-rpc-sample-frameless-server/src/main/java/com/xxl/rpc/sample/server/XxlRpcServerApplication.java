@@ -3,13 +3,10 @@ package com.xxl.rpc.sample.server;
 import com.xxl.rpc.core.factory.XxlRpcFactory;
 import com.xxl.rpc.core.factory.config.BaseConfig;
 import com.xxl.rpc.core.provider.config.ProviderConfig;
-import com.xxl.rpc.core.register.config.RegisterConfig;
-import com.xxl.rpc.core.register.impl.LocalRegister;
 import com.xxl.rpc.core.remoting.impl.netty.server.NettyServer;
-import com.xxl.rpc.core.provider.ProviderFactory;
 import com.xxl.rpc.sample.api.DemoService;
 import com.xxl.rpc.sample.server.service.DemoServiceImpl;
-import com.xxl.rpc.core.serializer.impl.HessianSerializer;
+import com.xxl.rpc.core.serializer.impl.JsonbSerializer;
 
 import java.util.concurrent.TimeUnit;
 
@@ -23,7 +20,7 @@ public class XxlRpcServerApplication {
         // init
         XxlRpcFactory factory = new XxlRpcFactory();
         factory.setBaseConfig(new BaseConfig("test", "client01"));
-        factory.setProviderConfig(new ProviderConfig(NettyServer.class, HessianSerializer.class, -1, -1, 7080, null));
+        factory.setProviderConfig(new ProviderConfig(NettyServer.class, JsonbSerializer.class, -1, -1, 7080, null));
 
         factory.start();
 

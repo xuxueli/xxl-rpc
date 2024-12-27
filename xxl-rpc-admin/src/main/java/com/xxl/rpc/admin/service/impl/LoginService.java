@@ -1,5 +1,6 @@
 package com.xxl.rpc.admin.service.impl;
 
+import com.alibaba.fastjson2.JSON;
 import com.xxl.rpc.admin.constant.enums.RoleEnum;
 import com.xxl.rpc.admin.constant.enums.UserStatuEnum;
 import com.xxl.rpc.admin.mapper.UserMapper;
@@ -8,7 +9,6 @@ import com.xxl.rpc.admin.model.dto.LoginUserDTO;
 import com.xxl.rpc.admin.model.entity.User;
 import com.xxl.rpc.admin.util.I18nUtil;
 import com.xxl.tool.core.StringTool;
-import com.xxl.tool.gson.GsonTool;
 import com.xxl.tool.net.CookieTool;
 import com.xxl.tool.response.Response;
 import com.xxl.tool.response.ResponseBuilder;
@@ -37,7 +37,7 @@ public class LoginService {
      * make token from user
      */
     private String makeToken(LoginUserDTO loginUserDTO){
-        String tokenJson = GsonTool.toJson(loginUserDTO);
+        String tokenJson = JSON.toJSONString(loginUserDTO);
         String tokenHex = new BigInteger(tokenJson.getBytes()).toString(16);
         return tokenHex;
     }
@@ -49,7 +49,7 @@ public class LoginService {
         LoginUserDTO loginUser = null;
         if (tokenHex != null) {
             String tokenJson = new String(new BigInteger(tokenHex, 16).toByteArray());      // username_password(md5)
-            loginUser = GsonTool.fromJson(tokenJson, LoginUserDTO.class);
+            loginUser = JSON.parseObject(tokenJson, LoginUserDTO.class);
         }
         return loginUser;
     }

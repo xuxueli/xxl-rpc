@@ -15,32 +15,18 @@
 
 	<dependencies>
 
-		<!-- ********************** net + serialize + registry ********************** -->
+		<!-- ********************** remoting + serialize ********************** -->
 		<!-- netty -->
 		<dependency>
 			<groupId>io.netty</groupId>
 			<artifactId>netty-codec-http</artifactId>
 			<version>${netty.version}</version>
 		</dependency>
-		<!--<dependency>
-			<groupId>io.netty</groupId>
-			<artifactId>netty-all</artifactId>
-			<version>${netty.version}</version>
-			<scope>provided</scope>
-		</dependency>-->
-
-		<!-- gson -->
+		<!-- fastjson2 -->
 		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>${gson.version}</version>
-		</dependency>
-
-		<!-- hessian -->
-		<dependency>
-			<groupId>com.caucho</groupId>
-			<artifactId>hessian</artifactId>
-			<version>${hessian.version}</version>
+			<groupId>com.alibaba.fastjson2</groupId>
+			<artifactId>fastjson2</artifactId>
+			<version>${fastjson2.version}</version>
 		</dependency>
 
 		<!-- ********************** base ********************** -->

@@ -1,5 +1,6 @@
 package com.xxl.rpc.admin.registry.thread;
 
+import com.alibaba.fastjson2.JSON;
 import com.xxl.rpc.admin.constant.enums.InstanceRegisterModelEnum;
 import com.xxl.rpc.admin.constant.enums.MessageTypeEnum;
 import com.xxl.rpc.admin.model.dto.MessageForRegistryDTO;
@@ -7,10 +8,8 @@ import com.xxl.rpc.admin.model.entity.Instance;
 import com.xxl.rpc.admin.model.entity.Message;
 import com.xxl.rpc.admin.registry.config.RegistryFactory;
 import com.xxl.rpc.admin.registry.model.OpenApiResponse;
-import com.xxl.rpc.admin.registry.model.RegisterInstance;
 import com.xxl.rpc.admin.registry.model.RegisterRequest;
 import com.xxl.tool.core.StringTool;
-import com.xxl.tool.gson.GsonTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -171,7 +170,7 @@ public class RegisterHelper {
                     // message
                     Message message = new Message();
                     message.setType(MessageTypeEnum.REGISTRY.getValue());
-                    message.setData(GsonTool.toJson(new MessageForRegistryDTO(instance)));      // convert
+                    message.setData(JSON.toJSONString(new MessageForRegistryDTO(instance)));      // convert
                     message.setAddTime(new Date());
                     message.setUpdateTime(new Date());
                     RegistryFactory.getInstance().getMessageMapper().insert(message);
@@ -218,7 +217,7 @@ public class RegisterHelper {
                     // message
                     Message message = new Message();
                     message.setType(MessageTypeEnum.REGISTRY.getValue());
-                    message.setData(GsonTool.toJson(new MessageForRegistryDTO(instance)));      // convert
+                    message.setData(JSON.toJSONString(new MessageForRegistryDTO(instance)));      // convert
                     message.setAddTime(new Date());
                     message.setUpdateTime(new Date());
                     RegistryFactory.getInstance().getMessageMapper().insert(message);

@@ -6,7 +6,7 @@ import com.xxl.rpc.core.provider.config.ProviderConfig;
 import com.xxl.rpc.core.register.config.RegisterConfig;
 import com.xxl.rpc.core.register.impl.XxlRpcRegister;
 import com.xxl.rpc.core.remoting.impl.netty.server.NettyServer;
-import com.xxl.rpc.core.serializer.impl.HessianSerializer;
+import com.xxl.rpc.core.serializer.impl.JsonbSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -53,7 +53,7 @@ public class XxlRpcProviderConfig {
         }));*/
         factory.setProviderConfig(new ProviderConfig(
                 NettyServer.class,
-                HessianSerializer.class,
+                JsonbSerializer.class,
                 port,
                 -1,
                 -1,

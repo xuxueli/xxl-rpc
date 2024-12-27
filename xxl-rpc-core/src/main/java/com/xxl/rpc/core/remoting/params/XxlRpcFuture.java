@@ -2,6 +2,7 @@ package com.xxl.rpc.core.remoting.params;
 
 import com.xxl.rpc.core.invoker.InvokerFactory;
 import com.xxl.rpc.core.invoker.call.XxlRpcInvokeCallback;
+import com.xxl.rpc.core.serializer.Serializer;
 import com.xxl.rpc.core.util.XxlRpcException;
 
 import java.util.concurrent.*;
@@ -13,10 +14,10 @@ import java.util.concurrent.*;
  */
 public class XxlRpcFuture implements Future<XxlRpcResponse> {
 
-	private InvokerFactory invokerFactory;
+	private final InvokerFactory invokerFactory;
 
 	// net data
-	private XxlRpcRequest request;
+	private final XxlRpcRequest request;
 	private XxlRpcResponse response;
 
 	// future lock
@@ -27,7 +28,10 @@ public class XxlRpcFuture implements Future<XxlRpcResponse> {
 	private XxlRpcInvokeCallback invokeCallback;
 
 
-	public XxlRpcFuture(final InvokerFactory invokerFactory, XxlRpcRequest request, XxlRpcInvokeCallback invokeCallback) {
+	public XxlRpcFuture(final InvokerFactory invokerFactory,
+						XxlRpcRequest request,
+						XxlRpcInvokeCallback invokeCallback) {
+
 		this.invokerFactory = invokerFactory;
 		this.request = request;
 		this.invokeCallback = invokeCallback;

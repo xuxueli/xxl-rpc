@@ -84,13 +84,18 @@ public class InvokerFactory {
     public void notifyInvokerFuture(String requestId, final XxlRpcResponse xxlRpcResponse){
 
         // get
-        final XxlRpcFuture futureResponse = futureResponseStore.get(requestId);
-        if (futureResponse == null) {
+        final XxlRpcFuture rpcFuture = futureResponseStore.get(requestId);
+        if (rpcFuture == null) {
             return;
         }
+        // do remove
+        futureResponseStore.remove(requestId);
+
+        // set response, parse result
+        rpcFuture.setResponse(xxlRpcResponse);
 
         // notify
-        if (futureResponse.getInvokeCallback() != null) {
+        if (rpcFuture.getInvokeCallback() != null) {
 
             // callback-type, async run in thread-pool
             try {
@@ -98,23 +103,16 @@ public class InvokerFactory {
                     @Override
                     public void run() {
                         if (xxlRpcResponse.getErrorMsg() != null) {
-                            futureResponse.getInvokeCallback().onFailure(new XxlRpcException(xxlRpcResponse.getErrorMsg()));
+                            rpcFuture.getInvokeCallback().onFailure(new XxlRpcException(xxlRpcResponse.getErrorMsg()));
                         } else {
-                            futureResponse.getInvokeCallback().onSuccess(xxlRpcResponse.getResult());
+                            rpcFuture.getInvokeCallback().onSuccess(xxlRpcResponse.getResult());
                         }
                     }
                 });
             }catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
-        } else {
-
-            // other nomal type
-            futureResponse.setResponse(xxlRpcResponse);
         }
-
-        // do remove
-        futureResponseStore.remove(requestId);
 
     }
 

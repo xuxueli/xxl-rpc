@@ -3,7 +3,7 @@ package com.xxl.rpc.core.provider.config;
 import com.xxl.rpc.core.remoting.Server;
 import com.xxl.rpc.core.remoting.impl.netty.server.NettyServer;
 import com.xxl.rpc.core.serializer.Serializer;
-import com.xxl.rpc.core.serializer.impl.HessianSerializer;
+import com.xxl.rpc.core.serializer.impl.JsonbSerializer;
 
 /**
  * Provider Config
@@ -20,7 +20,7 @@ public class ProviderConfig {
     /**
      * serializer, process request and response
      */
-    private Class<? extends Serializer> serializer = HessianSerializer.class;
+    private Class<? extends Serializer> serializer = JsonbSerializer.class;
 
     /**
      * server port (generate address)

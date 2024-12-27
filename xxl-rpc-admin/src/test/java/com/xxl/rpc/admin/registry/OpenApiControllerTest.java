@@ -1,7 +1,7 @@
 package com.xxl.rpc.admin.registry;
 
+import com.alibaba.fastjson2.JSON;
 import com.xxl.rpc.admin.registry.model.*;
-import com.xxl.tool.gson.GsonTool;
 import com.xxl.tool.net.HttpTool;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -24,7 +24,7 @@ public class OpenApiControllerTest {
         request.setInstance(new RegisterInstance("app01", "127.0.0.1", 8080, "{}"));
 
         String responseBody = HttpTool.postBody(addressUrl + "/register",
-                GsonTool.toJson(request),
+                JSON.toJSONString(request),
                 null,
                 3000);
         logger.info(responseBody);
@@ -38,7 +38,7 @@ public class OpenApiControllerTest {
         request.setInstance(new RegisterInstance("app01", "127.0.0.1", 8080, "{}"));
 
         String responseBody = HttpTool.postBody(addressUrl + "/unregister",
-                GsonTool.toJson(request),
+                JSON.toJSONString(request),
                 null,
                 3000);
         logger.info(responseBody);
@@ -54,7 +54,7 @@ public class OpenApiControllerTest {
         request.setSimpleQuery(false);
 
         String responseBody = HttpTool.postBody(addressUrl + "/discovery",
-                GsonTool.toJson(request),
+                JSON.toJSONString(request),
                 null,
                 3000);
         logger.info(responseBody);
@@ -71,7 +71,7 @@ public class OpenApiControllerTest {
         request.setSimpleQuery(false);
 
         String responseBody = HttpTool.postBody(addressUrl + "/monitor",
-                GsonTool.toJson(request),
+                JSON.toJSONString(request),
                 null,
                 3000);
         logger.info(responseBody);

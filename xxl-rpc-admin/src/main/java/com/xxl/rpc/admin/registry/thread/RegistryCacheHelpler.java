@@ -1,5 +1,6 @@
 package com.xxl.rpc.admin.registry.thread;
 
+import com.alibaba.fastjson2.JSON;
 import com.xxl.rpc.admin.constant.enums.InstanceRegisterModelEnum;
 import com.xxl.rpc.admin.constant.enums.MessageTypeEnum;
 import com.xxl.rpc.admin.model.dto.InstanceCacheDTO;
@@ -12,8 +13,6 @@ import com.xxl.tool.core.CollectionTool;
 import com.xxl.tool.core.DateTool;
 import com.xxl.tool.core.StringTool;
 import com.xxl.tool.encrypt.Md5Tool;
-import com.xxl.tool.gson.GsonTool;
-import org.apache.tomcat.util.modeler.Registry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -146,7 +145,7 @@ public class RegistryCacheHelpler {
                                 List<InstanceCacheDTO> cacheValue = buildValidCache(instance.getEnv(), instance.getAppname());
 
                                 // build validValud-md5
-                                String cacheValueMd5 = Md5Tool.md5(GsonTool.toJson(cacheValue));
+                                String cacheValueMd5 = Md5Tool.md5(JSON.toJSONString(cacheValue));
 
                                 // set data
                                 registryCacheStoreNew.put(envAppNameKey, cacheValue);
@@ -221,7 +220,7 @@ public class RegistryCacheHelpler {
                             if (CollectionTool.isNotEmpty(registryMessageList)) {
                                 // convert to registry-message-dto（env-appname）
                                 List<MessageForRegistryDTO> messageForRegistryDTOList = registryMessageList.stream()
-                                        .map(item-> (GsonTool.fromJson(item.getData(), MessageForRegistryDTO.class))
+                                        .map(item-> (JSON.parseObject(item.getData(), MessageForRegistryDTO.class))
                                         )
                                         .collect(Collectors.toList());
 
@@ -233,7 +232,7 @@ public class RegistryCacheHelpler {
                                     List<InstanceCacheDTO> cacheValue = buildValidCache(messageForRegistryDTO.getEnv(), messageForRegistryDTO.getAppname());
 
                                     // build validValud-md5
-                                    String cacheValueMd5 = Md5Tool.md5(GsonTool.toJson(cacheValue));
+                                    String cacheValueMd5 = Md5Tool.md5(JSON.toJSONString(cacheValue));
 
                                     // set data (key exists and not match)
                                     if (CollectionTool.isNotEmpty(cacheValue)) {
