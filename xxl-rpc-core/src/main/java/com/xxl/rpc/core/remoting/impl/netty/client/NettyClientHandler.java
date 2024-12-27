@@ -1,8 +1,8 @@
 package com.xxl.rpc.core.remoting.impl.netty.client;
 
 import com.xxl.rpc.core.invoker.InvokerFactory;
-import com.xxl.rpc.core.remoting.params.XxlRpcBeat;
-import com.xxl.rpc.core.remoting.params.XxlRpcResponse;
+import com.xxl.rpc.core.remoting.entity.XxlRpcBeat;
+import com.xxl.rpc.core.remoting.entity.XxlRpcResponse;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleStateEvent;

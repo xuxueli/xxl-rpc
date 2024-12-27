@@ -7,15 +7,25 @@ package com.xxl.rpc.core.invoker.call;
  */
 public enum CallType {
 
-
+    /**
+     * sync call
+     */
     SYNC,
 
+    /**
+     * future call
+     */
     FUTURE,
 
+    /**
+     * callback call
+     */
     CALLBACK,
 
+    /**
+     * oneway call
+     */
     ONEWAY;
-
 
     public static CallType match(String name, CallType defaultCallType){
         for (CallType item : CallType.values()) {

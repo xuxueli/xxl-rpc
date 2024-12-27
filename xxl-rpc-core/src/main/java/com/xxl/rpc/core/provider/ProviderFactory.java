@@ -1,10 +1,10 @@
 package com.xxl.rpc.core.provider;
 
 import com.xxl.rpc.core.factory.XxlRpcFactory;
-import com.xxl.rpc.core.register.model.RegisterInstance;
+import com.xxl.rpc.core.register.entity.RegisterInstance;
 import com.xxl.rpc.core.remoting.Server;
-import com.xxl.rpc.core.remoting.params.XxlRpcRequest;
-import com.xxl.rpc.core.remoting.params.XxlRpcResponse;
+import com.xxl.rpc.core.remoting.entity.XxlRpcRequest;
+import com.xxl.rpc.core.remoting.entity.XxlRpcResponse;
 import com.xxl.rpc.core.serializer.Serializer;
 import com.xxl.rpc.core.util.IpUtil;
 import com.xxl.rpc.core.util.NetUtil;
@@ -27,6 +27,18 @@ public class ProviderFactory {
 	private static final Logger logger = LoggerFactory.getLogger(ProviderFactory.class);
 
 	/**
+	 * factory link
+	 */
+	private final XxlRpcFactory factory;
+
+	public ProviderFactory(final XxlRpcFactory factory) {
+		this.factory = factory;
+	}
+
+
+	// ---------------------- start / stop ----------------------
+
+	/**
 	 * Server instance
 	 */
 	private Server serverInstance;
@@ -36,28 +48,16 @@ public class ProviderFactory {
 	 */
 	private Serializer serializerInstance;
 
-	/**
-	 * factory link
-	 */
-	private XxlRpcFactory factory;
-
 	public Serializer getSerializerInstance() {
 		return serializerInstance;
 	}
 
-	// ---------------------- start / stop ----------------------
-
 	/**
 	 * start
 	 *
-	 * @param factory
 	 * @throws Exception
 	 */
-	public void start(final XxlRpcFactory factory) throws Exception {
-
-		// link
-		this.factory = factory;
-
+	public void start() throws Exception {
 		// valid
 		if (factory.getProviderConfig().getServer() == null) {
 			throw new XxlRpcException("xxl-rpc provider server missing.");
@@ -89,8 +89,8 @@ public class ProviderFactory {
 		this.serializerInstance = factory.getProviderConfig().getSerializer().newInstance();
 
 		// 2、server init
-		serverInstance = factory.getProviderConfig().getServer().newInstance();
-		serverInstance.setStartedCallback(new Callable<Void>() {		// serviceRegistry started
+		this.serverInstance = factory.getProviderConfig().getServer().newInstance();
+		this.serverInstance.setStartedCallback(new Callable<Void>() {		// serviceRegistry started
 			public Void call() throws Exception {
 				// 3.1、register init
 				if (factory.getRegister() != null) {
@@ -141,9 +141,9 @@ public class ProviderFactory {
 	/**
 	 * init local rpc service map
 	 */
-	private volatile Map<String, Object> serviceData = new HashMap<>();
-	public Map<String, Object> getServiceData() {
-		return serviceData;
+	private volatile Map<String, Object> serviceInstanceStore = new HashMap<>();
+	public Map<String, Object> getServiceInstanceStore() {
+		return serviceInstanceStore;
 	}
 
 	/**
@@ -170,7 +170,7 @@ public class ProviderFactory {
 	 */
 	public void addService(String iface, String version, Object serviceBean){
 		String serviceKey = makeServiceKey(iface, version);
-		serviceData.put(serviceKey, serviceBean);
+		serviceInstanceStore.put(serviceKey, serviceBean);
 
 		logger.info(">>>>>>>>>>> xxl-rpc, provider factory add service success. serviceKey = {}, serviceBean = {}", serviceKey, serviceBean.getClass());
 	}
@@ -192,7 +192,7 @@ public class ProviderFactory {
 
 		// match service bean
 		String serviceKey = makeServiceKey(xxlRpcRequest.getClassName(), xxlRpcRequest.getVersion());
-		Object serviceBean = serviceData.get(serviceKey);
+		Object serviceBean = serviceInstanceStore.get(serviceKey);
 
 		// valid
 		if (serviceBean == null) {
@@ -230,8 +230,8 @@ public class ProviderFactory {
 			xxlRpcResponse.setResult(result);
 		} catch (Throwable t) {
 			// catch error
-			logger.error("xxl-rpc provider invokeService error.", t);
-			xxlRpcResponse.setErrorMsg(ThrowableUtil.toString(t));
+			logger.error(">>>>>>>>>>> xxl-rpc provider invokeService error.", t);
+			xxlRpcResponse.setErrorMsg(ThrowableUtil.toStringShort(t));
 		}
 
 		return xxlRpcResponse;

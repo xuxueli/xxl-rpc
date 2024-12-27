@@ -65,6 +65,7 @@ public class XxlRpcFactory {
         this.invokerConfig = invokerConfig;
     }
 
+
     // ---------------------- core module ----------------------
 
     /**
@@ -106,6 +107,7 @@ public class XxlRpcFactory {
         this.invoker = invoker;
     }
 
+
     // ---------------------- start / stop ----------------------
 
     /**
@@ -121,21 +123,21 @@ public class XxlRpcFactory {
         }
         if (providerConfig!=null) {
             try {
-                provider = new ProviderFactory();
-                provider.start(this);       // invoke registry-registry, run thread
+                provider = new ProviderFactory(this);
+                provider.start();                   // invoke registry-registry, run thread
             } catch (Exception e) {
                 throw new XxlRpcException(e);
             }
         }
         if (invokerConfig!=null) {
             try {
-                invoker = new InvokerFactory();
-                invoker.start(this);        // invoke registry-discovery(spring), run thread
+                invoker = new InvokerFactory(this);
+                invoker.start();        // invoke registry-discovery(spring), run thread
             } catch (Exception e) {
                 throw new XxlRpcException(e);
             }
         }
-        logger.info(">>>>>>>>>>> xxl-rpc start success.");
+        logger.info(">>>>>>>>>>> xxl-rpc, XxlRpcFactory start success.");
     }
 
     /**
@@ -168,10 +170,11 @@ public class XxlRpcFactory {
         // finish stopCallable
         finishStopCallable();
 
-        logger.info(">>>>>>>>>>> xxl-rpc stopped.");
+        logger.info(">>>>>>>>>>> xxl-rpc, XxlRpcFactory stopped.");
     }
 
-    // ---------------------- start / stop ----------------------
+
+    // ---------------------- Global, shutdown callback ----------------------
 
     private volatile List<Callable<Void>> stopCallableList = new ArrayList<>();
 
@@ -192,7 +195,7 @@ public class XxlRpcFactory {
             try {
                 callable.call();
             } catch (Exception e) {
-                logger.error(e.getMessage(), e);
+                logger.error(">>>>>>>>>>> xxl-rpc, XxlRpcFactory finishStopCallable: {}", e.getMessage(), e);
             }
         }
     }

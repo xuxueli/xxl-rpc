@@ -2,7 +2,7 @@ package com.xxl.rpc.core.remoting;
 
 import com.xxl.rpc.core.factory.XxlRpcFactory;
 import com.xxl.rpc.core.invoker.reference.XxlRpcReferenceBean;
-import com.xxl.rpc.core.remoting.params.XxlRpcRequest;
+import com.xxl.rpc.core.remoting.entity.XxlRpcRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

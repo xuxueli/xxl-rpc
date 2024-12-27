@@ -3,7 +3,6 @@ package com.xxl.rpc.core.provider.support;
 import com.xxl.rpc.core.factory.XxlRpcFactory;
 import com.xxl.rpc.core.provider.annotation.XxlRpcService;
 import com.xxl.rpc.core.util.XxlRpcException;
-import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 
 import java.util.Map;
@@ -40,7 +39,6 @@ public class SpringProviderFactory {
                 factory.getProvider().addService(iface, version, serviceBean);
             }
         }
-        // TODO-2，addServices by api + prop
 
     }
 

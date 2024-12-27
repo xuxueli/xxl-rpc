@@ -2,7 +2,7 @@ package com.xxl.rpc.core.remoting.impl.netty_http.client;
 
 import com.xxl.rpc.core.factory.XxlRpcFactory;
 import com.xxl.rpc.core.remoting.Client;
-import com.xxl.rpc.core.remoting.params.XxlRpcRequest;
+import com.xxl.rpc.core.remoting.entity.XxlRpcRequest;
 import com.xxl.rpc.core.remoting.common.ConnectClient;
 
 /**

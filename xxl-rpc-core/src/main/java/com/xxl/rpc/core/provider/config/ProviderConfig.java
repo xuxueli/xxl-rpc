@@ -38,18 +38,23 @@ public class ProviderConfig {
     private int maxPoolSize = 300;
 
     /**
-     * accessToken (optional), for rpc-safe
-     */
-    //private String accessToken;   // TODO-2，静态配置token废弃，借助注册中心实现动态token；
-
-    /**
      * register address (optional), will use "ip:port" if not exists
      */
     private String address;
 
+    /**
+     * accessToken (optional), for rpc-safe
+     */
+    //private String accessToken;   // TODO2，静态配置token废弃，借助注册中心实现动态token；
+
     public ProviderConfig() {
     }
-    public ProviderConfig(Class<? extends Server> server, Class<? extends Serializer> serializer, int port, int corePoolSize, int maxPoolSize, String address) {
+    public ProviderConfig(Class<? extends Server> server,
+                          Class<? extends Serializer> serializer,
+                          int port,
+                          int corePoolSize,
+                          int maxPoolSize,
+                          String address) {
         this.server = server;
         this.serializer = serializer;
         this.port = port;

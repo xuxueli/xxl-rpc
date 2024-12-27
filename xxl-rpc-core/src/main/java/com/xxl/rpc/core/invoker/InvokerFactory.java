@@ -1,8 +1,9 @@
 package com.xxl.rpc.core.invoker;
 
 import com.xxl.rpc.core.factory.XxlRpcFactory;
-import com.xxl.rpc.core.remoting.params.XxlRpcFuture;
-import com.xxl.rpc.core.remoting.params.XxlRpcResponse;
+import com.xxl.rpc.core.invoker.call.XxlRpcResponseFuture;
+import com.xxl.rpc.core.remoting.entity.XxlRpcResponse;
+import com.xxl.rpc.core.util.ThreadPoolUtil;
 import com.xxl.rpc.core.util.XxlRpcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,23 +18,27 @@ import java.util.concurrent.*;
 public class InvokerFactory {
     private static Logger logger = LoggerFactory.getLogger(InvokerFactory.class);
 
+    // ---------------------- base ----------------------
 
     /**
-     * factory link
+     * factory
      */
-    private XxlRpcFactory factory;
+    private final XxlRpcFactory factory;
+
+    public InvokerFactory(final XxlRpcFactory xxlRpcFactory) {
+        this.factory = xxlRpcFactory;
+    }
+
+
+    // ---------------------- start / stop ----------------------
 
     /**
      * start
      *
-     * @param factory
      * @throws Exception
      */
-    public void start(final XxlRpcFactory factory) throws Exception {
-
-        // link
-        this.factory = factory;
-
+    public void start() throws Exception {
+        // start
     }
 
     /**
@@ -48,22 +53,21 @@ public class InvokerFactory {
     }
 
 
-
-    // ---------------------- async-future, response-store ----------------------
+    // ---------------------- future-response store ----------------------
 
     /**
      * future Response Pool
      */
-    private ConcurrentMap<String, XxlRpcFuture> futureResponseStore = new ConcurrentHashMap<String, XxlRpcFuture>();
+    private final ConcurrentMap<String, XxlRpcResponseFuture> futureResponseStore = new ConcurrentHashMap<>();
 
     /**
      * set
      *
      * @param requestId
-     * @param futureResponse
+     * @param rpcFuture
      */
-    public void setInvokerFuture(String requestId, XxlRpcFuture futureResponse){
-        futureResponseStore.put(requestId, futureResponse);
+    public void setInvokerFuture(String requestId, XxlRpcResponseFuture rpcFuture){
+        futureResponseStore.put(requestId, rpcFuture);
     }
 
     /**
@@ -83,18 +87,18 @@ public class InvokerFactory {
      */
     public void notifyInvokerFuture(String requestId, final XxlRpcResponse xxlRpcResponse){
 
-        // get
-        final XxlRpcFuture rpcFuture = futureResponseStore.get(requestId);
+        // match future
+        final XxlRpcResponseFuture rpcFuture = futureResponseStore.get(requestId);
         if (rpcFuture == null) {
             return;
         }
-        // do remove
+        // remove future
         futureResponseStore.remove(requestId);
 
-        // set response, parse result
+        // set response
         rpcFuture.setResponse(xxlRpcResponse);
 
-        // notify
+        // submit callback-data
         if (rpcFuture.getInvokeCallback() != null) {
 
             // callback-type, async run in thread-pool
@@ -117,7 +121,7 @@ public class InvokerFactory {
     }
 
 
-    // ---------------------- async callback, run ThreadPool ----------------------
+    // ---------------------- callback ThreadPool ----------------------
 
     /**
      *
@@ -131,28 +135,14 @@ public class InvokerFactory {
      */
     public void executeResponseCallback(Runnable runnable){
 
-        // lazy init
+        // lazy-init responseCallbackThreadPool
         if (responseCallbackThreadPool == null) {
             synchronized (this) {
                 if (responseCallbackThreadPool == null) {
-                    responseCallbackThreadPool = new ThreadPoolExecutor(
-                            5,
-                            100,
-                            60L,
-                            TimeUnit.SECONDS,
-                            new LinkedBlockingQueue<Runnable>(1000),
-                            new ThreadFactory() {
-                                @Override
-                                public Thread newThread(Runnable r) {
-                                    return new Thread(r, "xxl-rpc, XxlRpcInvokerFactory-responseCallbackThreadPool-" + r.hashCode());
-                                }
-                            },
-                            new RejectedExecutionHandler() {
-                                @Override
-                                public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
-                                    throw new XxlRpcException("xxl-rpc, XxlRpcInvokerFactory-responseCallbackThreadPool is EXHAUSTED!");
-                                }
-                            });		// default maxThreads 300, minThreads 60
+                    responseCallbackThreadPool = ThreadPoolUtil.makeServerThreadPool(
+                            "InvokerFactory-responseCallbackThreadPool",
+                            5 ,
+                            100);
                 }
             }
         }

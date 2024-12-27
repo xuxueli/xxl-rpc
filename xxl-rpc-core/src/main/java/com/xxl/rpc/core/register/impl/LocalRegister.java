@@ -2,13 +2,10 @@ package com.xxl.rpc.core.register.impl;
 
 import com.xxl.rpc.core.factory.XxlRpcFactory;
 import com.xxl.rpc.core.register.Register;
-import com.xxl.rpc.core.register.model.RegisterInstance;
+import com.xxl.rpc.core.register.entity.RegisterInstance;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.Function;
 
 /**
  * application registry for "local"
@@ -20,11 +17,11 @@ public class LocalRegister extends Register {
     /**
      * registry data
      */
-    private volatile Map<String, TreeSet<RegisterInstance>> registryData;
+    private volatile Map<String, Set<RegisterInstance>> registryData;
 
     public LocalRegister() {
     }
-    public LocalRegister(Map<String, TreeSet<RegisterInstance>> initRegistryData) {
+    public LocalRegister(Map<String, Set<RegisterInstance>> initRegistryData) {
         this.registryData = initRegistryData;
     }
 
@@ -53,7 +50,7 @@ public class LocalRegister extends Register {
         }
 
         // do
-        TreeSet<RegisterInstance> instances = registryData.computeIfAbsent(instance.getAppname(), k -> new TreeSet<>());
+        Set<RegisterInstance> instances = registryData.computeIfAbsent(instance.getAppname(), k -> new TreeSet<>());
         instances.add(instance);
         return true;
     }
@@ -65,18 +62,20 @@ public class LocalRegister extends Register {
             return false;
         }
         // do
-        registryData.get(instance.getAppname()).remove(instance);
+        if (registryData.containsKey(instance.getAppname())) {
+            registryData.get(instance.getAppname()).remove(instance);
+        }
         return true;
     }
 
     @Override
-    public Map<String, TreeSet<RegisterInstance>> discovery(Set<String> appnameList){
+    public Map<String, Set<RegisterInstance>> discovery(Set<String> appnameList){
         // valid
         if (appnameList==null || appnameList.isEmpty()) {
             return null;
         }
         // do
-        Map<String, TreeSet<RegisterInstance>> resp = new HashMap<>();
+        Map<String, Set<RegisterInstance>> resp = new HashMap<>();
         for (String appname: appnameList){
             resp.put(appname, registryData.get(appname));
         }
@@ -84,7 +83,7 @@ public class LocalRegister extends Register {
     }
 
     @Override
-    public TreeSet<RegisterInstance> discovery(String appname) {
+    public Set<RegisterInstance> discovery(String appname) {
         // valid
         if (appname==null || appname.isEmpty()) {
             return null;

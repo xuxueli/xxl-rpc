@@ -2,7 +2,7 @@ package com.xxl.rpc.core.register.impl;
 
 import com.xxl.rpc.core.factory.XxlRpcFactory;
 import com.xxl.rpc.core.register.Register;
-import com.xxl.rpc.core.register.model.RegisterInstance;
+import com.xxl.rpc.core.register.entity.RegisterInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -169,13 +169,13 @@ public class XxlRpcRegister extends Register {
     }
 
     @Override
-    public Map<String, TreeSet<RegisterInstance>> discovery(Set<String> appnameList) {
+    public Map<String, Set<RegisterInstance>> discovery(Set<String> appnameList) {
         // TODO；本地没有Key，立即发起远程查询，本地写None；
         return Collections.emptyMap();
     }
 
     @Override
-    public TreeSet<RegisterInstance> discovery(String appname) {
+    public Set<RegisterInstance> discovery(String appname) {
         // TODO，本地没有Key，立即发起远程查询，本地写None；
         return new TreeSet<>();
     }

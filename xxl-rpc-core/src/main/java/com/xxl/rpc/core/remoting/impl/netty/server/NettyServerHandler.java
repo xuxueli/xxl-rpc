@@ -1,8 +1,8 @@
 package com.xxl.rpc.core.remoting.impl.netty.server;
 
-import com.xxl.rpc.core.remoting.params.XxlRpcBeat;
-import com.xxl.rpc.core.remoting.params.XxlRpcRequest;
-import com.xxl.rpc.core.remoting.params.XxlRpcResponse;
+import com.xxl.rpc.core.remoting.entity.XxlRpcBeat;
+import com.xxl.rpc.core.remoting.entity.XxlRpcRequest;
+import com.xxl.rpc.core.remoting.entity.XxlRpcResponse;
 import com.xxl.rpc.core.provider.ProviderFactory;
 import com.xxl.rpc.core.util.ThrowableUtil;
 import io.netty.channel.ChannelHandlerContext;

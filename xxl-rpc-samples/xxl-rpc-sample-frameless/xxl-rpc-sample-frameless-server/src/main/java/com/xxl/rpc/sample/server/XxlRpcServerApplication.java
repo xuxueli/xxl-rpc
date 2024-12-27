@@ -22,10 +22,12 @@ public class XxlRpcServerApplication {
         factory.setBaseConfig(new BaseConfig("test", "client01"));
         factory.setProviderConfig(new ProviderConfig(NettyServer.class, JsonbSerializer.class, -1, -1, 7080, null));
 
+        // start
         factory.start();
 
         // add services
         factory.getProvider().addService(DemoService.class.getName(), null, new DemoServiceImpl());
+
 
         while (!Thread.currentThread().isInterrupted()) {
             TimeUnit.HOURS.sleep(1);

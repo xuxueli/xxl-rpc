@@ -1,8 +1,6 @@
 package com.xxl.rpc.core.invoker.support;
 
 import com.xxl.rpc.core.factory.XxlRpcFactory;
-import com.xxl.rpc.core.register.Register;
-import com.xxl.rpc.core.invoker.InvokerFactory;
 import com.xxl.rpc.core.invoker.annotation.XxlRpcReference;
 import com.xxl.rpc.core.invoker.reference.XxlRpcReferenceBean;
 import com.xxl.rpc.core.provider.ProviderFactory;
@@ -10,11 +8,6 @@ import com.xxl.rpc.core.util.XxlRpcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
@@ -30,7 +23,9 @@ import java.util.Set;
 public class SpringInvokerFactory {
     private static Logger logger = LoggerFactory.getLogger(SpringInvokerFactory.class);
 
-    public static boolean postProcessAfterInstantiation(final Object bean, final String beanName, final XxlRpcFactory factory) throws BeansException {
+    public static boolean postProcessAfterInstantiation(final Object bean,
+                                                        final String beanName,
+                                                        final XxlRpcFactory factory) throws BeansException {
 
         // collection
         final Set<String> appnameList = new HashSet<>();
@@ -50,17 +45,15 @@ public class SpringInvokerFactory {
 
                     // init reference bean
                     XxlRpcReferenceBean referenceBean = new XxlRpcReferenceBean();
+                    referenceBean.setAppname(rpcReference.appname());
+                    referenceBean.setIface(iface);
+                    referenceBean.setVersion(rpcReference.version());
                     referenceBean.setClient(rpcReference.client());
                     referenceBean.setSerializer(rpcReference.serializer());
                     referenceBean.setCallType(rpcReference.callType());
                     referenceBean.setLoadBalance(rpcReference.loadBalance());
-                    referenceBean.setIface(iface);
-                    referenceBean.setVersion(rpcReference.version());
                     referenceBean.setTimeout(rpcReference.timeout());
-                    referenceBean.setAppname(rpcReference.appname());
-                    //referenceBean.setAddress(rpcReference.address());
                     //referenceBean.setAccessToken(rpcReference.accessToken());
-
 
                     // get proxyObj
                     Object serviceProxy = null;

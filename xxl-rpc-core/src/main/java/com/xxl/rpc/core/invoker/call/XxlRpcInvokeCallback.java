@@ -13,16 +13,16 @@ public abstract class XxlRpcInvokeCallback<T> {
 
     // ---------------------- thread invoke callback ----------------------
 
-    private static ThreadLocal<XxlRpcInvokeCallback> threadInvokerFuture = new ThreadLocal<XxlRpcInvokeCallback>();
+    private static final ThreadLocal<XxlRpcInvokeCallback> threadInvokerFuture = new ThreadLocal<>();
 
     /**
-     * get callback
+     * get callback, and remove
      *
      * @return
      */
     public static XxlRpcInvokeCallback getCallback() {
         XxlRpcInvokeCallback invokeCallback = threadInvokerFuture.get();
-        threadInvokerFuture.remove();
+        removeCallback();
         return invokeCallback;
     }
 

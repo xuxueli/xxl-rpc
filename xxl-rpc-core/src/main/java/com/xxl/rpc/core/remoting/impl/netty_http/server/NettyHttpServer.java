@@ -2,7 +2,7 @@ package com.xxl.rpc.core.remoting.impl.netty_http.server;
 
 import com.xxl.rpc.core.factory.XxlRpcFactory;
 import com.xxl.rpc.core.remoting.Server;
-import com.xxl.rpc.core.remoting.params.XxlRpcBeat;
+import com.xxl.rpc.core.remoting.entity.XxlRpcBeat;
 import com.xxl.rpc.core.util.ThreadPoolUtil;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;

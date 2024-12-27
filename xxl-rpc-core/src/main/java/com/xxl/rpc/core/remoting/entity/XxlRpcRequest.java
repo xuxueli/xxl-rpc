@@ -1,4 +1,4 @@
-package com.xxl.rpc.core.remoting.params;
+package com.xxl.rpc.core.remoting.entity;
 
 import java.io.Serializable;
 import java.util.Arrays;

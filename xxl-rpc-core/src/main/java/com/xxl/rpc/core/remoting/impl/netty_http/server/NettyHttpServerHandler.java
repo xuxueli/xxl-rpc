@@ -1,8 +1,8 @@
 package com.xxl.rpc.core.remoting.impl.netty_http.server;
 
-import com.xxl.rpc.core.remoting.params.XxlRpcBeat;
-import com.xxl.rpc.core.remoting.params.XxlRpcRequest;
-import com.xxl.rpc.core.remoting.params.XxlRpcResponse;
+import com.xxl.rpc.core.remoting.entity.XxlRpcBeat;
+import com.xxl.rpc.core.remoting.entity.XxlRpcRequest;
+import com.xxl.rpc.core.remoting.entity.XxlRpcResponse;
 import com.xxl.rpc.core.provider.ProviderFactory;
 import com.xxl.rpc.core.util.ThrowableUtil;
 import io.netty.buffer.ByteBufUtil;
@@ -58,8 +58,8 @@ public class NettyHttpServerHandler extends SimpleChannelInboundHandler<FullHttp
 
                 // request
                 StringBuffer stringBuffer = new StringBuffer("<ui>");
-                for (String serviceKey: xxlRpcProviderFactory.getServiceData().keySet()) {
-                    stringBuffer.append("<li>").append(serviceKey).append(": ").append(xxlRpcProviderFactory.getServiceData().get(serviceKey)).append("</li>");
+                for (String serviceKey: xxlRpcProviderFactory.getServiceInstanceStore().keySet()) {
+                    stringBuffer.append("<li>").append(serviceKey).append(": ").append(xxlRpcProviderFactory.getServiceInstanceStore().get(serviceKey)).append("</li>");
                 }
                 stringBuffer.append("</ui>");
 

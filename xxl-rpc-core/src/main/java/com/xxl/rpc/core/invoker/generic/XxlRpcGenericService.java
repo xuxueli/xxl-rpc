@@ -6,7 +6,7 @@ package com.xxl.rpc.core.invoker.generic;
 public interface XxlRpcGenericService {
 
     /**
-     * generic invoke
+     * generic invoke       TODO
      *
      * @param iface                 iface name
      * @param version               iface version
@@ -15,6 +15,10 @@ public interface XxlRpcGenericService {
      * @param args
      * @return
      */
-    public Object invoke(String iface, String version, String method, String[] parameterTypes, Object[] args);
+    public Object invoke(String iface,
+                         String version,
+                         String method,
+                         String[] parameterTypes,
+                         Object[] args);
 
 }

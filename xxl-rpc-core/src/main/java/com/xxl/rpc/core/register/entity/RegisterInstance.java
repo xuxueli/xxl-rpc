@@ -1,4 +1,4 @@
-package com.xxl.rpc.core.register.model;
+package com.xxl.rpc.core.register.entity;
 
 
 import java.io.Serializable;

@@ -23,7 +23,7 @@ public class ThreadPoolUtil {
                 new ThreadFactory() {
                     @Override
                     public Thread newThread(Runnable r) {
-                        return new Thread(r, "xxl-rpc, "+serverType+"-serverHandlerPool-" + r.hashCode());
+                        return new Thread(r, "xxl-rpc, "+serverType+"-" + r.hashCode());
                     }
                 },
                 new RejectedExecutionHandler() {

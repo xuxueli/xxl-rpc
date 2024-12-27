@@ -1,7 +1,6 @@
 package com.xxl.rpc.core.remoting;
 
 import com.xxl.rpc.core.factory.XxlRpcFactory;
-import com.xxl.rpc.core.provider.ProviderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +15,16 @@ public abstract class Server {
 	protected static final Logger logger = LoggerFactory.getLogger(Server.class);
 
 
+	// ---------------------- callback ----------------------
+
+	/**
+	 * started callback
+	 */
 	private Callable<Void> startedCallback;
+
+	/**
+	 * stoped callback
+	 */
 	private Callable<Void> stopedCallback;
 
 	public void setStartedCallback(Callable<Void> startedCallback) {
@@ -28,6 +36,8 @@ public abstract class Server {
 	}
 
 
+	// ---------------------- start/stop ----------------------
+
 	/**
 	 * start server
 	 *
@@ -35,6 +45,14 @@ public abstract class Server {
 	 * @throws Exception
 	 */
 	public abstract void start(final XxlRpcFactory factory) throws Exception;
+
+	/**
+	 * stop server
+	 *
+	 * @throws Exception
+	 */
+	public abstract void stop() throws Exception;
+
 
 	/**
 	 * callback when started
@@ -48,13 +66,6 @@ public abstract class Server {
 			}
 		}
 	}
-
-	/**
-	 * stop server
-	 *
-	 * @throws Exception
-	 */
-	public abstract void stop() throws Exception;
 
 	/**
 	 * callback when stoped

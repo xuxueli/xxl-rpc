@@ -1,4 +1,4 @@
-package com.xxl.rpc.core.remoting.params;
+package com.xxl.rpc.core.remoting.entity;
 
 /**
  * beat for keep-alive

@@ -1,8 +1,8 @@
 package com.xxl.rpc.core.remoting.impl.netty_http.client;
 
 import com.xxl.rpc.core.invoker.InvokerFactory;
-import com.xxl.rpc.core.remoting.params.XxlRpcBeat;
-import com.xxl.rpc.core.remoting.params.XxlRpcResponse;
+import com.xxl.rpc.core.remoting.entity.XxlRpcBeat;
+import com.xxl.rpc.core.remoting.entity.XxlRpcResponse;
 import com.xxl.rpc.core.serializer.Serializer;
 import com.xxl.rpc.core.util.XxlRpcException;
 import io.netty.buffer.ByteBufUtil;

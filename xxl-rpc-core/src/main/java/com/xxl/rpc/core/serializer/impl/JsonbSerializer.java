@@ -14,13 +14,6 @@ import com.xxl.rpc.core.serializer.Serializer;
 public class JsonbSerializer extends Serializer {
 
     /**
-     * jsonb writer features
-     */
-    public static JSONWriter.Feature[] writerFeatures = new JSONWriter.Feature[]{
-
-    };
-
-    /**
      * jsonb reader autoTypeBeforeHandler
      */
     private static final Filter autoTypeBeforeHandler = JSONReader.autoTypeFilter("com", "org","io");

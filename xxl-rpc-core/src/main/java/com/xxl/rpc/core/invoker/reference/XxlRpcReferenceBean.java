@@ -6,12 +6,12 @@ import com.xxl.rpc.core.invoker.call.XxlRpcInvokeCallback;
 import com.xxl.rpc.core.invoker.call.XxlRpcInvokeFuture;
 import com.xxl.rpc.core.invoker.generic.XxlRpcGenericService;
 import com.xxl.rpc.core.invoker.route.LoadBalance;
-import com.xxl.rpc.core.register.model.RegisterInstance;
+import com.xxl.rpc.core.register.entity.RegisterInstance;
 import com.xxl.rpc.core.remoting.Client;
 import com.xxl.rpc.core.remoting.impl.netty.client.NettyClient;
-import com.xxl.rpc.core.remoting.params.XxlRpcFuture;
-import com.xxl.rpc.core.remoting.params.XxlRpcRequest;
-import com.xxl.rpc.core.remoting.params.XxlRpcResponse;
+import com.xxl.rpc.core.invoker.call.XxlRpcResponseFuture;
+import com.xxl.rpc.core.remoting.entity.XxlRpcRequest;
+import com.xxl.rpc.core.remoting.entity.XxlRpcResponse;
 import com.xxl.rpc.core.provider.ProviderFactory;
 import com.xxl.rpc.core.serializer.Serializer;
 import com.xxl.rpc.core.serializer.impl.JsonbSerializer;
@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
@@ -72,7 +73,7 @@ public class XxlRpcReferenceBean {
 	/**
 	 * flow load balance
 	 */
-	private LoadBalance loadBalance = LoadBalance.ROUND;
+	private LoadBalance loadBalance = LoadBalance.RANDOM;
 
 	/**
 	 * service reqeust timeout
@@ -81,6 +82,15 @@ public class XxlRpcReferenceBean {
 
 
 	// set
+	public void setAppname(String appname) {
+		this.appname = appname;
+	}
+	public void setIface(Class<?> iface) {
+		this.iface = iface;
+	}
+	public void setVersion(String version) {
+		this.version = version;
+	}
 	public void setClient(Class<? extends Client> client) {
 		this.client = client;
 	}
@@ -93,19 +103,10 @@ public class XxlRpcReferenceBean {
 	public void setLoadBalance(LoadBalance loadBalance) {
 		this.loadBalance = loadBalance;
 	}
-	public void setAppname(String appname) {
-		this.appname = appname;
-	}
-	public void setIface(Class<?> iface) {
-		this.iface = iface;
-	}
-	public void setVersion(String version) {
-		this.version = version;
-	}
+
 	public void setTimeout(long timeout) {
 		this.timeout = timeout;
 	}
-
 
 	// get
 	public Serializer getSerializerInstance() {
@@ -113,9 +114,6 @@ public class XxlRpcReferenceBean {
 	}
 	public long getTimeout() {
 		return timeout;
-	}
-	public Class<?> getIface() {
-		return iface;
 	}
 
 
@@ -244,12 +242,14 @@ public class XxlRpcReferenceBean {
 	                    xxlRpcRequest.setParameterTypes(parameterTypes);
 	                    xxlRpcRequest.setParameters(parameters);
 	                    xxlRpcRequest.setVersion(version);
-	                    
+
 	                    // send
-						if (CallType.SYNC == callType) {
-							// future-response set
-							XxlRpcFuture rpcFuture = new XxlRpcFuture(factory.getInvoker(), xxlRpcRequest, null);
-							try {
+						XxlRpcResponseFuture rpcFuture = null;
+						try {
+							if (CallType.SYNC == callType) {
+								// future-response set
+								rpcFuture = new XxlRpcResponseFuture(factory.getInvoker(), xxlRpcRequest, null);
+
 								// do invoke
 								clientInstance.asyncSend(finalAddress, xxlRpcRequest, factory);
 
@@ -259,66 +259,54 @@ public class XxlRpcReferenceBean {
 									throw new XxlRpcException(xxlRpcResponse.getErrorMsg());
 								}
 								return xxlRpcResponse.getResult();
-							} catch (Exception e) {
-								logger.info(">>>>>>>>>>> xxl-rpc, invoke error, address:{}, XxlRpcRequest{}", finalAddress, xxlRpcRequest);
+							} else if (CallType.FUTURE == callType) {
+								// future-response set
+								rpcFuture = new XxlRpcResponseFuture(factory.getInvoker(), xxlRpcRequest, null);
 
-								throw (e instanceof XxlRpcException)?e:new XxlRpcException(e);
-							} finally{
-								// future-response remove
-								rpcFuture.removeInvokerFuture();
-							}
-						} else if (CallType.FUTURE == callType) {
-							// future-response set
-							XxlRpcFuture rpcFuture = new XxlRpcFuture(factory.getInvoker(), xxlRpcRequest, null);
-                            try {
 								// invoke future set
-								XxlRpcInvokeFuture invokeFuture = new XxlRpcInvokeFuture(rpcFuture);
-								XxlRpcInvokeFuture.setFuture(invokeFuture);
+								XxlRpcInvokeFuture.setFuture(new XxlRpcInvokeFuture(rpcFuture));
 
-                                // do invoke
+								// do invoke
 								clientInstance.asyncSend(finalAddress, xxlRpcRequest, factory);
 
-                                return null;
-                            } catch (Exception e) {
-								logger.info(">>>>>>>>>>> xxl-rpc, invoke error, address:{}, XxlRpcRequest{}", finalAddress, xxlRpcRequest);
+								return null;
+							} else if (CallType.CALLBACK == callType) {
+								// get callback
+								XxlRpcInvokeCallback invokeCallback = XxlRpcInvokeCallback.getCallback();
+								if (invokeCallback == null) {
+									throw new XxlRpcException("xxl-rpc XxlRpcInvokeCallback（CallType="+ CallType.CALLBACK.name() +"） cannot be null.");
+								}
 
-								// future-response remove
-								rpcFuture.removeInvokerFuture();
-
-								throw (e instanceof XxlRpcException)?e:new XxlRpcException(e);
-                            }
-
-						} else if (CallType.CALLBACK == callType) {
-
-							// get callback
-							XxlRpcInvokeCallback threadInvokeCallback = XxlRpcInvokeCallback.getCallback();
-							if (threadInvokeCallback == null) {
-								throw new XxlRpcException("xxl-rpc XxlRpcInvokeCallback（CallType="+ CallType.CALLBACK.name() +"） cannot be null.");
-							}
-
-							// future-response set
-							XxlRpcFuture rpcFuture = new XxlRpcFuture(factory.getInvoker(), xxlRpcRequest, threadInvokeCallback);
-							try {
+								// future-response set
+								rpcFuture = new XxlRpcResponseFuture(factory.getInvoker(), xxlRpcRequest, invokeCallback);
 								clientInstance.asyncSend(finalAddress, xxlRpcRequest, factory);
-							} catch (Exception e) {
-								logger.info(">>>>>>>>>>> xxl-rpc, invoke error, address:{}, XxlRpcRequest{}", finalAddress, xxlRpcRequest);
 
-								// future-response remove
-								rpcFuture.removeInvokerFuture();
-
-								throw (e instanceof XxlRpcException)?e:new XxlRpcException(e);
+								return null;
+							} else if (CallType.ONEWAY == callType) {
+								clientInstance.asyncSend(finalAddress, xxlRpcRequest, factory);
+								return null;
+							} else {
+								throw new XxlRpcException("xxl-rpc callType["+ callType +"] invalid");
 							}
 
-							return null;
-						} else if (CallType.ONEWAY == callType) {
-							clientInstance.asyncSend(finalAddress, xxlRpcRequest, factory);
-                            return null;
-                        } else {
-							throw new XxlRpcException("xxl-rpc callType["+ callType +"] invalid");
+						} catch (Throwable e) {
+							// future-response remove
+							if (rpcFuture != null) {
+								rpcFuture.removeInvokerFuture();
+							}
+							logger.info(">>>>>>>>>>> xxl-rpc, invoke error, address:{}, XxlRpcRequest{}", finalAddress, xxlRpcRequest);
+							throw (e instanceof XxlRpcException)?e:new XxlRpcException(e);
+						} finally{
+							// future-response remove
+							if (Arrays.asList(CallType.SYNC, CallType.ONEWAY).contains(callType)) {
+							if (rpcFuture != null) {
+								rpcFuture.removeInvokerFuture();
+							}
 						}
 
 					}
-				});
+				}});
+
 	}
 
 }

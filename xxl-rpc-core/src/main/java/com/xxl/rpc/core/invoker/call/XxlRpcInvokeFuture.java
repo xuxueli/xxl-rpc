@@ -1,7 +1,6 @@
 package com.xxl.rpc.core.invoker.call;
 
-import com.xxl.rpc.core.remoting.params.XxlRpcFuture;
-import com.xxl.rpc.core.remoting.params.XxlRpcResponse;
+import com.xxl.rpc.core.remoting.entity.XxlRpcResponse;
 import com.xxl.rpc.core.util.XxlRpcException;
 
 import java.util.concurrent.ExecutionException;
@@ -9,37 +8,31 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-/**
- * @author xuxueli 2018-10-22 18:31:42
- */
 public class XxlRpcInvokeFuture implements Future {
 
+    private XxlRpcResponseFuture responseFuture;
 
-    private XxlRpcFuture futureResponse;
-
-    public XxlRpcInvokeFuture(XxlRpcFuture futureResponse) {
-        this.futureResponse = futureResponse;
+    public XxlRpcInvokeFuture(XxlRpcResponseFuture responseFuture) {
+        this.responseFuture = responseFuture;
     }
-    public void stop(){
+    public void remove(){
         // remove-InvokerFuture
-        futureResponse.removeInvokerFuture();
+        responseFuture.removeInvokerFuture();
     }
-
-
 
     @Override
     public boolean cancel(boolean mayInterruptIfRunning) {
-        return futureResponse.cancel(mayInterruptIfRunning);
+        return responseFuture.cancel(mayInterruptIfRunning);
     }
 
     @Override
     public boolean isCancelled() {
-        return futureResponse.isCancelled();
+        return responseFuture.isCancelled();
     }
 
     @Override
     public boolean isDone() {
-        return futureResponse.isDone();
+        return responseFuture.isDone();
     }
 
     @Override
@@ -55,20 +48,20 @@ public class XxlRpcInvokeFuture implements Future {
     public Object get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
         try {
             // future get
-            XxlRpcResponse xxlRpcResponse = futureResponse.get(timeout, unit);
+            XxlRpcResponse xxlRpcResponse = responseFuture.get(timeout, unit);
             if (xxlRpcResponse.getErrorMsg() != null) {
                 throw new XxlRpcException(xxlRpcResponse.getErrorMsg());
             }
             return xxlRpcResponse.getResult();
         } finally {
-            stop();
+            remove();
         }
     }
 
 
     // ---------------------- thread invoke future ----------------------
 
-    private static ThreadLocal<XxlRpcInvokeFuture> threadInvokerFuture = new ThreadLocal<XxlRpcInvokeFuture>();
+    private static ThreadLocal<XxlRpcInvokeFuture> threadInvokerFuture = new ThreadLocal<>();
 
     /**
      * get future
@@ -100,4 +93,3 @@ public class XxlRpcInvokeFuture implements Future {
     }
 
 }
-

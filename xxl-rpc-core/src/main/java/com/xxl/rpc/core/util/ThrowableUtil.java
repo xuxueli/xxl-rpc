@@ -21,4 +21,9 @@ public class ThrowableUtil {
         return errorMsg;
     }
 
+    public static String toStringShort(Throwable e) {
+        String result = toString(e);
+        return result.length()>1000?result.substring(0, 1000)+"...":result;
+    }
+
 }

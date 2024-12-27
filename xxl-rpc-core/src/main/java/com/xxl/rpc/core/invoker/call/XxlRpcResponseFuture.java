@@ -1,9 +1,10 @@
-package com.xxl.rpc.core.remoting.params;
+package com.xxl.rpc.core.invoker.call;
 
 import com.xxl.rpc.core.invoker.InvokerFactory;
-import com.xxl.rpc.core.invoker.call.XxlRpcInvokeCallback;
-import com.xxl.rpc.core.serializer.Serializer;
+import com.xxl.rpc.core.remoting.entity.XxlRpcRequest;
+import com.xxl.rpc.core.remoting.entity.XxlRpcResponse;
 import com.xxl.rpc.core.util.XxlRpcException;
+import org.slf4j.Logger;
 
 import java.util.concurrent.*;
 
@@ -12,8 +13,12 @@ import java.util.concurrent.*;
  *
  * @author xuxueli 2015-11-5 14:26:37
  */
-public class XxlRpcFuture implements Future<XxlRpcResponse> {
+public class XxlRpcResponseFuture implements Future<XxlRpcResponse> {
+	private static Logger logger = org.slf4j.LoggerFactory.getLogger(XxlRpcResponseFuture.class);
 
+	// ---------------------- invoke data ----------------------
+
+	// factory
 	private final InvokerFactory invokerFactory;
 
 	// net data
@@ -21,16 +26,16 @@ public class XxlRpcFuture implements Future<XxlRpcResponse> {
 	private XxlRpcResponse response;
 
 	// future lock
-	private boolean done = false;
+	private volatile boolean done = false;
 	private Object lock = new Object();
 
 	// callback, can be null
 	private XxlRpcInvokeCallback invokeCallback;
 
 
-	public XxlRpcFuture(final InvokerFactory invokerFactory,
-						XxlRpcRequest request,
-						XxlRpcInvokeCallback invokeCallback) {
+	public XxlRpcResponseFuture(final InvokerFactory invokerFactory,
+								final XxlRpcRequest request,
+								XxlRpcInvokeCallback invokeCallback) {
 
 		this.invokerFactory = invokerFactory;
 		this.request = request;
@@ -40,19 +45,7 @@ public class XxlRpcFuture implements Future<XxlRpcResponse> {
 		setInvokerFuture();
 	}
 
-
-	// ---------------------- response pool ----------------------
-
-	public void setInvokerFuture(){
-		this.invokerFactory.setInvokerFuture(request.getRequestId(), this);
-	}
-	public void removeInvokerFuture(){
-		this.invokerFactory.removeInvokerFuture(request.getRequestId());
-	}
-
-
-	// ---------------------- get ----------------------
-
+	// get
 	public XxlRpcRequest getRequest() {
 		return request;
 	}
@@ -61,7 +54,24 @@ public class XxlRpcFuture implements Future<XxlRpcResponse> {
 	}
 
 
-	// ---------------------- for invoke back ----------------------
+	// ---------------------- invoke-future store-opt ----------------------
+
+	/**
+	 * set-InvokerFuture
+	 */
+	public void setInvokerFuture(){
+		this.invokerFactory.setInvokerFuture(request.getRequestId(), this);
+	}
+
+	/**
+	 * remove-InvokerFuture
+	 */
+	public void removeInvokerFuture(){
+		this.invokerFactory.removeInvokerFuture(request.getRequestId());
+	}
+
+
+	// ---------------------- write response ----------------------
 
 	public void setResponse(XxlRpcResponse response) {
 		this.response = response;
@@ -72,17 +82,17 @@ public class XxlRpcFuture implements Future<XxlRpcResponse> {
 	}
 
 
-	// ---------------------- for invoke ----------------------
+	// ---------------------- get response ----------------------
 
 	@Override
 	public boolean cancel(boolean mayInterruptIfRunning) {
-		// TODO
+		// pass, not support
 		return false;
 	}
 
 	@Override
 	public boolean isCancelled() {
-		// TODO
+		// pass, not support
 		return false;
 	}
 
@@ -102,6 +112,7 @@ public class XxlRpcFuture implements Future<XxlRpcResponse> {
 
 	@Override
 	public XxlRpcResponse get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+		// get
 		if (!done) {
 			synchronized (lock) {
 				try {
@@ -112,16 +123,14 @@ public class XxlRpcFuture implements Future<XxlRpcResponse> {
 						lock.wait(timeoutMillis);
 					}
 				} catch (InterruptedException e) {
-					throw e;
+					logger.error(e.getMessage(), e);
 				}
 			}
 		}
-
 		if (!done) {
 			throw new XxlRpcException("xxl-rpc, request timeout at:"+ System.currentTimeMillis() +", request:" + request.toString());
 		}
 		return response;
 	}
-
 
 }
