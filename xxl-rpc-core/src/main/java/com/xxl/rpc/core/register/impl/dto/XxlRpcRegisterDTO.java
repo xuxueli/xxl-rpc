@@ -74,25 +74,7 @@ public class XxlRpcRegisterDTO {
 
     }
 
-    public static class RegisterRequest extends OpenApiRequest implements Serializable {
-        public static final long serialVersionUID = 42L;
-
-        /**
-         * client instance
-         */
-        private RegisterInstance instance;
-
-        public RegisterInstance getInstance() {
-            return instance;
-        }
-
-        public void setInstance(RegisterInstance instance) {
-            this.instance = instance;
-        }
-
-    }
-
-    public static class OpenApiRequest implements Serializable {
+    public static class RegisterRequest implements Serializable {
         public static final long serialVersionUID = 42L;
 
         /**
@@ -104,6 +86,12 @@ public class XxlRpcRegisterDTO {
          * Env
          */
         private String env;
+
+        /**
+         * client instance
+         */
+        private RegisterInstance instance;
+
 
         public String getAccessToken() {
             return accessToken;
@@ -121,9 +109,17 @@ public class XxlRpcRegisterDTO {
             this.env = env;
         }
 
+        public RegisterInstance getInstance() {
+            return instance;
+        }
+
+        public void setInstance(RegisterInstance instance) {
+            this.instance = instance;
+        }
+
     }
 
-    public static class OpenApiResponse<T> implements Serializable {
+    public static class OpenApiResponse implements Serializable {
         public static final long serialVersionUID = 42L;
 
         public static final int SUCCESS_CODE = 200;
@@ -134,16 +130,10 @@ public class XxlRpcRegisterDTO {
 
         private String msg;
 
-        private T data;
-
         public OpenApiResponse() {}
         public OpenApiResponse(int code, String msg) {
             this.code = code;
             this.msg = msg;
-        }
-        public OpenApiResponse(T data) {
-            this.code = SUCCESS_CODE;
-            this.data = data;
         }
 
         public int getCode() {
@@ -162,20 +152,12 @@ public class XxlRpcRegisterDTO {
             this.msg = msg;
         }
 
-        public T getData() {
-            return data;
-        }
-
-        public void setData(T data) {
-            this.data = data;
-        }
 
         @Override
         public String toString() {
             return "OpenApiResponse{" +
                     "code=" + code +
                     ", msg='" + msg + '\'' +
-                    ", data=" + data +
                     '}';
         }
 
@@ -185,8 +167,18 @@ public class XxlRpcRegisterDTO {
 
     }
 
-    public static class DiscoveryRequest extends OpenApiRequest implements Serializable {
+    public static class DiscoveryRequest implements Serializable {
         public static final long serialVersionUID = 42L;
+
+        /**
+         * accessToken
+         */
+        private String accessToken;
+
+        /**
+         * Env
+         */
+        private String env;
 
         /**
          * instance list which want discovery
@@ -199,6 +191,22 @@ public class XxlRpcRegisterDTO {
          *      false: query all data (detail + md5)
          */
         private boolean simpleQuery;
+
+        public String getAccessToken() {
+            return accessToken;
+        }
+
+        public void setAccessToken(String accessToken) {
+            this.accessToken = accessToken;
+        }
+
+        public String getEnv() {
+            return env;
+        }
+
+        public void setEnv(String env) {
+            this.env = env;
+        }
 
         public List<String> getAppnameList() {
             return appnameList;

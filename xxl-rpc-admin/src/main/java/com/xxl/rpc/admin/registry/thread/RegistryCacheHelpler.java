@@ -453,7 +453,7 @@ public class RegistryCacheHelpler {
     public DiscoveryResponse discoveryOnLineInstance(DiscoveryRequest request) {
         // valid
         if (request == null || CollectionTool.isEmpty(request.getAppnameList())) {
-            return null;
+            return new DiscoveryResponse(OpenApiResponse.FAIL_CODE, "param Invalid.");
         }
 
         // query data
