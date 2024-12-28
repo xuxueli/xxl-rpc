@@ -277,10 +277,10 @@ public class InvokerFactory {
     /**
      * add referenceBean
      *
-     * @param referenceBean
+     * @param referenceBeanList
      */
-    public void addReferenceBean(XxlRpcReferenceBean referenceBean){
-        referenceBeanList.add(referenceBean);
+    public void addAllReferenceBean(List<XxlRpcReferenceBean> referenceBeanList){
+        referenceBeanList.addAll(referenceBeanList);
     }
 
     /**

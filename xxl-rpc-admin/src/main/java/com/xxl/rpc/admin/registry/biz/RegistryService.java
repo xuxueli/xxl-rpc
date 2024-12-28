@@ -35,7 +35,7 @@ public interface RegistryService {
      *      1、only read cache
      *      2、
      */
-    OpenApiResponse<DiscoveryResponse> discovery(DiscoveryRequest request);
+    DiscoveryResponse discovery(DiscoveryRequest request);
 
     /**
      * monitor

@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static com.xxl.rpc.admin.registry.model.OpenApiResponse.FAIL_CODE;
+import static com.xxl.rpc.admin.registry.model.OpenApiResponse.SUCCESS_CODE;
 
 /**
  * registry cache helper
@@ -472,7 +472,7 @@ public class RegistryCacheHelpler {
         }
 
         // build response
-        DiscoveryResponse response = new DiscoveryResponse();
+        DiscoveryResponse response = new DiscoveryResponse(SUCCESS_CODE, null);
         response.setDiscoveryData(discoveryData);
         response.setDiscoveryDataMd5(discoveryDataMd5);
         return response;

@@ -1,6 +1,7 @@
 package com.xxl.rpc.core.invoker.support;
 
 import com.xxl.rpc.core.boot.XxlRpcBootstrap;
+import com.xxl.rpc.core.boot.support.XxlRpcSpringFactory;
 import com.xxl.rpc.core.invoker.annotation.XxlRpcReference;
 import com.xxl.rpc.core.invoker.reference.XxlRpcReferenceBean;
 import com.xxl.rpc.core.provider.ProviderFactory;
@@ -22,7 +23,7 @@ public class SpringInvokerFactory {
 
     public static boolean postProcessAfterInstantiation(final Object bean,
                                                         final String beanName,
-                                                        final XxlRpcBootstrap rpcBootstrap) throws BeansException {
+                                                        final XxlRpcSpringFactory rpcBootstrap) throws BeansException {
 
         // parse XxlRpcReferenceBean
         ReflectionUtils.doWithFields(bean.getClass(), new ReflectionUtils.FieldCallback() {
@@ -66,7 +67,7 @@ public class SpringInvokerFactory {
                             rpcReference.appname(), ProviderFactory.makeServiceKey(iface.getName(), rpcReference.version()), beanName, field.getName());
 
                     // collection
-                    rpcBootstrap.getInvoker().addReferenceBean(referenceBean);
+                    rpcBootstrap.addReferenceBean(referenceBean);
                 }
             }
         });

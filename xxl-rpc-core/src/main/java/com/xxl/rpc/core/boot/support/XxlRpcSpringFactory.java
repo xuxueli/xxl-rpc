@@ -1,6 +1,7 @@
 package com.xxl.rpc.core.boot.support;
 
 import com.xxl.rpc.core.boot.XxlRpcBootstrap;
+import com.xxl.rpc.core.invoker.reference.XxlRpcReferenceBean;
 import com.xxl.rpc.core.invoker.support.SpringInvokerFactory;
 import com.xxl.rpc.core.provider.support.SpringProviderFactory;
 import org.slf4j.Logger;
@@ -12,6 +13,9 @@ import org.springframework.beans.factory.config.InstantiationAwareBeanPostProces
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * XxlRpc Spring Factory
  *
@@ -22,22 +26,39 @@ public class XxlRpcSpringFactory extends XxlRpcBootstrap implements ApplicationC
 
     @Override
     public void afterSingletonsInstantiated() {
-        // start
+        // 1、start
         super.start();
+
+        // 2、discovery referenceBean - instance
+        this.getInvoker().addAllReferenceBean(referenceBeanList);
+        this.getInvoker().discoveryReferenceBean();
 
         // provider open-switch
         if (getProviderConfig()!=null && getProviderConfig().isOpen()) {
-            // provider support：scan service
+            // 3、provider support：scan service
             SpringProviderFactory.scanService(applicationContext, this);
         }
     }
 
 
+    /**
+     * referenceBean List
+     */
+    private volatile List<XxlRpcReferenceBean> referenceBeanList = new ArrayList<>();
+    public void addReferenceBean(XxlRpcReferenceBean referenceBean){
+        referenceBeanList.add(referenceBean);
+    }
+
     @Override
     public boolean postProcessAfterInstantiation(Object bean, String beanName) throws BeansException {
-        // invoker open-switch      // every bean post process
+        // invoker open-switch
         if (getInvokerConfig()!=null && getInvokerConfig().isOpen()) {
-            // invoker support: init and collect "reference-bean"
+            /**
+             * invoker support
+             *
+             * 1、init XxlRpcReferenceBean
+             * 2、collect XxlRpcReferenceBean
+             */
             return SpringInvokerFactory.postProcessAfterInstantiation(bean, beanName, this);
         }
         return true;

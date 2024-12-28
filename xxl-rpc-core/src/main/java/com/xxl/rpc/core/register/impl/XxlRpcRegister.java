@@ -290,21 +290,21 @@ public class XxlRpcRegister extends Register {
                     null,
                     3000
             );
-            XxlRpcRegisterDTO.OpenApiResponse<XxlRpcRegisterDTO.DiscoveryResponse> openApiResponse = JSON.parseObject(responseBody, XxlRpcRegisterDTO.OpenApiResponse.class);
+            XxlRpcRegisterDTO.DiscoveryResponse discoveryResponse = JSON.parseObject(responseBody, XxlRpcRegisterDTO.DiscoveryResponse.class);
 
             // parse result
-            logger.info(">>>>>>>>>>> xxl-rpc, XxlRpcRegister-doDiscovery {}, appnameList:{}, responseBody:{}", openApiResponse.isSuccess()?"success":"fail",appnameList, responseBody);
-            if (openApiResponse.isSuccess() && openApiResponse.getData()!=null) {
+            logger.info(">>>>>>>>>>> xxl-rpc, XxlRpcRegister-doDiscovery {}, appnameList:{}, responseBody:{}", discoveryResponse.isSuccess()?"success":"fail",appnameList, responseBody);
+            if (discoveryResponse.isSuccess() && discoveryResponse.getDiscoveryData()!=null) {
 
                 // result param
                 Map<String, TreeSet<RegisterInstance>> result = new HashMap<>();
                 Map<String, String> resultMd5 = new HashMap<>();
 
                 // parse
-                for (String appname : openApiResponse.getData().getDiscoveryData().keySet()) {
+                for (String appname : discoveryResponse.getDiscoveryData().keySet()) {
                     // remote data
-                    List<XxlRpcRegisterDTO.InstanceCacheDTO> instanceCacheDTOS = openApiResponse.getData().getDiscoveryData().get(appname);
-                    String registerInstancesMd5 =openApiResponse.getData().getDiscoveryDataMd5().get(appname);
+                    List<XxlRpcRegisterDTO.InstanceCacheDTO> instanceCacheDTOS = discoveryResponse.getDiscoveryData().get(appname);
+                    String registerInstancesMd5 =discoveryResponse.getDiscoveryDataMd5().get(appname);
 
                     TreeSet<RegisterInstance> registerInstances = new TreeSet<>();
                     if (instanceCacheDTOS != null) {
