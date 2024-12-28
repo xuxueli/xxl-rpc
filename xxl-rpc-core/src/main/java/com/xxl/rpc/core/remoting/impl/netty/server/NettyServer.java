@@ -30,7 +30,7 @@ public class NettyServer extends Server {
     private Thread thread;
 
     @Override
-    public void start(final XxlRpcBootstrap factory) throws Exception {
+    public void start(final XxlRpcBootstrap rpcBootstrap) throws Exception {
 
         thread = new Thread(new Runnable() {
             @Override
@@ -39,8 +39,8 @@ public class NettyServer extends Server {
                 // param
                 final ThreadPoolExecutor serverHandlerPool = ThreadPoolUtil.makeServerThreadPool(
                         NettyServer.class.getSimpleName(),
-                        factory.getProviderConfig().getCorePoolSize(),
-                        factory.getProviderConfig().getMaxPoolSize());
+                        rpcBootstrap.getProviderConfig().getCorePoolSize(),
+                        rpcBootstrap.getProviderConfig().getMaxPoolSize());
                 EventLoopGroup bossGroup = new NioEventLoopGroup();
                 EventLoopGroup workerGroup = new NioEventLoopGroup();
 
@@ -54,18 +54,18 @@ public class NettyServer extends Server {
                                 public void initChannel(SocketChannel channel) throws Exception {
                                     channel.pipeline()
                                             .addLast(new IdleStateHandler(0,0, XxlRpcBeat.BEAT_INTERVAL*3, TimeUnit.SECONDS))     // beat 3N, close if idle
-                                            .addLast(new NettyDecoder(XxlRpcRequest.class, factory.getProvider().getSerializerInstance()))
-                                            .addLast(new NettyEncoder(XxlRpcResponse.class, factory.getProvider().getSerializerInstance()))
-                                            .addLast(new NettyServerHandler(factory.getProvider(), serverHandlerPool));
+                                            .addLast(new NettyDecoder(XxlRpcRequest.class, rpcBootstrap.getProvider().getSerializerInstance()))
+                                            .addLast(new NettyEncoder(XxlRpcResponse.class, rpcBootstrap.getProvider().getSerializerInstance()))
+                                            .addLast(new NettyServerHandler(rpcBootstrap.getProvider(), serverHandlerPool));
                                 }
                             })
                             .childOption(ChannelOption.TCP_NODELAY, true)
                             .childOption(ChannelOption.SO_KEEPALIVE, true);
 
                     // bind
-                    ChannelFuture future = bootstrap.bind(factory.getProviderConfig().getPort()).sync();
+                    ChannelFuture future = bootstrap.bind(rpcBootstrap.getProviderConfig().getPort()).sync();
 
-                    logger.info(">>>>>>>>>>> xxl-rpc, NettyServer start success, port = {}", factory.getProviderConfig().getPort());
+                    logger.info(">>>>>>>>>>> xxl-rpc, NettyServer start success, port = {}", rpcBootstrap.getProviderConfig().getPort());
                     onStarted();
 
                     // wait util stop

@@ -93,6 +93,9 @@ $(function() {
 				"data": 'extendInfo',
 				"width":'15%',
 				"render": function ( data, type, row ) {
+					if (!data) {
+						return data;
+					}
 					var result = data.length<10
 						?data
 						:data.substring(0, 10) + '...';

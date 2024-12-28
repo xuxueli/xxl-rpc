@@ -27,10 +27,10 @@ public class LocalRegister extends Register {
     }
 
     /**
-     * @param factory ignore, not use
+     * @param rpcBootstrap ignore, not use
      */
     @Override
-    public void start(final XxlRpcBootstrap factory) {
+    public void start(final XxlRpcBootstrap rpcBootstrap) {
         if (registryData == null) {
             registryData = new ConcurrentHashMap<>();
         }

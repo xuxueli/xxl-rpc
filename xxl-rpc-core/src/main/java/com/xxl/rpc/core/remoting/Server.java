@@ -19,10 +19,10 @@ public abstract class Server {
 	/**
 	 * start server
 	 *
-	 * @param factory
+	 * @param rpcBootstrap
 	 * @throws Exception
 	 */
-	public abstract void start(final XxlRpcBootstrap factory) throws Exception;
+	public abstract void start(final XxlRpcBootstrap rpcBootstrap) throws Exception;
 
 	/**
 	 * stop server

@@ -10,7 +10,7 @@ SET NAMES utf8mb4;
 ## —————————————————————— service ——————————————————
 CREATE TABLE `xxl_rpc_application` (
     `id`            int(11)         NOT NULL AUTO_INCREMENT,
-    `appname`       varchar(30)     NOT NULL COMMENT 'AppName（应用唯一标识）',
+    `appname`       varchar(50)     NOT NULL COMMENT 'AppName（应用唯一标识）',
     `name`          varchar(20)     NOT NULL COMMENT '应用名称',
     `desc`          varchar(100)    NOT NULL COMMENT '应用描述',
     `add_time`      datetime        NOT NULL COMMENT '新增时间',
@@ -33,7 +33,7 @@ CREATE TABLE `xxl_rpc_environment` (
 CREATE TABLE `xxl_rpc_instance` (
    `id`                 bigint(20)      NOT NULL AUTO_INCREMENT,
    `env`                varchar(10)     NOT NULL COMMENT 'Env（环境唯一标识）',
-   `appname`            varchar(30)     NOT NULL COMMENT 'AppName（应用唯一标识）',
+   `appname`            varchar(50)     NOT NULL COMMENT 'AppName（应用唯一标识）',
    `ip`                 varchar(46)     NOT NULL COMMENT '注册节点IP',
    `port`               int(11)         NOT NULL COMMENT '注册节点端口号',
    `extend_info`        varchar(500)    DEFAULT NULL COMMENT '扩展信息',
@@ -94,19 +94,5 @@ VALUES  (1, 'test', '测试环境', '用于开发者和测试人员进行单元�
 INSERT INTO `xxl_rpc_application` (id, appname, name, `desc`, add_time, update_time)
 VALUES (1, 'app01', '测试应用', '测试应用', now(), now());
 
-
-/*
-#####
-    - registry/remove/discovery
-    - monitor(long-polling)
-
-#####
-    - 1、provider：服务提供者；
-    - 2、invoker：服务消费者；
-    - 3、serializer: 序列化模块；
-    - 4、remoting：网络通讯模块；
-    - 5、registry：服务注册模块；
-    - 6、admin：服务管理中心，提供服务注册、运营管理、健康监控等能力（非必选）；
-*/
 
 commit;

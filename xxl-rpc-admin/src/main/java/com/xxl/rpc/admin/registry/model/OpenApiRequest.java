@@ -1,11 +1,13 @@
 package com.xxl.rpc.admin.registry.model;
 
+
 import java.io.Serializable;
 
 /**
  * @author xuxueli 2018-12-03
  */
-public class OpenApiRequest {
+public class OpenApiRequest implements Serializable {
+    public static final long serialVersionUID = 42L;
 
     /**
      * accessToken

@@ -22,9 +22,9 @@ public abstract class Register {
      *      1、服务注册线程，循环心跳注册，维护 “注册数据（register 提交后才维护）” 在线状态；
      *      2、服务发现线程，long-polling结合轮训，实时感知 “服务注册（discovery 提交后才维护）” 信息；
      *
-     * @param factory
+     * @param rpcBootstrap
      */
-    public abstract void start(final XxlRpcBootstrap factory);
+    public abstract void start(final XxlRpcBootstrap rpcBootstrap);
 
     /**
      * stop

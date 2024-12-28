@@ -11,8 +11,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * xxl-rpc invoker factory, init service-registry and spring-bean by annotation (for spring)
@@ -25,9 +23,6 @@ public class SpringInvokerFactory {
     public static boolean postProcessAfterInstantiation(final Object bean,
                                                         final String beanName,
                                                         final XxlRpcBootstrap rpcBootstrap) throws BeansException {
-
-        // collection
-        final Set<String> appnameList = new HashSet<>();
 
         // parse XxlRpcReferenceBean
         ReflectionUtils.doWithFields(bean.getClass(), new ReflectionUtils.FieldCallback() {
@@ -71,20 +66,10 @@ public class SpringInvokerFactory {
                             rpcReference.appname(), ProviderFactory.makeServiceKey(iface.getName(), rpcReference.version()), beanName, field.getName());
 
                     // collection
-                    appnameList.add(rpcReference.appname());
-
+                    rpcBootstrap.getInvoker().addReferenceBean(referenceBean);
                 }
             }
         });
-
-        // mult discovery, Trigger early-initialization discovery-data
-        if (rpcBootstrap.getRegister() != null) {
-            try {
-                rpcBootstrap.getRegister().discovery(appnameList);
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
 
         return true;
     }

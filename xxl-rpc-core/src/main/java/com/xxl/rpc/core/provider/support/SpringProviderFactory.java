@@ -17,10 +17,10 @@ import java.util.Map;
 public class SpringProviderFactory {
     private static final Logger logger = LoggerFactory.getLogger(SpringProviderFactory.class);
 
-    public static void scanService(ApplicationContext applicationContext, final XxlRpcBootstrap factory) {
+    public static void scanService(ApplicationContext applicationContext, final XxlRpcBootstrap rpcBootstrap) {
 
         // valid
-        if (factory.getProvider() == null) {
+        if (rpcBootstrap.getProvider() == null) {
             return;
         }
 
@@ -39,10 +39,10 @@ public class SpringProviderFactory {
                 String version = xxlRpcService.version();
 
                 // add service
-                factory.getProvider().addService(iface, version, serviceBean);
+                rpcBootstrap.getProvider().addService(iface, version, serviceBean);
             }
         }
-        logger.info(">>>>>>>>>>> xxl-rpc, SpringProviderFactory#scanService finish, serviceBeanMap:" + serviceBeanMap);
+        logger.info(">>>>>>>>>>> xxl-rpc, SpringProviderFactory#scanService finish, ServiceInstanceStore:" + rpcBootstrap.getProvider().getServiceInstanceStore());
 
     }
 

@@ -150,6 +150,9 @@ public class RegisterHelper {
                 || request.getInstance().getPort()<1){
             return new OpenApiResponse<>(OpenApiResponse.FAIL_CODE, "RegisterRequest param invalid.");
         }
+        if (request.getInstance().getAppname().length() > 50) {
+            return new OpenApiResponse<>(OpenApiResponse.FAIL_CODE, "RegisterRequest param invalid, appname too long (less than 50).");
+        }
 
         // async execute
         registerOrUnregisterThreadPool.execute(new Runnable() {
@@ -198,6 +201,9 @@ public class RegisterHelper {
                 || StringTool.isBlank(request.getInstance().getIp())
                 || request.getInstance().getPort()<1){
             return new OpenApiResponse<>(OpenApiResponse.FAIL_CODE, "RegisterRequest param invalid.");
+        }
+        if (request.getInstance().getAppname().length() > 50) {
+            return new OpenApiResponse<>(OpenApiResponse.FAIL_CODE, "RegisterRequest param invalid, appname too long (less than 50).");
         }
 
         // async execute

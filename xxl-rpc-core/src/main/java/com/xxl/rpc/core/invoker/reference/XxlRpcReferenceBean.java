@@ -105,6 +105,9 @@ public class XxlRpcReferenceBean {
 	}
 
 	// get
+	public String getAppname() {
+		return appname;
+	}
 	public Serializer getSerializerInstance() {
 		return serializerInstance;
 	}

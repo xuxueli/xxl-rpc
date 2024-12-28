@@ -9,7 +9,6 @@ import com.xxl.rpc.core.remoting.entity.XxlRpcBeat;
 import com.xxl.rpc.core.remoting.entity.XxlRpcRequest;
 import com.xxl.rpc.core.remoting.entity.XxlRpcResponse;
 import com.xxl.rpc.core.serializer.Serializer;
-import com.xxl.rpc.core.util.IpUtil;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -34,13 +33,13 @@ public class NettyClient extends Client {
     private Channel channel;
 
     // param
-    private XxlRpcBootstrap factory;
+    private XxlRpcBootstrap rpcBootstrap;
     private RegisterInstance registerInstance;
 
     @Override
-    public void init(final RegisterInstance registerInstance, final Serializer serializer, final XxlRpcBootstrap factory) throws Exception {
+    public void init(final RegisterInstance registerInstance, final Serializer serializer, final XxlRpcBootstrap rpcBootstrap) throws Exception {
         // base param
-        this.factory = factory;
+        this.rpcBootstrap = rpcBootstrap;
         this.registerInstance = registerInstance;
 
         // lazy-init nioEventLoopGroup
@@ -48,7 +47,7 @@ public class NettyClient extends Client {
             synchronized (NettyClient.class) {
                 if (nioEventLoopGroup == null) {
                     nioEventLoopGroup = new NioEventLoopGroup();
-                    factory.addStopCallable(new Callable<Void>() {
+                    rpcBootstrap.addStopCallable(new Callable<Void>() {
                         @Override
                         public Void call() throws Exception {
                             nioEventLoopGroup.shutdownGracefully();
@@ -71,7 +70,7 @@ public class NettyClient extends Client {
                                 .addLast(new IdleStateHandler(0,0, XxlRpcBeat.BEAT_INTERVAL, TimeUnit.SECONDS))    // beat N, close if fail
                                 .addLast(new NettyEncoder(XxlRpcRequest.class, serializer))
                                 .addLast(new NettyDecoder(XxlRpcResponse.class, serializer))
-                                .addLast(new NettyClientHandler(factory.getInvoker(), thisClient));
+                                .addLast(new NettyClientHandler(rpcBootstrap.getInvoker(), thisClient));
                     }
                 })
                 .option(ChannelOption.TCP_NODELAY, true)
@@ -103,7 +102,7 @@ public class NettyClient extends Client {
             this.channel.close();        // if this.channel.isOpen()
         }
         // remove dead client
-        this.factory.getInvoker().checkDeadAndRemoveClient(this.registerInstance.getUniqueKey());
+        this.rpcBootstrap.getInvoker().checkDeadAndRemoveClient(this.registerInstance.getUniqueKey());
         logger.info(">>>>>>>>>>> xxl-rpc NettyClient close, registerInstance#getUniqueKey = " + this.registerInstance.getUniqueKey());
     }
 

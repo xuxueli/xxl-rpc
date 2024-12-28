@@ -18,7 +18,6 @@ import io.netty.handler.codec.http.*;
 import io.netty.handler.timeout.IdleStateHandler;
 
 import java.net.URI;
-import java.net.URL;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
@@ -34,15 +33,15 @@ public class NettyHttpClient extends Client {
     private Channel channel;
 
     // param
-    private XxlRpcBootstrap factory;
+    private XxlRpcBootstrap rpcBootstrap;
     private Serializer serializer;
     private RegisterInstance registerInstance;
 
     @Override
-    public void init(RegisterInstance registerInstance, final Serializer serializer, final XxlRpcBootstrap factory) throws Exception {
+    public void init(RegisterInstance registerInstance, final Serializer serializer, final XxlRpcBootstrap rpcBootstrap) throws Exception {
         // base param
         this.serializer = serializer;
-        this.factory = factory;
+        this.rpcBootstrap = rpcBootstrap;
         this.registerInstance = registerInstance;
 
         // lazy-init nioEventLoopGroup
@@ -50,7 +49,7 @@ public class NettyHttpClient extends Client {
             synchronized (NettyHttpClient.class) {
                 if (nioEventLoopGroup == null) {
                     nioEventLoopGroup = new NioEventLoopGroup();
-                    factory.addStopCallable(new Callable<Void>() {
+                    rpcBootstrap.addStopCallable(new Callable<Void>() {
                         @Override
                         public Void call() throws Exception {
                             nioEventLoopGroup.shutdownGracefully();
@@ -73,7 +72,7 @@ public class NettyHttpClient extends Client {
                                 .addLast(new IdleStateHandler(0,0, XxlRpcBeat.BEAT_INTERVAL, TimeUnit.SECONDS))   // beat N, close if fail
                                 .addLast(new HttpClientCodec())
                                 .addLast(new HttpObjectAggregator(5*1024*1024))
-                                .addLast(new NettyHttpClientHandler(factory.getInvoker(), serializer, thisClient));
+                                .addLast(new NettyHttpClientHandler(rpcBootstrap.getInvoker(), serializer, thisClient));
                     }
                 })
                 .option(ChannelOption.SO_KEEPALIVE, true)
@@ -106,7 +105,7 @@ public class NettyHttpClient extends Client {
             this.channel.close();		// if this.channel.isOpen()
         }
         // remove dead client
-        this.factory.getInvoker().checkDeadAndRemoveClient(this.registerInstance.getUniqueKey());
+        this.rpcBootstrap.getInvoker().checkDeadAndRemoveClient(this.registerInstance.getUniqueKey());
         logger.info(">>>>>>>>>>> xxl-rpc NettyHttpClient close, registerInstance#getUniqueKey = " + this.registerInstance.getUniqueKey());
     }
 

@@ -166,7 +166,7 @@ $(function() {
         rules : {
 			appname : {
 				required : true,
-                rangelength:[4, 30],
+                rangelength:[4, 50],
 				appnameValid: true
 			},
 			name : {
@@ -181,7 +181,7 @@ $(function() {
         messages : {
 			appname : {
             	required : I18n.system_please_input,
-                rangelength: I18n.system_lengh_limit + "[4-30]"
+                rangelength: I18n.system_lengh_limit + "[4-50]"
             },
 			name : {
                 required : I18n.system_please_input,

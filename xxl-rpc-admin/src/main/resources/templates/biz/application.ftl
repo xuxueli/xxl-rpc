@@ -91,7 +91,7 @@
 							<form class="form-horizontal form" role="form" >
 								<div class="form-group">
 									<label for="lastname" class="col-sm-3 control-label">AppName<font color="red">*</font></label>
-									<div class="col-sm-9"><input type="text" class="form-control" name="appname" placeholder="${I18n.system_please_input}AppName" maxlength="30" ></div>
+									<div class="col-sm-9"><input type="text" class="form-control" name="appname" placeholder="${I18n.system_please_input}AppName" maxlength="50" ></div>
 								</div>
 								<div class="form-group">
 									<label for="lastname" class="col-sm-3 control-label">应用名称<font color="red">*</font></label>
@@ -126,7 +126,7 @@
 							<form class="form-horizontal form" role="form" >
 								<div class="form-group">
 									<label for="lastname" class="col-sm-3 control-label">AppName<font color="red">*</font></label>
-									<div class="col-sm-9"><input type="text" class="form-control" name="appname" placeholder="${I18n.system_please_input}AppName" maxlength="30" readonly ></div>
+									<div class="col-sm-9"><input type="text" class="form-control" name="appname" placeholder="${I18n.system_please_input}AppName" maxlength="50" readonly ></div>
 								</div>
 								<div class="form-group">
 									<label for="lastname" class="col-sm-3 control-label">应用名称<font color="red">*</font></label>

@@ -15,9 +15,6 @@ import com.xxl.rpc.core.serializer.impl.JsonbSerializer;
 import com.xxl.rpc.sample.api.DemoService;
 import com.xxl.rpc.sample.api.dto.UserDTO;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.TreeSet;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 

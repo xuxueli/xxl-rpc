@@ -22,21 +22,22 @@ public class XxlRpcSpringFactory extends XxlRpcBootstrap implements ApplicationC
 
     @Override
     public void afterSingletonsInstantiated() {
+        // start
         super.start();
 
         // provider open-switch
         if (getProviderConfig()!=null && getProviderConfig().isOpen()) {
-            // provider support, scan service
+            // provider support：scan service
             SpringProviderFactory.scanService(applicationContext, this);
         }
     }
 
+
     @Override
     public boolean postProcessAfterInstantiation(Object bean, String beanName) throws BeansException {
-
-        // invoker open-switch
+        // invoker open-switch      // every bean post process
         if (getInvokerConfig()!=null && getInvokerConfig().isOpen()) {
-            // invoker support, init-ReferenceBean and discovery-instance
+            // invoker support: init and collect "reference-bean"
             return SpringInvokerFactory.postProcessAfterInstantiation(bean, beanName, this);
         }
         return true;

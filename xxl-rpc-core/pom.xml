@@ -28,6 +28,12 @@
 			<artifactId>fastjson2</artifactId>
 			<version>${fastjson2.version}</version>
 		</dependency>
+		<!-- tool -->
+		<dependency>
+			<groupId>com.xuxueli</groupId>
+			<artifactId>xxl-tool</artifactId>
+			<version>${xxl-tool.version}</version>
+		</dependency>
 
 		<!-- ********************** base ********************** -->
 		<!-- slf4j -->

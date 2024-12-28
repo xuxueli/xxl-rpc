@@ -29,10 +29,10 @@ public class ProviderFactory {
 	/**
 	 * factory link
 	 */
-	private final XxlRpcBootstrap factory;
+	private final XxlRpcBootstrap rpcBootstrap;
 
-	public ProviderFactory(final XxlRpcBootstrap factory) {
-		this.factory = factory;
+	public ProviderFactory(final XxlRpcBootstrap rpcBootstrap) {
+		this.rpcBootstrap = rpcBootstrap;
 	}
 
 
@@ -59,49 +59,49 @@ public class ProviderFactory {
 	 */
 	public void start() throws Exception {
 		// valid
-		if (factory.getProviderConfig().getServer() == null) {
+		if (rpcBootstrap.getProviderConfig().getServer() == null) {
 			throw new XxlRpcException("xxl-rpc provider server missing.");
 		}
-		if (factory.getProviderConfig().getSerializer()==null) {
+		if (rpcBootstrap.getProviderConfig().getSerializer()==null) {
 			throw new XxlRpcException("xxl-rpc provider serializer missing.");
 		}
-		if (!(factory.getProviderConfig().getCorePoolSize()>0
-				&& factory.getProviderConfig().getMaxPoolSize()>0
-				&& factory.getProviderConfig().getMaxPoolSize()>=factory.getProviderConfig().getCorePoolSize())) {
-			factory.getProviderConfig().setCorePoolSize(60);
-			factory.getProviderConfig().setMaxPoolSize(300);
+		if (!(rpcBootstrap.getProviderConfig().getCorePoolSize()>0
+				&& rpcBootstrap.getProviderConfig().getMaxPoolSize()>0
+				&& rpcBootstrap.getProviderConfig().getMaxPoolSize()>= rpcBootstrap.getProviderConfig().getCorePoolSize())) {
+			rpcBootstrap.getProviderConfig().setCorePoolSize(60);
+			rpcBootstrap.getProviderConfig().setMaxPoolSize(300);
 		}
 
 		// parse address
 		String ip = IpUtil.getIp();
-		if (factory.getProviderConfig().getPort() <= 0) {
-			factory.getProviderConfig().setPort(7080);
+		if (rpcBootstrap.getProviderConfig().getPort() <= 0) {
+			rpcBootstrap.getProviderConfig().setPort(7080);
 		}
-		if (factory.getProviderConfig().getAddress()==null || factory.getProviderConfig().getAddress().isEmpty()) {
-			String address = IpUtil.getIpPort(ip, factory.getProviderConfig().getPort());
-			factory.getProviderConfig().setAddress(address);
+		if (rpcBootstrap.getProviderConfig().getAddress()==null || rpcBootstrap.getProviderConfig().getAddress().isEmpty()) {
+			String address = IpUtil.getIpPort(ip, rpcBootstrap.getProviderConfig().getPort());
+			rpcBootstrap.getProviderConfig().setAddress(address);
 		}
-		if (NetUtil.isPortUsed(factory.getProviderConfig().getPort())) {
-			throw new XxlRpcException("xxl-rpc provider port["+ factory.getProviderConfig().getPort() +"] is used.");
+		if (NetUtil.isPortUsed(rpcBootstrap.getProviderConfig().getPort())) {
+			throw new XxlRpcException("xxl-rpc provider port["+ rpcBootstrap.getProviderConfig().getPort() +"] is used.");
 		}
 
 		// 1、serializer init
-		this.serializerInstance = factory.getProviderConfig().getSerializer().newInstance();
+		this.serializerInstance = rpcBootstrap.getProviderConfig().getSerializer().newInstance();
 
 		// 2、server init
-		this.serverInstance = factory.getProviderConfig().getServer().newInstance();
+		this.serverInstance = rpcBootstrap.getProviderConfig().getServer().newInstance();
 		this.serverInstance.setStartedCallback(new Callable<Void>() {		// serviceRegistry started
 			public Void call() throws Exception {
 				// 3.1、register init
-				if (factory.getRegister() != null) {
+				if (rpcBootstrap.getRegister() != null) {
 					RegisterInstance instance = new RegisterInstance();
-					instance.setEnv(factory.getBaseConfig().getEnv());
-					instance.setAppname(factory.getBaseConfig().getAppname());
+					instance.setEnv(rpcBootstrap.getBaseConfig().getEnv());
+					instance.setAppname(rpcBootstrap.getBaseConfig().getAppname());
 					instance.setIp(ip);
-					instance.setPort(factory.getProviderConfig().getPort());
+					instance.setPort(rpcBootstrap.getProviderConfig().getPort());
 					//instance.setExtendInfo(null);
 
-					factory.getRegister().register(instance);
+					rpcBootstrap.getRegister().register(instance);
 				}
                 return null;
             }
@@ -109,20 +109,20 @@ public class ProviderFactory {
 		serverInstance.setStopedCallback(new Callable<Void>() {		// serviceRegistry stoped
 			public Void call() throws Exception {
 				// 3.2、register stop
-				if (factory.getRegister() != null) {
+				if (rpcBootstrap.getRegister() != null) {
 					RegisterInstance instance = new RegisterInstance();
-					instance.setEnv(factory.getBaseConfig().getEnv());
-					instance.setAppname(factory.getBaseConfig().getAppname());
+					instance.setEnv(rpcBootstrap.getBaseConfig().getEnv());
+					instance.setAppname(rpcBootstrap.getBaseConfig().getAppname());
 					instance.setIp(ip);
-					instance.setPort(factory.getProviderConfig().getPort());
+					instance.setPort(rpcBootstrap.getProviderConfig().getPort());
 					//instance.setExtendInfo(null);
 
-					factory.getRegister().unregister(instance);
+					rpcBootstrap.getRegister().unregister(instance);
 				}
 				return null;
 			}
 		});
-		serverInstance.start(factory);
+		serverInstance.start(rpcBootstrap);
 	}
 
 	/**

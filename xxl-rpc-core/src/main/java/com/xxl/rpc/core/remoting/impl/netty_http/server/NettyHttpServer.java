@@ -28,7 +28,7 @@ public class NettyHttpServer extends Server  {
     private Thread thread;
 
     @Override
-    public void start(final XxlRpcBootstrap factory) throws Exception {
+    public void start(final XxlRpcBootstrap rpcBootstrap) throws Exception {
 
         thread = new Thread(new Runnable() {
 
@@ -38,8 +38,8 @@ public class NettyHttpServer extends Server  {
                 // param
                 final ThreadPoolExecutor serverHandlerPool = ThreadPoolUtil.makeServerThreadPool(
                         NettyHttpServer.class.getSimpleName(),
-                        factory.getProviderConfig().getCorePoolSize(),
-                        factory.getProviderConfig().getMaxPoolSize());
+                        rpcBootstrap.getProviderConfig().getCorePoolSize(),
+                        rpcBootstrap.getProviderConfig().getMaxPoolSize());
                 EventLoopGroup bossGroup = new NioEventLoopGroup();
                 EventLoopGroup workerGroup = new NioEventLoopGroup();
 
@@ -55,15 +55,15 @@ public class NettyHttpServer extends Server  {
                                             .addLast(new IdleStateHandler(0, 0, XxlRpcBeat.BEAT_INTERVAL * 3, TimeUnit.SECONDS))  // beat 3N, close if idle
                                             .addLast(new HttpServerCodec())
                                             .addLast(new HttpObjectAggregator(5 * 1024 * 1024))  // merge request & reponse to FULL
-                                            .addLast(new NettyHttpServerHandler(factory.getProvider(), serverHandlerPool));
+                                            .addLast(new NettyHttpServerHandler(rpcBootstrap.getProvider(), serverHandlerPool));
                                 }
                             })
                             .childOption(ChannelOption.SO_KEEPALIVE, true);
 
                     // bind
-                    ChannelFuture future = bootstrap.bind(factory.getProviderConfig().getPort()).sync();
+                    ChannelFuture future = bootstrap.bind(rpcBootstrap.getProviderConfig().getPort()).sync();
 
-                    logger.info(">>>>>>>>>>> xxl-rpc, NettyHttpServer start success, port = {}", factory.getProviderConfig().getPort());
+                    logger.info(">>>>>>>>>>> xxl-rpc, NettyHttpServer start success, port = {}", rpcBootstrap.getProviderConfig().getPort());
                     onStarted();
 
                     // wait util stop

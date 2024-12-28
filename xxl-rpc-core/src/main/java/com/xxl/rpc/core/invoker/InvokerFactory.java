@@ -2,6 +2,7 @@ package com.xxl.rpc.core.invoker;
 
 import com.xxl.rpc.core.boot.XxlRpcBootstrap;
 import com.xxl.rpc.core.invoker.call.XxlRpcResponseFuture;
+import com.xxl.rpc.core.invoker.reference.XxlRpcReferenceBean;
 import com.xxl.rpc.core.register.entity.RegisterInstance;
 import com.xxl.rpc.core.remoting.Client;
 import com.xxl.rpc.core.remoting.entity.XxlRpcResponse;
@@ -11,7 +12,11 @@ import com.xxl.rpc.core.util.XxlRpcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 /**
  * xxl-rpc invoker factory, init service-registry
@@ -26,10 +31,10 @@ public class InvokerFactory {
     /**
      * factory
      */
-    private final XxlRpcBootstrap factory;
+    private final XxlRpcBootstrap rpcBootstrap;
 
     public InvokerFactory(final XxlRpcBootstrap xxlRpcFactory) {
-        this.factory = xxlRpcFactory;
+        this.rpcBootstrap = xxlRpcFactory;
     }
 
 
@@ -41,7 +46,8 @@ public class InvokerFactory {
      * @throws Exception
      */
     public void start() throws Exception {
-        // start
+        // init registry-thread by discovery
+        discoveryReferenceBean();
     }
 
     /**
@@ -250,7 +256,7 @@ public class InvokerFactory {
             // set pool
             Client connectClient_new = clientClass.newInstance();
             try {
-                connectClient_new.init(registerInstance, serializer, factory);
+                connectClient_new.init(registerInstance, serializer, rpcBootstrap);
                 connectClientMap.put(uniqueKey, connectClient_new);
             } catch (Exception e) {
                 connectClient_new.close();
@@ -258,6 +264,37 @@ public class InvokerFactory {
             }
 
             return connectClient_new;
+        }
+    }
+
+    // ---------------------- client-pool ----------------------
+
+    /**
+     * referenceBean List
+     */
+    private volatile List<XxlRpcReferenceBean> referenceBeanList = new ArrayList<>();
+
+    /**
+     * add referenceBean
+     *
+     * @param referenceBean
+     */
+    public void addReferenceBean(XxlRpcReferenceBean referenceBean){
+        referenceBeanList.add(referenceBean);
+    }
+
+    /**
+     * discovery referenceBean
+     */
+    public void discoveryReferenceBean(){
+        if (!referenceBeanList.isEmpty()) {
+            Set<String> appnameList = referenceBeanList.stream().map(XxlRpcReferenceBean::getAppname).collect(Collectors.toSet());
+            // mult discovery, Trigger early-initialization discovery-data
+            try {
+                rpcBootstrap.getRegister().discovery(appnameList);
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
         }
     }
 

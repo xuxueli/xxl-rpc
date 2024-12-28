@@ -18,10 +18,10 @@ public abstract class Client {
      *
      * @param registerInstance
      * @param serializer
-     * @param factory
+     * @param rpcBootstrap
      * @throws Exception
      */
-    public abstract void init(RegisterInstance registerInstance, final Serializer serializer, final XxlRpcBootstrap factory) throws Exception;
+    public abstract void init(RegisterInstance registerInstance, final Serializer serializer, final XxlRpcBootstrap rpcBootstrap) throws Exception;
 
     /**
      * close client
