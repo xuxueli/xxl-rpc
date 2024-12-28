@@ -8,6 +8,11 @@ package com.xxl.rpc.core.invoker.config;
 public class InvokerConfig {
 
     /**
+     * provider switch
+     */
+    private boolean open = true;
+
+    /**
      * accessToken (optional), for rpc-safe
      */
     //private String accessToken;
@@ -15,6 +20,17 @@ public class InvokerConfig {
     // inteceptor
 
     public InvokerConfig() {
+    }
+    public InvokerConfig(boolean open) {
+        this.open = open;
+    }
+
+    public boolean isOpen() {
+        return open;
+    }
+
+    public void setOpen(boolean open) {
+        this.open = open;
     }
 
 }

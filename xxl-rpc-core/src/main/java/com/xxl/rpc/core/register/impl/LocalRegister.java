@@ -20,6 +20,7 @@ public class LocalRegister extends Register {
     private volatile Map<String, TreeSet<RegisterInstance>> registryData;
 
     public LocalRegister() {
+        registryData = new ConcurrentHashMap<>();
     }
     public LocalRegister(Map<String, TreeSet<RegisterInstance>> initRegistryData) {
         this.registryData = initRegistryData;

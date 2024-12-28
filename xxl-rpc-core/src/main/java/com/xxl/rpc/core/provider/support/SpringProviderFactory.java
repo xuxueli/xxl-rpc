@@ -3,6 +3,8 @@ package com.xxl.rpc.core.provider.support;
 import com.xxl.rpc.core.boot.XxlRpcBootstrap;
 import com.xxl.rpc.core.provider.annotation.XxlRpcService;
 import com.xxl.rpc.core.util.XxlRpcException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import java.util.Map;
@@ -13,6 +15,7 @@ import java.util.Map;
  * @author xuxueli 2018-10-18 18:09:20
  */
 public class SpringProviderFactory {
+    private static final Logger logger = LoggerFactory.getLogger(SpringProviderFactory.class);
 
     public static void scanService(ApplicationContext applicationContext, final XxlRpcBootstrap factory) {
 
@@ -39,6 +42,7 @@ public class SpringProviderFactory {
                 factory.getProvider().addService(iface, version, serviceBean);
             }
         }
+        logger.info(">>>>>>>>>>> xxl-rpc, SpringProviderFactory#scanService finish, serviceBeanMap:" + serviceBeanMap);
 
     }
 

@@ -13,6 +13,11 @@ import com.xxl.rpc.core.serializer.impl.JsonbSerializer;
 public class ProviderConfig {
 
     /**
+     * provider switch
+     */
+    private boolean open = true;
+
+    /**
      * server, for network
      */
     private Class<? extends Server> server = NettyServer.class;
@@ -55,6 +60,7 @@ public class ProviderConfig {
                           int corePoolSize,
                           int maxPoolSize,
                           String address) {
+        this.open = true;
         this.server = server;
         this.serializer = serializer;
         this.port = port;
@@ -62,9 +68,20 @@ public class ProviderConfig {
         this.maxPoolSize = maxPoolSize;
         this.address = address;
     }
+    public ProviderConfig(boolean open){
+        this.open = open;
+    }
 
     public Class<? extends Server> getServer() {
         return server;
+    }
+
+    public boolean isOpen() {
+        return open;
+    }
+
+    public void setOpen(boolean open) {
+        this.open = open;
     }
 
     public void setServer(Class<? extends Server> server) {

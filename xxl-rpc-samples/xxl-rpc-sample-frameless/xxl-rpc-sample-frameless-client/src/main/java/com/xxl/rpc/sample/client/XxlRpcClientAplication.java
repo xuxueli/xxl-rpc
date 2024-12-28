@@ -28,28 +28,26 @@ public class XxlRpcClientAplication {
 
 	public static void main(String[] args) throws Exception {
 
-		// build factory
-		XxlRpcBootstrap rpcBootstrap = new XxlRpcBootstrap();
-		rpcBootstrap.setBaseConfig(new BaseConfig(
-				"test",
-				"client01"));
-		rpcBootstrap.setInvokerConfig(new InvokerConfig());
-		rpcBootstrap.setRegister(new LocalRegister(new HashMap(){
-			{
-				RegisterInstance registerInstance = new RegisterInstance("test", "server01", "127.0.0.1", 7080, null);
-				put("server01", new TreeSet<>(Collections.singletonList(registerInstance)));
-			}
-		}));
+		// 1、LocalRegister
+		LocalRegister localRegister = new LocalRegister();
+		localRegister.register(new RegisterInstance("test", "server01", "127.0.0.1", 7080, null));
 
+		// 2、XxlRpcBootstrap
+		XxlRpcBootstrap rpcBootstrap = new XxlRpcBootstrap();
+		rpcBootstrap.setBaseConfig(new BaseConfig("test", "client01"));
+		rpcBootstrap.setRegister(localRegister);
+		rpcBootstrap.setInvokerConfig(new InvokerConfig(true));
+
+		// 3、start
 		rpcBootstrap.start();
 
-		// build referenceBean
+		// 4、XxlRpcReferenceBean build
 		DemoService demoService_SYNC = buildReferenceBean(rpcBootstrap, CallType.SYNC);
 		DemoService demoService_FUTURE = buildReferenceBean(rpcBootstrap, CallType.FUTURE);
 		DemoService demoService_CALLBACK = buildReferenceBean(rpcBootstrap, CallType.CALLBACK);
 		DemoService demoService_ONEWAY = buildReferenceBean(rpcBootstrap, CallType.ONEWAY);
 
-		// test rpc
+		// 5、test rpc invoke
 		testSYNC(demoService_SYNC);
 		testFUTURE(demoService_FUTURE);
 		testCALLBACK(demoService_CALLBACK);
@@ -57,7 +55,7 @@ public class XxlRpcClientAplication {
 
 		TimeUnit.SECONDS.sleep(5);
 
-		// stop
+		// 6、stop
 		rpcBootstrap.stop();
 	}
 

@@ -130,7 +130,7 @@ public class XxlRpcBootstrap {
         }
 
         // 2、provider start, remoting-server run
-        if (providerConfig!=null) {
+        if (providerConfig!=null && providerConfig.isOpen()) {
             try {
                 provider = new ProviderFactory(this);
                 provider.start();
@@ -139,14 +139,17 @@ public class XxlRpcBootstrap {
             }
         }
 
-        // 2、invoker start
-        try {
-            invoker = new InvokerFactory(this);
-            invoker.start();
-        } catch (Exception e) {
-            throw new XxlRpcException(e);
+        // 3、invoker start
+        if (invokerConfig!=null && invokerConfig.isOpen()) {
+            try {
+                invoker = new InvokerFactory(this);
+                invoker.start();
+            } catch (Exception e) {
+                throw new XxlRpcException(e);
+            }
         }
-        logger.info(">>>>>>>>>>> xxl-rpc, XxlRpcFactory start success.");
+
+        logger.info(">>>>>>>>>>> xxl-rpc, XxlRpcBootstrap start success.");
     }
 
     /**
@@ -179,7 +182,7 @@ public class XxlRpcBootstrap {
         // finish stopCallable
         finishStopCallable();
 
-        logger.info(">>>>>>>>>>> xxl-rpc, XxlRpcFactory stopped.");
+        logger.info(">>>>>>>>>>> xxl-rpc, XxlRpcBootstrap stopped.");
     }
 
 
@@ -204,7 +207,7 @@ public class XxlRpcBootstrap {
             try {
                 callable.call();
             } catch (Throwable e) {
-                logger.error(">>>>>>>>>>> xxl-rpc, XxlRpcFactory finishStopCallable: {}", e.getMessage(), e);
+                logger.error(">>>>>>>>>>> xxl-rpc, XxlRpcBootstrap finishStopCallable: {}", e.getMessage(), e);
             }
         }
     }

@@ -17,23 +17,22 @@ public class XxlRpcServerApplication {
 
     public static void main(String[] args) throws Exception {
 
-        // init
+        // 1、XxlRpcBootstrap
         XxlRpcBootstrap rpcBootstrap = new XxlRpcBootstrap();
         rpcBootstrap.setBaseConfig(new BaseConfig("test", "client01"));
         rpcBootstrap.setProviderConfig(new ProviderConfig(NettyServer.class, JsonbSerializer.class, -1, -1, 7080, null));
 
-        // start
+        // 2、start
         rpcBootstrap.start();
 
-        // add services
+        // 3、add services
         rpcBootstrap.getProvider().addService(DemoService.class.getName(), null, new DemoServiceImpl());
-
 
         while (!Thread.currentThread().isInterrupted()) {
             TimeUnit.HOURS.sleep(1);
         }
 
-        // stop
+        // 4、stop
         rpcBootstrap.stop();
 
     }
