@@ -10,9 +10,19 @@ import java.io.Serializable;
 public class XxlRpcResponse implements Serializable{
 	private static final long serialVersionUID = 42L;
 
-
+    /**
+     * request Id
+     */
 	private String requestId;
+
+    /**
+     * response error message
+     */
     private String errorMsg;
+
+    /**
+     * response result
+     */
     private Object result;
 
 

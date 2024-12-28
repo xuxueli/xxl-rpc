@@ -10,8 +10,24 @@ package com.xxl.rpc.core.serializer;
  * @author xuxueli 2015-10-30 21:02:55
  */
 public abstract class Serializer {
-	
+
+	/**
+	 * serialize
+	 *
+	 * @param obj
+	 * @return
+	 * @param <T>
+	 */
 	public abstract <T> byte[] serialize(T obj);
+
+	/**
+	 * deserialize
+	 *
+	 * @param bytes
+	 * @param clazz
+	 * @return
+	 * @param <T>
+	 */
 	public abstract <T> Object deserialize(byte[] bytes, Class<T> clazz);
 
 }

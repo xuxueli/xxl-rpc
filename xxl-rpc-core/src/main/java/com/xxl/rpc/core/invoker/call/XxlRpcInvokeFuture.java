@@ -39,13 +39,13 @@ public class XxlRpcInvokeFuture implements Future {
     public Object get() throws ExecutionException, InterruptedException {
         try {
             return get(-1, TimeUnit.MILLISECONDS);
-        } catch (TimeoutException e) {
+        } catch (Exception e) {
             throw new XxlRpcException(e);
         }
     }
 
     @Override
-    public Object get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+    public Object get(long timeout, TimeUnit unit) throws ExecutionException, InterruptedException, TimeoutException {
         try {
             // future get
             XxlRpcResponse xxlRpcResponse = responseFuture.get(timeout, unit);

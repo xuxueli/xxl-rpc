@@ -28,8 +28,8 @@ public class NettyHttpClientHandler extends SimpleChannelInboundHandler<FullHttp
 
     private InvokerFactory xxlRpcInvokerFactory;
     private Serializer serializer;
-    private NettyHttpConnectClient nettyHttpConnectClient;
-    public NettyHttpClientHandler(final InvokerFactory xxlRpcInvokerFactory, Serializer serializer, final NettyHttpConnectClient nettyHttpConnectClient) {
+    private NettyHttpClient nettyHttpConnectClient;
+    public NettyHttpClientHandler(final InvokerFactory xxlRpcInvokerFactory, Serializer serializer, final NettyHttpClient nettyHttpConnectClient) {
         this.xxlRpcInvokerFactory = xxlRpcInvokerFactory;
         this.serializer = serializer;
         this.nettyHttpConnectClient = nettyHttpConnectClient;
@@ -43,26 +43,27 @@ public class NettyHttpClientHandler extends SimpleChannelInboundHandler<FullHttp
             throw new XxlRpcException("xxl-rpc response status invalid.");
         }
 
+        // valid connection-close
         HttpHeaders headers = msg.headers();
         String connection = headers.get("connection");
         if (Objects.equals("close", connection)) {
-            logger.warn(">>>>>>>>>>> xxl-rpc netty_http client received close");
+            logger.debug(">>>>>>>>>>> xxl-rpc netty_http client received close");
             ctx.close();
             return;
         }
 
-        // response parse
+        // parse response-byte
         byte[] responseBytes = ByteBufUtil.getBytes(msg.content());
 
-        // valid length
+        // valid length of response-byte
         if (responseBytes.length == 0) {
-            throw new XxlRpcException("xxl-rpc response data empty.");
+            logger.debug(">>>>>>>>>>> xxl-rpc response data empty.");
         }
 
         // response deserialize
         XxlRpcResponse xxlRpcResponse = (XxlRpcResponse) serializer.deserialize(responseBytes, XxlRpcResponse.class);
 
-        // notify response
+        // do notify
         xxlRpcInvokerFactory.notifyInvokerFuture(xxlRpcResponse.getRequestId(), xxlRpcResponse);
 
     }
@@ -70,6 +71,7 @@ public class NettyHttpClientHandler extends SimpleChannelInboundHandler<FullHttp
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         //super.exceptionCaught(ctx, cause);
+
         logger.error(">>>>>>>>>>> xxl-rpc netty_http client caught exception", cause);
         ctx.close();
     }

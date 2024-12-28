@@ -18,23 +18,23 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<XxlRpcRespon
 	private static final Logger logger = LoggerFactory.getLogger(NettyClientHandler.class);
 
 
-	private InvokerFactory xxlRpcInvokerFactory;
-	private NettyConnectClient nettyConnectClient;
-	public NettyClientHandler(final InvokerFactory xxlRpcInvokerFactory, NettyConnectClient nettyConnectClient) {
-		this.xxlRpcInvokerFactory = xxlRpcInvokerFactory;
-		this.nettyConnectClient = nettyConnectClient;
+	private final InvokerFactory invokerFactory;
+	private final NettyClient nettyClient;
+	public NettyClientHandler(final InvokerFactory invokerFactory, NettyClient nettyClient) {
+		this.invokerFactory = invokerFactory;
+		this.nettyClient = nettyClient;
 	}
-
 
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, XxlRpcResponse xxlRpcResponse) throws Exception {
 
-		// notify response
-		xxlRpcInvokerFactory.notifyInvokerFuture(xxlRpcResponse.getRequestId(), xxlRpcResponse);
+		// read data (response) from service, do notify
+		invokerFactory.notifyInvokerFuture(xxlRpcResponse.getRequestId(), xxlRpcResponse);
 	}
 
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+
 		logger.error(">>>>>>>>>>> xxl-rpc netty client caught exception", cause);
 		ctx.close();
 	}
@@ -45,7 +45,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<XxlRpcRespon
 			/*ctx.channel().close();      // close idle channel
 			logger.debug(">>>>>>>>>>> xxl-rpc netty client close an idle channel.");*/
 
-			nettyConnectClient.send(XxlRpcBeat.BEAT_PING);	// beat N, close if fail(may throw error)
+			nettyClient.send(XxlRpcBeat.BEAT_PING);	// beat N, close if fail(may throw error)
 			logger.debug(">>>>>>>>>>> xxl-rpc netty client send beat-ping.");
 
 		} else {

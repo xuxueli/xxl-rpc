@@ -1,6 +1,6 @@
 package com.xxl.rpc.core.register.impl;
 
-import com.xxl.rpc.core.factory.XxlRpcFactory;
+import com.xxl.rpc.core.boot.XxlRpcBootstrap;
 import com.xxl.rpc.core.register.Register;
 import com.xxl.rpc.core.register.entity.RegisterInstance;
 import org.slf4j.Logger;
@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -40,7 +39,7 @@ public class XxlRpcRegister extends Register {
     /**
      * registry data
      */
-    private Set<RegisterInstance> registryInstanceListStore = new ConcurrentSkipListSet<>();
+    private TreeSet<RegisterInstance> registryInstanceListStore = new TreeSet<>();//new ConcurrentSkipListSet<>();
 
     /**
      * discovery data
@@ -70,7 +69,7 @@ public class XxlRpcRegister extends Register {
     private Thread discoveryThread;
 
     @Override
-    public void start(XxlRpcFactory factory) {
+    public void start(XxlRpcBootstrap factory) {
         // valid
         if (adminAddress == null || adminAddress.trim().length() == 0) {
             logger.info(">>>>>>>>>>> xxl-rpc, XxlRpcRegistry start fail, adminAddress is null.");
@@ -169,13 +168,13 @@ public class XxlRpcRegister extends Register {
     }
 
     @Override
-    public Map<String, Set<RegisterInstance>> discovery(Set<String> appnameList) {
+    public Map<String, TreeSet<RegisterInstance>> discovery(Set<String> appnameList) {
         // TODO；本地没有Key，立即发起远程查询，本地写None；
         return Collections.emptyMap();
     }
 
     @Override
-    public Set<RegisterInstance> discovery(String appname) {
+    public TreeSet<RegisterInstance> discovery(String appname) {
         // TODO，本地没有Key，立即发起远程查询，本地写None；
         return new TreeSet<>();
     }

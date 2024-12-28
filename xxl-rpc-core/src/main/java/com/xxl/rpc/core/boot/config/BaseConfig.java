@@ -1,4 +1,6 @@
-package com.xxl.rpc.core.factory.config;
+package com.xxl.rpc.core.boot.config;
+
+import com.xxl.rpc.core.util.XxlRpcException;
 
 public class BaseConfig {
 
@@ -33,6 +35,21 @@ public class BaseConfig {
 
     public void setAppname(String appname) {
         this.appname = appname;
+    }
+
+
+    // ---------------------- valid ----------------------
+
+    /**
+     * valid base config
+     */
+    public void valid() {
+        if (env == null || env.trim().isEmpty()) {
+            throw new XxlRpcException("xxl-rpc BaseConfig invalid, env not exists.");
+        }
+        if (appname == null || appname.trim().isEmpty()) {
+            throw new XxlRpcException("xxl-rpc BaseConfig invalid, appname not exists");
+        }
     }
 
 }

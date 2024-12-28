@@ -24,9 +24,11 @@ public class NettyDecoder extends ByteToMessageDecoder {
 
     @Override
     public final void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+        // check lenth of "data-len"
         if (in.readableBytes() < 4) {
             return;
         }
+        // check length of "data-content"
         in.markReaderIndex();
         int dataLength = in.readInt();
         if (dataLength < 0) {
@@ -36,10 +38,14 @@ public class NettyDecoder extends ByteToMessageDecoder {
             in.resetReaderIndex();
             return;	// fix 1024k buffer splice limix
         }
+
+        // read data
         byte[] data = new byte[dataLength];
         in.readBytes(data);
 
+        // deserialize to object
         Object obj = serializer.deserialize(data, genericClass);
         out.add(obj);
     }
+
 }

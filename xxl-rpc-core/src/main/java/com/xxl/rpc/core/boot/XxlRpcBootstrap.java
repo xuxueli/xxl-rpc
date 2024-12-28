@@ -1,12 +1,11 @@
-package com.xxl.rpc.core.factory;
+package com.xxl.rpc.core.boot;
 
-import com.xxl.rpc.core.factory.config.BaseConfig;
+import com.xxl.rpc.core.boot.config.BaseConfig;
 import com.xxl.rpc.core.invoker.InvokerFactory;
 import com.xxl.rpc.core.invoker.config.InvokerConfig;
 import com.xxl.rpc.core.provider.ProviderFactory;
 import com.xxl.rpc.core.provider.config.ProviderConfig;
 import com.xxl.rpc.core.register.Register;
-import com.xxl.rpc.core.register.config.RegisterConfig;
 import com.xxl.rpc.core.util.XxlRpcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +19,8 @@ import java.util.concurrent.Callable;
  *
  * @author xuxueli 2015-10-31 22:54:27
  */
-public class XxlRpcFactory {
-    private static final Logger logger = LoggerFactory.getLogger(XxlRpcFactory.class);
+public class XxlRpcBootstrap {
+    private static final Logger logger = LoggerFactory.getLogger(XxlRpcBootstrap.class);
 
     // ---------------------- config-base ----------------------
 
@@ -114,28 +113,38 @@ public class XxlRpcFactory {
      * start
      */
     public void start(){
+
+        // 0、valid
+        if (baseConfig == null) {
+            throw new XxlRpcException("xxl-rpc BaseConfig not exists.");
+        }
+        baseConfig.valid();
+
+        // 1、register start, thread run
         if (register != null) {
             try {
-                register.start(this);       // registry-discovery thread run
+                register.start(this);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new XxlRpcException(e);
             }
         }
+
+        // 2、provider start, remoting-server run
         if (providerConfig!=null) {
             try {
                 provider = new ProviderFactory(this);
-                provider.start();                   // invoke registry-registry, run thread
+                provider.start();
             } catch (Exception e) {
                 throw new XxlRpcException(e);
             }
         }
-        if (invokerConfig!=null) {
-            try {
-                invoker = new InvokerFactory(this);
-                invoker.start();                    // invoke registry-discovery, run thread
-            } catch (Exception e) {
-                throw new XxlRpcException(e);
-            }
+
+        // 2、invoker start
+        try {
+            invoker = new InvokerFactory(this);
+            invoker.start();
+        } catch (Exception e) {
+            throw new XxlRpcException(e);
         }
         logger.info(">>>>>>>>>>> xxl-rpc, XxlRpcFactory start success.");
     }
@@ -148,22 +157,22 @@ public class XxlRpcFactory {
         if (register != null) {
             try {
                 register.stop();
-            } catch (Exception e) {
-                throw new XxlRpcException(e);
+            } catch (Throwable e) {
+                logger.error(e.getMessage(), e);
             }
         }
         if (provider!=null) {
             try {
                 provider.stop();
-            } catch (Exception e) {
-                throw new XxlRpcException(e);
+            } catch (Throwable e) {
+                logger.error(e.getMessage(), e);
             }
         }
         if (invoker!=null) {
             try {
                 invoker.stop();
-            } catch (Exception e) {
-                throw new XxlRpcException(e);
+            } catch (Throwable e) {
+                logger.error(e.getMessage(), e);
             }
         }
 
@@ -194,7 +203,7 @@ public class XxlRpcFactory {
         for (Callable<Void> callable: stopCallableList) {
             try {
                 callable.call();
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 logger.error(">>>>>>>>>>> xxl-rpc, XxlRpcFactory finishStopCallable: {}", e.getMessage(), e);
             }
         }

@@ -1,6 +1,6 @@
 package com.xxl.rpc.core.register.impl;
 
-import com.xxl.rpc.core.factory.XxlRpcFactory;
+import com.xxl.rpc.core.boot.XxlRpcBootstrap;
 import com.xxl.rpc.core.register.Register;
 import com.xxl.rpc.core.register.entity.RegisterInstance;
 
@@ -17,11 +17,11 @@ public class LocalRegister extends Register {
     /**
      * registry data
      */
-    private volatile Map<String, Set<RegisterInstance>> registryData;
+    private volatile Map<String, TreeSet<RegisterInstance>> registryData;
 
     public LocalRegister() {
     }
-    public LocalRegister(Map<String, Set<RegisterInstance>> initRegistryData) {
+    public LocalRegister(Map<String, TreeSet<RegisterInstance>> initRegistryData) {
         this.registryData = initRegistryData;
     }
 
@@ -29,7 +29,7 @@ public class LocalRegister extends Register {
      * @param factory ignore, not use
      */
     @Override
-    public void start(final XxlRpcFactory factory) {
+    public void start(final XxlRpcBootstrap factory) {
         if (registryData == null) {
             registryData = new ConcurrentHashMap<>();
         }
@@ -69,13 +69,13 @@ public class LocalRegister extends Register {
     }
 
     @Override
-    public Map<String, Set<RegisterInstance>> discovery(Set<String> appnameList){
+    public Map<String, TreeSet<RegisterInstance>> discovery(Set<String> appnameList){
         // valid
         if (appnameList==null || appnameList.isEmpty()) {
             return null;
         }
         // do
-        Map<String, Set<RegisterInstance>> resp = new HashMap<>();
+        Map<String, TreeSet<RegisterInstance>> resp = new HashMap<>();
         for (String appname: appnameList){
             resp.put(appname, registryData.get(appname));
         }
@@ -83,7 +83,7 @@ public class LocalRegister extends Register {
     }
 
     @Override
-    public Set<RegisterInstance> discovery(String appname) {
+    public TreeSet<RegisterInstance> discovery(String appname) {
         // valid
         if (appname==null || appname.isEmpty()) {
             return null;

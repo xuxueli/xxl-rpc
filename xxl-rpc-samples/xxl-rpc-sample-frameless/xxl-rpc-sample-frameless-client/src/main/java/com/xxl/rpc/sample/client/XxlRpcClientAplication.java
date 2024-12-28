@@ -1,10 +1,9 @@
 package com.xxl.rpc.sample.client;
 
-import com.xxl.rpc.core.factory.XxlRpcFactory;
-import com.xxl.rpc.core.factory.config.BaseConfig;
+import com.xxl.rpc.core.boot.XxlRpcBootstrap;
+import com.xxl.rpc.core.boot.config.BaseConfig;
 import com.xxl.rpc.core.invoker.call.CallType;
 import com.xxl.rpc.core.invoker.call.XxlRpcInvokeFuture;
-import com.xxl.rpc.core.invoker.call.XxlRpcResponseFuture;
 import com.xxl.rpc.core.invoker.call.XxlRpcInvokeCallback;
 import com.xxl.rpc.core.invoker.config.InvokerConfig;
 import com.xxl.rpc.core.invoker.reference.XxlRpcReferenceBean;
@@ -30,23 +29,25 @@ public class XxlRpcClientAplication {
 	public static void main(String[] args) throws Exception {
 
 		// build factory
-		XxlRpcFactory factory = new XxlRpcFactory();
-		factory.setBaseConfig(new BaseConfig("test", "client01"));
-		factory.setInvokerConfig(new InvokerConfig());
-		factory.setRegister(new LocalRegister(new HashMap(){
+		XxlRpcBootstrap rpcBootstrap = new XxlRpcBootstrap();
+		rpcBootstrap.setBaseConfig(new BaseConfig(
+				"test",
+				"client01"));
+		rpcBootstrap.setInvokerConfig(new InvokerConfig());
+		rpcBootstrap.setRegister(new LocalRegister(new HashMap(){
 			{
 				RegisterInstance registerInstance = new RegisterInstance("test", "server01", "127.0.0.1", 7080, null);
 				put("server01", new TreeSet<>(Collections.singletonList(registerInstance)));
 			}
 		}));
 
-		factory.start();
+		rpcBootstrap.start();
 
 		// build referenceBean
-		DemoService demoService_SYNC = buildReferenceBean(factory, CallType.SYNC);
-		DemoService demoService_FUTURE = buildReferenceBean(factory, CallType.FUTURE);
-		DemoService demoService_CALLBACK = buildReferenceBean(factory, CallType.CALLBACK);
-		DemoService demoService_ONEWAY = buildReferenceBean(factory, CallType.ONEWAY);
+		DemoService demoService_SYNC = buildReferenceBean(rpcBootstrap, CallType.SYNC);
+		DemoService demoService_FUTURE = buildReferenceBean(rpcBootstrap, CallType.FUTURE);
+		DemoService demoService_CALLBACK = buildReferenceBean(rpcBootstrap, CallType.CALLBACK);
+		DemoService demoService_ONEWAY = buildReferenceBean(rpcBootstrap, CallType.ONEWAY);
 
 		// test rpc
 		testSYNC(demoService_SYNC);
@@ -57,10 +58,10 @@ public class XxlRpcClientAplication {
 		TimeUnit.SECONDS.sleep(5);
 
 		// stop
-		factory.stop();
+		rpcBootstrap.stop();
 	}
 
-	private static DemoService buildReferenceBean(XxlRpcFactory factory, CallType callType) throws Exception {
+	private static DemoService buildReferenceBean(XxlRpcBootstrap rpcBootstrap, CallType callType) throws Exception {
 		XxlRpcReferenceBean referenceBean = new XxlRpcReferenceBean();
 		referenceBean.setClient(NettyClient.class);
 		referenceBean.setSerializer(JsonbSerializer.class);
@@ -72,8 +73,9 @@ public class XxlRpcClientAplication {
 		referenceBean.setAppname("server01");
 		//referenceBean.setAddress("127.0.0.1:7080");
 		//referenceBean.setAccessToken(null);
+		referenceBean.setRpcBootstrap(rpcBootstrap);
 
-		DemoService demoService = (DemoService) referenceBean.getObject(factory);
+		DemoService demoService = (DemoService) referenceBean.getObject();
 
 		return demoService;
 	}

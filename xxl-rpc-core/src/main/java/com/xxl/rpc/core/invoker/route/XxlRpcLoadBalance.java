@@ -1,5 +1,7 @@
 package com.xxl.rpc.core.invoker.route;
 
+import com.xxl.rpc.core.register.entity.RegisterInstance;
+
 import java.util.TreeSet;
 
 /**
@@ -11,6 +13,6 @@ import java.util.TreeSet;
  */
 public abstract class XxlRpcLoadBalance {
 
-    public abstract String route(String serviceKey, TreeSet<String> addressSet);
+    public abstract RegisterInstance route(String serviceKey, TreeSet<RegisterInstance> instanceTreeSet);
 
 }

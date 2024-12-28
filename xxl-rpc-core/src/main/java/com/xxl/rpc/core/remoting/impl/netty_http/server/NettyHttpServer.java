@@ -1,6 +1,6 @@
 package com.xxl.rpc.core.remoting.impl.netty_http.server;
 
-import com.xxl.rpc.core.factory.XxlRpcFactory;
+import com.xxl.rpc.core.boot.XxlRpcBootstrap;
 import com.xxl.rpc.core.remoting.Server;
 import com.xxl.rpc.core.remoting.entity.XxlRpcBeat;
 import com.xxl.rpc.core.util.ThreadPoolUtil;
@@ -28,7 +28,7 @@ public class NettyHttpServer extends Server  {
     private Thread thread;
 
     @Override
-    public void start(final XxlRpcFactory factory) throws Exception {
+    public void start(final XxlRpcBootstrap factory) throws Exception {
 
         thread = new Thread(new Runnable() {
 

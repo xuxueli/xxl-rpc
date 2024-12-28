@@ -1,8 +1,11 @@
 package com.xxl.rpc.core.invoker;
 
-import com.xxl.rpc.core.factory.XxlRpcFactory;
+import com.xxl.rpc.core.boot.XxlRpcBootstrap;
 import com.xxl.rpc.core.invoker.call.XxlRpcResponseFuture;
+import com.xxl.rpc.core.register.entity.RegisterInstance;
+import com.xxl.rpc.core.remoting.Client;
 import com.xxl.rpc.core.remoting.entity.XxlRpcResponse;
+import com.xxl.rpc.core.serializer.Serializer;
 import com.xxl.rpc.core.util.ThreadPoolUtil;
 import com.xxl.rpc.core.util.XxlRpcException;
 import org.slf4j.Logger;
@@ -23,9 +26,9 @@ public class InvokerFactory {
     /**
      * factory
      */
-    private final XxlRpcFactory factory;
+    private final XxlRpcBootstrap factory;
 
-    public InvokerFactory(final XxlRpcFactory xxlRpcFactory) {
+    public InvokerFactory(final XxlRpcBootstrap xxlRpcFactory) {
         this.factory = xxlRpcFactory;
     }
 
@@ -50,6 +53,9 @@ public class InvokerFactory {
 
         // stop CallbackThreadPool
         stopCallbackThreadPool();
+
+        // destory connect client
+        destoryClient();
     }
 
 
@@ -156,12 +162,103 @@ public class InvokerFactory {
      */
     public void stopCallbackThreadPool() {
         if (responseCallbackThreadPool != null) {
-            responseCallbackThreadPool.shutdown();
+            try {
+                responseCallbackThreadPool.shutdown();
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
         }
     }
 
     // ---------------------- client-pool ----------------------
 
+    private volatile ConcurrentMap<String, Client> connectClientMap = new ConcurrentHashMap<>();
+    private volatile ConcurrentMap<String, Object> connectClientLockMap = new ConcurrentHashMap<>();
 
+    /**
+     * destory connect client
+     */
+    private void destoryClient(){
+        if (!connectClientMap.isEmpty()) {
+            for (String key: connectClientMap.keySet()) {
+                Client clientPool = connectClientMap.get(key);
+                try {
+                    clientPool.close();
+                } catch (Throwable e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
+            connectClientMap.clear();
+        }
+    }
+
+    /**
+     * remove client
+     *
+     * @param address
+     */
+    public void checkDeadAndRemoveClient(String address){
+        Client connectClient = connectClientMap.get(address);
+        if (connectClient!=null) {
+            if (!connectClient.isValidate()) {
+                connectClientMap.remove(address);
+            }
+        }
+    }
+
+    /**
+     * get client with pool
+     *
+     * @param registerInstance
+     * @param clientClass
+     * @param serializer
+     * @return
+     * @throws Exception
+     */
+    public Client getClient(RegisterInstance registerInstance, Class<? extends Client> clientClass, final Serializer serializer) throws Exception {
+
+        String uniqueKey = registerInstance.getUniqueKey();
+
+        // get-valid client
+        Client connectClient = connectClientMap.get(uniqueKey);
+        if (connectClient!=null && connectClient.isValidate()) {
+            return connectClient;
+        }
+
+        // lock
+        Object clientLock = connectClientLockMap.get(uniqueKey);
+        if (clientLock == null) {
+            connectClientLockMap.putIfAbsent(uniqueKey, new Object());
+            clientLock = connectClientLockMap.get(uniqueKey);
+        }
+
+        // remove-create new client
+        synchronized (clientLock) {
+
+            // get-valid client, avlid repeat
+            connectClient = connectClientMap.get(uniqueKey);
+            if (connectClient!=null && connectClient.isValidate()) {
+                return connectClient;
+            }
+
+            // remove old
+            if (connectClient != null) {
+                connectClient.close();
+                connectClientMap.remove(uniqueKey);
+            }
+
+            // set pool
+            Client connectClient_new = clientClass.newInstance();
+            try {
+                connectClient_new.init(registerInstance, serializer, factory);
+                connectClientMap.put(uniqueKey, connectClient_new);
+            } catch (Exception e) {
+                connectClient_new.close();
+                throw e;
+            }
+
+            return connectClient_new;
+        }
+    }
 
 }

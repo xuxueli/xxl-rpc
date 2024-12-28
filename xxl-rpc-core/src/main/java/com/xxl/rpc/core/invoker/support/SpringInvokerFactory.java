@@ -1,6 +1,6 @@
 package com.xxl.rpc.core.invoker.support;
 
-import com.xxl.rpc.core.factory.XxlRpcFactory;
+import com.xxl.rpc.core.boot.XxlRpcBootstrap;
 import com.xxl.rpc.core.invoker.annotation.XxlRpcReference;
 import com.xxl.rpc.core.invoker.reference.XxlRpcReferenceBean;
 import com.xxl.rpc.core.provider.ProviderFactory;
@@ -12,7 +12,6 @@ import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -25,7 +24,7 @@ public class SpringInvokerFactory {
 
     public static boolean postProcessAfterInstantiation(final Object bean,
                                                         final String beanName,
-                                                        final XxlRpcFactory factory) throws BeansException {
+                                                        final XxlRpcBootstrap rpcBootstrap) throws BeansException {
 
         // collection
         final Set<String> appnameList = new HashSet<>();
@@ -54,11 +53,12 @@ public class SpringInvokerFactory {
                     referenceBean.setLoadBalance(rpcReference.loadBalance());
                     referenceBean.setTimeout(rpcReference.timeout());
                     //referenceBean.setAccessToken(rpcReference.accessToken());
+                    referenceBean.setRpcBootstrap(rpcBootstrap);
 
                     // get proxyObj
                     Object serviceProxy = null;
                     try {
-                        serviceProxy = referenceBean.getObject(factory);
+                        serviceProxy = referenceBean.getObject();
                     } catch (Exception e) {
                         throw new XxlRpcException(e);
                     }
@@ -78,9 +78,9 @@ public class SpringInvokerFactory {
         });
 
         // mult discovery, Trigger early-initialization discovery-data
-        if (factory.getRegister() != null) {
+        if (rpcBootstrap.getRegister() != null) {
             try {
-                factory.getRegister().discovery(appnameList);
+                rpcBootstrap.getRegister().discovery(appnameList);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }

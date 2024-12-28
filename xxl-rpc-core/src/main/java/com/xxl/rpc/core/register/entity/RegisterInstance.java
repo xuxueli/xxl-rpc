@@ -102,7 +102,11 @@ public class RegisterInstance implements Serializable, Comparable {
     public boolean equals(Object object) {
         if (object == null || getClass() != object.getClass()) return false;
         RegisterInstance that = (RegisterInstance) object;
-        return port == that.port && Objects.equals(env, that.env) && Objects.equals(appname, that.appname) && Objects.equals(ip, that.ip) && Objects.equals(extendInfo, that.extendInfo);
+        return Objects.equals(env, that.env)
+                && Objects.equals(appname, that.appname)
+                && Objects.equals(ip, that.ip)
+                && port == that.port
+                && Objects.equals(extendInfo, that.extendInfo);
     }
 
     @Override
@@ -113,10 +117,10 @@ public class RegisterInstance implements Serializable, Comparable {
     // tool
 
     /**
-     * get sort key
+     * get Unique Key
      * @return
      */
-    public String getSortKey(){
+    public String getUniqueKey(){
         return ip + ":" + port;
     }
 
@@ -124,7 +128,7 @@ public class RegisterInstance implements Serializable, Comparable {
     public int compareTo(Object o) {
         if (o instanceof RegisterInstance) {
             RegisterInstance that = (RegisterInstance) o;
-            return this.getSortKey().compareTo(that.getSortKey());
+            return this.getUniqueKey().compareTo(that.getUniqueKey());
         }
         return 0;
     }

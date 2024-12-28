@@ -1,6 +1,6 @@
 package com.xxl.rpc.core.provider.support;
 
-import com.xxl.rpc.core.factory.XxlRpcFactory;
+import com.xxl.rpc.core.boot.XxlRpcBootstrap;
 import com.xxl.rpc.core.provider.annotation.XxlRpcService;
 import com.xxl.rpc.core.util.XxlRpcException;
 import org.springframework.context.ApplicationContext;
@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public class SpringProviderFactory {
 
-    public static void scanService(ApplicationContext applicationContext, final XxlRpcFactory factory) {
+    public static void scanService(ApplicationContext applicationContext, final XxlRpcBootstrap factory) {
 
         // valid
         if (factory.getProvider() == null) {

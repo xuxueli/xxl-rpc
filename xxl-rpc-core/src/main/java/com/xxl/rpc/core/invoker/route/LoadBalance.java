@@ -7,11 +7,11 @@ import com.xxl.rpc.core.invoker.route.impl.*;
  */
 public enum LoadBalance {
 
-    RANDOM(new XxlRpcLoadBalanceRandomStrategy()),
-    ROUND(new XxlRpcLoadBalanceRoundStrategy()),
-    LRU(new XxlRpcLoadBalanceLRUStrategy()),
-    LFU(new XxlRpcLoadBalanceLFUStrategy()),
-    CONSISTENT_HASH(new XxlRpcLoadBalanceConsistentHashStrategy());
+    RANDOM(new XxlRpcLoadBalanceRandom()),
+    ROUND(new XxlRpcLoadBalanceRound()),
+    LRU(new XxlRpcLoadBalanceLRU()),
+    LFU(new XxlRpcLoadBalanceLFU()),
+    CONSISTENT_HASH(new XxlRpcLoadBalanceConsistentHash());
 
 
     public final XxlRpcLoadBalance xxlRpcInvokerRouter;

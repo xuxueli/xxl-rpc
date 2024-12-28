@@ -1,7 +1,7 @@
 package com.xxl.rpc.sample.server;
 
-import com.xxl.rpc.core.factory.XxlRpcFactory;
-import com.xxl.rpc.core.factory.config.BaseConfig;
+import com.xxl.rpc.core.boot.XxlRpcBootstrap;
+import com.xxl.rpc.core.boot.config.BaseConfig;
 import com.xxl.rpc.core.provider.config.ProviderConfig;
 import com.xxl.rpc.core.remoting.impl.netty.server.NettyServer;
 import com.xxl.rpc.sample.api.DemoService;
@@ -18,15 +18,15 @@ public class XxlRpcServerApplication {
     public static void main(String[] args) throws Exception {
 
         // init
-        XxlRpcFactory factory = new XxlRpcFactory();
-        factory.setBaseConfig(new BaseConfig("test", "client01"));
-        factory.setProviderConfig(new ProviderConfig(NettyServer.class, JsonbSerializer.class, -1, -1, 7080, null));
+        XxlRpcBootstrap rpcBootstrap = new XxlRpcBootstrap();
+        rpcBootstrap.setBaseConfig(new BaseConfig("test", "client01"));
+        rpcBootstrap.setProviderConfig(new ProviderConfig(NettyServer.class, JsonbSerializer.class, -1, -1, 7080, null));
 
         // start
-        factory.start();
+        rpcBootstrap.start();
 
         // add services
-        factory.getProvider().addService(DemoService.class.getName(), null, new DemoServiceImpl());
+        rpcBootstrap.getProvider().addService(DemoService.class.getName(), null, new DemoServiceImpl());
 
 
         while (!Thread.currentThread().isInterrupted()) {
@@ -34,7 +34,7 @@ public class XxlRpcServerApplication {
         }
 
         // stop
-        factory.stop();
+        rpcBootstrap.stop();
 
     }
 

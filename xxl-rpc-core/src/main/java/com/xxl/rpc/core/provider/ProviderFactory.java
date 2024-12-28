@@ -1,6 +1,6 @@
 package com.xxl.rpc.core.provider;
 
-import com.xxl.rpc.core.factory.XxlRpcFactory;
+import com.xxl.rpc.core.boot.XxlRpcBootstrap;
 import com.xxl.rpc.core.register.entity.RegisterInstance;
 import com.xxl.rpc.core.remoting.Server;
 import com.xxl.rpc.core.remoting.entity.XxlRpcRequest;
@@ -29,9 +29,9 @@ public class ProviderFactory {
 	/**
 	 * factory link
 	 */
-	private final XxlRpcFactory factory;
+	private final XxlRpcBootstrap factory;
 
-	public ProviderFactory(final XxlRpcFactory factory) {
+	public ProviderFactory(final XxlRpcBootstrap factory) {
 		this.factory = factory;
 	}
 

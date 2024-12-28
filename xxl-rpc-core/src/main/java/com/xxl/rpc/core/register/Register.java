@@ -1,7 +1,7 @@
 package com.xxl.rpc.core.register;
 
 
-import com.xxl.rpc.core.factory.XxlRpcFactory;
+import com.xxl.rpc.core.boot.XxlRpcBootstrap;
 import com.xxl.rpc.core.register.entity.RegisterInstance;
 
 import java.util.Map;
@@ -24,7 +24,7 @@ public abstract class Register {
      *
      * @param factory
      */
-    public abstract void start(final XxlRpcFactory factory);
+    public abstract void start(final XxlRpcBootstrap factory);
 
     /**
      * stop
@@ -47,7 +47,7 @@ public abstract class Register {
      * @param   appnameList
      * @return  appname : RegisterInstance - list
      */
-    public abstract Map<String, Set<RegisterInstance>> discovery(Set<String> appnameList);
+    public abstract Map<String, TreeSet<RegisterInstance>> discovery(Set<String> appnameList);
 
     /**
      * discovery service, for one
@@ -55,6 +55,6 @@ public abstract class Register {
      * @param       appname
      * @return      RegisterInstance - list
      */
-    public abstract Set<RegisterInstance> discovery(String appname);
+    public abstract TreeSet<RegisterInstance> discovery(String appname);
 
 }

@@ -1,6 +1,6 @@
 package com.xxl.rpc.core.remoting;
 
-import com.xxl.rpc.core.factory.XxlRpcFactory;
+import com.xxl.rpc.core.boot.XxlRpcBootstrap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +13,23 @@ import java.util.concurrent.Callable;
  */
 public abstract class Server {
 	protected static final Logger logger = LoggerFactory.getLogger(Server.class);
+
+	// ---------------------- start/stop ----------------------
+
+	/**
+	 * start server
+	 *
+	 * @param factory
+	 * @throws Exception
+	 */
+	public abstract void start(final XxlRpcBootstrap factory) throws Exception;
+
+	/**
+	 * stop server
+	 *
+	 * @throws Exception
+	 */
+	public abstract void stop() throws Exception;
 
 
 	// ---------------------- callback ----------------------
@@ -34,25 +51,6 @@ public abstract class Server {
 	public void setStopedCallback(Callable<Void> stopedCallback) {
 		this.stopedCallback = stopedCallback;
 	}
-
-
-	// ---------------------- start/stop ----------------------
-
-	/**
-	 * start server
-	 *
-	 * @param factory
-	 * @throws Exception
-	 */
-	public abstract void start(final XxlRpcFactory factory) throws Exception;
-
-	/**
-	 * stop server
-	 *
-	 * @throws Exception
-	 */
-	public abstract void stop() throws Exception;
-
 
 	/**
 	 * callback when started

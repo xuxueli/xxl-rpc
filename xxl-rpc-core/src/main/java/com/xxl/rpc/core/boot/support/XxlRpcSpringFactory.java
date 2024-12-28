@@ -1,6 +1,6 @@
-package com.xxl.rpc.core.factory.support;
+package com.xxl.rpc.core.boot.support;
 
-import com.xxl.rpc.core.factory.XxlRpcFactory;
+import com.xxl.rpc.core.boot.XxlRpcBootstrap;
 import com.xxl.rpc.core.invoker.support.SpringInvokerFactory;
 import com.xxl.rpc.core.provider.support.SpringProviderFactory;
 import org.slf4j.Logger;
@@ -17,7 +17,7 @@ import org.springframework.context.ApplicationContextAware;
  *
  * @author xuxueli 2024-12-21
  */
-public class XxlRpcSpringFactory extends XxlRpcFactory implements ApplicationContextAware, SmartInitializingSingleton, DisposableBean, InstantiationAwareBeanPostProcessor {
+public class XxlRpcSpringFactory extends XxlRpcBootstrap implements ApplicationContextAware, SmartInitializingSingleton, DisposableBean, InstantiationAwareBeanPostProcessor {
     private static final Logger logger = LoggerFactory.getLogger(XxlRpcSpringFactory.class);
 
     @Override
@@ -41,10 +41,10 @@ public class XxlRpcSpringFactory extends XxlRpcFactory implements ApplicationCon
         super.stop();
     }
 
-    private static ApplicationContext applicationContext;
+    private ApplicationContext applicationContext;
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        XxlRpcSpringFactory.applicationContext = applicationContext;
+        this.applicationContext = applicationContext;
     }
 
 }

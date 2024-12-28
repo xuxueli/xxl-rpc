@@ -24,9 +24,13 @@ public class NettyEncoder extends MessageToByteEncoder<Object> {
     @Override
     public void encode(ChannelHandlerContext ctx, Object in, ByteBuf out) throws Exception {
         if (genericClass.isInstance(in)) {
+            // serialize
             byte[] data = serializer.serialize(in);
+            // write data-len
             out.writeInt(data.length);
+            // write data-content
             out.writeBytes(data);
         }
     }
+
 }

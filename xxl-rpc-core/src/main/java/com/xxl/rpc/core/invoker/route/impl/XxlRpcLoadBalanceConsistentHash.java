@@ -1,6 +1,7 @@
 package com.xxl.rpc.core.invoker.route.impl;
 
 import com.xxl.rpc.core.invoker.route.XxlRpcLoadBalance;
+import com.xxl.rpc.core.register.entity.RegisterInstance;
 import com.xxl.rpc.core.util.XxlRpcException;
 
 import java.io.UnsupportedEncodingException;
@@ -17,7 +18,7 @@ import java.util.*;
  *
  * @author xuxueli 2018-12-04
  */
-public class XxlRpcLoadBalanceConsistentHashStrategy extends XxlRpcLoadBalance {
+public class XxlRpcLoadBalanceConsistentHash extends XxlRpcLoadBalance {
 
     private int VIRTUAL_NODE_NUM = 100;
 
@@ -56,20 +57,20 @@ public class XxlRpcLoadBalanceConsistentHashStrategy extends XxlRpcLoadBalance {
         return truncateHashCode;
     }
 
-    public String doRoute(String serviceKey, TreeSet<String> addressSet) {
+    public RegisterInstance doRoute(String serviceKey, TreeSet<RegisterInstance> instanceTreeSet) {
 
         // ------A1------A2-------A3------
         // -----------J1------------------
-        TreeMap<Long, String> addressRing = new TreeMap<Long, String>();
-        for (String address: addressSet) {
+        TreeMap<Long, RegisterInstance> addressRing = new TreeMap<>();
+        for (RegisterInstance instance: instanceTreeSet) {
             for (int i = 0; i < VIRTUAL_NODE_NUM; i++) {
-                long addressHash = hash("SHARD-" + address + "-NODE-" + i);
-                addressRing.put(addressHash, address);
+                long addressHash = hash("SHARD-" + instance.getUniqueKey() + "-NODE-" + i);
+                addressRing.put(addressHash, instance);
             }
         }
 
-        long jobHash = hash(serviceKey);
-        SortedMap<Long, String> lastRing = addressRing.tailMap(jobHash);
+        long serviceKeyHash = hash(serviceKey);
+        SortedMap<Long, RegisterInstance> lastRing = addressRing.tailMap(serviceKeyHash);
         if (!lastRing.isEmpty()) {
             return lastRing.get(lastRing.firstKey());
         }
@@ -77,9 +78,9 @@ public class XxlRpcLoadBalanceConsistentHashStrategy extends XxlRpcLoadBalance {
     }
 
     @Override
-    public String route(String serviceKey, TreeSet<String> addressSet) {
-        String finalAddress = doRoute(serviceKey, addressSet);
-        return finalAddress;
+    public RegisterInstance route(String serviceKey, TreeSet<RegisterInstance> instanceTreeSet) {
+        // hash（serviceKey维度，固定hash指定节点）
+        return doRoute(serviceKey, instanceTreeSet);
     }
 
 }

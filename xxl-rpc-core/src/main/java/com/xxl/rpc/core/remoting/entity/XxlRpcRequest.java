@@ -10,16 +10,47 @@ import java.util.Arrays;
  */
 public class XxlRpcRequest implements Serializable{
 	private static final long serialVersionUID = 42L;
-	
+
+	/**
+	 * request id
+	 */
 	private String requestId;
+
+	/**
+	 * request create time
+	 */
 	private long createMillisTime;
+
+	/**
+	 * access token
+	 */
 	private String accessToken;
 
+
+	/**
+	 * remote service, class name
+	 */
     private String className;
+
+	/**
+	 * remote service, method name
+	 */
     private String methodName;
+
+	/**
+	 * remote service, method parameter types
+	 */
     private Class<?>[] parameterTypes;
+
+	/**
+	 * remote service, method parameter values
+	 */
     private Object[] parameters;
 
+
+	/**
+	 * remote service, version of className
+	 */
 	private String version;
 
 

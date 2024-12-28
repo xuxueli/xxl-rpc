@@ -1,7 +1,7 @@
 package com.xxl.rpc.sample.client.conf;
 
-import com.xxl.rpc.core.factory.config.BaseConfig;
-import com.xxl.rpc.core.factory.support.XxlRpcSpringFactory;
+import com.xxl.rpc.core.boot.config.BaseConfig;
+import com.xxl.rpc.core.boot.support.XxlRpcSpringFactory;
 import com.xxl.rpc.core.invoker.config.InvokerConfig;
 import com.xxl.rpc.core.register.impl.LocalRegister;
 import com.xxl.rpc.core.register.entity.RegisterInstance;
