@@ -74,7 +74,7 @@ public class NettyHttpServerHandler extends SimpleChannelInboundHandler<FullHttp
                 // valid
                 if (requestBytes.length == 0) {
                     /*throw new XxlRpcException("xxl-rpc request data empty.");*/
-                    logger.warn(">>>>>>>>>>> xxl-rpc request data empty.");
+                    logger.debug(">>>>>>>>>>> xxl-rpc request data empty.");
                     writeResponse(ctx, keepAlive, "xxl-rpc request data empty.".getBytes("UTF-8"));
                     return;
                 }
