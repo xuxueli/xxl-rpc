@@ -29,7 +29,7 @@ public class XxlRpcClientAplication {
 
 	public static void main(String[] args) throws Exception {
 
-		// factory
+		// build factory
 		XxlRpcFactory factory = new XxlRpcFactory();
 		factory.setBaseConfig(new BaseConfig("test", "client01"));
 		factory.setInvokerConfig(new InvokerConfig());
@@ -42,11 +42,17 @@ public class XxlRpcClientAplication {
 
 		factory.start();
 
+		// build referenceBean
+		DemoService demoService_SYNC = buildReferenceBean(factory, CallType.SYNC);
+		DemoService demoService_FUTURE = buildReferenceBean(factory, CallType.FUTURE);
+		DemoService demoService_CALLBACK = buildReferenceBean(factory, CallType.CALLBACK);
+		DemoService demoService_ONEWAY = buildReferenceBean(factory, CallType.ONEWAY);
+
 		// test rpc
-		testSYNC(factory);
-		testFUTURE(factory);
-		testCALLBACK(factory);
-		testONEWAY(factory);
+		testSYNC(demoService_SYNC);
+		testFUTURE(demoService_FUTURE);
+		testCALLBACK(demoService_CALLBACK);
+		testONEWAY(demoService_ONEWAY);
 
 		TimeUnit.SECONDS.sleep(5);
 
@@ -54,17 +60,11 @@ public class XxlRpcClientAplication {
 		factory.stop();
 	}
 
-
-
-	/**
-	 * CallType.SYNC
-	 */
-	public static void testSYNC(XxlRpcFactory factory) throws Exception {
-		// init client
+	private static DemoService buildReferenceBean(XxlRpcFactory factory, CallType callType) throws Exception {
 		XxlRpcReferenceBean referenceBean = new XxlRpcReferenceBean();
 		referenceBean.setClient(NettyClient.class);
 		referenceBean.setSerializer(JsonbSerializer.class);
-		referenceBean.setCallType(CallType.SYNC);
+		referenceBean.setCallType(callType);
 		referenceBean.setLoadBalance(LoadBalance.ROUND);
 		referenceBean.setIface(DemoService.class);
 		referenceBean.setVersion(null);
@@ -74,6 +74,14 @@ public class XxlRpcClientAplication {
 		//referenceBean.setAccessToken(null);
 
 		DemoService demoService = (DemoService) referenceBean.getObject(factory);
+
+		return demoService;
+	}
+
+	/**
+	 * CallType.SYNC
+	 */
+	public static void testSYNC(DemoService demoService) throws Exception {
 
 		// test
         //UserDTO userDTO = demoService.sayHi("[SYNC]jack");
@@ -97,22 +105,7 @@ public class XxlRpcClientAplication {
 	/**
 	 * CallType.FUTURE
 	 */
-	public static void testFUTURE(XxlRpcFactory factory) throws Exception {
-		// client test
-		XxlRpcReferenceBean referenceBean = new XxlRpcReferenceBean();
-		referenceBean.setClient(NettyClient.class);
-		referenceBean.setSerializer(JsonbSerializer.class);
-		referenceBean.setCallType(CallType.FUTURE);
-		referenceBean.setLoadBalance(LoadBalance.ROUND);
-		referenceBean.setIface(DemoService.class);
-		referenceBean.setVersion(null);
-		referenceBean.setTimeout(500);
-		referenceBean.setAppname("server01");
-		//referenceBean.setAddress("127.0.0.1:7080");
-		//referenceBean.setAccessToken(null);
-
-		DemoService demoService = (DemoService) referenceBean.getObject(factory);
-
+	public static void testFUTURE(DemoService demoService) throws Exception {
 		// test
 		//demoService.sayHi("[FUTURE]jack" );
 		demoService.sayHi2(new UserDTO("[FUTURE]jack", "hello"));
@@ -126,23 +119,7 @@ public class XxlRpcClientAplication {
 	/**
 	 * CallType.CALLBACK
 	 */
-	public static void testCALLBACK(XxlRpcFactory factory) throws Exception {
-		// client test
-		XxlRpcReferenceBean referenceBean = new XxlRpcReferenceBean();
-		referenceBean.setClient(NettyClient.class);
-		referenceBean.setSerializer(JsonbSerializer.class);
-		referenceBean.setCallType(CallType.CALLBACK);
-		referenceBean.setLoadBalance(LoadBalance.ROUND);
-		referenceBean.setIface(DemoService.class);
-		referenceBean.setVersion(null);
-		referenceBean.setTimeout(500);
-		referenceBean.setAppname("server01");
-		//referenceBean.setAddress("127.0.0.1:7080");
-		//referenceBean.setAccessToken(null);
-
-		DemoService demoService = (DemoService) referenceBean.getObject(factory);
-
-
+	public static void testCALLBACK(DemoService demoService) throws Exception {
         // test
         XxlRpcInvokeCallback.setCallback(new XxlRpcInvokeCallback<UserDTO>() {
             @Override
@@ -164,22 +141,7 @@ public class XxlRpcClientAplication {
 	/**
 	 * CallType.ONEWAY
 	 */
-	public static void testONEWAY(XxlRpcFactory factory) throws Exception {
-		// client test
-		XxlRpcReferenceBean referenceBean = new XxlRpcReferenceBean();
-		referenceBean.setClient(NettyClient.class);
-		referenceBean.setSerializer(JsonbSerializer.class);
-		referenceBean.setCallType(CallType.ONEWAY);
-		referenceBean.setLoadBalance(LoadBalance.ROUND);
-		referenceBean.setIface(DemoService.class);
-		referenceBean.setVersion(null);
-		referenceBean.setTimeout(500);
-		referenceBean.setAppname("server01");
-		//referenceBean.setAddress("127.0.0.1:7080");
-		//referenceBean.setAccessToken(null);
-
-		DemoService demoService = (DemoService) referenceBean.getObject(factory);
-
+	public static void testONEWAY(DemoService demoService) throws Exception {
 		// test
         //demoService.sayHi("[ONEWAY]jack");
 		demoService.sayHi2(new UserDTO("[ONEWAY]jack", "hello"));

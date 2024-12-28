@@ -132,7 +132,7 @@ public class XxlRpcFactory {
         if (invokerConfig!=null) {
             try {
                 invoker = new InvokerFactory(this);
-                invoker.start();        // invoke registry-discovery(spring), run thread
+                invoker.start();                    // invoke registry-discovery, run thread
             } catch (Exception e) {
                 throw new XxlRpcException(e);
             }
