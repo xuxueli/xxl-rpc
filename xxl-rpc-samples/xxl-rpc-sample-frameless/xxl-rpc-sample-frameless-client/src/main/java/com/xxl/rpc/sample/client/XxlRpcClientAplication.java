@@ -27,11 +27,11 @@ public class XxlRpcClientAplication {
 
 		// 1、LocalRegister
 		LocalRegister localRegister = new LocalRegister();
-		localRegister.register(new RegisterInstance("test", "server01", "127.0.0.1", 7080, null));
+		localRegister.register(new RegisterInstance("test", "xxl-rpc-sample-frameless-server", "127.0.0.1", 7080, null));
 
 		// 2、XxlRpcBootstrap
 		XxlRpcBootstrap rpcBootstrap = new XxlRpcBootstrap();
-		rpcBootstrap.setBaseConfig(new BaseConfig("test", "client01"));
+		rpcBootstrap.setBaseConfig(new BaseConfig("test", "xxl-rpc-sample-frameless-client"));
 		rpcBootstrap.setRegister(localRegister);
 		rpcBootstrap.setInvokerConfig(new InvokerConfig(true));
 
@@ -65,7 +65,7 @@ public class XxlRpcClientAplication {
 		referenceBean.setIface(DemoService.class);
 		referenceBean.setVersion(null);
 		referenceBean.setTimeout(500);
-		referenceBean.setAppname("server01");
+		referenceBean.setAppname("xxl-rpc-sample-frameless-server");
 		//referenceBean.setAddress("127.0.0.1:7080");
 		//referenceBean.setAccessToken(null);
 		referenceBean.setRpcBootstrap(rpcBootstrap);
