@@ -1,7 +1,5 @@
 package com.xxl.rpc.core.register.impl.dto;
 
-import com.xxl.tool.response.ResponseCode;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -162,7 +160,7 @@ public class XxlRpcRegisterDTO {
         }
 
         public boolean isSuccess() {
-            return code == ResponseCode.CODE_200.getCode();
+            return code == SUCCESS_CODE;
         }
 
     }

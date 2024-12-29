@@ -3,9 +3,9 @@ package com.xxl.rpc.core.remoting.impl.netty.client;
 import com.xxl.rpc.core.invoker.InvokerFactory;
 import com.xxl.rpc.core.remoting.entity.XxlRpcBeat;
 import com.xxl.rpc.core.remoting.entity.XxlRpcResponse;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.timeout.IdleStateEvent;
+import com.xxl.rpc.netty.shaded.io.netty.channel.ChannelHandlerContext;
+import com.xxl.rpc.netty.shaded.io.netty.channel.SimpleChannelInboundHandler;
+import com.xxl.rpc.netty.shaded.io.netty.handler.timeout.IdleStateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

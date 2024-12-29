@@ -5,12 +5,12 @@ import com.xxl.rpc.core.remoting.entity.XxlRpcRequest;
 import com.xxl.rpc.core.remoting.entity.XxlRpcResponse;
 import com.xxl.rpc.core.provider.ProviderFactory;
 import com.xxl.rpc.core.util.ThrowableUtil;
-import io.netty.buffer.ByteBufUtil;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.codec.http.*;
-import io.netty.handler.timeout.IdleStateEvent;
+import com.xxl.rpc.netty.shaded.io.netty.buffer.ByteBufUtil;
+import com.xxl.rpc.netty.shaded.io.netty.buffer.Unpooled;
+import com.xxl.rpc.netty.shaded.io.netty.channel.ChannelHandlerContext;
+import com.xxl.rpc.netty.shaded.io.netty.channel.SimpleChannelInboundHandler;
+import com.xxl.rpc.netty.shaded.io.netty.handler.codec.http.*;
+import com.xxl.rpc.netty.shaded.io.netty.handler.timeout.IdleStateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +38,7 @@ public class NettyHttpServerHandler extends SimpleChannelInboundHandler<FullHttp
     protected void channelRead0(final ChannelHandlerContext ctx, FullHttpRequest msg) throws Exception {
 
         // request parse
-        final byte[] requestBytes = ByteBufUtil.getBytes(msg.content());    // byteBuf.toString(io.netty.util.CharsetUtil.UTF_8);
+        final byte[] requestBytes = ByteBufUtil.getBytes(msg.content());    // byteBuf.toString(com.xxl.rpc.netty.shaded.io.netty.util.CharsetUtil.UTF_8);
         final String uri = msg.uri();
         final boolean keepAlive = HttpUtil.isKeepAlive(msg);
 

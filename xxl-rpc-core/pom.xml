@@ -16,11 +16,11 @@
 	<dependencies>
 
 		<!-- ********************** remoting + serialize ********************** -->
-		<!-- netty -->
+		<!-- netty-shade -->
 		<dependency>
-			<groupId>io.netty</groupId>
-			<artifactId>netty-codec-http</artifactId>
-			<version>${netty.version}</version>
+			<groupId>com.xuxueli</groupId>
+			<artifactId>xxl-rpc-netty-shade</artifactId>
+			<version>${project.parent.version}</version>
 		</dependency>
 		<!-- fastjson2 -->
 		<dependency>
@@ -28,14 +28,14 @@
 			<artifactId>fastjson2</artifactId>
 			<version>${fastjson2.version}</version>
 		</dependency>
+
+		<!-- ********************** base ********************** -->
 		<!-- tool -->
 		<dependency>
 			<groupId>com.xuxueli</groupId>
 			<artifactId>xxl-tool</artifactId>
 			<version>${xxl-tool.version}</version>
 		</dependency>
-
-		<!-- ********************** base ********************** -->
 		<!-- slf4j -->
 		<dependency>
 			<groupId>org.slf4j</groupId>

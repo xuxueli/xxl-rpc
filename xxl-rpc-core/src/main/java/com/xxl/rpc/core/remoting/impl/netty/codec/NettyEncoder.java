@@ -1,8 +1,8 @@
 package com.xxl.rpc.core.remoting.impl.netty.codec;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.MessageToByteEncoder;
+import com.xxl.rpc.netty.shaded.io.netty.buffer.ByteBuf;
+import com.xxl.rpc.netty.shaded.io.netty.channel.ChannelHandlerContext;
+import com.xxl.rpc.netty.shaded.io.netty.handler.codec.MessageToByteEncoder;
 
 import com.xxl.rpc.core.serializer.Serializer;
 

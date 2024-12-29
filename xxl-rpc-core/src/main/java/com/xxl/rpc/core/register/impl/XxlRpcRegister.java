@@ -5,7 +5,6 @@ import com.xxl.rpc.core.boot.XxlRpcBootstrap;
 import com.xxl.rpc.core.register.Register;
 import com.xxl.rpc.core.register.entity.RegisterInstance;
 import com.xxl.rpc.core.register.impl.dto.XxlRpcRegisterDTO;
-import com.xxl.tool.encrypt.Md5Tool;
 import com.xxl.tool.net.HttpTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
