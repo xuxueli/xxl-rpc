@@ -31,6 +31,12 @@ public class XxlRpcBootstrapConf {
     @Value("${xxl-rpc.register.accesstoken}")
     private String accesstoken;
 
+    @Value("${xxl-rpc.invoker.open}")
+    private boolean invokerOpen;
+
+    @Value("${xxl-rpc.provider.open}")
+    private boolean providerOpen;
+
     @Value("${xxl-rpc.provider.port}")
     private int port;
 
@@ -40,9 +46,7 @@ public class XxlRpcBootstrapConf {
     @Value("${xxl-rpc.provider.maxPoolSize}")
     private int maxPoolSize;
 
-    @Value("${xxl-rpc.invoker.open}")
-    private boolean open;
-
+    
     @Bean
     public XxlRpcSpringFactory xxlRpcSpringFactory() {
 
@@ -50,14 +54,16 @@ public class XxlRpcBootstrapConf {
         XxlRpcSpringFactory factory = new XxlRpcSpringFactory();
         factory.setBaseConfig(new BaseConfig(env, appname));
         factory.setRegister(new XxlRpcRegister(address, accesstoken));
-        factory.setProviderConfig(new ProviderConfig(
-                NettyServer.class,
-                JsonbSerializer.class,
-                port,
-                corePoolSize,
-                maxPoolSize,
-                null));
-        factory.setInvokerConfig(new InvokerConfig(open));
+        factory.setInvokerConfig(new InvokerConfig(invokerOpen));
+        factory.setProviderConfig(providerOpen ?
+                new ProviderConfig(
+                        NettyServer.class,
+                        JsonbSerializer.class,
+                        port,
+                        corePoolSize,
+                        maxPoolSize,
+                        null) : new ProviderConfig(providerOpen));
+
 
         return factory;
     }
