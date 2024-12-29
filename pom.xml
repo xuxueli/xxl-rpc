@@ -14,6 +14,10 @@
 		<module>xxl-rpc-core</module>
 		<module>xxl-rpc-admin</module>
 		<module>xxl-rpc-samples</module>
+		<!--
+		notice："xxl-rpc-netty-shade" can not be associated, need to be packaged separately in advance
+		-->
+		<!--<module>xxl-rpc-netty-shade</module>-->
     </modules>
 
 	<properties>
