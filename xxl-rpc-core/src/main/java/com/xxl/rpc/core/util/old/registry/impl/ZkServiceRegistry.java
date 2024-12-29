@@ -144,7 +144,7 @@
 //            }
 //        });
 //
-//        // init client      // TODO, support init without conn, and can use mirror data
+//        // init client      // TODO2, support init without conn, and can use mirror data
 //        xxlZkClient.getClient();
 //
 //

@@ -150,8 +150,11 @@ public class XxlRpcRegister extends Register {
                         if (!discoveryAppnameStore.isEmpty()) {
                             // 1、全量服务发现：次/30s
                             Map<String, TreeSet<RegisterInstance>> discoveryResult = doDiscovery(discoveryAppnameStore.keySet());
+                            if (discoveryResult != null && !discoveryResult.isEmpty()) {
+                                discoveryAppnameStore.putAll(discoveryResult);
+                            }
 
-                            // 2、增量服务发现：long-polling/实时监听 TODO
+                            // 2、增量服务发现：long-polling/实时监听；TODO-1，
 
                         }
 

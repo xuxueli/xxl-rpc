@@ -6,7 +6,7 @@ package com.xxl.rpc.core.invoker.generic;
 public interface XxlRpcGenericService {
 
     /**
-     * generic invoke       TODO
+     * generic invoke       TODO-1，泛化调用
      *
      * @param iface                 iface name
      * @param version               iface version

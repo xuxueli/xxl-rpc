@@ -50,7 +50,7 @@ public class ProviderConfig {
     /**
      * accessToken (optional), for rpc-safe
      */
-    //private String accessToken;   // TODO2，静态配置token废弃，借助注册中心实现动态token；
+    //private String accessToken;   // TODO-1，静态配置token废弃，借助注册中心实现动态token；
 
     public ProviderConfig() {
     }

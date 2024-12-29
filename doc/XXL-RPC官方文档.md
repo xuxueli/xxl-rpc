@@ -827,16 +827,25 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 - 6、【合并】合并 [PR-53](https://github.com/xuxueli/xxl-rpc/pull/53)，调整NettyConnectClient类锁问题；
 - 7、【合并】合并 [PR-51](https://github.com/xuxueli/xxl-rpc/pull/51)，解决解决RST异常问题；
 
+### v1.8.0 Release Notes[2024-11-24]
+- 1、【重构】针对 “Core/核心模块” 进行架构模块化重构，拆分 Provider、Invoker、Serializer、Remoting、Registry 和 Boot 等六个核心模块：
+  - Provider：定位为服务提供者，提供RPC服务端能力，包括RCP/HTTP Server、业务Service扫描维护、服务执行等能力。
+  - Invoker：定位为服务调用者，提供RPC客户端能力，包括RCP/HTTP Client、业务请求代理、负载均衡、多方式请求调用能力。
+  - Serializer：定位为序列化组件，提供通讯数据序列化能力，提供包括JSONB、Hessian、KRYO、PROTOSTUFF…等多种可扩展方案。
+  - Remoting：定位为通讯组件，提供底层网络通讯能力，提供包括Netty/TCP、Netty/HTTP、Jetty、Mina…等多种可扩展方案。
+  - Register：定位为注册中心，提供服务注册、发现能力，提供包括 XxlRpcRegister(官方内置/xxl-rpc-admin)、Zookeeper、Nacos、Consul、ETCD…等多种可扩展方案。
+  - Boot：定位为启动引导模块，提供SpringBoot、无框架等技术栈快速集成能力，如SpringBoot可全程配置化接入、注解式开发等。
+- 2、【重构】针对 “Admin/服务管理模块” 进行模型以及UI重构，提供 环境/命名空间、应用、鉴权、服务注册节点 等在线运营管控能力。
+- 3、【优化】服务注册从接口维度调整为应用维度，降低服务注册压力，提升稳定性及系统负载。
+- 4、【优化】XxlRpcReferenceBean 移除冗余属性，注册信息收敛至Register，降低认知成本、提升可维护性。
+- 5、【安全】默认序列化方案调整为 JSONB，并进行兜底安全过滤，提升序列化性能、以及安全性；
 
-### v1.8.0 Release Notes[迭代中]
-- 1、【重构】注册维度调整为appkey，降低服务注册压力、提升稳定性；
-- 2、【重构】客户端参数调整，iface只保留服务元数据，注册信息统一上提至公共factory；
-- 3、【重构】注册中心重构，支持 环境、应用、鉴权、服务注册节点 在线运营管控；
-- 4、【优化】默认序列化方案调整为 JSONB，提升性能，提升安全性；
+### v1.8.1 Release Notes[2024-11-24]
+- 1、【TODO】【优化】long-polling逻辑完善；
+- 2、【TODO】【安全】序列化组件强化，提升安全性及定制性；
 - 5、【TODO】通讯报文长度可配置；
 - 6、【TODO】路由对象支持可配置，当前根据iface，太固定；
 - 7、【TODO】客户端并发锁超时优化；
-
 
 ### TODO LIST
 - 提高系统可用性，以部分功能暂时不可达为代价，防止服务整体缓慢或雪崩

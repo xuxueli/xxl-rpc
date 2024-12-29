@@ -43,11 +43,11 @@
 //				// The Server
 //				org.eclipse.jetty.server.Server server = new org.eclipse.jetty.server.Server(
 //						new QueuedThreadPool(xxlRpcProviderFactory.getMaxPoolSize(), xxlRpcProviderFactory.getCorePoolSize()));
-//				// TODO, thread config, change to async servlet
+//				// TODO2, thread config, change to async servlet
 //
 //				// HTTP connector
 //				ServerConnector connector = new ServerConnector(server);
-//				/*if (ip!=null && ip.trim().length()>0) {	// TODO, support set registry ip、and bind ip
+//				/*if (ip!=null && ip.trim().length()>0) {	// TODO2, support set registry ip、and bind ip
 //					//connector.setHost(ip);	// The network interface this connector binds to as an IP address or a hostname.  If null or 0.0.0.0, then bind to all interfaces.
 //				}*/
 //				connector.setPort(xxlRpcProviderFactory.getPort());
