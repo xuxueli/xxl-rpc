@@ -855,7 +855,7 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 
 ### v1.8.1 Release Notes[2024-11-24]
 - 1、【优化】仓库模块 xxl-rpc-netty-shade 接耦拆分；升级netty版本至最新版； 
-- 3、【TODO】【优化】long-polling逻辑完善；
+- 3、【优化】long-polling逻辑完善；
 - 4、【TODO】【安全】序列化组件强化，提升安全性及定制性；
 - 5、【TODO】通讯报文长度可配置；
 - 6、【TODO】路由对象支持可配置，当前根据iface，太固定；

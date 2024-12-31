@@ -13,11 +13,6 @@ public class DiscoveryResponse extends OpenApiResponse implements Serializable {
 	public static final long serialVersionUID = 42L;
 
 	/**
-	 * Env
-	 */
-	private String env;
-
-	/**
 	 * discovery result data
 	 *
 	 * structure：Map
@@ -42,13 +37,6 @@ public class DiscoveryResponse extends OpenApiResponse implements Serializable {
 		super(code, msg);
 	}
 
-	public String getEnv() {
-		return env;
-	}
-
-	public void setEnv(String env) {
-		this.env = env;
-	}
 
 	public Map<String, List<InstanceCacheDTO>> getDiscoveryData() {
 		return discoveryData;
@@ -64,6 +52,16 @@ public class DiscoveryResponse extends OpenApiResponse implements Serializable {
 
 	public void setDiscoveryDataMd5(Map<String, String> discoveryDataMd5) {
 		this.discoveryDataMd5 = discoveryDataMd5;
+	}
+
+	@Override
+	public String toString() {
+		return "DiscoveryResponse{" +
+				", discoveryData=" + discoveryData +
+				", discoveryDataMd5=" + discoveryDataMd5 +
+				", code=" + getCode() +
+				", msg='" + getMsg() + '\'' +
+				'}';
 	}
 
 }

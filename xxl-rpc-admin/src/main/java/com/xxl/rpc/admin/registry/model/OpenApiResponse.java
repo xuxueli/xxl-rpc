@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * @author xuxueli 2018-12-03
  */
-public class OpenApiResponse<T> implements Serializable {
+public class OpenApiResponse implements Serializable {
     public static final long serialVersionUID = 42L;
 
     public static final int SUCCESS_CODE = 200;
@@ -18,16 +18,11 @@ public class OpenApiResponse<T> implements Serializable {
 
     private String msg;
 
-    private T data;
 
     public OpenApiResponse() {}
     public OpenApiResponse(int code, String msg) {
         this.code = code;
         this.msg = msg;
-    }
-    public OpenApiResponse(T data) {
-        this.code = SUCCESS_CODE;
-        this.data = data;
     }
 
     public int getCode() {
@@ -46,20 +41,12 @@ public class OpenApiResponse<T> implements Serializable {
         this.msg = msg;
     }
 
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
-    }
 
     @Override
     public String toString() {
         return "OpenApiResponse{" +
                 "code=" + code +
                 ", msg='" + msg + '\'' +
-                ", data=" + data +
                 '}';
     }
 

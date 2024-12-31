@@ -62,7 +62,7 @@
 //		}, IdleStatus.BOTH_IDLE, KeepAliveRequestTimeoutHandler.CLOSE);
 //		heartBeat.setForwardEvent(true);
 //		heartBeat.setRequestInterval(10);
-//		heartBeat.setRequestTimeout(10);*/	// TODO，mina beat
+//		heartBeat.setRequestTimeout(10);*/	// TODO2，mina beat
 //
 //		// init
 //		connector = new NioSocketConnector();

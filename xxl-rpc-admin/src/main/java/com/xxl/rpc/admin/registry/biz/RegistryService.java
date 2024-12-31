@@ -18,7 +18,7 @@ public interface RegistryService {
      * @param request   client instance
      * @return
      */
-    OpenApiResponse<String> register(RegisterRequest request);
+    OpenApiResponse register(RegisterRequest request);
 
     /**
      * unregister
@@ -26,7 +26,7 @@ public interface RegistryService {
      * @param request
      * @return
      */
-    OpenApiResponse<String> unregister(RegisterRequest request);
+    OpenApiResponse unregister(RegisterRequest request);
 
     /**
      * discovery
@@ -44,6 +44,6 @@ public interface RegistryService {
      *      1、support client monitor，long-polling
      *      2、push client when registry changed
      */
-    DeferredResult<OpenApiResponse<String>> monitor(DiscoveryRequest request);
+    DeferredResult<OpenApiResponse> monitor(DiscoveryRequest request);
 
 }

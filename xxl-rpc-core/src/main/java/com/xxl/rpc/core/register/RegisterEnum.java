@@ -2,7 +2,7 @@ package com.xxl.rpc.core.register;
 
 
 import com.xxl.rpc.core.register.impl.LocalRegister;
-import com.xxl.rpc.core.register.impl.XxlRpcRegister;
+import com.xxl.rpc.core.register.impl.XxlRpcAdminRegister;
 
 /**
  * @author xuxueli 2024-12-21
@@ -10,7 +10,7 @@ import com.xxl.rpc.core.register.impl.XxlRpcRegister;
 public enum RegisterEnum {
 
     LOCAL(LocalRegister.class),
-    XXL_RPC_ADMIN(XxlRpcRegister.class);
+    XXL_RPC_ADMIN(XxlRpcAdminRegister.class);
 
     private Class<? extends Register> serializerClass;
 

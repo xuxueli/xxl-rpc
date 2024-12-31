@@ -36,7 +36,7 @@ public class OpenApiController {
 
         // valid
         if (!"POST".equalsIgnoreCase(httpServletRequest.getMethod())) {
-            return new OpenApiResponse<String>(OpenApiResponse.FAIL_CODE, "invalid request, HttpMethod not support.");
+            return new OpenApiResponse(OpenApiResponse.FAIL_CODE, "invalid request, HttpMethod not support.");
         }
         if (uri==null || uri.trim().isEmpty()) {
             return new OpenApiResponse(OpenApiResponse.FAIL_CODE, "invalid request, uri-mapping empty.");

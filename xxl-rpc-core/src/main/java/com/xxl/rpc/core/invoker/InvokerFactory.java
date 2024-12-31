@@ -272,7 +272,7 @@ public class InvokerFactory {
     /**
      * referenceBean List
      */
-    private volatile List<XxlRpcReferenceBean> referenceBeanList = new ArrayList<>();
+    private volatile List<XxlRpcReferenceBean> referenceBeanListStore = new ArrayList<>();
 
     /**
      * add referenceBean
@@ -280,15 +280,15 @@ public class InvokerFactory {
      * @param referenceBeanList
      */
     public void addAllReferenceBean(List<XxlRpcReferenceBean> referenceBeanList){
-        referenceBeanList.addAll(referenceBeanList);
+        this.referenceBeanListStore.addAll(referenceBeanList);
     }
 
     /**
      * discovery referenceBean
      */
     public void discoveryReferenceBean(){
-        if (!referenceBeanList.isEmpty()) {
-            Set<String> appnameList = referenceBeanList.stream().map(XxlRpcReferenceBean::getAppname).collect(Collectors.toSet());
+        if (!referenceBeanListStore.isEmpty()) {
+            Set<String> appnameList = referenceBeanListStore.stream().map(XxlRpcReferenceBean::getAppname).collect(Collectors.toSet());
             // mult discovery, Trigger early-initialization discovery-data
             try {
                 rpcBootstrap.getRegister().discovery(appnameList);

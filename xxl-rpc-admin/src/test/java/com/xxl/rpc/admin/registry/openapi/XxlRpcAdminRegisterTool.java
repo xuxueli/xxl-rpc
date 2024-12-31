@@ -1,10 +1,20 @@
-package com.xxl.rpc.core.register.impl.dto;
+package com.xxl.rpc.admin.registry.openapi;
+
+import com.alibaba.fastjson2.JSON;
+import com.xxl.tool.net.HttpTool;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-public class XxlRpcRegisterDTO {
+/**
+ * xxl-rpc admin register tool
+ *
+ * @author xuxueli 2025-01-01
+ */
+public class XxlRpcAdminRegisterTool {
+
+    // ---------------------- entity ----------------------
 
     public static class RegisterInstance implements Serializable {
         public static final long serialVersionUID = 42L;
@@ -228,11 +238,6 @@ public class XxlRpcRegisterDTO {
         public static final long serialVersionUID = 42L;
 
         /**
-         * Env
-         */
-        private String env;
-
-        /**
          * discovery result data
          *
          * structure：Map
@@ -257,14 +262,6 @@ public class XxlRpcRegisterDTO {
             super(code, msg);
         }
 
-        public String getEnv() {
-            return env;
-        }
-
-        public void setEnv(String env) {
-            this.env = env;
-        }
-
         public Map<String, List<InstanceCacheDTO>> getDiscoveryData() {
             return discoveryData;
         }
@@ -281,6 +278,15 @@ public class XxlRpcRegisterDTO {
             this.discoveryDataMd5 = discoveryDataMd5;
         }
 
+        @Override
+        public String toString() {
+            return "DiscoveryResponse{" +
+                    ", discoveryData=" + discoveryData +
+                    ", discoveryDataMd5=" + discoveryDataMd5 +
+                    ", code=" + getCode() +
+                    ", msg='" + getMsg() + '\'' +
+                    '}';
+        }
     }
 
     public static class InstanceCacheDTO implements Serializable {
@@ -376,6 +382,132 @@ public class XxlRpcRegisterDTO {
             return ip + ":" + port;
         }
 
+    }
+
+    // ---------------------- tool ----------------------
+
+    /**
+     * register
+     *
+     * @param adminAddress
+     * @param accessToken
+     * @param env
+     * @param instance
+     * @return
+     */
+    public static OpenApiResponse register(String adminAddress,
+                                                                   String accessToken,
+                                                                   String env,
+                                                                   RegisterInstance instance) {
+        // 1、build request
+        RegisterRequest request = new RegisterRequest();
+        request.setAccessToken(accessToken);
+        request.setEnv(env);
+        request.setInstance(instance);
+
+        // 2、post
+        String responseBody = HttpTool.postBody(adminAddress + "/openapi/register",
+                JSON.toJSONString(request),
+                null,
+                3000);
+
+        // 3、parse response
+        OpenApiResponse openApiResponse = JSON.parseObject(responseBody, OpenApiResponse.class);
+        return openApiResponse;
+    }
+
+    /**
+     * unregister
+     *
+     * @param adminAddress
+     * @param accessToken
+     * @param env
+     * @param instance
+     * @return
+     */
+    public static OpenApiResponse unregister(String adminAddress,
+                                                                    String accessToken,
+                                                                    String env,
+                                                                    RegisterInstance instance) {
+        // 1、build request
+        RegisterRequest request = new RegisterRequest();
+        request.setAccessToken(accessToken);
+        request.setEnv(env);
+        request.setInstance(instance);
+
+        // 2、post
+        String responseBody = HttpTool.postBody(adminAddress + "/openapi/unregister",
+                JSON.toJSONString(request),
+                null,
+                3000);
+
+        // 3、parse response
+        OpenApiResponse openApiResponse = JSON.parseObject(responseBody, OpenApiResponse.class);
+        return openApiResponse;
+    }
+
+    /**
+     * discovery
+     *
+     * @param adminAddress
+     * @param accessToken
+     * @param env
+     * @param appnameList
+     * @param simpleQuery
+     * @return
+     */
+    public static DiscoveryResponse discovery(String adminAddress,
+                                                                    String accessToken,
+                                                                    String env,
+                                                                    List<String> appnameList,
+                                                                    boolean simpleQuery) {
+        DiscoveryRequest request = new DiscoveryRequest();
+        request.setAccessToken(accessToken);
+        request.setEnv(env);
+        request.setAppnameList(appnameList);
+        request.setSimpleQuery(simpleQuery);
+
+        String responseBody = HttpTool.postBody(adminAddress + "/openapi/discovery",
+                JSON.toJSONString(request),
+                null,
+                3000
+        );
+        DiscoveryResponse discoveryResponse = JSON.parseObject(responseBody, DiscoveryResponse.class);
+        return discoveryResponse;
+    }
+
+    /**
+     * monitor
+     *
+     * @param adminAddress
+     * @param accessToken
+     * @param env
+     * @param appnameList
+     * @param timeout       by second
+     * @return
+     */
+    public static OpenApiResponse monitor(String adminAddress,
+                                          String accessToken,
+                                          String env,
+                                          List<String> appnameList,
+                                          int timeout) {
+        // 4、monitor
+        DiscoveryRequest request = new DiscoveryRequest();
+        request.setAccessToken(accessToken);
+        request.setEnv(env);
+        request.setAppnameList(appnameList);
+        request.setSimpleQuery(false);
+
+        try {
+            String responseBody = HttpTool.postBody(adminAddress + "/openapi/monitor",
+                    JSON.toJSONString(request),
+                    null,
+                    timeout);
+            OpenApiResponse discoveryResponse = JSON.parseObject(responseBody, OpenApiResponse.class);
+            return discoveryResponse;
+        } catch (Exception e) {
+            return new OpenApiResponse(OpenApiResponse.FAIL_CODE, e.getMessage());
+        }
     }
 
 }

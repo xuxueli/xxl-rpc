@@ -20,27 +20,27 @@ public class RegistryServiceImpl implements RegistryService {
 
 
     @Override
-    public OpenApiResponse<String> register(RegisterRequest request) {
+    public OpenApiResponse register(RegisterRequest request) {
         // valid token
         if (!RegistryFactory.getInstance().getAccessTokenHelpler().validRequestToken(request)) {
-            return new OpenApiResponse<>(OpenApiResponse.FAIL_CODE, "accessToken Invalid.");
+            return new OpenApiResponse(OpenApiResponse.FAIL_CODE, "accessToken Invalid.");
         }
 
         // invoke
         RegistryFactory.getInstance().getRegisterHelper().registry(request);
-        return new OpenApiResponse<>(OpenApiResponse.SUCCESS_CODE, null);
+        return new OpenApiResponse(OpenApiResponse.SUCCESS_CODE, null);
     }
 
     @Override
-    public OpenApiResponse<String> unregister(RegisterRequest request) {
+    public OpenApiResponse unregister(RegisterRequest request) {
         // valid token
         if (!RegistryFactory.getInstance().getAccessTokenHelpler().validRequestToken(request)) {
-            return new OpenApiResponse<>(OpenApiResponse.FAIL_CODE, "accessToken Invalid.");
+            return new OpenApiResponse(OpenApiResponse.FAIL_CODE, "accessToken Invalid.");
         }
 
         // invoke
         RegistryFactory.getInstance().getRegisterHelper().unregister(request);
-        return new OpenApiResponse<>(OpenApiResponse.SUCCESS_CODE, null);
+        return new OpenApiResponse(OpenApiResponse.SUCCESS_CODE, null);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class RegistryServiceImpl implements RegistryService {
     }
 
     @Override
-    public DeferredResult<OpenApiResponse<String>> monitor(DiscoveryRequest request) {
+    public DeferredResult<OpenApiResponse> monitor(DiscoveryRequest request) {
         // valid token
         if (!RegistryFactory.getInstance().getAccessTokenHelpler().validRequestToken(request)) {
             DeferredResult deferredResult = new DeferredResult(30 * 1000L, new DiscoveryResponse(DiscoveryResponse.SUCCESS_CODE, "Monitor timeout, no key updated."));

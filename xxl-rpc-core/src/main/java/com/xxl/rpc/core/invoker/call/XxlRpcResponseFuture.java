@@ -1,6 +1,7 @@
 package com.xxl.rpc.core.invoker.call;
 
 import com.xxl.rpc.core.invoker.InvokerFactory;
+import com.xxl.rpc.core.register.entity.RegisterInstance;
 import com.xxl.rpc.core.remoting.entity.XxlRpcRequest;
 import com.xxl.rpc.core.remoting.entity.XxlRpcResponse;
 import com.xxl.rpc.core.util.XxlRpcException;
@@ -20,6 +21,7 @@ public class XxlRpcResponseFuture implements Future<XxlRpcResponse> {
 
 	// factory
 	private final InvokerFactory invokerFactory;
+	private final RegisterInstance registerInstance;
 
 	// net data
 	private final XxlRpcRequest request;
@@ -34,10 +36,12 @@ public class XxlRpcResponseFuture implements Future<XxlRpcResponse> {
 
 
 	public XxlRpcResponseFuture(final InvokerFactory invokerFactory,
+								final RegisterInstance registerInstance,
 								final XxlRpcRequest request,
 								XxlRpcInvokeCallback invokeCallback) {
 
 		this.invokerFactory = invokerFactory;
+		this.registerInstance = registerInstance;
 		this.request = request;
 		this.invokeCallback = invokeCallback;
 
@@ -128,7 +132,7 @@ public class XxlRpcResponseFuture implements Future<XxlRpcResponse> {
 			}
 		}
 		if (!done) {
-			throw new XxlRpcException("xxl-rpc, request timeout at:"+ System.currentTimeMillis() +", request:" + request.toString());
+			throw new XxlRpcException("xxl-rpc, request timeout. registerInstance="+registerInstance.getUniqueKey()+", request=" + request.toString());
 		}
 		return response;
 	}

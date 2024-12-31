@@ -4,7 +4,7 @@ import com.xxl.rpc.core.boot.config.BaseConfig;
 import com.xxl.rpc.core.boot.support.SpringXxlRpcBootstrap;
 import com.xxl.rpc.core.invoker.config.InvokerConfig;
 import com.xxl.rpc.core.provider.config.ProviderConfig;
-import com.xxl.rpc.core.register.impl.XxlRpcRegister;
+import com.xxl.rpc.core.register.impl.XxlRpcAdminRegister;
 import com.xxl.rpc.core.remoting.impl.netty.server.NettyServer;
 import com.xxl.rpc.core.serializer.impl.JsonbSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -53,7 +53,7 @@ public class SpringXxlRpcBootstrapConfig {
         // XxlRpc Bootstrap
         SpringXxlRpcBootstrap factory = new SpringXxlRpcBootstrap();
         factory.setBaseConfig(new BaseConfig(env, appname));
-        factory.setRegister(new XxlRpcRegister(address, accesstoken));
+        factory.setRegister(new XxlRpcAdminRegister(address, accesstoken));
         factory.setInvokerConfig(new InvokerConfig(invokerOpen));
         factory.setProviderConfig(providerOpen ?
                 new ProviderConfig(

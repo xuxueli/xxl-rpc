@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import java.io.File;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -132,7 +131,7 @@ public class RegistryDeferredResultHelpler {
             if (CollectionTool.isNotEmpty(deferredResultList)) {
                 registryDeferredResultMap.remove(envAppname);   // thread-safe write
                 for (DeferredResult deferredResult: deferredResultList) {
-                    deferredResult.setResult(new OpenApiResponse<>(OpenApiResponse.SUCCESS_CODE, "Monitor key("+ envAppname +") update."));
+                    deferredResult.setResult(new OpenApiResponse(OpenApiResponse.SUCCESS_CODE, "Monitor key("+ envAppname +") update."));
                 }
             }
         }
@@ -144,14 +143,14 @@ public class RegistryDeferredResultHelpler {
      * @param request
      * @return
      */
-    public DeferredResult<OpenApiResponse<String>> monitor(DiscoveryRequest request) {
+    public DeferredResult<OpenApiResponse> monitor(DiscoveryRequest request) {
 
         // init
-        DeferredResult deferredResult = new DeferredResult(30 * 1000L, new OpenApiResponse<String>(OpenApiResponse.SUCCESS_CODE, "Monitor timeout, no key updated."));
+        DeferredResult deferredResult = new DeferredResult(30 * 1000L, new OpenApiResponse(OpenApiResponse.SUCCESS_CODE, "Monitor timeout, no key updated."));
 
         // valid
         if (request == null) {
-            deferredResult.setResult(new OpenApiResponse<String>(OpenApiResponse.FAIL_CODE, "request invalid"));
+            deferredResult.setResult(new OpenApiResponse(OpenApiResponse.FAIL_CODE, "request invalid"));
             return deferredResult;
         }
 

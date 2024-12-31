@@ -138,20 +138,20 @@ public class RegisterHelper {
      * @param request
      * @return
      */
-    public OpenApiResponse<String> registry(RegisterRequest request) {
+    public OpenApiResponse registry(RegisterRequest request) {
         // valid
         if (request == null) {
-            return new OpenApiResponse<>(OpenApiResponse.FAIL_CODE, "RegisterRequest is null.");
+            return new OpenApiResponse(OpenApiResponse.FAIL_CODE, "RegisterRequest is null.");
         }
         if (StringTool.isBlank(request.getEnv())
                 || request.getInstance() == null
                 || StringTool.isBlank(request.getInstance().getAppname())
                 || StringTool.isBlank(request.getInstance().getIp())
                 || request.getInstance().getPort()<1){
-            return new OpenApiResponse<>(OpenApiResponse.FAIL_CODE, "RegisterRequest param invalid.");
+            return new OpenApiResponse(OpenApiResponse.FAIL_CODE, "RegisterRequest param invalid.");
         }
         if (request.getInstance().getAppname().length() > 50) {
-            return new OpenApiResponse<>(OpenApiResponse.FAIL_CODE, "RegisterRequest param invalid, appname too long (less than 50).");
+            return new OpenApiResponse(OpenApiResponse.FAIL_CODE, "RegisterRequest param invalid, appname too long (less than 50).");
         }
 
         // async execute
@@ -181,7 +181,7 @@ public class RegisterHelper {
             }
         });
 
-        return new OpenApiResponse<>(OpenApiResponse.SUCCESS_CODE, null);
+        return new OpenApiResponse(OpenApiResponse.SUCCESS_CODE, null);
     }
 
     /**
@@ -190,20 +190,20 @@ public class RegisterHelper {
      * @param request
      * @return
      */
-    public OpenApiResponse<String> unregister(RegisterRequest request) {
+    public OpenApiResponse unregister(RegisterRequest request) {
         // valid
         if (request == null) {
-            return new OpenApiResponse<>(OpenApiResponse.FAIL_CODE, "RegisterRequest is null.");
+            return new OpenApiResponse(OpenApiResponse.FAIL_CODE, "RegisterRequest is null.");
         }
         if (StringTool.isBlank(request.getEnv())
                 || request.getInstance() == null
                 || StringTool.isBlank(request.getInstance().getAppname())
                 || StringTool.isBlank(request.getInstance().getIp())
                 || request.getInstance().getPort()<1){
-            return new OpenApiResponse<>(OpenApiResponse.FAIL_CODE, "RegisterRequest param invalid.");
+            return new OpenApiResponse(OpenApiResponse.FAIL_CODE, "RegisterRequest param invalid.");
         }
         if (request.getInstance().getAppname().length() > 50) {
-            return new OpenApiResponse<>(OpenApiResponse.FAIL_CODE, "RegisterRequest param invalid, appname too long (less than 50).");
+            return new OpenApiResponse(OpenApiResponse.FAIL_CODE, "RegisterRequest param invalid, appname too long (less than 50).");
         }
 
         // async execute
@@ -231,7 +231,7 @@ public class RegisterHelper {
             }
         });
 
-        return new OpenApiResponse<>(OpenApiResponse.SUCCESS_CODE, null);
+        return new OpenApiResponse(OpenApiResponse.SUCCESS_CODE, null);
     }
 
 }

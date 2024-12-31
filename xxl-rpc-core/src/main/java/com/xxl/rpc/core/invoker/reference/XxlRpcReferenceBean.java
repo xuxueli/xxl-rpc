@@ -256,7 +256,7 @@ public class XxlRpcReferenceBean {
 							// send request
 							if (CallType.SYNC == callType) {
 								// future-response set
-								rpcFuture = new XxlRpcResponseFuture(rpcBootstrap.getInvoker(), xxlRpcRequest, null);
+								rpcFuture = new XxlRpcResponseFuture(rpcBootstrap.getInvoker(), registerInstance, xxlRpcRequest, null);
 
 								// do invoke
 								clientInstance.send(xxlRpcRequest);
@@ -269,7 +269,7 @@ public class XxlRpcReferenceBean {
 								return xxlRpcResponse.getResult();
 							} else if (CallType.FUTURE == callType) {
 								// future-response set
-								rpcFuture = new XxlRpcResponseFuture(rpcBootstrap.getInvoker(), xxlRpcRequest, null);
+								rpcFuture = new XxlRpcResponseFuture(rpcBootstrap.getInvoker(), registerInstance, xxlRpcRequest, null);
 
 								// invoke future set
 								XxlRpcInvokeFuture.setFuture(new XxlRpcInvokeFuture(rpcFuture));
@@ -286,7 +286,7 @@ public class XxlRpcReferenceBean {
 								}
 
 								// future-response set
-								rpcFuture = new XxlRpcResponseFuture(rpcBootstrap.getInvoker(), xxlRpcRequest, invokeCallback);
+								rpcFuture = new XxlRpcResponseFuture(rpcBootstrap.getInvoker(), registerInstance, xxlRpcRequest, invokeCallback);
 								// do invoke
 								clientInstance.send(xxlRpcRequest);
 
@@ -304,7 +304,7 @@ public class XxlRpcReferenceBean {
 							if (rpcFuture != null) {
 								rpcFuture.removeInvokerFuture();
 							}
-							logger.info(">>>>>>>>>>> xxl-rpc, invoke error, registerInstance:{}, XxlRpcRequest{}", registerInstance.getUniqueKey(), xxlRpcRequest);
+							logger.debug(">>>>>>>>>>> xxl-rpc, invoke error, registerInstance:{}, XxlRpcRequest{}", registerInstance.getUniqueKey(), xxlRpcRequest);
 							throw e;
 						} finally{
 							// future-response remove
