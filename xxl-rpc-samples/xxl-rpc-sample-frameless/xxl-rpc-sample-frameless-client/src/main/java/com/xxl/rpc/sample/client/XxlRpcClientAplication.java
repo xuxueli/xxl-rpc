@@ -33,7 +33,7 @@ public class XxlRpcClientAplication {
 		XxlRpcBootstrap rpcBootstrap = new XxlRpcBootstrap();
 		rpcBootstrap.setBaseConfig(new BaseConfig("test", "xxl-rpc-sample-frameless-client"));
 		rpcBootstrap.setRegister(localRegister);
-		rpcBootstrap.setInvokerConfig(new InvokerConfig(true));
+		rpcBootstrap.setInvokerConfig(new InvokerConfig(true, NettyClient.class, JsonbSerializer.class, null));
 
 		// 3、start
 		rpcBootstrap.start();
@@ -58,8 +58,6 @@ public class XxlRpcClientAplication {
 
 	private static DemoService buildReferenceBean(XxlRpcBootstrap rpcBootstrap, CallType callType) throws Exception {
 		XxlRpcReferenceBean referenceBean = new XxlRpcReferenceBean();
-		referenceBean.setClient(NettyClient.class);
-		referenceBean.setSerializer(JsonbSerializer.class);
 		referenceBean.setCallType(callType);
 		referenceBean.setLoadBalance(LoadBalance.ROUND);
 		referenceBean.setIface(DemoService.class);

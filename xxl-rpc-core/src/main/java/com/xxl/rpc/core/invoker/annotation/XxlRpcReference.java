@@ -2,10 +2,6 @@ package com.xxl.rpc.core.invoker.annotation;
 
 import com.xxl.rpc.core.invoker.call.CallType;
 import com.xxl.rpc.core.invoker.route.LoadBalance;
-import com.xxl.rpc.core.remoting.Client;
-import com.xxl.rpc.core.remoting.impl.netty.client.NettyClient;
-import com.xxl.rpc.core.serializer.Serializer;
-import com.xxl.rpc.core.serializer.impl.JsonbSerializer;
 
 import java.lang.annotation.*;
 
@@ -32,20 +28,6 @@ public @interface XxlRpcReference {
      * @return
      */
     String version() default "";
-
-    /**
-     * client
-     *
-     * @return
-     */
-    Class<? extends Client> client() default NettyClient.class;
-
-    /**
-     * serializer
-     *
-     * @return
-     */
-    Class<? extends Serializer> serializer() default JsonbSerializer.class;
 
     /**
      * callType

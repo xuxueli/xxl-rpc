@@ -53,16 +53,6 @@ public class XxlRpcReferenceBean {
 	private String version = null;
 
 	/**
-	 * client, for network
-	 */
-	private Class<? extends Client> client = NettyClient.class;
-
-	/**
-	 * serializer, process request and response
-	 */
-	private Class<? extends Serializer> serializer = JsonbSerializer.class;
-
-	/**
 	 * call type
 	 */
 	private CallType callType = CallType.SYNC;
@@ -86,12 +76,6 @@ public class XxlRpcReferenceBean {
 	}
 	public void setVersion(String version) {
 		this.version = version;
-	}
-	public void setClient(Class<? extends Client> client) {
-		this.client = client;
-	}
-	public void setSerializer(Class<? extends Serializer> serializer) {
-		this.serializer = serializer;
 	}
 	public void setCallType(CallType callType) {
 		this.callType = callType;
@@ -139,12 +123,6 @@ public class XxlRpcReferenceBean {
 		if (this.iface == null) {
 			throw new XxlRpcException("xxl-rpc reference iface missing.");
 		}
-		if (this.client == null) {
-			throw new XxlRpcException("xxl-rpc reference client missing.");
-		}
-		if (this.serializer == null) {
-			throw new XxlRpcException("xxl-rpc reference serializer missing.");
-		}
 		if (this.callType == null) {
 			throw new XxlRpcException("xxl-rpc reference callType missing.");
 		}
@@ -155,11 +133,20 @@ public class XxlRpcReferenceBean {
 			throw new XxlRpcException("xxl-rpc reference timeout invlid.");
 		}
 
-		// build instance
+		// valid invoker config
 		if (rpcBootstrap == null) {
 			throw new XxlRpcException("xxl-rpc reference rpcBootstrap missing.");
 		}
-		this.serializerInstance = serializer.newInstance();
+		if (rpcBootstrap.getInvokerConfig().getClient() == null) {
+			throw new XxlRpcException("xxl-rpc reference client missing.");
+		}
+		if (rpcBootstrap.getInvokerConfig().getSerializer() == null) {
+			throw new XxlRpcException("xxl-rpc reference serializer missing.");
+		}
+
+		// build instance
+		this.serializerInstance = rpcBootstrap.getInvokerConfig().getSerializer().newInstance();
+		this.serializerInstance.allowPackageList(rpcBootstrap.getInvokerConfig().getSerializerAllowPackageList());
 	}
 
 
@@ -251,7 +238,7 @@ public class XxlRpcReferenceBean {
 						XxlRpcResponseFuture rpcFuture = null;
 						try {
 							// get client instance
-							Client clientInstance = rpcBootstrap.getInvoker().getClient(registerInstance, client, serializerInstance);
+							Client clientInstance = rpcBootstrap.getInvoker().getClient(registerInstance, rpcBootstrap.getInvokerConfig().getClient(), serializerInstance);
 
 							// send request
 							if (CallType.SYNC == callType) {

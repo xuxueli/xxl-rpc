@@ -1,5 +1,7 @@
 package com.xxl.rpc.core.serializer;
 
+import java.util.List;
+
 /**
  * serializer
  *
@@ -10,6 +12,13 @@ package com.xxl.rpc.core.serializer;
  * @author xuxueli 2015-10-30 21:02:55
  */
 public abstract class Serializer {
+
+	/**
+	 * allow package list
+	 *
+	 * @param packageList
+	 */
+	public abstract void allowPackageList(List<String> packageList);
 
 	/**
 	 * serialize

@@ -42,8 +42,6 @@ public class SpringInvokerFactory {
                     referenceBean.setAppname(rpcReference.appname());
                     referenceBean.setIface(iface);
                     referenceBean.setVersion(rpcReference.version());
-                    referenceBean.setClient(rpcReference.client());
-                    referenceBean.setSerializer(rpcReference.serializer());
                     referenceBean.setCallType(rpcReference.callType());
                     referenceBean.setLoadBalance(rpcReference.loadBalance());
                     referenceBean.setTimeout(rpcReference.timeout());

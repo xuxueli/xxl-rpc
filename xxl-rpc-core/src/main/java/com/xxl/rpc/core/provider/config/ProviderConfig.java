@@ -5,6 +5,8 @@ import com.xxl.rpc.core.remoting.impl.netty.server.NettyServer;
 import com.xxl.rpc.core.serializer.Serializer;
 import com.xxl.rpc.core.serializer.impl.JsonbSerializer;
 
+import java.util.List;
+
 /**
  * Provider Config
  *
@@ -26,6 +28,11 @@ public class ProviderConfig {
      * serializer, process request and response
      */
     private Class<? extends Serializer> serializer = JsonbSerializer.class;
+
+    /**
+     * serializer allow package list, for security
+     */
+    private List<String> serializerAllowPackageList;
 
     /**
      * server port (generate address)
@@ -56,6 +63,7 @@ public class ProviderConfig {
     }
     public ProviderConfig(Class<? extends Server> server,
                           Class<? extends Serializer> serializer,
+                          List<String> serializerAllowPackageList,
                           int port,
                           int corePoolSize,
                           int maxPoolSize,
@@ -63,6 +71,7 @@ public class ProviderConfig {
         this.open = true;
         this.server = server;
         this.serializer = serializer;
+        this.serializerAllowPackageList = serializerAllowPackageList;
         this.port = port;
         this.corePoolSize = corePoolSize;
         this.maxPoolSize = maxPoolSize;
@@ -94,6 +103,14 @@ public class ProviderConfig {
 
     public void setSerializer(Class<? extends Serializer> serializer) {
         this.serializer = serializer;
+    }
+
+    public List<String> getSerializerAllowPackageList() {
+        return serializerAllowPackageList;
+    }
+
+    public void setSerializerAllowPackageList(List<String> serializerAllowPackageList) {
+        this.serializerAllowPackageList = serializerAllowPackageList;
     }
 
     public int getPort() {

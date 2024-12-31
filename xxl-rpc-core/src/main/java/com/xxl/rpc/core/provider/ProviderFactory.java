@@ -87,6 +87,7 @@ public class ProviderFactory {
 
 		// 1、serializer init
 		this.serializerInstance = rpcBootstrap.getProviderConfig().getSerializer().newInstance();
+		this.serializerInstance.allowPackageList(rpcBootstrap.getProviderConfig().getSerializerAllowPackageList());
 
 		// 2、server init
 		this.serverInstance = rpcBootstrap.getProviderConfig().getServer().newInstance();

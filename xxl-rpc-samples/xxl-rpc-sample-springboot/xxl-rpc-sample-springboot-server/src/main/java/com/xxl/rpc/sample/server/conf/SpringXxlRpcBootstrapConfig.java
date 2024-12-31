@@ -59,6 +59,7 @@ public class SpringXxlRpcBootstrapConfig {
                 new ProviderConfig(
                         NettyServer.class,
                         JsonbSerializer.class,
+                        null,
                         port,
                         corePoolSize,
                         maxPoolSize,
