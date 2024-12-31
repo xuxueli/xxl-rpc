@@ -1,7 +1,7 @@
 package com.xxl.rpc.sample.client.conf;
 
 import com.xxl.rpc.core.boot.config.BaseConfig;
-import com.xxl.rpc.core.boot.support.XxlRpcSpringFactory;
+import com.xxl.rpc.core.boot.support.SpringXxlRpcBootstrap;
 import com.xxl.rpc.core.invoker.config.InvokerConfig;
 import com.xxl.rpc.core.provider.config.ProviderConfig;
 import com.xxl.rpc.core.register.impl.XxlRpcRegister;
@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
  * @author xuxueli 2018-10-19
  */
 @Configuration
-public class XxlRpcBootstrapConf {
+public class SpringXxlRpcBootstrapConfig {
 
     @Value("${xxl-rpc.base.env}")
     private String env;
@@ -36,10 +36,10 @@ public class XxlRpcBootstrapConf {
     private boolean providerOpen;
 
     @Bean
-    public XxlRpcSpringFactory xxlRpcSpringFactory() {
+    public SpringXxlRpcBootstrap xxlRpcSpringFactory() {
 
-        // XxlRpcSpringFactory
-        XxlRpcSpringFactory factory = new XxlRpcSpringFactory();
+        // XxlRpc Bootstrap
+        SpringXxlRpcBootstrap factory = new SpringXxlRpcBootstrap();
         factory.setBaseConfig(new BaseConfig(env, appname));
         factory.setRegister(new XxlRpcRegister(address, accesstoken));
         factory.setInvokerConfig(new InvokerConfig(invokerOpen));

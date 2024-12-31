@@ -16,7 +16,7 @@
 	<dependencies>
 
 		<!-- ********************** remoting + serialize ********************** -->
-		<!-- netty-shade -->
+		<!-- xxl-rpc-netty-shade -->
 		<dependency>
 			<groupId>com.xuxueli</groupId>
 			<artifactId>xxl-rpc-netty-shade</artifactId>

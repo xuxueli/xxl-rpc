@@ -21,8 +21,8 @@ import java.util.List;
  *
  * @author xuxueli 2024-12-21
  */
-public class XxlRpcSpringFactory extends XxlRpcBootstrap implements ApplicationContextAware, SmartInitializingSingleton, DisposableBean, InstantiationAwareBeanPostProcessor {
-    private static final Logger logger = LoggerFactory.getLogger(XxlRpcSpringFactory.class);
+public class SpringXxlRpcBootstrap extends XxlRpcBootstrap implements ApplicationContextAware, SmartInitializingSingleton, DisposableBean, InstantiationAwareBeanPostProcessor {
+    private static final Logger logger = LoggerFactory.getLogger(SpringXxlRpcBootstrap.class);
 
     @Override
     public void afterSingletonsInstantiated() {
