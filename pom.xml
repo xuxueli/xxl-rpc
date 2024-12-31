@@ -14,10 +14,6 @@
 		<module>xxl-rpc-core</module>
 		<module>xxl-rpc-admin</module>
 		<module>xxl-rpc-samples</module>
-		<!--
-		notice："xxl-rpc-netty-shade" can not be associated, need to be packaged separately in advance
-		-->
-		<!--<module>xxl-rpc-netty-shade</module>-->
     </modules>
 
 	<properties>
@@ -38,7 +34,6 @@
 		<junit-jupiter.version>5.11.3</junit-jupiter.version>
 
 		<!-- remoting -->
-		<netty.version>4.1.115.Final</netty.version>
 		<xxl-rpc-netty-shade.version>1.8.0</xxl-rpc-netty-shade.version>
 		<!-- serialize -->
 		<fastjson2.version>2.0.53</fastjson2.version>
