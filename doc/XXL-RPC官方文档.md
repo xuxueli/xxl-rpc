@@ -853,13 +853,13 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 - 4、【优化】XxlRpcReferenceBean 移除冗余属性，注册信息收敛至Register，降低认知成本、提升可维护性。
 - 5、【安全】默认序列化方案调整为 JSONB，并进行兜底安全过滤，提升序列化性能、以及安全性；
 
-### v1.8.1 Release Notes[2024-11-24]
-- 1、【优化】仓库模块 xxl-rpc-netty-shade 接耦拆分；升级netty版本至最新版； 
-- 3、【优化】long-polling逻辑完善；
-- 4、【安全】序列化安全能力增强，支持自定义序列化package白名单列表，提升安全性及定制性；
-- 5、【TODO】通讯报文长度可配置；
-- 6、【TODO】路由对象支持可配置，当前根据iface，太固定；
-- 7、【TODO】客户端并发锁超时优化；
+### v1.8.1 Release Notes[迭代中]
+- 1、【优化】仓库模块 xxl-rpc-netty-shade 接耦拆分；
+- 2、【优化】long-polling逻辑完善；
+- 3、【安全】序列化安全能力增强，支持自定义序列化package白名单列表，提升安全性及定制性；
+- 5、【优化】通讯组件选择HttpServer时，HttpObjectAggregator限制调大至20M，支持大消息传输；
+- 6、【升级】多个项目依赖升级至较新稳定版本，涉及 xxl-rpc-netty-shade、netty、slf4j 等；
+
 
 ### TODO LIST
 - 提高系统可用性，以部分功能暂时不可达为代价，防止服务整体缓慢或雪崩
@@ -892,7 +892,6 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 - rpc时钟参数仅记录，取消时钟校验逻辑；
 - 调用链追踪，监控；结合 xxl-apm 与 xxl-rpc filter共同演进；
 - 限流-熔断-降级，结合xxl-registry与xxl-rpc filter共同演进；
-- [ING]"ConnectClient#clientLock" 优化，复用连接对象；
 - 长连心跳、断线重连、空闲连接回收；
 - 服务注册中心：
     - 服务端：注册IP黑名单、白名单；
@@ -904,7 +903,8 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
     - 单机版本：H2数据库;
     - 异地多活：注册中心无中心服务；
     - 同机房读：服务支持Region属性，优先使用本Region服务；
-
+- 客户端并发锁超时优化；
+- 路由对象支持可配置，当前根据iface，太固定；
 
 ## 七、其他
 

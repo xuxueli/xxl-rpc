@@ -54,7 +54,7 @@ public class NettyHttpServer extends Server  {
                                     channel.pipeline()
                                             .addLast(new IdleStateHandler(0, 0, XxlRpcBeat.BEAT_INTERVAL * 3, TimeUnit.SECONDS))  // beat 3N, close if idle
                                             .addLast(new HttpServerCodec())
-                                            .addLast(new HttpObjectAggregator(5 * 1024 * 1024))  // merge request & reponse to FULL
+                                            .addLast(new HttpObjectAggregator(20 * 1024 * 1024))  // merge request & reponse to FULL
                                             .addLast(new NettyHttpServerHandler(rpcBootstrap.getProvider(), serverHandlerPool));
                                 }
                             })

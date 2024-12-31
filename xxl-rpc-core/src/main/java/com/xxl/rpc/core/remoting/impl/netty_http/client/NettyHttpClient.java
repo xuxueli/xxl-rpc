@@ -71,7 +71,7 @@ public class NettyHttpClient extends Client {
                         channel.pipeline()
                                 .addLast(new IdleStateHandler(0,0, XxlRpcBeat.BEAT_INTERVAL, TimeUnit.SECONDS))   // beat N, close if fail
                                 .addLast(new HttpClientCodec())
-                                .addLast(new HttpObjectAggregator(5*1024*1024))
+                                .addLast(new HttpObjectAggregator(20 * 1024 * 1024))
                                 .addLast(new NettyHttpClientHandler(rpcBootstrap.getInvoker(), serializer, thisClient));
                     }
                 })
