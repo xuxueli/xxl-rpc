@@ -80,9 +80,7 @@ public class XxlRpcClientAplication {
 	 */
 	public static void testSYNC(DemoService demoService) throws Exception {
 
-		// test
-        //UserDTO userDTO = demoService.sayHi("[SYNC]jack");
-		UserDTO userDTO = demoService.sayHi2(new UserDTO("[SYNC]jack", "hello"));
+        UserDTO userDTO = demoService.sayHi("[SYNC]jack");
 		System.out.println(userDTO);
 
 
@@ -103,9 +101,7 @@ public class XxlRpcClientAplication {
 	 * CallType.FUTURE
 	 */
 	public static void testFUTURE(DemoService demoService) throws Exception {
-		// test
-		//demoService.sayHi("[FUTURE]jack" );
-		demoService.sayHi2(new UserDTO("[FUTURE]jack", "hello"));
+		demoService.sayHi("[FUTURE]jack" );
         Future<UserDTO> userDTOFuture = XxlRpcInvokeFuture.getFuture(UserDTO.class);
 		UserDTO userDTO = userDTOFuture.get();
 
@@ -117,7 +113,6 @@ public class XxlRpcClientAplication {
 	 * CallType.CALLBACK
 	 */
 	public static void testCALLBACK(DemoService demoService) throws Exception {
-        // test
         XxlRpcInvokeCallback.setCallback(new XxlRpcInvokeCallback<UserDTO>() {
             @Override
             public void onSuccess(UserDTO result) {
@@ -130,8 +125,7 @@ public class XxlRpcClientAplication {
             }
         });
 
-        //demoService.sayHi("[CALLBACK]jack");
-		demoService.sayHi2(new UserDTO("[CALLBACK]jack", "hello"));
+        demoService.sayHi("[CALLBACK]jack");
 	}
 
 
@@ -139,9 +133,7 @@ public class XxlRpcClientAplication {
 	 * CallType.ONEWAY
 	 */
 	public static void testONEWAY(DemoService demoService) throws Exception {
-		// test
-        //demoService.sayHi("[ONEWAY]jack");
-		demoService.sayHi2(new UserDTO("[ONEWAY]jack", "hello"));
+        demoService.sayHi("[ONEWAY]jack");
 	}
 
 }
