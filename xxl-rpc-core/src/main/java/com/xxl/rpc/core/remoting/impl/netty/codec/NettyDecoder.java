@@ -1,6 +1,7 @@
 package com.xxl.rpc.core.remoting.impl.netty.codec;
 
 import com.xxl.rpc.core.serializer.Serializer;
+import com.xxl.rpc.core.util.XxlRpcException;
 import com.xxl.rpc.netty.shaded.io.netty.buffer.ByteBuf;
 import com.xxl.rpc.netty.shaded.io.netty.channel.ChannelHandlerContext;
 import com.xxl.rpc.netty.shaded.io.netty.handler.codec.ByteToMessageDecoder;
@@ -44,8 +45,13 @@ public class NettyDecoder extends ByteToMessageDecoder {
         in.readBytes(data);
 
         // deserialize to object
-        Object obj = serializer.deserialize(data, genericClass);
-        out.add(obj);
+        Object inObject = serializer.deserialize(data, genericClass);
+        if (!genericClass.isInstance(inObject)) {
+            throw new XxlRpcException("NettyDecoder decode error, genericClass not match, genericClass = " + genericClass.getName()
+                    + ", inObject = " + (inObject!=null?inObject.getClass().getName():null));
+        }
+
+        out.add(inObject);
     }
 
 }

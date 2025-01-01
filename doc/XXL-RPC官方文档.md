@@ -853,12 +853,14 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 - 4、【优化】XxlRpcReferenceBean 移除冗余属性，注册信息收敛至Register，降低认知成本、提升可维护性。
 - 5、【安全】默认序列化方案调整为 JSONB，并进行兜底安全过滤，提升序列化性能、以及安全性；
 
-### v1.8.1 Release Notes[迭代中]
-- 1、【优化】仓库模块 xxl-rpc-netty-shade 接耦拆分；
-- 2、【优化】long-polling逻辑完善；
-- 3、【安全】序列化安全能力增强，支持自定义序列化package白名单列表，提升安全性及定制性；
-- 5、【优化】通讯组件选择HttpServer时，HttpObjectAggregator限制调大至20M，支持大消息传输；
-- 6、【升级】多个项目依赖升级至较新稳定版本，涉及 xxl-rpc-netty-shade、netty、slf4j 等；
+### v1.8.1 Release Notes[2025-01-01]
+- 1、【安全】序列化安全性增强，默认开启package安全空间机制；
+- 2、【扩展】序列化扩展性增强，支持自定义序列化package白名单；
+- 3、【优化】序列化类型主动检测，提升问题定位效率；
+- 4、【能力】服务注册发现实效性提升，优化long-polling逻辑；
+- 5、【扩展】模块 xxl-rpc-netty-shade 独立拆分，与Core模块解耦；
+- 6、【优化】通讯组件选择HttpServer时，HttpObjectAggregator限制调大至20M，支持大消息传输；
+- 7、【升级】多个项目依赖升级至较新稳定版本，涉及 xxl-rpc-netty-shade、netty、slf4j 等；
 
 
 ### TODO LIST

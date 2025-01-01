@@ -64,8 +64,6 @@ public class XxlRpcClientAplication {
 		referenceBean.setVersion(null);
 		referenceBean.setTimeout(500);
 		referenceBean.setAppname("xxl-rpc-sample-frameless-server");
-		//referenceBean.setAddress("127.0.0.1:7080");
-		//referenceBean.setAccessToken(null);
 		referenceBean.setRpcBootstrap(rpcBootstrap);
 
 		DemoService demoService = (DemoService) referenceBean.getObject();
