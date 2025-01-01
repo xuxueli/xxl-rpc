@@ -108,6 +108,8 @@ public class RegistryDeferredResultHelpler {
             logger.error(e.getMessage(), e);
         }
 
+        // TODO1，registryDeferredResultMap clean
+
         // stop thread
         RegistryCacheHelpler.stopThread(deferredResultMonitorThread);
     }

@@ -30,7 +30,7 @@
 		<!-- content-header -->
 		<section class="content-header">
 			<#-- biz start（3/5 name） -->
-			<h1>服务注册列表</h1>
+			<h1>注册中心</h1>
 			<#-- biz end（3/5 name） -->
 		</section>
 

@@ -85,7 +85,7 @@ public class PermissionInterceptor implements AsyncHandlerInterceptor {
 			// default menu
 			List<ResourceDTO> resourceDTOList = Arrays.asList(
 					new ResourceDTO(1, 0, "首页",0, "", "/index", "fa fa-home", 1, 0),
-					new ResourceDTO(2, 0, "服务注册列表",0, "", "/instance", " fa-cubes", 2, 0),
+					new ResourceDTO(2, 0, "注册中心",0, "", "/instance", " fa-cubes", 2, 0),
 					new ResourceDTO(3, 0, "应用管理",0, "ADMIN", "/application", " fa-cloud", 3, 0),
 					new ResourceDTO(4, 0, "环境管理",0, "ADMIN", "/environment", "fa-cog", 4, 0),
 					new ResourceDTO(5, 0, "鉴权管理",0, "ADMIN", "/accesstoken", "fa-key", 5, 0),
