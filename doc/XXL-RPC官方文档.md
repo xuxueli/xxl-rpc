@@ -863,6 +863,9 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 - 7、【升级】多个项目依赖升级至较新稳定版本，涉及 xxl-rpc-netty-shade、netty、slf4j 等；
 
 
+### v1.8.2 Release Notes[迭代中]
+
+
 ### TODO LIST
 - 提高系统可用性，以部分功能暂时不可达为代价，防止服务整体缓慢或雪崩
     - 限流=防止负载过高，导致服务雪崩；client、server，双向限流；方法级，QPS限流；在途请求数，流控依据；
