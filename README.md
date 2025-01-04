@@ -32,11 +32,11 @@
 
 ## Introduction
 
-XXL-RPC is a high performance, distributed RPC framework.Provides a stable and high performance RPC function.
+XXL-RPC is a RPC service development framework.Provides a stable and high performance RPC function.
 Features such as "high-performance、distributed、service-registry、load-balancing、service-governance" 
 Now, it's already open source, real "out-of-the-box".
 
-XXL-RPC 是一个RPC服务框架，提供一站式服务开发及运营能力。拥有“轻量级、高性能、分布式、动态注册、负载均衡、服务治理”等特性。现已开放源代码，开箱即用。
+XXL-RPC 是一个RPC服务框架，提供一站式服务通信及运营能力。拥有“轻量级、高性能、注册发现、负载均衡、故障容错、服务治理及分布式”等特性。现已开放源代码，开箱即用。
 
 ## Documentation
 - [中文文档](https://www.xuxueli.com/xxl-rpc/)
@@ -60,6 +60,7 @@ XXL-RPC 是一个RPC服务框架，提供一站式服务开发及运营能力。
 - 10、故障容错：支持自动巡检线上服务并摘除故障节点，消费方实时感知并移除失效节点将流量分发到其余节点，提高系统容错能力。
 - 11、高兼容性：得益于优良的兼容性与模块化设计，不限制技术栈；除 spring/springboot 技术栈之外，理论上支持运行在任何Java代码中，甚至main方法直接启动运行；
 - 12、泛化调用：支持服务调用方直接发起服务调用，不依赖服务方提供的API；
+- 13、服务安全：支持序列化安全空间机制，以及通讯token加密机制；
 
 
 ## Contributing
