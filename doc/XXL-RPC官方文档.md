@@ -1,4 +1,4 @@
-## 《分布式服务框架XXL-RPC》
+## 《RPC服务框架XXL-RPC》
 
 [![Actions Status](https://github.com/xuxueli/xxl-rpc/workflows/Java%20CI/badge.svg)](https://github.com/xuxueli/xxl-rpc/actions)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.xuxueli/xxl-rpc/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.xuxueli/xxl-rpc/)
