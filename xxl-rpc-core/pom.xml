@@ -30,12 +30,6 @@
 		</dependency>
 
 		<!-- ********************** base ********************** -->
-		<!-- tool -->
-		<dependency>
-			<groupId>com.xuxueli</groupId>
-			<artifactId>xxl-tool</artifactId>
-			<version>${xxl-tool.version}</version>
-		</dependency>
 		<!-- slf4j -->
 		<dependency>
 			<groupId>org.slf4j</groupId>

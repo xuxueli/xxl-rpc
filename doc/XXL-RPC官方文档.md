@@ -865,6 +865,7 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 
 
 ### v1.8.2 Release Notes[迭代中]
+- 1、精简依赖，减少依赖包体积；
 - 1、【TODO】新增SimpleHttpServer，仅支持同步请求，简化CallType复杂度；
 
 ### TODO LIST

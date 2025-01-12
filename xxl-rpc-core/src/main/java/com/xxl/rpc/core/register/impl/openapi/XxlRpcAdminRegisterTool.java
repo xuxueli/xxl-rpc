@@ -1,7 +1,7 @@
 package com.xxl.rpc.core.register.impl.openapi;
 
 import com.alibaba.fastjson2.JSON;
-import com.xxl.tool.net.HttpTool;
+import com.xxl.rpc.core.util.HttpTool;
 
 import java.io.Serializable;
 import java.util.List;
