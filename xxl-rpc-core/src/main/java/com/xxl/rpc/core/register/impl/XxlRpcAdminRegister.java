@@ -3,7 +3,7 @@ package com.xxl.rpc.core.register.impl;
 import com.xxl.rpc.core.boot.XxlRpcBootstrap;
 import com.xxl.rpc.core.register.Register;
 import com.xxl.rpc.core.register.entity.RegisterInstance;
-import com.xxl.rpc.core.register.impl.openapi.XxlRpcAdminRegisterTool;
+import com.xxl.rpc.core.register.impl.openapi.RegisterTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,12 +104,12 @@ public class XxlRpcAdminRegister extends Register {
                                 try {
 
                                     // register
-                                    XxlRpcAdminRegisterTool.RegisterInstance instanceTemp = new XxlRpcAdminRegisterTool.RegisterInstance(
+                                    RegisterTool.RegisterInstance instanceTemp = new RegisterTool.RegisterInstance(
                                             instance.getAppname(),
                                             instance.getIp(),
                                             instance.getPort(),
                                             instance.getExtendInfo());
-                                    XxlRpcAdminRegisterTool.OpenApiResponse openApiResponse = XxlRpcAdminRegisterTool.register(adminAddress, accessToken, xxlRpcBootstrap.getBaseConfig().getEnv(), instanceTemp);
+                                    RegisterTool.OpenApiResponse openApiResponse = RegisterTool.register(adminAddress, accessToken, xxlRpcBootstrap.getBaseConfig().getEnv(), instanceTemp);
 
                                     logger.info(">>>>>>>>>>> xxl-rpc, registryThread-register {}, instance:{}, openApiResponse:{}", openApiResponse.isSuccess()?"success":"fail",instance, openApiResponse);
                                 } catch (Exception e) {
@@ -149,7 +149,7 @@ public class XxlRpcAdminRegister extends Register {
                             doDiscoveryAndRefresh(discoveryAppnameStore.keySet());
 
                             // 2、增量服务发现：long-polling/实时监听；
-                            XxlRpcAdminRegisterTool.OpenApiResponse openApiResponse =XxlRpcAdminRegisterTool.monitor(
+                            RegisterTool.OpenApiResponse openApiResponse =RegisterTool.monitor(
                                     adminAddress,
                                     accessToken,
                                     xxlRpcBootstrap.getBaseConfig().getEnv(),
@@ -208,12 +208,12 @@ public class XxlRpcAdminRegister extends Register {
         try {
 
             // register
-            XxlRpcAdminRegisterTool.RegisterInstance instanceTemp = new XxlRpcAdminRegisterTool.RegisterInstance(
+            RegisterTool.RegisterInstance instanceTemp = new RegisterTool.RegisterInstance(
                     instance.getAppname(),
                     instance.getIp(),
                     instance.getPort(),
                     instance.getExtendInfo());
-            XxlRpcAdminRegisterTool.OpenApiResponse openApiResponse = XxlRpcAdminRegisterTool.register(adminAddress, accessToken, xxlRpcBootstrap.getBaseConfig().getEnv(), instanceTemp);
+            RegisterTool.OpenApiResponse openApiResponse = RegisterTool.register(adminAddress, accessToken, xxlRpcBootstrap.getBaseConfig().getEnv(), instanceTemp);
 
             logger.info(">>>>>>>>>>> xxl-rpc, XxlRpcRegister-register {}, instance:{}, openApiResponse:{}", openApiResponse.isSuccess()?"success":"fail", instanceTemp, openApiResponse);
             return openApiResponse.isSuccess();
@@ -233,12 +233,12 @@ public class XxlRpcAdminRegister extends Register {
         try {
 
             // register
-            XxlRpcAdminRegisterTool.RegisterInstance instanceTemp = new XxlRpcAdminRegisterTool.RegisterInstance(
+            RegisterTool.RegisterInstance instanceTemp = new RegisterTool.RegisterInstance(
                     instance.getAppname(),
                     instance.getIp(),
                     instance.getPort(),
                     instance.getExtendInfo());
-            XxlRpcAdminRegisterTool.OpenApiResponse openApiResponse = XxlRpcAdminRegisterTool.unregister(adminAddress, accessToken, xxlRpcBootstrap.getBaseConfig().getEnv(), instanceTemp);
+            RegisterTool.OpenApiResponse openApiResponse = RegisterTool.unregister(adminAddress, accessToken, xxlRpcBootstrap.getBaseConfig().getEnv(), instanceTemp);
 
             logger.info(">>>>>>>>>>> xxl-rpc, XxlRpcRegister-unregister {}, instance:{}, openApiResponse:{}", openApiResponse.isSuccess()?"success":"fail", instanceTemp, openApiResponse);
             return openApiResponse.isSuccess();
@@ -282,7 +282,7 @@ public class XxlRpcAdminRegister extends Register {
         try {
             // discovery
             List<String> appnameListTemp = new ArrayList<String>(appnameList);
-            XxlRpcAdminRegisterTool.DiscoveryResponse discoveryResponse = XxlRpcAdminRegisterTool.discovery(
+            RegisterTool.DiscoveryResponse discoveryResponse = RegisterTool.discovery(
                     adminAddress,
                     accessToken,
                     xxlRpcBootstrap.getBaseConfig().getEnv(),
@@ -305,12 +305,12 @@ public class XxlRpcAdminRegister extends Register {
                 // parse
                 for (String appname : discoveryResponse.getDiscoveryData().keySet()) {
                     // remote data
-                    List<XxlRpcAdminRegisterTool.InstanceCacheDTO> instanceCacheDTOS = discoveryResponse.getDiscoveryData().get(appname);
+                    List<RegisterTool.InstanceCacheDTO> instanceCacheDTOS = discoveryResponse.getDiscoveryData().get(appname);
                     String registerInstancesMd5 = discoveryResponse.getDiscoveryDataMd5().get(appname);
 
                     TreeSet<RegisterInstance> registerInstances = new TreeSet<>();
                     if (instanceCacheDTOS != null) {
-                        for (XxlRpcAdminRegisterTool.InstanceCacheDTO instanceCacheDTO : instanceCacheDTOS) {
+                        for (RegisterTool.InstanceCacheDTO instanceCacheDTO : instanceCacheDTOS) {
                             registerInstances.add(new RegisterInstance(instanceCacheDTO.getEnv(), appname, instanceCacheDTO.getIp(), instanceCacheDTO.getPort(), instanceCacheDTO.getExtendInfo()));
                         }
                     } else {

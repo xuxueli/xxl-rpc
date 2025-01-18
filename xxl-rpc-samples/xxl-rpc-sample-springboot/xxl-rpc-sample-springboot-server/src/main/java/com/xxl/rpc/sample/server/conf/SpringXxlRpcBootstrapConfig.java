@@ -19,16 +19,16 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SpringXxlRpcBootstrapConfig {
 
-    @Value("${xxl-rpc.base.env}")
+    @Value("${xxl.conf.client.env}")
     private String env;
 
-    @Value("${xxl-rpc.base.appname}")
+    @Value("${xxl.conf.client.appname}")
     private String appname;
 
-    @Value("${xxl-rpc.register.address}")
+    @Value("${xxl.conf.admin.address}")
     private String address;
 
-    @Value("${xxl-rpc.register.accesstoken}")
+    @Value("${xxl.conf.admin.accesstoken}")
     private String accesstoken;
 
     @Value("${xxl-rpc.invoker.open}")
