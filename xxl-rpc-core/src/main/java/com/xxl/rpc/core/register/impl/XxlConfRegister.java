@@ -13,19 +13,19 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
 /**
- * XxlRpcRegister
+ * registry with xxl-conf
  *
  * @author xuxueli 2018-11-30
  */
-public class XxlRpcAdminRegister extends Register {
-    private static Logger logger = LoggerFactory.getLogger(XxlRpcAdminRegister.class);
+public class XxlConfRegister extends Register {
+    private static Logger logger = LoggerFactory.getLogger(XxlConfRegister.class);
 
     /**
-     * xxl-rpc-admin config
+     * address
      */
     private volatile String adminAddress;
     /**
-     * access token, for xxl-rpc-admin
+     * access token
      */
     private volatile String accessToken;
 
@@ -35,9 +35,9 @@ public class XxlRpcAdminRegister extends Register {
     private XxlRpcBootstrap xxlRpcBootstrap;
 
 
-    public XxlRpcAdminRegister() {
+    public XxlConfRegister() {
     }
-    public XxlRpcAdminRegister(String adminAddress, String accessToken) {
+    public XxlConfRegister(String adminAddress, String accessToken) {
         this.adminAddress = adminAddress;
         this.accessToken = accessToken;
     }

@@ -12,7 +12,6 @@
 
 	<modules>
 		<module>xxl-rpc-core</module>
-		<module>xxl-rpc-admin</module>
 		<module>xxl-rpc-samples</module>
     </modules>
 
