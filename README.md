@@ -19,9 +19,6 @@
         <a href="https://github.com/xuxueli/xxl-rpc/">
             <img src="https://img.shields.io/github/stars/xuxueli/xxl-rpc" >
         </a>
-        <a href="https://hub.docker.com/r/xuxueli/xxl-rpc-admin/">
-            <img src="https://img.shields.io/docker/pulls/xuxueli/xxl-rpc-admin" >
-        </a>
         <img src="https://img.shields.io/github/license/xuxueli/xxl-rpc.svg" >
         <a href="https://www.xuxueli.com/page/donate.html">
             <img src="https://img.shields.io/badge/%24-donate-ff69b4.svg?style=flat-square" >

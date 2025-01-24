@@ -4,7 +4,6 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.xuxueli/xxl-rpc/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.xuxueli/xxl-rpc/)
 [![GitHub release](https://img.shields.io/github/release/xuxueli/xxl-rpc.svg)](https://github.com/xuxueli/xxl-rpc/releases)
 [![GitHub stars](https://img.shields.io/github/stars/xuxueli/xxl-rpc)](https://github.com/xuxueli/xxl-rpc/)
-[![Docker Status](https://img.shields.io/docker/pulls/xuxueli/xxl-rpc-admin)](https://hub.docker.com/r/xuxueli/xxl-rpc-admin/)
 ![License](https://img.shields.io/github/license/xuxueli/xxl-rpc.svg)
 [![donate](https://img.shields.io/badge/%24-donate-ff69b4.svg?style=flat-square)](https://www.xuxueli.com/page/donate.html)
 
@@ -80,10 +79,10 @@ XXL-RPC 支持多种使用方式，并提供轻量级内置注册中心，下面
 
 #### 2.1.1、服务注册中心搭建
 
-基于 [XXL-CONF(Github)](https://github.com/xuxueli/xxl-conf) 搭建 “轻量级注册中心”，详细可参考 [XXL-CONF官方文档](https://www.xuxueli.com/xxl-conf/)。
-
-一行命令启动注册中心，一站式提供服务动态注册发现能力。
-
+基于 XXL-CONF 搭建 “轻量级注册中心”：一行命令启动注册中心，一站式提供服务动态注册发现能力。
+- XXL-CONF：一站式服务管理平台（配置中心、注册中心），提供 动态配置管理、服务注册及发现能力；降低中间件认知及运维成本。
+- Github：https://github.com/xuxueli/xxl-conf ）；
+- 官方文档：https://www.xuxueli.com/xxl-conf/
 ```
 // 说明：xxl-conf 详细配置可参考官方文档
 docker pull xuxueli/xxl-conf-admin
