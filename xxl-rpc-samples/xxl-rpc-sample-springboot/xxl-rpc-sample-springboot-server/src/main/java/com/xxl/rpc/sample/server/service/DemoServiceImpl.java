@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * @author xuxueli
@@ -20,11 +22,16 @@ public class DemoServiceImpl implements DemoService {
 	@Override
 	public UserDTO sayHi(String name) {
 
+		// error
 		if ("error".equalsIgnoreCase(name)) {
 			throw new RuntimeException("test exception.");
 		}
 
-		String word = MessageFormat.format("Hi {0}, this from {1} at {2}", name, DemoServiceImpl.class.getName(), String.valueOf(System.currentTimeMillis()));
+		// biz
+		String word = MessageFormat.format("Hi {0}, this from {1} at {2}",
+				name,
+				DemoServiceImpl.class.getName(),
+				LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 		UserDTO userDTO = new UserDTO(name, word);
 
 		//logger.info(userDTO.toString());

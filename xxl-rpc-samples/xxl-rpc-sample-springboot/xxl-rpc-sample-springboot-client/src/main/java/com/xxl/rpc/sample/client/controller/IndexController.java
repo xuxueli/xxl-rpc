@@ -16,14 +16,20 @@ public class IndexController {
 
 	@RequestMapping("")
 	@ResponseBody
-	public UserDTO http(String name) {
+	public String http(String name) {
+
+		String result = "";
+		result += ("<br> RPC Reqeuslt: name = " + name);
 
 		try {
-			return demoService.sayHi(name);
+			UserDTO userDTO = demoService.sayHi(name);
+			result += ("<br><br> RPC Response: " + userDTO);
 		} catch (Exception e) {
-			e.printStackTrace();
-			return new UserDTO(null, e.getMessage());
+			//e.printStackTrace();
+			result += ("<br><br> RPC error: " + e.getMessage());
 		}
+
+		return result;
 	}
 
 }
