@@ -10,7 +10,9 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * registry with xxl-conf
@@ -23,7 +25,7 @@ public class XxlConfRegister extends Register {
     /**
      * address
      */
-    private volatile String adminAddress;
+    private volatile String address;
     /**
      * access token
      */
@@ -34,12 +36,33 @@ public class XxlConfRegister extends Register {
      */
     private XxlRpcBootstrap xxlRpcBootstrap;
 
+    /**
+     * addressList (general)
+     */
+    private List<String> addressList = new ArrayList<>();
+
+    public String loadAddress() {
+        String addressTmp = addressList.size()>1
+                ? addressList.get(ThreadLocalRandom.current().nextInt(addressList.size()))
+                : addressList.get(0);
+        return addressTmp;
+    }
 
     public XxlConfRegister() {
     }
-    public XxlConfRegister(String adminAddress, String accessToken) {
-        this.adminAddress = adminAddress;
+    public XxlConfRegister(String address, String accessToken) {
+        this.address = address;
         this.accessToken = accessToken;
+
+        // address
+        if (!address.contains(",")) {
+            addressList.add(address);
+        } else {
+            addressList.addAll(
+                    Arrays.stream(address.split(","))
+                            .filter(item -> !item.trim().isEmpty())
+                            .collect(Collectors.toList()));
+        }
     }
 
 
@@ -86,8 +109,8 @@ public class XxlConfRegister extends Register {
         this.xxlRpcBootstrap = rpcBootstrap;
 
         // valid
-        if (adminAddress == null || adminAddress.trim().length() == 0) {
-            logger.info(">>>>>>>>>>> xxl-rpc, XxlRpcRegistry start fail, adminAddress is null.");
+        if (addressList == null || addressList.isEmpty()) {
+            logger.info(">>>>>>>>>>> xxl-rpc, XxlRpcRegistry start fail, address is null.");
             return;
         }
 
@@ -109,7 +132,7 @@ public class XxlConfRegister extends Register {
                                             instance.getIp(),
                                             instance.getPort(),
                                             instance.getExtendInfo());
-                                    RegisterTool.OpenApiResponse openApiResponse = RegisterTool.register(adminAddress, accessToken, xxlRpcBootstrap.getBaseConfig().getEnv(), instanceTemp);
+                                    RegisterTool.OpenApiResponse openApiResponse = RegisterTool.register(loadAddress(), accessToken, xxlRpcBootstrap.getBaseConfig().getEnv(), instanceTemp);
 
                                     logger.info(">>>>>>>>>>> xxl-rpc, registryThread-register {}, instance:{}, openApiResponse:{}", openApiResponse.isSuccess()?"success":"fail",instance, openApiResponse);
                                 } catch (Exception e) {
@@ -150,7 +173,7 @@ public class XxlConfRegister extends Register {
 
                             // 2、增量服务发现：long-polling/实时监听；
                             RegisterTool.OpenApiResponse openApiResponse =RegisterTool.monitor(
-                                    adminAddress,
+                                    loadAddress(),
                                     accessToken,
                                     xxlRpcBootstrap.getBaseConfig().getEnv(),
                                     new ArrayList<>(discoveryAppnameStore.keySet()),
@@ -213,7 +236,7 @@ public class XxlConfRegister extends Register {
                     instance.getIp(),
                     instance.getPort(),
                     instance.getExtendInfo());
-            RegisterTool.OpenApiResponse openApiResponse = RegisterTool.register(adminAddress, accessToken, xxlRpcBootstrap.getBaseConfig().getEnv(), instanceTemp);
+            RegisterTool.OpenApiResponse openApiResponse = RegisterTool.register(loadAddress(), accessToken, xxlRpcBootstrap.getBaseConfig().getEnv(), instanceTemp);
 
             logger.info(">>>>>>>>>>> xxl-rpc, XxlRpcRegister-register {}, instance:{}, openApiResponse:{}", openApiResponse.isSuccess()?"success":"fail", instanceTemp, openApiResponse);
             return openApiResponse.isSuccess();
@@ -238,7 +261,7 @@ public class XxlConfRegister extends Register {
                     instance.getIp(),
                     instance.getPort(),
                     instance.getExtendInfo());
-            RegisterTool.OpenApiResponse openApiResponse = RegisterTool.unregister(adminAddress, accessToken, xxlRpcBootstrap.getBaseConfig().getEnv(), instanceTemp);
+            RegisterTool.OpenApiResponse openApiResponse = RegisterTool.unregister(loadAddress(), accessToken, xxlRpcBootstrap.getBaseConfig().getEnv(), instanceTemp);
 
             logger.info(">>>>>>>>>>> xxl-rpc, XxlRpcRegister-unregister {}, instance:{}, openApiResponse:{}", openApiResponse.isSuccess()?"success":"fail", instanceTemp, openApiResponse);
             return openApiResponse.isSuccess();
@@ -283,7 +306,7 @@ public class XxlConfRegister extends Register {
             // discovery
             List<String> appnameListTemp = new ArrayList<String>(appnameList);
             RegisterTool.DiscoveryResponse discoveryResponse = RegisterTool.discovery(
-                    adminAddress,
+                    loadAddress(),
                     accessToken,
                     xxlRpcBootstrap.getBaseConfig().getEnv(),
                     appnameListTemp,
