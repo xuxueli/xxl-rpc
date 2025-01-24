@@ -633,7 +633,7 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 客户端并发锁超时优化；
 - 路由对象支持可配置，当前根据iface，太固定；
 
-## 5️五、其他
+## 五、其他
 
 ### 5.1 项目贡献
 欢迎参与项目贡献！比如提交PR修复一个bug，或者新建 [Issue](https://github.com/xuxueli/xxl-rpc/issues/) 讨论新特性或者变更。
