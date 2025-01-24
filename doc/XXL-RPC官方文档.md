@@ -581,7 +581,7 @@ public class Demo2ServiceImpl implements Demo2Service {
   - XXL-CONF：一站式服务管理平台（配置中心、注册中心），提供 动态配置管理、服务注册及发现能力；降低中间件认知及运维成本。
   - Github：https://github.com/xuxueli/xxl-conf ）；
   - 官方文档：https://www.xuxueli.com/xxl-conf/
-- 3、【调整】服务注册中心逻辑调整，借助 XXL-CONF 的 服务注册中心OpenApi 实现 动态服务注册与发现；
+- 3、【调整】服务注册中心逻辑调整，借助 XXL-CONF 的OpenApi 实现 动态服务注册与发现；
 - 4、【优化】优化获取本地IP地址逻辑，调整了获取本地地址顺序；
 - 5、【升级】多个项目依赖升级至较新稳定版本；
 
