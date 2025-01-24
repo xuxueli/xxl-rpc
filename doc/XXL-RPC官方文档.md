@@ -89,7 +89,7 @@ docker pull xuxueli/xxl-conf-admin
 docker run -p 8080:8080 -v /tmp:/data/applogs --name xxl-conf-admin  -d xuxueli/xxl-conf-admin
 ```
 
-![输入图片说明](https://www.xuxueli.com/doc/static/xxl-rpc/images/img_01.png "在这里输入图片标题")
+![输入图片说明](https://www.xuxueli.com/doc/static/xxl-conf/images/img_12.png "在这里输入图片标题")
 
 #### 2.1.2、配置 “maven依赖”
 
