@@ -80,8 +80,8 @@ XXL-RPC 支持多种使用方式，并提供轻量级内置注册中心，下面
 #### 2.1.1、服务注册中心搭建
 
 基于 XXL-CONF 搭建 “轻量级注册中心”：一行命令启动注册中心，一站式提供服务动态注册发现能力。
-- XXL-CONF：一站式服务管理平台（配置中心、注册中心），提供 动态配置管理、服务注册及发现能力；降低中间件认知及运维成本。
-- Github：https://github.com/xuxueli/xxl-conf ）；
+- XXL-CONF：分布式服务管理平台，作为服务 配置中心 与 注册中心，提供 动态配置管理、服务注册与发现 等核心能力；
+- Github：https://github.com/xuxueli/xxl-conf 
 - 官方文档：https://www.xuxueli.com/xxl-conf/
 ```
 // 说明：xxl-conf 详细配置可参考官方文档
