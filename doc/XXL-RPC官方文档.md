@@ -78,21 +78,22 @@ XXL-RPC 支持多种使用方式，并提供轻量级内置注册中心，下面
 
 ### 2.1、springboot 版本示例
 
-以示例项目 “xxl-rpc-sample-springboot” 为例讲解。
-（该示例依赖内置轻量级注册中心，可参考“4.3 轻量级注册中心（xxl-rpc-admin）搭建” ）
+#### 2.1.1、服务注册中心搭建
 
-#### a、开发“服务API”
-开发RPC服务的 “接口 / interface” 和 “数据模型 / DTO”；
+基于 [XXL-CONF(Github)](https://github.com/xuxueli/xxl-conf) 搭建 “轻量级注册中心”，详细可参考 [XXL-CONF官方文档](https://www.xuxueli.com/xxl-conf/)。
+
+一行命令启动注册中心，一站式提供服务动态注册发现能力。
+
 ```
-可参考如下代码：
-com.xxl.rpc.sample.api.DemoService
-com.xxl.rpc.sample.api.dto.UserDTO
+// 说明：xxl-conf 详细配置可参考官方文档
+docker pull xuxueli/xxl-conf-admin
+docker run -p 8080:8080 -v /tmp:/data/applogs --name xxl-conf-admin  -d xuxueli/xxl-conf-admin
 ```
 
-#### b、配置开发“服务提供方”
-- 1、配置 “maven依赖”：     
+![输入图片说明](https://www.xuxueli.com/doc/static/xxl-rpc/images/img_01.png "在这里输入图片标题")
 
-需引入：XXL-RPC核心依赖 + 公共API接口依赖
+#### 2.1.2、配置 “maven依赖”
+
 ```
 <dependency>
     <groupId>com.xuxueli</groupId>
@@ -101,63 +102,74 @@ com.xxl.rpc.sample.api.dto.UserDTO
 </dependency>
 ```
 
-- 2、配置“服务提供方”
-```
-// 参考代码位置：com.xxl.rpc.sample.server.conf.SpringXxlRpcBootstrapConfig
+#### 2.1.3、XXL-PRC接入配置
 
-@Bean
-public SpringXxlRpcBootstrap xxlRpcSpringFactory() {
-    
-    // XxlRpc Bootstrap 
-    SpringXxlRpcBootstrap factory = new SpringXxlRpcBootstrap();
-    factory.setBaseConfig(new BaseConfig(env, appname));
-    factory.setRegister(new XxlRpcRegister(address, accesstoken));
-    factory.setInvokerConfig(new InvokerConfig(invokerOpen));
-    factory.setProviderConfig(providerOpen ?
-            new ProviderConfig(
-                    NettyServer.class,
-                    JsonbSerializer.class,
-                    port,
-                    corePoolSize,
-                    maxPoolSize,
-                    null) : new ProviderConfig(providerOpen));
-    
-    return factory;
-}
+与Spring无缝集成，也支持无框架接入。
+参考 xxl-rpc-sample-springboot 示例项目，client 和 server 两个sample子项目的 application.properties
+
+```
+XxlRpcSpringFactory factory = new XxlRpcSpringFactory();
+factory.setBaseConfig(new BaseConfig(env, appname));
+factory.setRegister(new XxlRpcRegister(address, accesstoken));
+factory.setInvokerConfig(new InvokerConfig(invokerOpen));
+factory.setProviderConfig(providerOpen ?
+        new ProviderConfig(
+                NettyServer.class,
+                JsonbSerializer.class,
+                port,
+                corePoolSize,
+                maxPoolSize,
+                null) : new ProviderConfig(providerOpen));
 ```
 
-服务提供方配置参数说明：见 application.properties 
+服务提供方配置参数说明：见 application.properties
 ```
-// 服务环境标识，用户区分环境、隔离流量；
-xxl-rpc.base.env=test
-// 当前服务 appname，用户服务注册发现；
-xxl-rpc.base.appname=xxl-rpc-sample-springboot-server
-// 注册中心地址 （默认轻量级注册中心）
-xxl-rpc.register.address=http://localhost:8080/xxl-rpc-admin
-// 注册中心访问token
-xxl-rpc.register.accesstoken=defaultaccesstoken
-// 服务调用方/invoker，功能是否开启
+# xxl-conf配置：服务注册中心，提供 动态服务注册及发现 能力；
+## 服务唯一标识AppName；字母数字及中划线组成，必填
+xxl.conf.client.appname=xxl-rpc-sample-springboot-server
+## 服务隔离环境，必填
+xxl.conf.client.env=test
+## XXL-CONF地址信息，多个逗号分隔，必填
+xxl.conf.admin.address=http://localhost:8080/xxl-conf-admin
+## XXL-CONF地址信息，必填（可以在 XXL-CONF “系统管理->AccessToken” 菜单申请）
+xxl.conf.admin.accesstoken=defaultaccesstoken
+
+# xxl-rpc配置：RPC服务配置
+## 服务消费者，启用开关；
 xxl-rpc.invoker.open=true
-// 服务提供方/provider，功能是否开启
+## 服务提供者，启用开关
 xxl-rpc.provider.open=true
-// 服务提供方/provider，端口
+## 服务提供者，服务通讯端口
 xxl-rpc.provider.port=7080
-// 服务提供方/provider，业务线程池core大小，小于0启动默认值
+## 服务提供者，业务线程池core大小，小于0启动默认值
 xxl-rpc.provider.corePoolSize=-1
-// 服务提供方/provider，业务线程池max大小，小于0启动默认值
+## 服务提供者，业务线程池max大小，小于0启动默认值
 xxl-rpc.provider.maxPoolSize=-1
 ```
 
-- 3、开发“服务实现类”
+#### 2.1.4、业务代码开发
 
-实现 “服务API” 的接口，开发业务逻辑代码；
+- a、接口定义代码：
 ```
-可参考如下代码：
-com.xxl.rpc.sample.api.DemoService
+public interface DemoService {
 
-注意：
-1、添加 “@Service” 注解：被Spring容器扫描识别为SpringBean；
-2、添加 “@XxlRpcService” 注解：被 “XXL-RPC” 扫描识别进行Provider服务注册； 
+  public UserDTO load(String name);
+  
+}
+```
+
+- b、服务端代码：注解式，一行代码将现有接口转换成 XXL-RPC 服务。
+```
+@XxlRpcService
+@Service
+public class DemoServiceImpl implements DemoService {
+
+  @Override
+  public UserDTO load(String name) {
+    return new UserDTO("jack", "hello world");
+  }
+
+}
 ```
 
 服务提供方 XxlRpcService 注解参数说明：
@@ -167,88 +179,31 @@ com.xxl.rpc.sample.api.DemoService
 version | 服务版本，默认空；可据此区分同一个“服务API” 的不同版本；
 
 
-#### c、配置开发“服务消费方”
-
-- 1、配置 “maven依赖”：  
-
-需引入：XXL-RPC核心依赖 + 公共API接口依赖
+- 3、调用端代码： 注解式，一行代码引入 XXL- RPC 服务。
 ```
-<dependency>
-    <groupId>com.xuxueli</groupId>
-    <artifactId>xxl-rpc-core</artifactId>
-    <version>${parent.version}</version>
-</dependency>
-```
-
-- 2、配置“服务消费方 InvokerFactory”
-    
-```
-// 参考代码位置：com.xxl.rpc.sample.client.conf.SpringXxlRpcBootstrapConfig
-
-@Bean
-public SpringXxlRpcBootstrap xxlRpcSpringFactory() {
-
-    // XxlRpc Bootstrap
-    SpringXxlRpcBootstrap factory = new SpringXxlRpcBootstrap();
-    factory.setBaseConfig(new BaseConfig(env, appname));
-    factory.setRegister(new XxlRpcRegister(address, accesstoken));
-    factory.setInvokerConfig(new InvokerConfig(invokerOpen));
-    factory.setProviderConfig(new ProviderConfig(providerOpen));
-
-    return factory;
-}
-```
-
-服务调用方参数说明：见 application.properties
-
-```
-// 服务环境标识，用户区分环境、隔离流量；
-xxl-rpc.base.env=test
-// 当前服务 appname，用户服务注册发现；
-xxl-rpc.base.appname=xxl-rpc-sample-springboot-server
-// 注册中心地址 （默认轻量级注册中心）
-xxl-rpc.register.address=http://localhost:8080/xxl-rpc-admin
-// 注册中心访问token
-xxl-rpc.register.accesstoken=defaultaccesstoken
-// 服务调用方/invoker，功能是否开启
-xxl-rpc.invoker.open=true
-// 服务提供方/provider，功能是否开启
-xxl-rpc.provider.open=false
-```
-
-- 3、注入并实用远程服务
-
-```
-// 参考代码位置：com.xxl.rpc.sample.client.controller.IndexController
-
-@XxlRpcReference
+@XxlRpcReference(appname = "xxl-appname")
 private DemoService demoService;
 
-……
-UserDTO user = demoService.sayHi(name);
-……
-
+... 
+UserDTO userDTO = demoService.sayHi(name);
 ```
 
 服务消费方 XxlRpcReference 注解参数说明：
 
 “@XxlRpcReference” 注解参数 | 说明
 --- | ---
-appname | 服务提供方appname，用于服务发现；
-version | 服务版本，默认空；可据此区分同一个“服务API” 的不同版本；
-client | 服务通讯方案，可选范围：NettyClient（默认）、NettyHttpClient ; 
-serializer | 序列化方案，可选范围: JSONB（默认）、HESSIAN、HESSIAN1；
-callType | 请求类型，可选范围：SYNC（默认）、ONEWAY、FUTURE、CALLBACK；
-loadBalance | 负载均衡类型，可选范围：ROUND（默认）、RANDOM、LRU、LFU、CONSISTENT_HASH；
-timeout | 服务超时时间，单位毫秒；
+appname | 服务提供方appname，用于服务发现；必填；
+version | 服务版本，隔离相同服务不通版本，默认空；选填；
+callType | 请求类型，可选范围：SYNC（默认）、ONEWAY、FUTURE、CALLBACK；选填；
+loadBalance | 负载均衡类型，可选范围：ROUND（默认）、RANDOM、LRU、LFU、CONSISTENT_HASH；选填；
+timeout | 服务超时时间，单位毫秒；选填；
+
 
 #### d、测试
 
-```
-// 参考代码位置：com.xxl.rpc.sample.client.controller.IndexController
-```
-代码中将上面配置的消费方 invoker 远程服务注入到测试 Controller 中使用，调用该服务，查看看是否正常。
-如果正常，说明该接口项目通过XXL-RPC从 client 项目调用了 server 项目中的服务，夸JVM进行了一次RPC通讯。
+参考代码位置：com.xxl.rpc.sample.client.controller.IndexController
+
+上述代码底层将发送一次 XXL-RPC 请求，client 项目调用了 server 项目中的服务，夸JVM进行了一次RPC通讯。
 
 访问该Controller地址即可进行测试：http://127.0.0.1:8081/?name=jack
 
@@ -263,51 +218,55 @@ timeout | 服务超时时间，单位毫秒；
 ```
 // 参考代码位置：com.xxl.rpc.sample.server.XxlRpcServerApplication
 
-public static void main(String[] args) throws Exception {
+// 1、XxlRpcBootstrap：XXL-RPC 基础配置
+XxlRpcBootstrap rpcBootstrap = new XxlRpcBootstrap();
+rpcBootstrap.setBaseConfig(new BaseConfig("test", "xxl-rpc-sample-frameless-server"));
+rpcBootstrap.setProviderConfig(new ProviderConfig(NettyServer.class, JsonbSerializer.class, null, -1, -1, 7080, null));
 
-    // 1、XxlRpcBootstrap
-    XxlRpcBootstrap rpcBootstrap = new XxlRpcBootstrap();
-    rpcBootstrap.setBaseConfig(new BaseConfig("test", "xxl-rpc-sample-frameless-server"));
-    rpcBootstrap.setProviderConfig(new ProviderConfig(NettyServer.class, JsonbSerializer.class, -1, -1, 7080, null));
+// 2、start：XXL-RPC 容器启动
+rpcBootstrap.start();
 
-    // 2、start
-    rpcBootstrap.start();
+// 3、add services：本地服务注册，提供给远程RPC请求使用
+rpcBootstrap.getProvider().addService(DemoService.class.getName(), null, new DemoServiceImpl());
 
-    // 3、add services
-    rpcBootstrap.getProvider().addService(DemoService.class.getName(), null, new DemoServiceImpl());
-
-    while (!Thread.currentThread().isInterrupted()) {
-        TimeUnit.HOURS.sleep(1);
-    }
-
-    // 4、stop
-    rpcBootstrap.stop();
-
+// 模拟主线程hold
+while (!Thread.currentThread().isInterrupted()) {
+    TimeUnit.HOURS.sleep(1);
 }
+
+// 4、stop：XXL-RPC 容器关闭
+rpcBootstrap.stop();
 ```
 
 #### b、API方式创建“服务消费者”：
 ```
-// 参考代码位置：com.xxl.rpc.sample.client.XxlRpcClientAplication
+// 1、LocalRegister：本地注册中心 初始化，维护远程服务通讯地址信息
+LocalRegister localRegister = new LocalRegister();
+localRegister.register(new RegisterInstance("test", "xxl-rpc-sample-frameless-server", "127.0.0.1", 7080, null));
 
-// init client
-XxlRpcReferenceBean referenceBean = new XxlRpcReferenceBean();
-referenceBean.setClient(NettyClient.class);
-referenceBean.setSerializer(JsonbSerializer.class);
-referenceBean.setCallType(callType);
-referenceBean.setLoadBalance(LoadBalance.ROUND);
-referenceBean.setIface(DemoService.class);
-referenceBean.setVersion(null);
-referenceBean.setTimeout(500);
-referenceBean.setAppname("xxl-rpc-sample-frameless-server");
-//referenceBean.setAddress("127.0.0.1:7080");
-//referenceBean.setAccessToken(null);
-referenceBean.setRpcBootstrap(rpcBootstrap);
+// 2、XxlRpcBootstrap：XXL-RPC 基础配置
+XxlRpcBootstrap rpcBootstrap = new XxlRpcBootstrap();
+rpcBootstrap.setBaseConfig(new BaseConfig("test", "xxl-rpc-sample-frameless-client"));
+rpcBootstrap.setRegister(localRegister);
+rpcBootstrap.setInvokerConfig(new InvokerConfig(true, NettyClient.class, JsonbSerializer.class, null));
 
-DemoService demoService = (DemoService) referenceBean.getObject();
+// 3、start：XXL-RPC 容器启动
+rpcBootstrap.start();
+
+// 4、XxlRpcReferenceBean build：创建远程服务代理对象
+DemoService demoService_SYNC = buildReferenceBean(rpcBootstrap, CallType.SYNC);
+
+// 5、test rpc invoke：发起RPC请求，测试结果输出
+testSYNC(demoService_SYNC);
+
+TimeUnit.SECONDS.sleep(5);
+
+// 6、stop：XXL-RPC 容器关闭
+rpcBootstrap.stop();
 ```
 
 #### c、测试
+
 ```
 // test
 UserDTO userDTO = demoService.sayHi("[SYNC]jack");
@@ -425,254 +384,7 @@ public class Demo2ServiceImpl implements Demo2Service {
 }
 ```
 
-## 四、轻量级服务注册中心
-
-### 4.1 概述
-XXL-RPC-ADMIN（原XXL-REGISTRY） 是一个轻量级分布式服务注册中心，拥有"轻量级、秒级注册上线、多环境、跨语言、跨机房"等特性。现已开放源代码，开箱即用。
-
-XxlRpcAdmin 原生支持集群部署，提供 环境/命名空间、应用、鉴权、服务注册节点 等在线运营管控能力。
-
-### 4.2 特性
-
-- 1、轻量级：基于DB与磁盘文件，只需要提供一个DB实例即可，无第三方依赖；
-- 2、实时性：借助内部广播机制，新服务上线、下线，可以在1s内推送给客户端；
-- 3、数据同步：注册中心会定期全量同步数据至磁盘文件，清理无效服务，确保服务数据实时可用；
-- 4、性能：服务发现时仅读磁盘文件，性能非常高；服务注册、摘除时通过磁盘文件校验，防止重复注册操作；
-- 5、扩展性：可方便、快速的横向扩展，只需保证服务注册中心配置一致即可，可借助负载均衡组件如Nginx快速集群部署；
-- 6、多状态：服务内置三种状态：
-    - 正常状态=支持动态注册、发现，服务注册信息实时更新；
-    - 锁定状态=人工维护注册信息，服务注册信息固定不变；
-    - 禁用状态=禁止使用，服务注册信息固定为空；
-- 7、跨语言：注册中心提供HTTP接口（RESTFUL 格式）供客户端实用，语言无关，通用性更强；
-- 8、兼容性：项目立项之初是为XXL-RPC量身设计，但是不限于XXL-RPC使用。兼容支持任何服务框架服务注册实用，如dubbo、springboot等；
-- 9、跨机房：得益于服务注册中心集群关系对等特性，集群各节点提供幂等的配置服务；因此，异地跨机房部署时，只需要请求本机房服务注册中心即可，实现异地多活；
-- 10、容器化：提供官方docker镜像，并实时更新推送dockerhub，进一步实现 "服务注册中心" 产品开箱即用；
-- 11、访问令牌（accessToken）：为提升系统安全性，注册中心和客户端进行安全性校验，双方AccessToken匹配才允许通讯；
-
-### 4.3 轻量级注册中心（xxl-rpc-admin）搭建
-
-- a、解压源码,按照maven格式将源码导入IDE, 使用maven进行编译即可，源码结构如下：
-```
-源码目录介绍：
-- /doc
-- /xxl-rpc-admin    ：轻量级服务（注册）中心，可选模块；
-- /xxl-rpc-core     ：核心依赖；
-- /xxl-rpc-samples  ：示例项目；
-    - /xxl-rpc-sample-frameless     ：无框架版本示例；
-    - /xxl-rpc-sample-springboot    ：springboot版本示例；
-        - /xxl-rpc-sample-springboot-api           ：公共API接口
-        - /xxl-rpc-sample-springboot-client        ：服务消费方 invoker 调用示例；
-        - /xxl-rpc-sample-springboot-server        ：服务提供方 provider 示例;     
-```
-
-- b、初始化“轻量级服务注册中心”数据库
-
-请下载项目源码并解压，获取 "调度数据库初始化SQL脚本" 并执行即可。数据库初始化SQL脚本"位置为:
-```
-/xxl-rpc/doc/db/tables_xxl_rpc.sql
-```
-服务(注册)中心支持集群部署，集群情况下各节点务必连接同一个mysql实例;如果mysql做主从,集群节点务必强制走主库;
-
-- c、配置“轻量级服务注册中心”
-```
-服务(注册)中心项目：xxl-rpc-admin
-作用：一个轻量级分布式服务(注册)中心，拥有"轻量级、秒级注册上线、多环境、跨语言、跨机房"等特性。现已开放源代码，开箱即用。
-```
-
-配置文件地址：
-```
-/xxl-rpc/xxl-rpc-admin/src/main/resources/application.properties
-```
-
-配置内容说明：
-```
-### 数据库配置
-spring.datasource.url=jdbc:mysql://127.0.0.1:3306/xxl_rpc?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai
-spring.datasource.username=root
-spring.datasource.password=root_pwd
-``` 
-
-- d、部署“轻量级服务注册中心”
-
-如果已经正确进行上述配置，可将项目编译打包部署。该地址接入方项目将会使用到，作为注册地址。
-```
-访问地址：http://localhost:8080/xxl-rpc-admin
-默认账号密码：admin/123456
-```
-
-登录后运行界面如下图所示：
-![输入图片说明](https://www.xuxueli.com/doc/static/xxl-rpc/images/img_01.png "在这里输入图片标题")
-
-至此“服务注册中心”项目已经部署成功。
-
-- e、服务注册中心集群（可选）
-
-服务注册中心支持集群部署，提升消息系统容灾和可用性。集群部署时，注意DB配置保持一致；建议通过nginx为集群做负载均衡、分配域名，访问及客户端配置等操作均通过该域名进行。
-
-- f、Docker 镜像方式搭建消息中心：
-
-下载镜像
-```
-// Docker地址：https://hub.docker.com/r/xuxueli/xxl-rpc-admin/
-docker pull xuxueli/xxl-rpc-admin
-```
-
-创建容器并运行
-```
-docker run -p 8080:8080 -v /tmp:/data/applogs --name xxl-rpc-admin  -d xuxueli/xxl-rpc-admin
-
-/**
-* 如需自定义 mysql 等配置，可通过 "PARAMS" 指定，参数格式 RAMS="--key=value  --key2=value2" ；
-* 配置项参考文件：/xxl-rpc/xxl-rpc-admin/src/main/resources/application.properties
-*/
-docker run -e PARAMS="--spring.datasource.url=jdbc:mysql://127.0.0.1:3306/xxl_rpc?Unicode=true&characterEncoding=UTF-8" -p 8080:8080 -v /tmp:/data/applogs --name xxl-rpc-admin  -d xuxueli/xxl-rpc-admin
-```
-
-### 4.4 接入 "服务注册中心" 示例
-
-#### a、Java语言项目接入示例       
-XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框架。
-
-其他Java服务框架，如dubbo、springboot等，建议参考 XXL-RPC 提供的实例项目；
-
-#### b、非Java语言项目接入； 
-非Java语言项目，可以借助提供的 RESTFUL 格式API接口实现服务注册与发现功能。
-
-
-### 4.5 注册中心 RESTful API
-服务注册中心为支持服务注册与发现功能，提供的 RESTful 格式API接口如下：
-
-#### 4.5.1、服务注册 & 续约 API
-说明：新服务注册上线1s内广播通知接入方；需要接入方循环续约，否则服务将会过期（三倍于注册中心心跳时间）下线；
-
-```
-地址格式：{服务注册中心跟地址}/openapi/register
-
-请求参数说明：
- 1、accessToken：请求令牌；
- 2、env：环境标识
- 3、instance：服务注册信息
-
-请求数据格式如下，放置在 RequestBody 中，JSON格式：
- 
-    {
-        "accessToken" : "xxxxxx",
-        "env" : "test",
-        "instance" : {
-            "appname" : "app01",
-            "ip" : "127.0.0.1",
-            "port" : 7080,
-            "extendInfo" : "",
-        }
-    }
-    
-```
-
-#### 4.5.2、服务摘除 API
-说明：新服务摘除下线1s内广播通知接入方；
-
-```
-地址格式：{服务注册中心跟地址}/openapi/unregister
-
-请求参数说明：
- 1、accessToken：请求令牌；
- 2、env：环境标识
- 3、registryDataList：服务注册信息
-
-请求数据格式如下，放置在 RequestBody 中，JSON格式：
- 
-    {
-        "accessToken" : "xxxxxx",
-        "env" : "test",
-        "instance" : {
-            "appname" : "app01",
-            "ip" : "127.0.0.1",
-            "port" : 7080,
-            "extendInfo" : "",
-        }
-    }
-
-```
-
-#### 4.5.3、服务发现 API
-说明：查询在线服务地址列表；
-
-```
-地址格式：{服务注册中心跟地址}/openapi/discovery
-
-请求参数说明：
- 1、accessToken：请求令牌；
- 2、env：环境标识
- 3、appnameList：服务发现的 appname 列表
- 4、simpleQuery：是否简单查询；true，仅查询注册信息Md5值，用于检测是否变化；false，查询注册信息详情。
- 
-请求数据格式如下，放置在 RequestBody 中，JSON格式：
- 
-    {
-        "accessToken" : "xxxxxx",
-        "env" : "test",
-        "appnameList" : [
-            "app01",
-            "app02"
-        ],
-        "simpleQuery":false
-    }
-
-```
-
-#### 4.5.4、服务监控 API
-说明：long-polling 接口，主动阻塞一段时间（三倍于注册中心心跳时间）；直至阻塞超时或服务注册信息变动时响应；
-
-```
-地址格式：{服务注册中心跟地址}/openapi/monitor
-
-请求参数说明：
- 1、accessToken：请求令牌；
- 2、env：环境标识
- 3、keys：服务注册Key列表
- 
-请求数据格式如下，放置在 RequestBody 中，JSON格式：
- 
-    {
-        "accessToken" : "xxxxxx",
-        "env" : "test",
-        "appnameList" : [
-            "app01",
-            "app02"
-        ]
-    }
-    
-```
-
-### 4.6 服务注册中心系统设计
-#### 4.6.1 系统架构图
-![输入图片说明](https://www.xuxueli.com/doc/static/xxl-rpc/images/img_02.png "在这里输入图片标题")
-
-#### 4.6.2 原理解析
-内部通过广播机制，集群节点实时同步服务注册信息，确保一致。客户端借助 long pollong 实时感知服务注册信息，简洁、高效；
-
-#### 4.6.3 跨机房（异地多活）
-得益于服务注册中心集群关系对等特性，集群各节点提供幂等的服务注册服务；因此，异地跨机房部署时，只需要请求本机房服务注册中心即可，实现异地多活；
-
-举个例子：比如机房A、B 内分别部署服务注册中心集群节点。即机房A部署 a1、a2 两个服务注册中心服务节点，机房B部署 b1、b2 两个服务注册中心服务节点；
-
-那么各机房内应用只需要请求本机房内部署的服务注册中心节点即可，不需要跨机房调用。即机房A内业务应用请求 a1、a2 获取配置、机房B内业务应用 b1、b2 获取配置。
-
-这种跨机房部署方式实现了配置服务的 "异地多活"，拥有以下几点好处：
-
-- 1、注册服务响应更快：注册请求本机房内搞定；
-- 2、注册服务更稳定：注册请求不需要跨机房，不需要考虑复杂的网络情况，更加稳定；
-- 2、容灾性：即使一个机房内服务注册中心全部宕机，仅会影响到本机房内应用加载服务，其他机房不会受到影响。
-
-#### 4.6.4 一致性
-类似 Raft 方案，更轻量级、稳定；
-- Raft：Leader统一处理变更操作请求，一致性协议的作用具化为保证节点间操作日志副本(log replication)一致，以term作为逻辑时钟(logical clock)保证时序，节点运行相同状态机(state machine)得到一致结果。
-- 本项目：
-    - Leader（统一处理分发变更请求）：DB消息表（仅变更时产生消息，消息量较小，而且消息轮训存在间隔，因此消息表压力不会太大；）；
-    - state machine（顺序操作日志副本并保证结果一直）：顺序消费消息，保证本地数据一致，并通过周期全量同步进一步保证一致性；
-
-
-## 五、版本更新日志
+## 四、版本更新日志
 
 #### v1.0.0（XXL-REGISTRY） Release Notes[2018-12-01]
 - 1、轻量级：基于DB与磁盘文件，只需要提供一个DB实例即可，无第三方依赖；
@@ -864,9 +576,15 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 - 7、【升级】多个项目依赖升级至较新稳定版本，涉及 xxl-rpc-netty-shade、netty、slf4j 等；
 
 
-### v1.8.2 Release Notes[迭代中]
-- 1、精简依赖，减少依赖包体积；
+### v1.9.0 Release Notes[2025-01-24]
+- 1、【优化】服务底层代码重构优化，精简依赖、减少依赖包体；
+- 2、【调整】内置注册中心XxlRpcRegister(xxl-rpc-admin)迁移，整合至XXL-CONF。
+通过 XXL-CONF 提供一体化 服务配置中心、服务注册中心 能力，降低中间件认知及运维成本。
+- 3、【调整】服务注册中心逻辑调整，借助 XXL-CONF 的 服务注册中心OpenApi 实现 动态服务注册与发现。
+
+### v.1.9.1 Release Notes[迭代中]
 - 1、【TODO】新增SimpleHttpServer，仅支持同步请求，简化CallType复杂度；
+
 
 ### TODO LIST
 - 提高系统可用性，以部分功能暂时不可达为代价，防止服务整体缓慢或雪崩
@@ -913,15 +631,15 @@ XXL-RPC默认将 "XXL-RPC-ADMIN" 作为原生注册中心。其他Java服务框�
 - 客户端并发锁超时优化；
 - 路由对象支持可配置，当前根据iface，太固定；
 
-## 七、其他
+## 5️五、其他
 
-### 7.1 项目贡献
+### 5.1 项目贡献
 欢迎参与项目贡献！比如提交PR修复一个bug，或者新建 [Issue](https://github.com/xuxueli/xxl-rpc/issues/) 讨论新特性或者变更。
 
-### 7.2 用户接入登记
+### 5.2 用户接入登记
 更多接入的公司，欢迎在 [登记地址](https://github.com/xuxueli/xxl-rpc/issues/2 ) 登记，登记仅仅为了产品推广。
 
-### 7.3 开源协议和版权
+### 5.3 开源协议和版权
 产品开源免费，并且将持续提供免费的社区技术支持。个人或企业内部可自由的接入和使用。
 
 - Licensed under the Apache License, Version 2.0.
