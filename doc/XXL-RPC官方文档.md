@@ -105,7 +105,23 @@ docker run -p 8080:8080 -v /tmp:/data/applogs --name xxl-conf-admin  -d xuxueli/
 
 与Spring无缝集成，也支持无框架接入。
 参考 xxl-rpc-sample-springboot 示例项目，client 和 server 两个sample子项目的 application.properties
+- client配置：/xxl-rpc/xxl-rpc-samples/xxl-rpc-sample-springboot/xxl-rpc-sample-springboot-server/src/main/resources/application.properties
+- server配置：/xxl-rpc/xxl-rpc-samples/xxl-rpc-sample-springboot/xxl-rpc-sample-springboot-client/src/main/resources/application.properties
 
+配置项 | 说明
+--- | ---
+xxl.conf.client.appname | 服务唯一标识AppName；字母数字及中划线组成，必填
+xxl.conf.client.env | 服务隔离环境，必填
+xxl.conf.admin.address | XXL-CONF地址信息，多个逗号分隔，必填
+xxl.conf.admin.accesstoken | XXL-CONF地址信息，必填（可以在 XXL-CONF “系统管理->AccessToken” 菜单申请）
+xxl-rpc.invoker.open | 服务消费者，启用开关；
+xxl-rpc.provider.open | 服务提供者，启用开关
+xxl-rpc.provider.port | 服务提供者，服务通讯端口
+xxl-rpc.provider.corePoolSize | 服务提供者，业务线程池core大小，小于0启动默认值
+xxl-rpc.provider.maxPoolSize | 服务提供者，业务线程池max大小，小于0启动默认值
+
+
+上述配置，本质将会驱动 XxlRpcSpringFactory 配置及初始化，如下：
 ```
 XxlRpcSpringFactory factory = new XxlRpcSpringFactory();
 factory.setBaseConfig(new BaseConfig(env, appname));
@@ -119,31 +135,6 @@ factory.setProviderConfig(providerOpen ?
                 corePoolSize,
                 maxPoolSize,
                 null) : new ProviderConfig(providerOpen));
-```
-
-服务提供方配置参数说明：见 application.properties
-```
-# xxl-conf配置：服务注册中心，提供 动态服务注册及发现 能力；
-## 服务唯一标识AppName；字母数字及中划线组成，必填
-xxl.conf.client.appname=xxl-rpc-sample-springboot-server
-## 服务隔离环境，必填
-xxl.conf.client.env=test
-## XXL-CONF地址信息，多个逗号分隔，必填
-xxl.conf.admin.address=http://localhost:8080/xxl-conf-admin
-## XXL-CONF地址信息，必填（可以在 XXL-CONF “系统管理->AccessToken” 菜单申请）
-xxl.conf.admin.accesstoken=defaultaccesstoken
-
-# xxl-rpc配置：RPC服务配置
-## 服务消费者，启用开关；
-xxl-rpc.invoker.open=true
-## 服务提供者，启用开关
-xxl-rpc.provider.open=true
-## 服务提供者，服务通讯端口
-xxl-rpc.provider.port=7080
-## 服务提供者，业务线程池core大小，小于0启动默认值
-xxl-rpc.provider.corePoolSize=-1
-## 服务提供者，业务线程池max大小，小于0启动默认值
-xxl-rpc.provider.maxPoolSize=-1
 ```
 
 #### 2.1.4、业务代码开发
@@ -227,18 +218,12 @@ rpcBootstrap.start();
 
 // 3、add services：本地服务注册，提供给远程RPC请求使用
 rpcBootstrap.getProvider().addService(DemoService.class.getName(), null, new DemoServiceImpl());
-
-// 模拟主线程hold
-while (!Thread.currentThread().isInterrupted()) {
-    TimeUnit.HOURS.sleep(1);
-}
-
-// 4、stop：XXL-RPC 容器关闭
-rpcBootstrap.stop();
 ```
 
 #### b、API方式创建“服务消费者”：
 ```
+// 参考代码位置：com.xxl.rpc.sample.client.XxlRpcClientAplication
+
 // 1、LocalRegister：本地注册中心 初始化，维护远程服务通讯地址信息
 LocalRegister localRegister = new LocalRegister();
 localRegister.register(new RegisterInstance("test", "xxl-rpc-sample-frameless-server", "127.0.0.1", 7080, null));
@@ -249,19 +234,14 @@ rpcBootstrap.setBaseConfig(new BaseConfig("test", "xxl-rpc-sample-frameless-clie
 rpcBootstrap.setRegister(localRegister);
 rpcBootstrap.setInvokerConfig(new InvokerConfig(true, NettyClient.class, JsonbSerializer.class, null));
 
-// 3、start：XXL-RPC 容器启动
-rpcBootstrap.start();
+……
 
-// 4、XxlRpcReferenceBean build：创建远程服务代理对象
+// 3、XxlRpcReferenceBean build：创建远程服务代理对象
 DemoService demoService_SYNC = buildReferenceBean(rpcBootstrap, CallType.SYNC);
 
-// 5、test rpc invoke：发起RPC请求，测试结果输出
-testSYNC(demoService_SYNC);
-
-TimeUnit.SECONDS.sleep(5);
-
-// 6、stop：XXL-RPC 容器关闭
-rpcBootstrap.stop();
+// 4、发起RPC请求，测试结果输出
+UserDTO userDTO = demoService.sayHi("[SYNC]jack");
+System.out.println(userDTO);
 ```
 
 #### c、测试
