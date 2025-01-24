@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.xuxueli</groupId>
     <artifactId>xxl-rpc-netty-shade</artifactId>
-    <version>1.8.2-SNAPSHOT</version>
+    <version>1.9.0</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -24,7 +24,7 @@
         <maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
 
         <!-- netty -->
-        <netty.version>4.1.116.Final</netty.version>
+        <netty.version>4.1.117.Final</netty.version>
     </properties>
 
     <dependencies>
