@@ -196,7 +196,7 @@ timeout | 服务超时时间，单位毫秒；选填；
 上述代码底层将发送一次 XXL-RPC 请求，client 项目调用了 server 项目中的服务，夸JVM进行了一次RPC通讯。
 
 访问该Controller地址即可进行测试：http://127.0.0.1:8081/?name=jack
-
+![输入图片说明](https://www.xuxueli.com/doc/static/xxl-rpc/images/img_02.png "在这里输入图片标题")
 
 ### 2.2、frameless 无框架版本
  
