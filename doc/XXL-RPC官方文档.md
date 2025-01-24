@@ -578,8 +578,10 @@ public class Demo2ServiceImpl implements Demo2Service {
 
 ### v1.9.0 Release Notes[2025-01-24]
 - 1、【优化】服务底层代码重构优化，精简依赖、减少依赖包体；
-- 2、【调整】内置注册中心XxlRpcRegister(xxl-rpc-admin)迁移，整合至XXL-CONF（ https://github.com/xuxueli/xxl-conf ）；
-（通过 XXL-CONF 提供一体化 服务配置中心、服务注册中心 能力，降低中间件认知及运维成本）；
+- 2、【调整】内置注册中心XxlRpcRegister(xxl-rpc-admin)迁移，整合至XXL-CONF：
+  - XXL-CONF：一站式服务管理平台（配置中心、注册中心），提供 动态配置管理、服务注册及发现能力；降低中间件认知及运维成本。
+  - Github：https://github.com/xuxueli/xxl-conf ）；
+  - 官方文档：https://www.xuxueli.com/xxl-conf/
 - 3、【调整】服务注册中心逻辑调整，借助 XXL-CONF 的 服务注册中心OpenApi 实现 动态服务注册与发现；
 - 4、【优化】优化获取本地IP地址逻辑，调整了获取本地地址顺序；
 - 5、【升级】多个项目依赖升级至较新稳定版本；
