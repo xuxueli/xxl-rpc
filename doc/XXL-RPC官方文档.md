@@ -64,15 +64,14 @@ RPC（Remote Procedure Call Protocol，远程过程调用），调用远程服�
 
 
 ### 1.5 环境
-- Maven3+
 - Jdk1.8+
-- Mysql8.0+
+- XXL-CONF 1.9.0+ (可选，支持无注册中心使用；默认适配 “xxl-conf” 实现动态服务注册与发现。)
 
 
 ## 二、快速入门
 
 XXL-RPC 支持多种使用方式，并提供轻量级内置注册中心，下面分别介绍使用方式：
-- springboot版本：与springboot无缝集成，并借助内置的 “轻量级注册中心” 实现动态服务注册发现；
+- springboot版本：与springboot无缝集成，默认适配 “xxl-conf” 实现动态服务注册与发现；
 - frameless 无框架版本：不具体依赖项目框架，只需要JDK即可集成使用；
 
 ### 2.1、springboot 版本示例
@@ -208,15 +207,14 @@ timeout | 服务超时时间，单位毫秒；选填；
 ```
 // 参考代码位置：com.xxl.rpc.sample.server.XxlRpcServerApplication
 
-// 1、XxlRpcBootstrap：XXL-RPC 基础配置
+// 1、XxlRpcBootstrap：XXL-RPC 初始化
 XxlRpcBootstrap rpcBootstrap = new XxlRpcBootstrap();
 rpcBootstrap.setBaseConfig(new BaseConfig("test", "xxl-rpc-sample-frameless-server"));
 rpcBootstrap.setProviderConfig(new ProviderConfig(NettyServer.class, JsonbSerializer.class, null, -1, -1, 7080, null));
 
-// 2、start：XXL-RPC 容器启动
 rpcBootstrap.start();
 
-// 3、add services：本地服务注册，提供给远程RPC请求使用
+// 2、add services：服务信息注册，提供给远程RPC请求使用
 rpcBootstrap.getProvider().addService(DemoService.class.getName(), null, new DemoServiceImpl());
 ```
 
@@ -224,11 +222,11 @@ rpcBootstrap.getProvider().addService(DemoService.class.getName(), null, new Dem
 ```
 // 参考代码位置：com.xxl.rpc.sample.client.XxlRpcClientAplication
 
-// 1、LocalRegister：本地注册中心 初始化，维护远程服务通讯地址信息
+// 1、LocalRegister：本地注册中心 初始化，维护远程服务地址信息
 LocalRegister localRegister = new LocalRegister();
 localRegister.register(new RegisterInstance("test", "xxl-rpc-sample-frameless-server", "127.0.0.1", 7080, null));
 
-// 2、XxlRpcBootstrap：XXL-RPC 基础配置
+// 2、XxlRpcBootstrap：XXL-RPC 初始化
 XxlRpcBootstrap rpcBootstrap = new XxlRpcBootstrap();
 rpcBootstrap.setBaseConfig(new BaseConfig("test", "xxl-rpc-sample-frameless-client"));
 rpcBootstrap.setRegister(localRegister);
@@ -236,7 +234,7 @@ rpcBootstrap.setInvokerConfig(new InvokerConfig(true, NettyClient.class, JsonbSe
 
 ……
 
-// 3、XxlRpcReferenceBean build：创建远程服务代理对象
+// 3、XxlRpcReferenceBean build：创建远程服务代理对象，同步调用方式
 DemoService demoService_SYNC = buildReferenceBean(rpcBootstrap, CallType.SYNC);
 
 // 4、发起RPC请求，测试结果输出
@@ -244,13 +242,6 @@ UserDTO userDTO = demoService.sayHi("[SYNC]jack");
 System.out.println(userDTO);
 ```
 
-#### c、测试
-
-```
-// test
-UserDTO userDTO = demoService.sayHi("[SYNC]jack");
-System.out.println(userDTO);
-```
 
 ## 三、系统设计
 
