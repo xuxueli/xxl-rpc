@@ -26,7 +26,7 @@ public class JsonbSerializer extends Serializer {
     @Override
     public void allowPackageList(List<String> packageList) {
         if (packageList!=null && !packageList.isEmpty()) {
-            autoTypeBeforeHandler = JSONReader.autoTypeFilter((String[]) packageList.toArray());
+            autoTypeBeforeHandler = JSONReader.autoTypeFilter(packageList.toArray(new String[0]));
         }
     }
 
