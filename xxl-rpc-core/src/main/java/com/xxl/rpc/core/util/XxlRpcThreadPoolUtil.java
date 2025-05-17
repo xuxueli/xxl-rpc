@@ -5,7 +5,7 @@ import java.util.concurrent.*;
 /**
  * @author xuxueli 2019-02-18
  */
-public class ThreadPoolUtil {
+public class XxlRpcThreadPoolUtil {
 
     /**
      * make server thread pool

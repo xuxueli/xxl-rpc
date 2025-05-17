@@ -52,7 +52,7 @@ public class SpringInvokerFactory {
                     Object serviceProxy = null;
                     try {
                         serviceProxy = referenceBean.getObject();
-                    } catch (Exception e) {
+                    } catch (Throwable e) {
                         throw new XxlRpcException(e);
                     }
 

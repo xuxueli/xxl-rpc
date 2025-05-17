@@ -23,7 +23,7 @@ public enum SerializerEnum {
     public Serializer getSerializer() {
         try {
             return serializerClass.newInstance();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new XxlRpcException(e);
         }
     }

@@ -3,7 +3,7 @@ package com.xxl.rpc.core.remoting.impl.netty_http.server;
 import com.xxl.rpc.core.boot.XxlRpcBootstrap;
 import com.xxl.rpc.core.remoting.Server;
 import com.xxl.rpc.core.remoting.entity.XxlRpcBeat;
-import com.xxl.rpc.core.util.ThreadPoolUtil;
+import com.xxl.rpc.core.util.XxlRpcThreadPoolUtil;
 import com.xxl.rpc.netty.shaded.io.netty.bootstrap.ServerBootstrap;
 import com.xxl.rpc.netty.shaded.io.netty.channel.ChannelFuture;
 import com.xxl.rpc.netty.shaded.io.netty.channel.ChannelInitializer;
@@ -36,7 +36,7 @@ public class NettyHttpServer extends Server  {
             public void run() {
 
                 // param
-                final ThreadPoolExecutor serverHandlerPool = ThreadPoolUtil.makeServerThreadPool(
+                final ThreadPoolExecutor serverHandlerPool = XxlRpcThreadPoolUtil.makeServerThreadPool(
                         NettyHttpServer.class.getSimpleName(),
                         rpcBootstrap.getProviderConfig().getCorePoolSize(),
                         rpcBootstrap.getProviderConfig().getMaxPoolSize());
@@ -69,7 +69,7 @@ public class NettyHttpServer extends Server  {
                     // wait util stop
                     future.channel().closeFuture().sync();
 
-                } catch (InterruptedException e) {
+                } catch (Throwable e) {
                     if (e instanceof InterruptedException) {
                         logger.info(">>>>>>>>>>> xxl-rpc, NettyHttpServer stop.");
                     } else {
@@ -80,13 +80,13 @@ public class NettyHttpServer extends Server  {
                     // stop
                     try {
                         serverHandlerPool.shutdown();	// shutdownNow
-                    } catch (Exception e) {
+                    } catch (Throwable e) {
                         logger.error(e.getMessage(), e);
                     }
                     try {
                         workerGroup.shutdownGracefully();
                         bossGroup.shutdownGracefully();
-                    } catch (Exception e) {
+                    } catch (Throwable e) {
                         logger.error(e.getMessage(), e);
                     }
                 }

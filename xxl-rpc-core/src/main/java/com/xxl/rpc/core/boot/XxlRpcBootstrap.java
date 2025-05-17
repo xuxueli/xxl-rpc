@@ -124,7 +124,7 @@ public class XxlRpcBootstrap {
         if (register != null) {
             try {
                 register.start(this);
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 throw new XxlRpcException(e);
             }
         }
@@ -134,7 +134,7 @@ public class XxlRpcBootstrap {
             try {
                 provider = new ProviderFactory(this);
                 provider.start();
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 throw new XxlRpcException(e);
             }
         }
@@ -144,7 +144,7 @@ public class XxlRpcBootstrap {
             try {
                 invoker = new InvokerFactory(this);
                 invoker.start();
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 throw new XxlRpcException(e);
             }
         }

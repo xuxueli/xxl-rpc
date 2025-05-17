@@ -7,7 +7,7 @@ import com.xxl.rpc.core.register.entity.RegisterInstance;
 import com.xxl.rpc.core.remoting.Client;
 import com.xxl.rpc.core.remoting.entity.XxlRpcResponse;
 import com.xxl.rpc.core.serializer.Serializer;
-import com.xxl.rpc.core.util.ThreadPoolUtil;
+import com.xxl.rpc.core.util.XxlRpcThreadPoolUtil;
 import com.xxl.rpc.core.util.XxlRpcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,7 +125,7 @@ public class InvokerFactory {
                         }
                     }
                 });
-            }catch (Exception e) {
+            }catch (Throwable e) {
                 logger.error(e.getMessage(), e);
             }
         }
@@ -151,7 +151,7 @@ public class InvokerFactory {
         if (responseCallbackThreadPool == null) {
             synchronized (this) {
                 if (responseCallbackThreadPool == null) {
-                    responseCallbackThreadPool = ThreadPoolUtil.makeServerThreadPool(
+                    responseCallbackThreadPool = XxlRpcThreadPoolUtil.makeServerThreadPool(
                             "InvokerFactory-responseCallbackThreadPool",
                             5 ,
                             100);
@@ -170,7 +170,7 @@ public class InvokerFactory {
         if (responseCallbackThreadPool != null) {
             try {
                 responseCallbackThreadPool.shutdown();
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 logger.error(e.getMessage(), e);
             }
         }
@@ -258,7 +258,7 @@ public class InvokerFactory {
             try {
                 connectClient_new.init(registerInstance, serializer, rpcBootstrap);
                 connectClientMap.put(uniqueKey, connectClient_new);
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 connectClient_new.close();
                 throw e;
             }
@@ -292,7 +292,7 @@ public class InvokerFactory {
             // mult discovery, Trigger early-initialization discovery-data
             try {
                 rpcBootstrap.getRegister().discovery(appnameList);
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 logger.error(e.getMessage(), e);
             }
         }

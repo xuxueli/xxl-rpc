@@ -4,10 +4,10 @@ import com.xxl.rpc.core.remoting.entity.XxlRpcBeat;
 import com.xxl.rpc.core.remoting.entity.XxlRpcRequest;
 import com.xxl.rpc.core.remoting.entity.XxlRpcResponse;
 import com.xxl.rpc.core.provider.ProviderFactory;
-import com.xxl.rpc.core.util.ThrowableUtil;
 import com.xxl.rpc.netty.shaded.io.netty.channel.ChannelHandlerContext;
 import com.xxl.rpc.netty.shaded.io.netty.channel.SimpleChannelInboundHandler;
 import com.xxl.rpc.netty.shaded.io.netty.handler.timeout.IdleStateEvent;
+import com.xxl.tool.exception.ThrowableTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,11 +51,11 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<XxlRpcReques
                     ctx.writeAndFlush(xxlRpcResponse);
                 }
             });
-        } catch (Exception e) {
+        } catch (Throwable e) {
             // catch error
             XxlRpcResponse xxlRpcResponse = new XxlRpcResponse();
             xxlRpcResponse.setRequestId(xxlRpcRequest.getRequestId());
-            xxlRpcResponse.setErrorMsg(ThrowableUtil.toString(e));
+            xxlRpcResponse.setErrorMsg(ThrowableTool.toString(e));
 
             ctx.writeAndFlush(xxlRpcResponse);
         }

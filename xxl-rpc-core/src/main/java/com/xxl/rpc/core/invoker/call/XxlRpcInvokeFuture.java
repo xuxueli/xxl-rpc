@@ -39,7 +39,7 @@ public class XxlRpcInvokeFuture implements Future {
     public Object get() throws ExecutionException, InterruptedException {
         try {
             return get(-1, TimeUnit.MILLISECONDS);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new XxlRpcException(e);
         }
     }

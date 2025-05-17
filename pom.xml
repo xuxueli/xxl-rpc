@@ -29,13 +29,16 @@
 		<maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
 
 		<!-- base -->
-		<slf4j-api.version>2.0.16</slf4j-api.version>
-		<junit-jupiter.version>5.11.4</junit-jupiter.version>
+		<slf4j-api.version>2.0.17</slf4j-api.version>
+		<junit-jupiter.version>5.12.2</junit-jupiter.version>
 
 		<!-- remoting -->
 		<xxl-rpc-netty-shade.version>1.9.0</xxl-rpc-netty-shade.version>
 		<!-- serialize -->
 		<fastjson2.version>2.0.54</fastjson2.version>
+
+		<!-- xxl-tool -->
+		<xxl-tool.version>1.4.2</xxl-tool.version>
 
 		<!-- spring -->
 		<spring.version>5.3.39</spring.version>

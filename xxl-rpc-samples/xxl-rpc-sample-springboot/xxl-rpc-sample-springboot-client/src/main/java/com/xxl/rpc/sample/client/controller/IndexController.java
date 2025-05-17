@@ -24,7 +24,7 @@ public class IndexController {
 		try {
 			UserDTO userDTO = demoService.sayHi(name);
 			result += ("<br><br> RPC Response: " + userDTO);
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			//e.printStackTrace();
 			result += ("<br><br> RPC error: " + e.getMessage());
 		}

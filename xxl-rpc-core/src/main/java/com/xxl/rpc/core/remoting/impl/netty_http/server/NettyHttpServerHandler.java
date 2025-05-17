@@ -4,13 +4,13 @@ import com.xxl.rpc.core.remoting.entity.XxlRpcBeat;
 import com.xxl.rpc.core.remoting.entity.XxlRpcRequest;
 import com.xxl.rpc.core.remoting.entity.XxlRpcResponse;
 import com.xxl.rpc.core.provider.ProviderFactory;
-import com.xxl.rpc.core.util.ThrowableUtil;
 import com.xxl.rpc.netty.shaded.io.netty.buffer.ByteBufUtil;
 import com.xxl.rpc.netty.shaded.io.netty.buffer.Unpooled;
 import com.xxl.rpc.netty.shaded.io.netty.channel.ChannelHandlerContext;
 import com.xxl.rpc.netty.shaded.io.netty.channel.SimpleChannelInboundHandler;
 import com.xxl.rpc.netty.shaded.io.netty.handler.codec.http.*;
 import com.xxl.rpc.netty.shaded.io.netty.handler.timeout.IdleStateEvent;
+import com.xxl.tool.exception.ThrowableTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,13 +99,13 @@ public class NettyHttpServerHandler extends SimpleChannelInboundHandler<FullHttp
                 // response-write
                 writeResponse(ctx, keepAlive, responseBytes);
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             logger.error(e.getMessage(), e);
 
             // response error
             XxlRpcResponse xxlRpcResponse = new XxlRpcResponse();
             xxlRpcResponse.setRequestId(requestId);
-            xxlRpcResponse.setErrorMsg(ThrowableUtil.toString(e));
+            xxlRpcResponse.setErrorMsg(ThrowableTool.toString(e));
 
             // response serialize
             byte[] responseBytes = xxlRpcProviderFactory.getSerializerInstance().serialize(xxlRpcResponse);

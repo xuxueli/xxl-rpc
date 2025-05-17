@@ -1,7 +1,7 @@
 package com.xxl.rpc.core.register.impl.openapi;
 
 import com.alibaba.fastjson2.JSON;
-import com.xxl.rpc.core.util.HttpTool;
+import com.xxl.tool.http.HttpTool;
 
 import java.io.Serializable;
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.Map;
  *
  * @author xuxueli 2025-01-01
  */
-public class RegisterTool {
+public class RegisterOpenApiTool {
 
     // ---------------------- entity ----------------------
 
@@ -505,7 +505,7 @@ public class RegisterTool {
                     timeout);
             OpenApiResponse discoveryResponse = JSON.parseObject(responseBody, OpenApiResponse.class);
             return discoveryResponse;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             return new OpenApiResponse(OpenApiResponse.FAIL_CODE, e.getMessage());
         }
     }

@@ -59,7 +59,7 @@ public abstract class Server {
 		if (startedCallback != null) {
 			try {
 				startedCallback.call();
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				logger.error(">>>>>>>>>>> xxl-rpc, server startedCallback error.", e);
 			}
 		}
@@ -72,7 +72,7 @@ public abstract class Server {
 		if (stopedCallback != null) {
 			try {
 				stopedCallback.call();
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				logger.error(">>>>>>>>>>> xxl-rpc, server stopedCallback error.", e);
 			}
 		}

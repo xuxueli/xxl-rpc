@@ -3,7 +3,7 @@ package com.xxl.rpc.core.register.impl;
 import com.xxl.rpc.core.boot.XxlRpcBootstrap;
 import com.xxl.rpc.core.register.Register;
 import com.xxl.rpc.core.register.entity.RegisterInstance;
-import com.xxl.rpc.core.register.impl.openapi.RegisterTool;
+import com.xxl.rpc.core.register.impl.openapi.RegisterOpenApiTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -127,15 +127,15 @@ public class XxlConfRegister extends Register {
                                 try {
 
                                     // register
-                                    RegisterTool.RegisterInstance instanceTemp = new RegisterTool.RegisterInstance(
+                                    RegisterOpenApiTool.RegisterInstance instanceTemp = new RegisterOpenApiTool.RegisterInstance(
                                             instance.getAppname(),
                                             instance.getIp(),
                                             instance.getPort(),
                                             instance.getExtendInfo());
-                                    RegisterTool.OpenApiResponse openApiResponse = RegisterTool.register(loadAddress(), accessToken, xxlRpcBootstrap.getBaseConfig().getEnv(), instanceTemp);
+                                    RegisterOpenApiTool.OpenApiResponse openApiResponse = RegisterOpenApiTool.register(loadAddress(), accessToken, xxlRpcBootstrap.getBaseConfig().getEnv(), instanceTemp);
 
                                     logger.info(">>>>>>>>>>> xxl-rpc, registryThread-register {}, instance:{}, openApiResponse:{}", openApiResponse.isSuccess()?"success":"fail",instance, openApiResponse);
-                                } catch (Exception e) {
+                                } catch (Throwable e) {
                                     logger.error(">>>>>>>>>>> xxl-rpc, registryThread-register error:{}", e.getMessage(), e);
                                 }
                             }
@@ -172,7 +172,7 @@ public class XxlConfRegister extends Register {
                             doDiscoveryAndRefresh(discoveryAppnameStore.keySet());
 
                             // 2、增量服务发现：long-polling/实时监听；
-                            RegisterTool.OpenApiResponse openApiResponse =RegisterTool.monitor(
+                            RegisterOpenApiTool.OpenApiResponse openApiResponse = RegisterOpenApiTool.monitor(
                                     loadAddress(),
                                     accessToken,
                                     xxlRpcBootstrap.getBaseConfig().getEnv(),
@@ -231,16 +231,16 @@ public class XxlConfRegister extends Register {
         try {
 
             // register
-            RegisterTool.RegisterInstance instanceTemp = new RegisterTool.RegisterInstance(
+            RegisterOpenApiTool.RegisterInstance instanceTemp = new RegisterOpenApiTool.RegisterInstance(
                     instance.getAppname(),
                     instance.getIp(),
                     instance.getPort(),
                     instance.getExtendInfo());
-            RegisterTool.OpenApiResponse openApiResponse = RegisterTool.register(loadAddress(), accessToken, xxlRpcBootstrap.getBaseConfig().getEnv(), instanceTemp);
+            RegisterOpenApiTool.OpenApiResponse openApiResponse = RegisterOpenApiTool.register(loadAddress(), accessToken, xxlRpcBootstrap.getBaseConfig().getEnv(), instanceTemp);
 
             logger.info(">>>>>>>>>>> xxl-rpc, XxlRpcRegister-register {}, instance:{}, openApiResponse:{}", openApiResponse.isSuccess()?"success":"fail", instanceTemp, openApiResponse);
             return openApiResponse.isSuccess();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             logger.error(">>>>>>>>>>> xxl-rpc, XxlRpcRegister-register error:{}", e.getMessage(), e);
         }
 
@@ -256,16 +256,16 @@ public class XxlConfRegister extends Register {
         try {
 
             // register
-            RegisterTool.RegisterInstance instanceTemp = new RegisterTool.RegisterInstance(
+            RegisterOpenApiTool.RegisterInstance instanceTemp = new RegisterOpenApiTool.RegisterInstance(
                     instance.getAppname(),
                     instance.getIp(),
                     instance.getPort(),
                     instance.getExtendInfo());
-            RegisterTool.OpenApiResponse openApiResponse = RegisterTool.unregister(loadAddress(), accessToken, xxlRpcBootstrap.getBaseConfig().getEnv(), instanceTemp);
+            RegisterOpenApiTool.OpenApiResponse openApiResponse = RegisterOpenApiTool.unregister(loadAddress(), accessToken, xxlRpcBootstrap.getBaseConfig().getEnv(), instanceTemp);
 
             logger.info(">>>>>>>>>>> xxl-rpc, XxlRpcRegister-unregister {}, instance:{}, openApiResponse:{}", openApiResponse.isSuccess()?"success":"fail", instanceTemp, openApiResponse);
             return openApiResponse.isSuccess();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             logger.error(">>>>>>>>>>> xxl-rpc, XxlRpcRegister-unregister error:{}", e.getMessage(), e);
         }
 
@@ -305,7 +305,7 @@ public class XxlConfRegister extends Register {
         try {
             // discovery
             List<String> appnameListTemp = new ArrayList<String>(appnameList);
-            RegisterTool.DiscoveryResponse discoveryResponse = RegisterTool.discovery(
+            RegisterOpenApiTool.DiscoveryResponse discoveryResponse = RegisterOpenApiTool.discovery(
                     loadAddress(),
                     accessToken,
                     xxlRpcBootstrap.getBaseConfig().getEnv(),
@@ -328,12 +328,12 @@ public class XxlConfRegister extends Register {
                 // parse
                 for (String appname : discoveryResponse.getDiscoveryData().keySet()) {
                     // remote data
-                    List<RegisterTool.InstanceCacheDTO> instanceCacheDTOS = discoveryResponse.getDiscoveryData().get(appname);
+                    List<RegisterOpenApiTool.InstanceCacheDTO> instanceCacheDTOS = discoveryResponse.getDiscoveryData().get(appname);
                     String registerInstancesMd5 = discoveryResponse.getDiscoveryDataMd5().get(appname);
 
                     TreeSet<RegisterInstance> registerInstances = new TreeSet<>();
                     if (instanceCacheDTOS != null) {
-                        for (RegisterTool.InstanceCacheDTO instanceCacheDTO : instanceCacheDTOS) {
+                        for (RegisterOpenApiTool.InstanceCacheDTO instanceCacheDTO : instanceCacheDTOS) {
                             registerInstances.add(new RegisterInstance(instanceCacheDTO.getEnv(), appname, instanceCacheDTO.getIp(), instanceCacheDTO.getPort(), instanceCacheDTO.getExtendInfo()));
                         }
                     } else {
@@ -356,7 +356,7 @@ public class XxlConfRegister extends Register {
 
                 return result;
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             logger.error(">>>>>>>>>>> xxl-rpc, XxlRpcRegister-doDiscovery error:{}", e.getMessage(), e);
         }
         return null;

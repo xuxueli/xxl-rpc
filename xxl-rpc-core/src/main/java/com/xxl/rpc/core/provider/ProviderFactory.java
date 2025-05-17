@@ -6,10 +6,9 @@ import com.xxl.rpc.core.remoting.Server;
 import com.xxl.rpc.core.remoting.entity.XxlRpcRequest;
 import com.xxl.rpc.core.remoting.entity.XxlRpcResponse;
 import com.xxl.rpc.core.serializer.Serializer;
-import com.xxl.rpc.core.util.IpUtil;
-import com.xxl.rpc.core.util.NetUtil;
-import com.xxl.rpc.core.util.ThrowableUtil;
 import com.xxl.rpc.core.util.XxlRpcException;
+import com.xxl.tool.exception.ThrowableTool;
+import com.xxl.tool.http.IPTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,15 +72,15 @@ public class ProviderFactory {
 		}
 
 		// parse address
-		String ip = IpUtil.getIp();
+		String ip = IPTool.getIp();
 		if (rpcBootstrap.getProviderConfig().getPort() <= 0) {
 			rpcBootstrap.getProviderConfig().setPort(7080);
 		}
 		if (rpcBootstrap.getProviderConfig().getAddress()==null || rpcBootstrap.getProviderConfig().getAddress().isEmpty()) {
-			String address = IpUtil.getIpPort(ip, rpcBootstrap.getProviderConfig().getPort());
+			String address = IPTool.toAddressString(IPTool.toAddress(ip, rpcBootstrap.getProviderConfig().getPort()));	//IpUtil.getIpPort(ip, rpcBootstrap.getProviderConfig().getPort());
 			rpcBootstrap.getProviderConfig().setAddress(address);
 		}
-		if (NetUtil.isPortUsed(rpcBootstrap.getProviderConfig().getPort())) {
+		if (IPTool.isPortInUsed(rpcBootstrap.getProviderConfig().getPort())) {		// NetUtil.isPortUsed(rpcBootstrap.getProviderConfig().getPort())
 			throw new XxlRpcException("xxl-rpc provider port["+ rpcBootstrap.getProviderConfig().getPort() +"] is used.");
 		}
 
@@ -232,7 +231,9 @@ public class ProviderFactory {
 		} catch (Throwable t) {
 			// catch error
 			logger.error(">>>>>>>>>>> xxl-rpc provider invokeService error.", t);
-			xxlRpcResponse.setErrorMsg(ThrowableUtil.toStringShort(t));
+
+			String result = ThrowableTool.toString(t);
+			xxlRpcResponse.setErrorMsg( result.length()>1000?result.substring(0, 1000)+"...":result );
 		}
 
 		return xxlRpcResponse;
