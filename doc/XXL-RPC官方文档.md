@@ -138,7 +138,8 @@ factory.setProviderConfig(providerOpen ?
 
 #### 2.1.4、业务代码开发
 
-- a、接口定义代码：
+- a、接口定义代码。
+
 ```
 public interface DemoService {
 
@@ -148,6 +149,7 @@ public interface DemoService {
 ```
 
 - b、服务端代码：注解式，一行代码将现有接口转换成 XXL-RPC 服务。
+
 ```
 @XxlRpcService
 @Service
@@ -169,6 +171,7 @@ version | 服务版本，默认空；可据此区分同一个“服务API” 的
 
 
 - 3、调用端代码： 注解式，一行代码引入 XXL- RPC 服务。
+
 ```
 @XxlRpcReference(appname = "xxl-appname")
 private DemoService demoService;
@@ -204,6 +207,7 @@ timeout | 服务超时时间，单位毫秒；选填；
 以示例项目 “xxl-rpc-sample-frameless” 为例讲解；该示例项目以直连IP方式进行演示，也可以选择接入注册中心方式使用。
 
 #### a、API方式创建“服务提供者”：
+
 ```
 // 参考代码位置：com.xxl.rpc.sample.server.XxlRpcServerApplication
 
@@ -219,6 +223,7 @@ rpcBootstrap.getProvider().addService(DemoService.class.getName(), null, new Dem
 ```
 
 #### b、API方式创建“服务消费者”：
+
 ```
 // 参考代码位置：com.xxl.rpc.sample.client.XxlRpcClientAplication
 
@@ -392,7 +397,7 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 3、升级依赖版本，如slf4j-api/spring-boot/mybatis/mysql等；
 - 4、小概率情况下底层通讯乱码问题修复；
 
-### v1.1（XXL-RPC） Release Notes
+#### v1.1（XXL-RPC） Release Notes
 - 1、快速接入：接入步骤非常简洁，两分钟即可上手；
 - 2、服务透明：系统完整的封装了底层通信细节，开发时调用远程服务就像调用本地服务，在提供远程调用能力时不损失本地调用的语义简洁性；
 - 3、注册中心（可选）：支持使用zookeeper作为服务注册中心，服务注册并动态发现。同时，也可以不使用注册中心，直接指定服务提供方机器地址进行RPC通讯；
@@ -404,7 +409,7 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 9、服务监控：可在线监控服务调用统计信息以及服务健康状况等（计划中）；
 - 10、解决1+1问题：传统分布式通讯一般通过nginx或f5做集群服务的流量负载均衡，如hessian，每次请求在到达目标服务机器之前都需要经过负载均衡机器，即1+1，这将会把流量放大一倍。而XXL-RPC将会从消费方至服务提供方建立TCP长连接，每次请求直达目标机器，从而可以避免上述问题；
 
-### v1.2.0（XXL-RPC） Release Notes[2018-10-26]
+#### v1.2.0（XXL-RPC） Release Notes[2018-10-26]
 - 1、核心模块重度重构：模块化划分、包名重构；
 - 2、轻量级/模块化改造：移除对具体组件的依赖，如ZK、Netty、Mina等，改为可选扩展方式；
 - 3、支持多种请求方式，如：SYNC、ONEWAY、FUTURE、CALLBACK 等；
@@ -416,7 +421,7 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 9、推送core到maven中央仓库；
 - 10、服务注册逻辑优化，旧方案以 "iface" 接口包名进行服务注册, 改为结合 "iface + version" 作为 serviceKey 进行注册，便于接口多服务复用；
 
-### v1.2.1（XXL-RPC） Release Notes[2018-11-09]
+#### v1.2.1（XXL-RPC） Release Notes[2018-11-09]
 - 1、内置注册中心选择ZK时逻辑优化，ZK初始化时unlock逻辑调整，优化断线重连特性；
 - 2、除了springboot类型示例；新增无框架示例项目 "xxl-rpc-sample-frameless"。不依赖第三方框架，只需main方法即可启动运行；
 - 3、选型http通讯方式时，校验为IP端口格式地址则主动添加地址前缀；
@@ -424,7 +429,7 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 5、http通讯方式选型jetty时，线程池升级为QueuedThreadPool，修复jetty9.4版本server自动销毁问题；
 - 6、Server新增 "/services" 目录功能，可查看在线服务列表；
 
-### v1.2.2（XXL-RPC） Release Notes[2018-11-26]
+#### v1.2.2（XXL-RPC） Release Notes[2018-11-26]
 - 1、默认通讯方案切换为 Netty，可选方案依赖均调整为 provided 类型；提供强制依赖最小精简选型组合 "netty + hessian + 无注册中心(推荐采用：XXL-RPC原生注册中心)"；
 - 2、XXL-RPC原生注册中心：底层抽象注册中心模块，并原生提供自研基于DB的注册中心，真正实现开箱即用，更轻量级、降低第三方依赖；至今XXL-RPC以提供三种注册中心具体实现："XXL-RPC原生注册中心方案"，"ZK方案"，"Local方案"；其中"XXL-RPC原生注册中心方案"特性如下：
     - 轻量级：基于DB与磁盘文件，只需要提供一个DB实例即可，无第三方依赖；
@@ -445,14 +450,14 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 9、Netty销毁逻辑优化；
 - 10、扩展第三方注册中心ZK底层逻辑优化，避免旧注册信息无法清理的问题；
 
-### v1.3.0 Release Notes[2018-12-02]
+#### v1.3.0 Release Notes[2018-12-02]
 - 1、原生注册中心拆分为独立项目 "xxl-registry"（https://github.com/xuxueli/xxl-registry ），提供服务注册restful服务，并提送响应client端依赖用于简化接入难度；
 - 2、NativeServiceRegistry 更名为 XxlRegistryServiceRegistry；
 - 3、POM依赖升级，冗余POM清理；
 - 4、代码优化：XxlRpcInvokerFactory 移除 static 代码块及相关组件，进一步实现组件无状态；
 - 5、服务注册逻辑优化，避免地址重复生成；
 
-### v1.3.1 Release Notes[2018-12-21]
+#### v1.3.1 Release Notes[2018-12-21]
 - 1、负载均衡/软负载：提供丰富的负载均衡策略，包括：轮询、随机、LRU、LFU、一致性HASH等；
 - 2、服务发现注册逻辑优化：支持批量注册、摘除，升级 xxl-registry 至 v1.0.1；
 - 3、新增jfinal类型示例项目 "xxl-rpc-sample-jfinal" 支持jfinal项目快速接入分布式RPC服务功能；高兼容性，原则上支持任务框架，甚至main方法直接运行；
@@ -466,7 +471,7 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 11、升级多项pom依赖至较新稳定版本；
 
 
-### v1.3.2 Release Notes[2019-02-21]
+#### v1.3.2 Release Notes[2019-02-21]
 - 1、泛化调用：服务调用方不依赖服务方提供的API；
 - 2、新增通讯方案 "NETTY_HTTP"；
 - 3、新增序列化方案 "KRYO"；
@@ -475,18 +480,18 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 6、通讯连接池address参数优化，出IP:PORT格式外兼容支持常规URL格式地址；
 - 7、线程名称优化，便于适配监控快速进行线程定位；
 
-### v1.4.0 Release Notes[2019-04-20]
+#### v1.4.0 Release Notes[2019-04-20]
 - 1、LRU路由更新不及时问题修复；
 - 2、JettyClient Buffer 默认长度调整为5M；
 - 3、Netty Http客户端配置优化；
 - 4、升级依赖版本，如netty/mina/spring等
 
-### v1.4.1 Release Notes[2019-05-23]
+#### v1.4.1 Release Notes[2019-05-23]
 - 1、客户端长连优化，修复初始化时服务不可用导致长连冗余创建的问题；
 - 2、升级依赖版本，如netty/mina/jetty/jackson/spring/spring-boot等;
 - 3、空闲链接自动回收：服务端与客户端主动检测空闲链接并回收，及时释放相关资源(netty、mina)；空闲超10min自动释放；
 
-### v1.4.2 Release Notes[2019-11-18]
+#### v1.4.2 Release Notes[2019-11-18]
 - 1、长连心跳保活：客户端周期性发送心跳请求给服务端保活；服务端连续三次未收到心跳时，销毁连接；
 - 2、服务线程优化，支持自定义线程参数；
 - 3、API重构：初始化枚举改为接口实例，方便扩展；
@@ -496,16 +501,16 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 7、序列化方案收敛：主推HESSIAN和HESSIAN1，移除protostuff、KRYO、JACKSON内置扩展，如有需求自行扩展维护；
 - 8、升级依赖版本，如netty/mina/hessian/jackson/zookeeper等;
 
-### v1.5.0 Release Notes[2019-11-22]
+#### v1.5.0 Release Notes[2019-11-22]
 - 1、IpUtil优化：增加连通性校，过滤明确非法的网卡；
 
-### v1.6.0 Release Notes[2020-04-15]
+#### v1.6.0 Release Notes[2020-04-15]
 - 1、为方便维护，合并xxl-registry至xxl-rpc，模块名为xxl-rpc-admin;
 - 2、一致性哈希路由策略优化：默认虚拟节点数量调整为100，提高路由的均衡性；
 - 3、RPC Client端，复用单例EventLoopGroup线程池，降低资源开销；
 - 4、RPC Server端，新增属性 ”注册地址/registryAddress“，优先使用该属性作为注册地址，为空时使用服务 ”IP:PORT“ 作为注册地址。从而更灵活的支持容器类型执行器动态IP和动态映射端口问题。
 
-### v1.7.0 Release Notes[2022-10-02]
+#### v1.7.0 Release Notes[2022-10-02]
 - 1、开源协议：由 GPLv3 调整为 Apache2.0 开源协议；
 - 2、路由策略：轮训路由策略代码优化，修复小概率下并发问题；
 - 3、代码重构：默认注册中心代码结构重构，废弃冗余 "biz" 属性；
@@ -514,7 +519,7 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 6、restful api：序列化组件调整为Gson；
 - 7、服务磁盘注册数据：序列化组件调整为Gson；
 
-### v1.7.1 Release Notes[2024-11-24]
+#### v1.7.1 Release Notes[2024-11-24]
 - 1、【升级】多个项目依赖升级至较新稳定版本，涉及netty、gson、springboot、mybatis等；
 - 2、【优化】Hessian启用NonSerializable拦截，安全性提升。
 - 3、【优化】服务注册环境标识字段长度调整，上限调整为50；
@@ -523,7 +528,7 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 6、【合并】合并 [PR-53](https://github.com/xuxueli/xxl-rpc/pull/53)，调整NettyConnectClient类锁问题；
 - 7、【合并】合并 [PR-51](https://github.com/xuxueli/xxl-rpc/pull/51)，解决解决RST异常问题；
 
-### v1.8.0 Release Notes[2024-11-24]
+#### v1.8.0 Release Notes[2024-11-24]
 - 1、【重构】针对 “Core/核心模块” 进行架构模块化重构，拆分 Provider、Invoker、Serializer、Remoting、Registry 和 Boot 等六个核心模块：
   - Provider：定位为服务提供者，提供RPC服务端能力，包括RCP/HTTP Server、业务Service扫描维护、服务执行等能力。
   - Invoker：定位为服务调用者，提供RPC客户端能力，包括RCP/HTTP Client、业务请求代理、负载均衡、多方式请求调用能力。
@@ -536,7 +541,7 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 4、【优化】XxlRpcReferenceBean 移除冗余属性，注册信息收敛至Register，降低认知成本、提升可维护性。
 - 5、【安全】默认序列化方案调整为 JSONB，并进行兜底安全过滤，提升序列化性能、以及安全性；
 
-### v1.8.1 Release Notes[2025-01-01]
+#### v1.8.1 Release Notes[2025-01-01]
 - 1、【安全】序列化安全性增强，默认开启package安全空间机制；
 - 2、【扩展】序列化扩展性增强，支持自定义序列化package白名单；
 - 3、【优化】序列化类型主动检测，提升问题定位效率；
@@ -546,7 +551,7 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 7、【升级】多个项目依赖升级至较新稳定版本，涉及 xxl-rpc-netty-shade、netty、slf4j 等；
 
 
-### v1.9.0 Release Notes[2025-01-24]
+#### v1.9.0 Release Notes[2025-01-24]
 - 1、【优化】服务底层代码重构优化，精简依赖、减少依赖包体；
 - 2、【调整】内置注册中心XxlRpcRegister(xxl-rpc-admin)迁移，整合至XXL-CONF：
   - XXL-CONF：一站式服务管理平台（配置中心、注册中心），提供 动态配置管理、服务注册及发现能力；降低中间件认知及运维成本。
@@ -556,11 +561,11 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 4、【优化】优化获取本地IP地址逻辑，调整了获取本地地址顺序；
 - 5、【升级】多个项目依赖升级至较新稳定版本；
 
-### v.1.9.1 Release Notes[迭代中]
+#### v.1.9.1 Release Notes[迭代中]
 - 1、【TODO】新增SimpleHttpServer，仅支持同步请求，简化CallType复杂度；
 
 
-### TODO LIST
+#### TODO LIST
 - 提高系统可用性，以部分功能暂时不可达为代价，防止服务整体缓慢或雪崩
     - 限流=防止负载过高，导致服务雪崩；client、server，双向限流；方法级，QPS限流；在途请求数，流控依据；
     - 降级=10s内超阈值（异常、超时）；拒绝服务、默认值；

@@ -109,7 +109,7 @@ public class NettyClient extends Client {
     @Override
     public void send(XxlRpcRequest xxlRpcRequest) throws Exception {
         // write (request) to server
-        this.channel.writeAndFlush(xxlRpcRequest).sync();
+        this.channel.writeAndFlush(xxlRpcRequest).sync();       // todo, change to async
     }
 
 }
