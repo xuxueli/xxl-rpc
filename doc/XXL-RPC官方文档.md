@@ -1,7 +1,7 @@
 ## 《RPC服务框架XXL-RPC》
 
 [![Actions Status](https://github.com/xuxueli/xxl-rpc/workflows/Java%20CI/badge.svg)](https://github.com/xuxueli/xxl-rpc/actions)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.xuxueli/xxl-rpc/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.xuxueli/xxl-rpc/)
+[![Maven Central](https://img.shields.io/maven-central/v/com.xuxueli/xxl-rpc-core)](https://central.sonatype.com/artifact/com.xuxueli/xxl-rpc-core)
 [![GitHub release](https://img.shields.io/github/release/xuxueli/xxl-rpc.svg)](https://github.com/xuxueli/xxl-rpc/releases)
 [![GitHub stars](https://img.shields.io/github/stars/xuxueli/xxl-rpc)](https://github.com/xuxueli/xxl-rpc/)
 ![License](https://img.shields.io/github/license/xuxueli/xxl-rpc.svg)

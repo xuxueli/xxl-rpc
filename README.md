@@ -10,8 +10,8 @@
         <a href="https://github.com/xuxueli/xxl-rpc/actions">
             <img src="https://github.com/xuxueli/xxl-rpc/workflows/Java%20CI/badge.svg" >
         </a>
-        <a href="https://maven-badges.herokuapp.com/maven-central/com.xuxueli/xxl-rpc/">
-            <img src="https://maven-badges.herokuapp.com/maven-central/com.xuxueli/xxl-rpc/badge.svg" >
+        <a href="https://central.sonatype.com/artifact/com.xuxueli/xxl-rpc-core">
+            <img src="https://img.shields.io/maven-central/v/com.xuxueli/xxl-rpc-core" >
         </a>
         <a href="https://github.com/xuxueli/xxl-rpc/releases">
             <img src="https://img.shields.io/github/release/xuxueli/xxl-rpc.svg" >
