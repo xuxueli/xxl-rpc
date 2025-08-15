@@ -20,35 +20,31 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
 		<maven.test.skip>true</maven.test.skip>
 		<!-- plugin -->
 		<maven-source-plugin.version>3.3.1</maven-source-plugin.version>
 		<maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
-		<maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
+		<maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
+		<central-publishing-maven-plugin.version>0.8.0</central-publishing-maven-plugin.version>
 
 		<!-- base -->
 		<slf4j-api.version>2.0.17</slf4j-api.version>
-		<junit-jupiter.version>5.12.2</junit-jupiter.version>
+		<junit-jupiter.version>5.13.4</junit-jupiter.version>
 
 		<!-- remoting -->
 		<xxl-rpc-netty-shade.version>1.9.0</xxl-rpc-netty-shade.version>
 		<!-- serialize -->
-		<fastjson2.version>2.0.54</fastjson2.version>
+		<fastjson2.version>2.0.58</fastjson2.version>
 
-		<!-- xxl-tool -->
-		<xxl-tool.version>1.4.2</xxl-tool.version>
+		<!-- xxl-tool( +support) -->
+		<xxl-tool.version>2.0.0</xxl-tool.version>
 
-		<!-- spring -->
-		<spring.version>5.3.39</spring.version>
-		<spring-boot.version>2.7.18</spring-boot.version>
+		<!-- spring-boot -->
+		<spring.version>6.2.10</spring.version>
+		<spring-boot.version>3.5.4</spring-boot.version>
 	</properties>
-
-	<build>
-		<plugins>
-		</plugins>
-	</build>
 
 	<licenses>
 		<license>
@@ -56,7 +52,6 @@
 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
 		</license>
 	</licenses>
-
 	<scm>
 		<tag>master</tag>
 		<url>https://github.com/xuxueli/xxl-rpc.git</url>
@@ -71,6 +66,11 @@
 			<url>https://github.com/xuxueli</url>
 		</developer>
 	</developers>
+
+	<build>
+		<plugins>
+		</plugins>
+	</build>
 
 	<profiles>
 
@@ -132,18 +132,29 @@
 							</execution>
 						</executions>
 					</plugin>
+					<!-- maven central -->
+					<plugin>
+						<groupId>org.sonatype.central</groupId>
+						<artifactId>central-publishing-maven-plugin</artifactId>
+						<version>${central-publishing-maven-plugin.version}</version>
+						<extensions>true</extensions>
+						<configuration>
+							<publishingServerId>central</publishingServerId>
+							<excludeArtifacts>
+								<artifact>xxl-rpc-samples</artifact>
+								<artifact>xxl-rpc-sample-frameless</artifact>
+								<artifact>xxl-rpc-sample-frameless-api</artifact>
+								<artifact>xxl-rpc-sample-frameless-client</artifact>
+								<artifact>xxl-rpc-sample-frameless-server</artifact>
+								<artifact>xxl-rpc-sample-springboot</artifact>
+								<artifact>xxl-rpc-sample-springboot-api</artifact>
+								<artifact>xxl-rpc-sample-springboot-client</artifact>
+								<artifact>xxl-rpc-sample-springboot-server</artifact>
+							</excludeArtifacts>
+						</configuration>
+					</plugin>
 				</plugins>
 			</build>
-			<distributionManagement>
-				<snapshotRepository>
-					<id>oss</id>
-					<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-				</snapshotRepository>
-				<repository>
-					<id>oss</id>
-					<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-				</repository>
-			</distributionManagement>
 		</profile>
 	</profiles>
 
