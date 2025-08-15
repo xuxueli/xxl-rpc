@@ -64,8 +64,9 @@ RPC（Remote Procedure Call Protocol，远程过程调用），调用远程服�
 
 
 ### 1.5 环境
-- Jdk1.8+
-- XXL-CONF 1.9.0+ (可选，支持无注册中心使用；默认适配 “xxl-conf” 实现动态服务注册与发现。)
+- Maven：3+
+- Jdk：17+ (说明：版本2.x开始要求Jdk17；版本1.x及以下支持Jdk1.8)
+- XXL-CONF：1.9.0+ (可选，支持无注册中心使用；默认适配 “xxl-conf” 实现动态服务注册与发现。)
 
 
 ## 二、快速入门
