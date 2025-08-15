@@ -563,7 +563,7 @@ public class Demo2ServiceImpl implements Demo2Service {
 
 #### v2.0.0 Release Notes[2025-08-16]
 - 1、【升级】项目升级JDK17；
-- 2、【升级】项目部分依赖升级，如caffeine，适配JDK17；
+- 2、【升级】项目部分依赖升级，如netty、fastjson2、spring等，适配JDK17；
 
 #### v2.0.1 Release Notes[迭代中]
 - 1、【TODO】新增SimpleHttpServer，仅支持同步请求，简化CallType复杂度；
