@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.xuxueli</groupId>
 		<artifactId>xxl-rpc-sample-springboot</artifactId>
-		<version>1.9.1-SNAPSHOT</version>
+		<version>2.0.0</version>
 	</parent>
 	<artifactId>xxl-rpc-sample-springboot-client</artifactId>
 	<packaging>jar</packaging>
@@ -65,10 +65,6 @@
 						</goals>
 					</execution>
 				</executions>
-				<!-- devtools -->
-				<configuration>
-					<fork>true</fork>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
