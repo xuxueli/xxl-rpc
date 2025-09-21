@@ -97,7 +97,7 @@ docker run -p 8080:8080 -v /tmp:/data/applogs --name xxl-conf-admin  -d xuxueli/
 <dependency>
     <groupId>com.xuxueli</groupId>
     <artifactId>xxl-rpc-core</artifactId>
-    <version>${parent.version}</version>
+    <version>${version}</version>
 </dependency>
 ```
 
