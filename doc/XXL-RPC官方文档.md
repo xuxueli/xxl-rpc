@@ -565,7 +565,7 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 1、【升级】项目升级JDK17；
 - 2、【升级】项目部分依赖升级，如netty、fastjson2、spring等，适配JDK17；
 
-#### v2.1.0 Release Notes[迭代中]
+#### v2.1.0 Release Notes[2025-10-19]
 - 1、【升级】注册中心升级，集成新版 XXL-CONF 的OpenApi 实现 动态服务注册与发现；
 - 2、【升级】框架日志优化，调整日志级别避免冗余日志输出；
 - 3、【升级】项目部分依赖升级，如netty、fastjson2、spring等；
