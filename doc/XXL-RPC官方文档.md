@@ -551,7 +551,6 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 6、【优化】通讯组件选择HttpServer时，HttpObjectAggregator限制调大至20M，支持大消息传输；
 - 7、【升级】多个项目依赖升级至较新稳定版本，涉及 xxl-rpc-netty-shade、netty、slf4j 等；
 
-
 #### v1.9.0 Release Notes[2025-01-24]
 - 1、【优化】服务底层代码重构优化，精简依赖、减少依赖包体；
 - 2、【调整】内置注册中心XxlRpcRegister(xxl-rpc-admin)迁移，整合至XXL-CONF：
@@ -566,7 +565,12 @@ public class Demo2ServiceImpl implements Demo2Service {
 - 1、【升级】项目升级JDK17；
 - 2、【升级】项目部分依赖升级，如netty、fastjson2、spring等，适配JDK17；
 
-#### v2.0.1 Release Notes[迭代中]
+#### v2.1.0 Release Notes[迭代中]
+- 1、【升级】注册中心升级，集成新版 XXL-CONF 的OpenApi 实现 动态服务注册与发现；
+- 2、【升级】框架日志优化，调整日志级别避免冗余日志输出；
+- 3、【升级】项目部分依赖升级，如netty、fastjson2、spring等；
+
+#### v2.1.1 Release Notes[迭代中]
 - 1、【TODO】新增SimpleHttpServer，仅支持同步请求，简化CallType复杂度；
 
 #### TODO LIST
