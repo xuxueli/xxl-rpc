@@ -45,7 +45,7 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- ********************** xxl-tool ********************** -->
+		<!-- ********************** xxl-conf ********************** -->
 		<dependency>
 			<groupId>com.xuxueli</groupId>
 			<artifactId>xxl-conf-core</artifactId>

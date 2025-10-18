@@ -44,7 +44,7 @@ public class SpringXxlRpcBootstrapConfig {
         SpringXxlRpcBootstrap factory = new SpringXxlRpcBootstrap();
         factory.setBaseConfig(new BaseConfig(env, appname));
         factory.setRegister(new XxlConfRegister(address, accesstoken));
-        factory.setInvokerConfig(new InvokerConfig(true, NettyClient.class, JsonbSerializer.class, null));
+        factory.setInvokerConfig(new InvokerConfig(invokerOpen, NettyClient.class, JsonbSerializer.class, null));
         factory.setProviderConfig(new ProviderConfig(providerOpen));
 
         return factory;

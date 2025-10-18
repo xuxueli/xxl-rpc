@@ -35,8 +35,7 @@
 			<scope>test</scope>
 		</dependency>
 
-
-		<!-- xxl-rpc-core -->
+		<!-- xxl-rpc -->
 		<dependency>
 			<groupId>com.xuxueli</groupId>
 			<artifactId>xxl-rpc-core</artifactId>
