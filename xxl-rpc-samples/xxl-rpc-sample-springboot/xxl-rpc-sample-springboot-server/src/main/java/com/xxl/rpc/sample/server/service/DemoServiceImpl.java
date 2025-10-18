@@ -34,7 +34,7 @@ public class DemoServiceImpl implements DemoService {
 				LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 		UserDTO userDTO = new UserDTO(name, word);
 
-		//logger.info(userDTO.toString());
+		logger.info("response:{}", word);
 		return userDTO;
 	}
 

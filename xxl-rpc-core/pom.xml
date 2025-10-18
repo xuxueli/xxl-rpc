@@ -48,8 +48,8 @@
 		<!-- ********************** xxl-tool ********************** -->
 		<dependency>
 			<groupId>com.xuxueli</groupId>
-			<artifactId>xxl-tool</artifactId>
-			<version>${xxl-tool.version}</version>
+			<artifactId>xxl-conf-core</artifactId>
+			<version>${xxl-conf.version}</version>
 		</dependency>
 
 		<!-- ********************** plugin ********************** -->

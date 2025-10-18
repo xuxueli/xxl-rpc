@@ -17,6 +17,7 @@ public class DemoServiceImpl implements DemoService {
 	public UserDTO sayHi(String name) {
 		String word = MessageFormat.format("Hi {0}, this from {1} at {2}",
 				name, DemoServiceImpl.class.getName(), String.valueOf(System.currentTimeMillis()));
+		logger.info("response: {}", word);
 		
 		return new UserDTO(name, word);
 	}

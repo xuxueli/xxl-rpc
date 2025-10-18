@@ -24,27 +24,26 @@
 		<maven.compiler.target>17</maven.compiler.target>
 		<maven.test.skip>true</maven.test.skip>
 		<!-- plugin -->
-		<maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
+		<maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
 		<maven-source-plugin.version>3.3.1</maven-source-plugin.version>
-		<maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
+		<maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
 		<maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
-		<central-publishing-maven-plugin.version>0.8.0</central-publishing-maven-plugin.version>
-
+		<central-publishing-maven-plugin.version>0.9.0</central-publishing-maven-plugin.version>
 		<!-- base -->
 		<slf4j-api.version>2.0.17</slf4j-api.version>
-		<junit-jupiter.version>5.13.4</junit-jupiter.version>
+		<junit-jupiter.version>5.14.0</junit-jupiter.version>
 
 		<!-- remoting -->
 		<xxl-rpc-netty-shade.version>2.0.0</xxl-rpc-netty-shade.version>
 		<!-- serialize -->
-		<fastjson2.version>2.0.58</fastjson2.version>
+		<fastjson2.version>2.0.59</fastjson2.version>
 
-		<!-- xxl-tool( +support) -->
-		<xxl-tool.version>2.0.0</xxl-tool.version>
+		<!-- xxl-conf -->
+		<xxl-conf.version>2.1.0</xxl-conf.version>
 
-		<!-- spring-boot -->
-		<spring.version>6.2.10</spring.version>
-		<spring-boot.version>3.5.4</spring-boot.version>
+		<!-- spring -->
+		<spring-boot.version>3.5.6</spring-boot.version>
+		<spring.version>6.2.12</spring.version>
 	</properties>
 
 	<licenses>
