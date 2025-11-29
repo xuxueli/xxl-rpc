@@ -3,13 +3,14 @@ package com.xxl.rpc.sample.client;
 import com.xxl.rpc.core.boot.XxlRpcBootstrap;
 import com.xxl.rpc.core.boot.config.BaseConfig;
 import com.xxl.rpc.core.invoker.call.CallType;
-import com.xxl.rpc.core.invoker.call.XxlRpcInvokeFuture;
 import com.xxl.rpc.core.invoker.call.XxlRpcInvokeCallback;
+import com.xxl.rpc.core.invoker.call.XxlRpcInvokeFuture;
 import com.xxl.rpc.core.invoker.config.InvokerConfig;
+import com.xxl.rpc.core.invoker.generic.XxlRpcGenericService;
 import com.xxl.rpc.core.invoker.reference.XxlRpcReferenceBean;
 import com.xxl.rpc.core.invoker.route.LoadBalance;
-import com.xxl.rpc.core.register.impl.LocalRegister;
 import com.xxl.rpc.core.register.entity.RegisterInstance;
+import com.xxl.rpc.core.register.impl.LocalRegister;
 import com.xxl.rpc.core.remoting.impl.netty.client.NettyClient;
 import com.xxl.rpc.core.serializer.impl.JsonbSerializer;
 import com.xxl.rpc.sample.api.DemoService;
@@ -39,36 +40,51 @@ public class XxlRpcClientAplication {
 		rpcBootstrap.start();
 
 		// 4、XxlRpcReferenceBean build
-		DemoService demoService_SYNC = buildReferenceBean(rpcBootstrap, CallType.SYNC);
-		DemoService demoService_FUTURE = buildReferenceBean(rpcBootstrap, CallType.FUTURE);
-		DemoService demoService_CALLBACK = buildReferenceBean(rpcBootstrap, CallType.CALLBACK);
-		DemoService demoService_ONEWAY = buildReferenceBean(rpcBootstrap, CallType.ONEWAY);
+		DemoService demoService_SYNC = buildReferenceBean(rpcBootstrap, CallType.SYNC, DemoService.class);
+		DemoService demoService_FUTURE = buildReferenceBean(rpcBootstrap, CallType.FUTURE, DemoService.class);
+		DemoService demoService_CALLBACK = buildReferenceBean(rpcBootstrap, CallType.CALLBACK, DemoService.class);
+		DemoService demoService_ONEWAY = buildReferenceBean(rpcBootstrap, CallType.ONEWAY, DemoService.class);
+        // genericSerivce build
+        XxlRpcGenericService genericService = buildReferenceBean(rpcBootstrap, CallType.SYNC, XxlRpcGenericService.class);
 
 		// 5、test rpc invoke
 		testSYNC(demoService_SYNC);
 		testFUTURE(demoService_FUTURE);
 		testCALLBACK(demoService_CALLBACK);
 		testONEWAY(demoService_ONEWAY);
-
-		TimeUnit.SECONDS.sleep(5);
+        // test generic
+        testGeneric(genericService);
 
 		// 6、stop
+        TimeUnit.SECONDS.sleep(5);
 		rpcBootstrap.stop();
 	}
 
-	private static DemoService buildReferenceBean(XxlRpcBootstrap rpcBootstrap, CallType callType) throws Exception {
+    private static void testGeneric(XxlRpcGenericService genericService) {
+        String result = genericService.invoke(
+                "com.xxl.rpc.sample.api.DemoService",
+                null,
+                "sayHi",
+                new String[]{
+                        "java.lang.String"
+                },
+                new Object[]{
+                        "GENERIC:" + "[SYNC]jack"
+                });
+        System.out.println(result);
+    }
+
+	private static <T> T buildReferenceBean(XxlRpcBootstrap rpcBootstrap, CallType callType, Class<T> serviceCLass) throws Exception {
 		XxlRpcReferenceBean referenceBean = new XxlRpcReferenceBean();
 		referenceBean.setCallType(callType);
 		referenceBean.setLoadBalance(LoadBalance.ROUND);
-		referenceBean.setIface(DemoService.class);
+		referenceBean.setIface(serviceCLass);
 		referenceBean.setVersion(null);
 		referenceBean.setTimeout(500);
 		referenceBean.setAppname("xxl-rpc-sample-frameless-server");
 		referenceBean.setRpcBootstrap(rpcBootstrap);
 
-		DemoService demoService = (DemoService) referenceBean.getObject();
-
-		return demoService;
+        return (T) referenceBean.getObject();
 	}
 
 	/**

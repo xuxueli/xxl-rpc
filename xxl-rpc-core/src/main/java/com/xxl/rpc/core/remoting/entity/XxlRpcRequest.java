@@ -26,11 +26,15 @@ public class XxlRpcRequest implements Serializable{
 	 */
 	private String accessToken;
 
-
 	/**
 	 * remote service, class name
 	 */
     private String className;
+
+    /**
+     * remote service, version of className
+     */
+    private String version;
 
 	/**
 	 * remote service, method name
@@ -46,13 +50,6 @@ public class XxlRpcRequest implements Serializable{
 	 * remote service, method parameter values
 	 */
     private Object[] parameters;
-
-
-	/**
-	 * remote service, version of className
-	 */
-	private String version;
-
 
 	public String getRequestId() {
 		return requestId;
@@ -86,6 +83,14 @@ public class XxlRpcRequest implements Serializable{
 		this.className = className;
 	}
 
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
 	public String getMethodName() {
 		return methodName;
 	}
@@ -110,26 +115,18 @@ public class XxlRpcRequest implements Serializable{
 		this.parameters = parameters;
 	}
 
-	public String getVersion() {
-		return version;
-	}
-
-	public void setVersion(String version) {
-		this.version = version;
-	}
-
-	@Override
-	public String toString() {
-		return "XxlRpcRequest{" +
-				"requestId='" + requestId + '\'' +
-				", createMillisTime=" + createMillisTime +
-				", accessToken='" + accessToken + '\'' +
-				", className='" + className + '\'' +
-				", methodName='" + methodName + '\'' +
-				", parameterTypes=" + Arrays.toString(parameterTypes) +
-				", parameters=" + Arrays.toString(parameters) +
-				", version='" + version + '\'' +
-				'}';
-	}
+    @Override
+    public String toString() {
+        return "XxlRpcRequest{" +
+                "requestId='" + requestId + '\'' +
+                ", createMillisTime=" + createMillisTime +
+                ", accessToken='" + accessToken + '\'' +
+                ", className='" + className + '\'' +
+                ", version='" + version + '\'' +
+                ", methodName='" + methodName + '\'' +
+                ", parameterTypes=" + Arrays.toString(parameterTypes) +
+                ", parameters=" + Arrays.toString(parameters) +
+                '}';
+    }
 
 }

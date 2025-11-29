@@ -4,18 +4,14 @@ import com.xxl.rpc.core.boot.XxlRpcBootstrap;
 import com.xxl.rpc.core.invoker.call.CallType;
 import com.xxl.rpc.core.invoker.call.XxlRpcInvokeCallback;
 import com.xxl.rpc.core.invoker.call.XxlRpcInvokeFuture;
-import com.xxl.rpc.core.invoker.generic.XxlRpcGenericService;
+import com.xxl.rpc.core.invoker.call.XxlRpcResponseFuture;
 import com.xxl.rpc.core.invoker.route.LoadBalance;
+import com.xxl.rpc.core.provider.ProviderFactory;
 import com.xxl.rpc.core.register.entity.RegisterInstance;
 import com.xxl.rpc.core.remoting.Client;
-import com.xxl.rpc.core.invoker.call.XxlRpcResponseFuture;
 import com.xxl.rpc.core.remoting.entity.XxlRpcRequest;
 import com.xxl.rpc.core.remoting.entity.XxlRpcResponse;
-import com.xxl.rpc.core.provider.ProviderFactory;
-import com.xxl.rpc.core.remoting.impl.netty.client.NettyClient;
 import com.xxl.rpc.core.serializer.Serializer;
-import com.xxl.rpc.core.serializer.impl.JsonbSerializer;
-import com.xxl.rpc.core.util.ClassUtil;
 import com.xxl.rpc.core.util.XxlRpcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -175,30 +171,6 @@ public class XxlRpcReferenceBean {
 						Class<?>[] parameterTypes = method.getParameterTypes();
 						Object[] parameters = args;
 
-						// method return
-						//Class<?> returnType = method.getReturnType();
-
-						// filter for generic
-						if (className.equals(XxlRpcGenericService.class.getName()) && methodName.equals("invoke")) {
-
-							Class<?>[] paramTypes = null;
-							if (args[3]!=null) {
-								String[] paramTypes_str = (String[]) args[3];
-								if (paramTypes_str.length > 0) {
-									paramTypes = new Class[paramTypes_str.length];
-									for (int i = 0; i < paramTypes_str.length; i++) {
-										paramTypes[i] = ClassUtil.resolveClass(paramTypes_str[i]);
-									}
-								}
-							}
-
-							className = (String) args[0];
-							varsion_ = (String) args[1];
-							methodName = (String) args[2];
-							parameterTypes = paramTypes;
-							parameters = (Object[]) args[4];
-						}
-
 						// discovery + load-balance
 						RegisterInstance registerInstance = null;
 						if (rpcBootstrap!=null && rpcBootstrap.getRegister()!=null) {
@@ -227,12 +199,12 @@ public class XxlRpcReferenceBean {
 						XxlRpcRequest xxlRpcRequest = new XxlRpcRequest();
 	                    xxlRpcRequest.setRequestId(UUID.randomUUID().toString());
 	                    xxlRpcRequest.setCreateMillisTime(System.currentTimeMillis());
+                        //xxlRpcRequest.setAccessToken(accessToken);
 	                    xxlRpcRequest.setClassName(className);
+                        xxlRpcRequest.setVersion(version);
 	                    xxlRpcRequest.setMethodName(methodName);
 	                    xxlRpcRequest.setParameterTypes(parameterTypes);
 	                    xxlRpcRequest.setParameters(parameters);
-	                    xxlRpcRequest.setVersion(version);
-						//xxlRpcRequest.setAccessToken(accessToken);
 
 	                    // do invoke
 						XxlRpcResponseFuture rpcFuture = null;

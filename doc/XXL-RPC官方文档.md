@@ -572,7 +572,8 @@ public class Demo2ServiceImpl implements Demo2Service {
 
 #### v2.2.0 Release Notes[迭代中]
 - 1、【升级】项目部分依赖升级，如netty、junit、fastjson2、spring等；
-- 2、【TODO】新增SimpleHttpServer，仅支持同步请求，简化CallType复杂度；
+- 2、【优化】泛化调用完善，支持服务调用方直接发起服务调用，不依赖服务方提供的API；
+- 3、【TODO】新增SimpleHttpServer，仅支持同步请求，简化CallType复杂度；
 
 #### TODO LIST
 - 提高系统可用性，以部分功能暂时不可达为代价，防止服务整体缓慢或雪崩
