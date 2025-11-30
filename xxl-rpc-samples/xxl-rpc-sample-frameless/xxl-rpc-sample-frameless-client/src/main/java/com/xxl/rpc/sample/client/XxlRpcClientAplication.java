@@ -17,6 +17,7 @@ import com.xxl.rpc.sample.api.DemoService;
 import com.xxl.rpc.sample.api.dto.UserDTO;
 import com.xxl.tool.core.MapTool;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -46,7 +47,8 @@ public class XxlRpcClientAplication {
 		DemoService demoService_CALLBACK = buildReferenceBean(rpcBootstrap, CallType.CALLBACK, DemoService.class);
 		DemoService demoService_ONEWAY = buildReferenceBean(rpcBootstrap, CallType.ONEWAY, DemoService.class);
         // genericSerivce build
-        XxlRpcGenericService genericService = buildReferenceBean(rpcBootstrap, CallType.SYNC, XxlRpcGenericService.class);
+        XxlRpcGenericService genericService_SYC = buildReferenceBean(rpcBootstrap, CallType.SYNC, XxlRpcGenericService.class);
+        XxlRpcGenericService genericService_FUTURE = buildReferenceBean(rpcBootstrap, CallType.FUTURE, XxlRpcGenericService.class);
 
 		// 5、test rpc invoke
 		testSYNC(demoService_SYNC);
@@ -54,7 +56,8 @@ public class XxlRpcClientAplication {
 		testCALLBACK(demoService_CALLBACK);
 		testONEWAY(demoService_ONEWAY);
         // test generic
-        testGenericSYNC(genericService);
+        testGenericSYNC(genericService_SYC);
+        testGenericFUTURE(genericService_FUTURE);
 
 		// 6、stop
         TimeUnit.SECONDS.sleep(5);
@@ -63,25 +66,8 @@ public class XxlRpcClientAplication {
 
 
     /**
-     * test generic
+     * build referenceBean
      */
-    private static void testGenericSYNC(XxlRpcGenericService genericService) {
-        String result = genericService.$invoke(
-                "com.xxl.rpc.sample.server.service.generic.Demo2Service",
-                null,
-                "addUser",
-                new String[]{
-                        "com.xxl.rpc.sample.server.service.generic.User2DTO"
-                },
-                new Object[]{
-                    MapTool.newMap(
-                    "name", "jack2",
-                    "word", "[SYNC]jack - GenericS"
-                    )
-                });
-        System.out.println(result);
-    }
-
 	private static <T> T buildReferenceBean(XxlRpcBootstrap rpcBootstrap, CallType callType, Class<T> serviceCLass) throws Exception {
 		XxlRpcReferenceBean referenceBean = new XxlRpcReferenceBean();
 		referenceBean.setCallType(callType);
@@ -155,5 +141,47 @@ public class XxlRpcClientAplication {
 	public static void testONEWAY(DemoService demoService) throws Exception {
         demoService.sayHi("[ONEWAY]jack");
 	}
+
+    /**
+     * test generic
+     */
+    private static void testGenericSYNC(XxlRpcGenericService genericService) {
+        String result = genericService.$invoke(
+                "com.xxl.rpc.sample.server.service.generic.Demo2Service",
+                null,
+                "addUser",
+                new String[]{
+                        "com.xxl.rpc.sample.server.service.generic.User2DTO"
+                },
+                new Object[]{
+                        MapTool.newMap(
+                                "name", "jack2",
+                                "word", "[SYNC]jack - GenericS"
+                        )
+                });
+        System.out.println(result);
+    }
+
+    private static void testGenericFUTURE(XxlRpcGenericService genericServiceFuture) throws ExecutionException, InterruptedException {
+        genericServiceFuture.$invoke(
+                "com.xxl.rpc.sample.server.service.generic.Demo2Service",
+                null,
+                "addUser",
+                new String[]{
+                        "com.xxl.rpc.sample.server.service.generic.User2DTO"
+                },
+                new Object[]{
+                        MapTool.newMap(
+                                "name", "jack2",
+                                "word", "[FUTURE]jack - GenericF"
+                        )
+                }
+        );
+
+        Future<String> resultFuture = XxlRpcInvokeFuture.getFuture(String.class);
+        String result = resultFuture.get();
+
+        System.out.println(result);
+    }
 
 }

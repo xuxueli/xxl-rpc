@@ -322,42 +322,45 @@ XXL-RPC 提供 "泛化调用" 支持，服务调用方不依赖服务方提供�
 开启 "泛化调用" 时服务方不需要做任何调整，仅需要调用方初始化一个泛化调用服务Reference （"XxlRpcGenericService"） 即可。
 
 
-“XxlRpcGenericService#invoke” 请求参数 | 说明
---- | ---
-String iface | 服务接口类名
-String version | 服务版本
-String method | 服务方法
-String[] parameterTypes | 服务方法形参-类型，如 "int、java.lang.Integer、java.util.List、java.util.Map ..."
-Object[] args | 服务方法形参-数据
+| “XxlRpcGenericService.$invoke” 请求参数      | 说明                                        |    
+|------------------------------------------|-----------------------------------------------|
+| String iface                             | 服务接口类名                                        
+| String version                           | 服务版本                                          
+| String method                            | 服务方法                                          
+| String[] parameterTypes                  | 服务方法形参-类型，支持Java基础数据类型；如需复杂数据结构体，通过Map格式传递；   
+| Object[] paramters                       | 服务方法形参-数据                                     
 
+
+泛化调用代码示例：可参考 sample 示例代码；
 
 ```
-// 服务Reference初始化-注解方式示例
+// 注解方式：服务Reference初始化
 @XxlRpcReference
 private XxlRpcGenericService genericService;
 	
-// 服务Reference初始化-API方式示例
-XxlRpcGenericService genericService = (XxlRpcGenericService) new XxlRpcReferenceBean(……).getObject();
+// API方式：服务Reference初始化示例
+XxlRpcReferenceBean referenceBean = new XxlRpcReferenceBean();
+referenceBean.setCallType(callType);
+... ...
 
-// 调用方示例
-Object result = genericService.invoke(
-            "com.xxl.rpc.sample.server.service.Demo2Service",
-            null,
-            "sum",
-            new String[]{"int", "int"},
-            new Object[]{1, 2}
-    );
+XxlRpcGenericService genericService = (T) referenceBean.getObject();
 
+// 调用方示例：不依赖服务方API
+String result = genericService.$invoke(
+        "com.xxl.rpc.sample.server.service.generic.Demo2Service",
+        null,
+        "addUser",
+        new String[]{
+            "com.xxl.rpc.sample.server.service.generic.User2DTO"
+        },
+        new Object[]{
+            Map.of(
+                "name", "jack2",
+                "word", "[SYNC]jack - GenericS"
+            )
+        });
 
-// 服务方示例
-public class Demo2ServiceImpl implements Demo2Service {
-
-    @Override
-    public int sum(int a, int b) {
-        return a + b;
-    }
-
-}
+// 服务方示例：略，同常规方式；
 ```
 
 ## 四、版本更新日志
@@ -572,7 +575,7 @@ public class Demo2ServiceImpl implements Demo2Service {
 
 #### v2.2.0 Release Notes[迭代中]
 - 1、【升级】项目部分依赖升级，如netty、junit、fastjson2、spring等；
-- 2、【优化】泛化调用完善，支持服务调用方直接发起服务调用，不依赖服务方提供的API；
+- 2、【新增】泛化调用能力，支持服务调用方直接发起服务调用，不依赖服务方提供的API；
 - 3、【TODO】新增SimpleHttpServer，仅支持同步请求，简化CallType复杂度；
 
 #### TODO LIST

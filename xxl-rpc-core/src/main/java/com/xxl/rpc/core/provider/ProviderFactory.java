@@ -232,8 +232,7 @@ public class ProviderFactory {
                     // parse item
                     for (int i = 0; i < parameterTypes_list.size(); i++) {
                         parameterTypes[i] = ClassUtil.resolveClass(String.valueOf(parameterTypes_list.get(i)));
-                        parameters[i] = ClassUtil.primitiveToTargetClass(parameters_list.get(i), parameterTypes[i]);
-                        //parameters[i] = BeanTool.primitiveToTargetClass(parameters_list.get(i), parameterTypes[i]);     // parameterTypes[i].isArray();  not support list
+                        parameters[i] = ClassUtil.convertMapFieldToBean(parameters_list.get(i), parameterTypes[i]);     // parameterTypes[i].isArray();  not support list
                     }
                 }
 
