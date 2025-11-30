@@ -8,7 +8,6 @@ import com.xxl.rpc.core.remoting.Server;
 import com.xxl.rpc.core.remoting.entity.XxlRpcRequest;
 import com.xxl.rpc.core.remoting.entity.XxlRpcResponse;
 import com.xxl.rpc.core.serializer.Serializer;
-import com.xxl.rpc.core.util.BeanTool;
 import com.xxl.rpc.core.util.ClassUtil;
 import com.xxl.rpc.core.util.XxlRpcException;
 import com.xxl.tool.exception.ThrowableTool;
@@ -233,7 +232,7 @@ public class ProviderFactory {
                     // parse item
                     for (int i = 0; i < parameterTypes_list.size(); i++) {
                         parameterTypes[i] = ClassUtil.resolveClass(String.valueOf(parameterTypes_list.get(i)));
-                        parameters[i] = BeanTool.primitiveToTargetClass(parameters_list.get(i), parameterTypes[i]);
+                        parameters[i] = ClassUtil.primitiveToTargetClass(parameters_list.get(i), parameterTypes[i]);
                         //parameters[i] = BeanTool.primitiveToTargetClass(parameters_list.get(i), parameterTypes[i]);     // parameterTypes[i].isArray();  not support list
                     }
                 }
@@ -245,7 +244,7 @@ public class ProviderFactory {
 
                 // parse generic-result
                 if (result!=null) {
-                    //result = BeanTool.objectToPrimitive(result);
+                    //result = ClassUtil.objectToPrimitive(result);
                     result = JSON.toJSONString(result);
                 }
 
