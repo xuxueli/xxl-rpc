@@ -11,11 +11,11 @@ public interface XxlRpcGenericService {
      * @param iface                 iface name
      * @param version               iface version
      * @param method                method name
-     * @param parameterTypes        parameter types, support pri base type like "int、java.lang.Integer、java.util.List、java.util.Map ..."
+     * @param parameterTypes        parameter types, Only support primitive types, javaBean needs to be converted to "Map<String, Object>"
      * @param paramters             parameter values
-     * @return result object,
+     * @return result, json format
      */
-    public Object $invoke(String iface,
+    public String $invoke(String iface,
                          String version,
                          String method,
                          String[] parameterTypes,

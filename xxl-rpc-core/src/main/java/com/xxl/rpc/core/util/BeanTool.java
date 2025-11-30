@@ -24,7 +24,7 @@ public class BeanTool {
         if (value!=null && !isPrimitive(value.getClass())) {
             if (value instanceof Collection collection) {
                 // convert collection
-                List<Object> result = new ArrayList<>();
+                ArrayList<Object> result = new ArrayList<>();
                 for (Object item : collection) {
                     item = objectToPrimitive(item);
                     result.add(item);

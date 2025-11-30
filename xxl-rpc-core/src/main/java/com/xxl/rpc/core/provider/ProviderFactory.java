@@ -1,5 +1,6 @@
 package com.xxl.rpc.core.provider;
 
+import com.alibaba.fastjson2.JSON;
 import com.xxl.rpc.core.boot.XxlRpcBootstrap;
 import com.xxl.rpc.core.invoker.generic.XxlRpcGenericService;
 import com.xxl.rpc.core.register.entity.RegisterInstance;
@@ -232,11 +233,8 @@ public class ProviderFactory {
                     // parse item
                     for (int i = 0; i < parameterTypes_list.size(); i++) {
                         parameterTypes[i] = ClassUtil.resolveClass(String.valueOf(parameterTypes_list.get(i)));
-                        if (parameterTypes[i].isArray()) {
-                            parameters[i] = BeanTool.primitiveToTargetClass(parameters_list.get(i), parameterTypes[i]);
-                        } else {
-                            parameters[i] = BeanTool.primitiveToTargetClass(parameters_list.get(i), parameterTypes[i]);
-                        }
+                        parameters[i] = BeanTool.primitiveToTargetClass(parameters_list.get(i), parameterTypes[i]);     // parameterTypes[i].isArray();  not support list
+                        //parameters[i] = BeanTool.primitiveToTargetClass(parameters_list.get(i), parameterTypes[i]);     // parameterTypes[i].isArray();  not support list
                     }
                 }
 
@@ -247,7 +245,8 @@ public class ProviderFactory {
 
                 // parse generic-result
                 if (result!=null) {
-                    result = BeanTool.objectToPrimitive(result);
+                    //result = BeanTool.objectToPrimitive(result);
+                    result = JSON.toJSONString(result);
                 }
 
                 // write result

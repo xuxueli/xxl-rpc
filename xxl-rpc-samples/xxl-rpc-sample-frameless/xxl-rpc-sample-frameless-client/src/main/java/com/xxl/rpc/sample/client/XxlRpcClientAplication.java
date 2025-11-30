@@ -15,6 +15,7 @@ import com.xxl.rpc.core.remoting.impl.netty.client.NettyClient;
 import com.xxl.rpc.core.serializer.impl.JsonbSerializer;
 import com.xxl.rpc.sample.api.DemoService;
 import com.xxl.rpc.sample.api.dto.UserDTO;
+import com.xxl.tool.core.MapTool;
 
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -60,16 +61,23 @@ public class XxlRpcClientAplication {
 		rpcBootstrap.stop();
 	}
 
+
+    /**
+     * test generic
+     */
     private static void testGenericSYNC(XxlRpcGenericService genericService) {
-        Object result = genericService.$invoke(
-                "com.xxl.rpc.sample.api.DemoService",
+        String result = genericService.$invoke(
+                "com.xxl.rpc.sample.server.service.generic.Demo2Service",
                 null,
-                "sayHi",
+                "addUser",
                 new String[]{
-                        "java.lang.String"
+                        "com.xxl.rpc.sample.server.service.generic.User2DTO"
                 },
                 new Object[]{
-                        "GENERIC:" + "[SYNC]jack"
+                    MapTool.newMap(
+                    "name", "jack2",
+                    "word", "[SYNC]jack - GenericS"
+                    )
                 });
         System.out.println(result);
     }

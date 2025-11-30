@@ -7,6 +7,8 @@ import com.xxl.rpc.core.remoting.impl.netty.server.NettyServer;
 import com.xxl.rpc.sample.api.DemoService;
 import com.xxl.rpc.sample.server.service.DemoServiceImpl;
 import com.xxl.rpc.core.serializer.impl.JsonbSerializer;
+import com.xxl.rpc.sample.server.service.generic.Demo2Service;
+import com.xxl.rpc.sample.server.service.generic.Demo2ServiceImpl;
 
 import java.util.concurrent.TimeUnit;
 
@@ -27,6 +29,7 @@ public class XxlRpcServerApplication {
 
         // 3、add services
         rpcBootstrap.getProvider().addService(DemoService.class.getName(), null, new DemoServiceImpl());
+        rpcBootstrap.getProvider().addService(Demo2Service.class.getName(), null, new Demo2ServiceImpl());
 
         while (!Thread.currentThread().isInterrupted()) {
             TimeUnit.HOURS.sleep(1);
