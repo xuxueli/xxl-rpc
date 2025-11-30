@@ -1,6 +1,5 @@
 package com.xxl.rpc.core.provider;
 
-import com.alibaba.fastjson2.JSON;
 import com.xxl.rpc.core.boot.XxlRpcBootstrap;
 import com.xxl.rpc.core.invoker.generic.XxlRpcGenericService;
 import com.xxl.rpc.core.register.entity.RegisterInstance;
@@ -8,6 +7,7 @@ import com.xxl.rpc.core.remoting.Server;
 import com.xxl.rpc.core.remoting.entity.XxlRpcRequest;
 import com.xxl.rpc.core.remoting.entity.XxlRpcResponse;
 import com.xxl.rpc.core.serializer.Serializer;
+import com.xxl.rpc.core.util.BeanTool;
 import com.xxl.rpc.core.util.ClassUtil;
 import com.xxl.rpc.core.util.XxlRpcException;
 import com.xxl.tool.exception.ThrowableTool;
@@ -197,7 +197,7 @@ public class ProviderFactory {
         // invoke
 		try {
             // 1、generic invoke
-            if (XxlRpcGenericService.class.getName().equals(xxlRpcRequest.getClassName()) && "invoke".equals(xxlRpcRequest.getMethodName())) {
+            if (XxlRpcGenericService.class.getName().equals(xxlRpcRequest.getClassName()) && "$invoke".equals(xxlRpcRequest.getMethodName())) {
 
                 // parse generic-param
                 String className = (String) xxlRpcRequest.getParameters()[0];
@@ -233,9 +233,9 @@ public class ProviderFactory {
                     for (int i = 0; i < parameterTypes_list.size(); i++) {
                         parameterTypes[i] = ClassUtil.resolveClass(String.valueOf(parameterTypes_list.get(i)));
                         if (parameterTypes[i].isArray()) {
-                            parameters[i] = JSON.parseArray(JSON.toJSONString(parameters_list.get(i)), parameterTypes[i]);
+                            parameters[i] = BeanTool.primitiveToTargetClass(parameters_list.get(i), parameterTypes[i]);
                         } else {
-                            parameters[i] = JSON.parseObject(JSON.toJSONString(parameters_list.get(i)), parameterTypes[i]);
+                            parameters[i] = BeanTool.primitiveToTargetClass(parameters_list.get(i), parameterTypes[i]);
                         }
                     }
                 }
@@ -247,8 +247,7 @@ public class ProviderFactory {
 
                 // parse generic-result
                 if (result!=null) {
-                    // todo, Object 2 Map
-                    result = JSON.toJSONString(result);
+                    result = BeanTool.objectToPrimitive(result);
                 }
 
                 // write result

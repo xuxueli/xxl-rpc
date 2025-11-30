@@ -53,15 +53,15 @@ public class XxlRpcClientAplication {
 		testCALLBACK(demoService_CALLBACK);
 		testONEWAY(demoService_ONEWAY);
         // test generic
-        testGeneric(genericService);
+        testGenericSYNC(genericService);
 
 		// 6、stop
         TimeUnit.SECONDS.sleep(5);
 		rpcBootstrap.stop();
 	}
 
-    private static void testGeneric(XxlRpcGenericService genericService) {
-        String result = genericService.invoke(
+    private static void testGenericSYNC(XxlRpcGenericService genericService) {
+        Object result = genericService.$invoke(
                 "com.xxl.rpc.sample.api.DemoService",
                 null,
                 "sayHi",

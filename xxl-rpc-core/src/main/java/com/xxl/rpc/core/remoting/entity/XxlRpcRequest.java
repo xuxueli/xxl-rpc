@@ -2,6 +2,7 @@ package com.xxl.rpc.core.remoting.entity;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Map;
 
 /**
  * request
@@ -15,16 +16,6 @@ public class XxlRpcRequest implements Serializable{
 	 * request id
 	 */
 	private String requestId;
-
-	/**
-	 * request create time
-	 */
-	private long createMillisTime;
-
-	/**
-	 * access token
-	 */
-	private String accessToken;
 
 	/**
 	 * remote service, class name
@@ -51,28 +42,14 @@ public class XxlRpcRequest implements Serializable{
 	 */
     private Object[] parameters;
 
+    private Map<String, String> extraInfo;
+
 	public String getRequestId() {
 		return requestId;
 	}
 
 	public void setRequestId(String requestId) {
 		this.requestId = requestId;
-	}
-
-	public long getCreateMillisTime() {
-		return createMillisTime;
-	}
-
-	public void setCreateMillisTime(long createMillisTime) {
-		this.createMillisTime = createMillisTime;
-	}
-
-	public String getAccessToken() {
-		return accessToken;
-	}
-
-	public void setAccessToken(String accessToken) {
-		this.accessToken = accessToken;
 	}
 
 	public String getClassName() {
@@ -115,17 +92,24 @@ public class XxlRpcRequest implements Serializable{
 		this.parameters = parameters;
 	}
 
+    public Map<String, String> getExtraInfo() {
+        return extraInfo;
+    }
+
+    public void setExtraInfo(Map<String, String> extraInfo) {
+        this.extraInfo = extraInfo;
+    }
+
     @Override
     public String toString() {
         return "XxlRpcRequest{" +
                 "requestId='" + requestId + '\'' +
-                ", createMillisTime=" + createMillisTime +
-                ", accessToken='" + accessToken + '\'' +
                 ", className='" + className + '\'' +
                 ", version='" + version + '\'' +
                 ", methodName='" + methodName + '\'' +
                 ", parameterTypes=" + Arrays.toString(parameterTypes) +
                 ", parameters=" + Arrays.toString(parameters) +
+                ", extraInfo=" + extraInfo +
                 '}';
     }
 

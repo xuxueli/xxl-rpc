@@ -171,6 +171,17 @@ public class XxlRpcReferenceBean {
 						Class<?>[] parameterTypes = method.getParameterTypes();
 						Object[] parameters = args;
 
+                        // generic-call process
+                        /*if (XxlRpcGenericService.class.getName().equals(className)
+                                && "$invoke".equals(methodName)
+                                && parameters!=null
+                                && parameters.length>0) {
+                            // valid param
+                            if (parameterTypes.length != parameters.length) {
+                                throw new XxlRpcException("The parameterTypes size["+ parameterTypes.length +"] is not equals parameters size["+ parameters.length +"].");
+                            }
+                        }*/
+
 						// discovery + load-balance
 						RegisterInstance registerInstance = null;
 						if (rpcBootstrap!=null && rpcBootstrap.getRegister()!=null) {
@@ -184,9 +195,6 @@ public class XxlRpcReferenceBean {
 							} else if (registerInstanceSet.size()==1) {
 								registerInstance = registerInstanceSet.stream().findFirst().get();
 							} else {
-								/*Set<String> addressSet =registerInstanceSet.stream()
-										.map(registerInstance -> IpUtil.getIpPort(registerInstance.getIp(), registerInstance.getPort()))
-										.collect(Collectors.toSet());*/
 								// route
 								registerInstance = loadBalance.xxlRpcInvokerRouter.route(serviceKey, registerInstanceSet);
 							}
@@ -198,8 +206,6 @@ public class XxlRpcReferenceBean {
 						// request
 						XxlRpcRequest xxlRpcRequest = new XxlRpcRequest();
 	                    xxlRpcRequest.setRequestId(UUID.randomUUID().toString());
-	                    xxlRpcRequest.setCreateMillisTime(System.currentTimeMillis());
-                        //xxlRpcRequest.setAccessToken(accessToken);
 	                    xxlRpcRequest.setClassName(className);
                         xxlRpcRequest.setVersion(version);
 	                    xxlRpcRequest.setMethodName(methodName);
