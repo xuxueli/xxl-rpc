@@ -15,9 +15,9 @@ import java.util.List;
 public class InvokerConfig {
 
     /**
-     * provider switch
+     * invoker switch
      */
-    private boolean open = true;
+    private boolean enable = true;
 
     /**
      * client, for network
@@ -43,22 +43,22 @@ public class InvokerConfig {
 
     public InvokerConfig() {
     }
-    public InvokerConfig(boolean open, Class<? extends Client> client, Class<? extends Serializer> serializer, List<String> serializerAllowPackageList) {
-        this.open = open;
+    public InvokerConfig(boolean enable, Class<? extends Client> client, Class<? extends Serializer> serializer, List<String> serializerAllowPackageList) {
+        this.enable = enable;
         this.client = client;
         this.serializer = serializer;
         this.serializerAllowPackageList = serializerAllowPackageList;
     }
-    public InvokerConfig(boolean open) {
-        this.open = open;
+    public InvokerConfig(boolean enable) {
+        this.enable = enable;
     }
 
-    public boolean isOpen() {
-        return open;
+    public boolean isEnable() {
+        return enable;
     }
 
-    public void setOpen(boolean open) {
-        this.open = open;
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 
     public Class<? extends Client> getClient() {

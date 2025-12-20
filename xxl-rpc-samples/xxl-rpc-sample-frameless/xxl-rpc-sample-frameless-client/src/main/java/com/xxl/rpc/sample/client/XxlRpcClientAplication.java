@@ -36,26 +36,32 @@ public class XxlRpcClientAplication {
 		XxlRpcBootstrap rpcBootstrap = new XxlRpcBootstrap();
 		rpcBootstrap.setBaseConfig(new BaseConfig("test", "xxl-rpc-sample-frameless-client"));
 		rpcBootstrap.setRegister(localRegister);
-		rpcBootstrap.setInvokerConfig(new InvokerConfig(true, NettyClient.class, JsonbSerializer.class, null));
+		rpcBootstrap.setInvokerConfig(
+				new InvokerConfig(
+						true,
+						NettyClient.class,
+						JsonbSerializer.class,
+						null)
+		);
 
 		// 3、start
 		rpcBootstrap.start();
 
-		// 4、XxlRpcReferenceBean build
+		// 4.1、XxlRpcReferenceBean build
 		DemoService demoService_SYNC = buildReferenceBean(rpcBootstrap, CallType.SYNC, DemoService.class);
 		DemoService demoService_FUTURE = buildReferenceBean(rpcBootstrap, CallType.FUTURE, DemoService.class);
 		DemoService demoService_CALLBACK = buildReferenceBean(rpcBootstrap, CallType.CALLBACK, DemoService.class);
 		DemoService demoService_ONEWAY = buildReferenceBean(rpcBootstrap, CallType.ONEWAY, DemoService.class);
-        // genericSerivce build
+        // 4.2、genericSerivce build
         XxlRpcGenericService genericService_SYC = buildReferenceBean(rpcBootstrap, CallType.SYNC, XxlRpcGenericService.class);
         XxlRpcGenericService genericService_FUTURE = buildReferenceBean(rpcBootstrap, CallType.FUTURE, XxlRpcGenericService.class);
 
-		// 5、test rpc invoke
+		// 5.1、test rpc invoke
 		testSYNC(demoService_SYNC);
 		testFUTURE(demoService_FUTURE);
 		testCALLBACK(demoService_CALLBACK);
 		testONEWAY(demoService_ONEWAY);
-        // test generic
+        // 5.2、test generic invoke
         testGenericSYNC(genericService_SYC);
         testGenericFUTURE(genericService_FUTURE);
 

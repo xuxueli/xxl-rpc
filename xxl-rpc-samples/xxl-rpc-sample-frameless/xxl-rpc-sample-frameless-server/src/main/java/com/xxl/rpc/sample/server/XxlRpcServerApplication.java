@@ -22,7 +22,16 @@ public class XxlRpcServerApplication {
         // 1、XxlRpcBootstrap
         XxlRpcBootstrap rpcBootstrap = new XxlRpcBootstrap();
         rpcBootstrap.setBaseConfig(new BaseConfig("test", "xxl-rpc-sample-frameless-server"));
-        rpcBootstrap.setProviderConfig(new ProviderConfig(NettyServer.class, JsonbSerializer.class, null, -1, -1, 7080, null));
+        rpcBootstrap.setProviderConfig(
+                new ProviderConfig(
+                        NettyServer.class,
+                        JsonbSerializer.class,
+                        null,
+                        -1,
+                        -1,
+                        7080,
+                        null)
+        );
 
         // 2、start
         rpcBootstrap.start();

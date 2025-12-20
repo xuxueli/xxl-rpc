@@ -52,7 +52,7 @@ public class SpringXxlRpcBootstrap extends XxlRpcBootstrap implements Applicatio
     @Override
     public boolean postProcessAfterInstantiation(Object bean, String beanName) throws BeansException {
         // invoker open-switch
-        if (getInvokerConfig()!=null && getInvokerConfig().isOpen()) {
+        if (getInvokerConfig()!=null && getInvokerConfig().isEnable()) {
             /**
              * invoker support
              *

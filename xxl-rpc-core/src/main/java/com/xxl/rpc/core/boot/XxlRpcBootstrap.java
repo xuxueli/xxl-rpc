@@ -140,7 +140,7 @@ public class XxlRpcBootstrap {
         }
 
         // 3、invoker start
-        if (invokerConfig!=null && invokerConfig.isOpen()) {
+        if (invokerConfig!=null && invokerConfig.isEnable()) {
             try {
                 invoker = new InvokerFactory(this);
                 invoker.start();
