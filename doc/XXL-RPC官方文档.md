@@ -108,33 +108,68 @@ docker run -p 8080:8080 -v /tmp:/data/applogs --name xxl-conf-admin  -d xuxueli/
 - client配置：/xxl-rpc/xxl-rpc-samples/xxl-rpc-sample-springboot/xxl-rpc-sample-springboot-server/src/main/resources/application.properties
 - server配置：/xxl-rpc/xxl-rpc-samples/xxl-rpc-sample-springboot/xxl-rpc-sample-springboot-client/src/main/resources/application.properties
 
-配置项 | 说明
---- | ---
-xxl.conf.client.appname | 服务唯一标识AppName；字母数字及中划线组成，必填
-xxl.conf.client.env | 服务隔离环境，必填
-xxl.conf.admin.address | XXL-CONF地址信息，多个逗号分隔，必填
-xxl.conf.admin.accesstoken | XXL-CONF地址信息，必填（可以在 XXL-CONF “系统管理->AccessToken” 菜单申请）
-xxl-rpc.invoker.open | 服务消费者，启用开关；
-xxl-rpc.provider.open | 服务提供者，启用开关
-xxl-rpc.provider.port | 服务提供者，服务通讯端口
-xxl-rpc.provider.corePoolSize | 服务提供者，业务线程池core大小，小于0启动默认值
-xxl-rpc.provider.maxPoolSize | 服务提供者，业务线程池max大小，小于0启动默认值
+服务端配置说明：  
+```
+# XXL-CONF 注册中心地址，多个逗号分隔
+xxl.conf.admin.address=http://localhost:8080/xxl-conf-admin
+# XXL-CONF 注册中心访问令牌
+xxl.conf.admin.accesstoken=defaultaccesstoken
 
+### xxl-rpc 基础配置，环境
+xxl.rpc.base.env=test
+### xxl-rpc 基础配置，服务AppName
+xxl.rpc.base.appname=xxl-rpc-sample-springboot-server
+### xxl-rpc invoker 是否启动，true则不主动进行服务发现
+xxl.rpc.invoker.enable=false
+### xxl-rpc provider 是否启动，true则启动RPC通讯服务、并主动进行服务注册
+xxl.rpc.provider.enable=true
+### xxl-rpc provider 服务端实现
+xxl.rpc.provider.server=com.xxl.rpc.core.remoting.impl.netty.server.NettyServer
+### xxl-rpc provider 序列化实现
+xxl.rpc.provider.serializer=com.xxl.rpc.core.serializer.impl.JsonbSerializer
+### xxl-rpc provider 序列化白名单package列表，不在白名单列表对象禁止序列化，多个逗号分隔；
+xxl.rpc.provider.serializerAllowPackageList=com,org,io
+### xxl-rpc provider 端口号, 默认 7080
+xxl.rpc.provider.port=7080
+### xxl-rpc provider 业务线程池 corePoolSize 配置，默认 60
+xxl.rpc.provider.corePoolSize=-1
+### xxl-rpc provider 业务线程池 maxPoolSize 配置，默认 300
+xxl.rpc.provider.maxPoolSize=-1
+### xxl-rpc provider 服务地址，默认为空时使用IP:PORT自动生成，用于服务注册发现
+xxl.rpc.provider.address=
+```
+
+客户端配置说明：
+```
+# XXL-CONF 注册中心地址，多个逗号分隔
+xxl.conf.admin.address=http://localhost:8080/xxl-conf-admin
+# XXL-CONF 注册中心访问令牌
+xxl.conf.admin.accesstoken=defaultaccesstoken
+
+# xxl-rpc
+### xxl-rpc 基础配置，环境
+xxl.rpc.base.env=test
+### xxl-rpc 基础配置，服务AppName
+xxl.rpc.base.appname=xxl-rpc-sample-springboot-client
+### xxl-rpc provider 是否启动，true则启动RPC通讯服务、并主动进行服务注册
+xxl.rpc.provider.enable=false
+### xxl-rpc invoker 是否启动，true则不主动进行服务发现
+xxl.rpc.invoker.enable=true
+### xxl-rpc invoker 客户端实现
+xxl.rpc.invoker.client=com.xxl.rpc.core.remoting.impl.netty.client.NettyClient
+### xxl-rpc invoker 序列化实现
+xxl.rpc.invoker.serializer=com.xxl.rpc.core.serializer.impl.JsonbSerializer
+### xxl-rpc invoker 序列化白名单package列表，不在白名单列表对象禁止序列化，多个逗号分隔；
+xxl.rpc.invoker.serializerAllowPackageList=com,org,io
+```
 
 上述配置，本质将会驱动 XxlRpcSpringFactory 配置及初始化，如下：
 ```
 XxlRpcSpringFactory factory = new XxlRpcSpringFactory();
 factory.setBaseConfig(new BaseConfig(env, appname));
-factory.setRegister(new XxlRpcRegister(address, accesstoken));
-factory.setInvokerConfig(new InvokerConfig(invokerOpen));
-factory.setProviderConfig(providerOpen ?
-        new ProviderConfig(
-                NettyServer.class,
-                JsonbSerializer.class,
-                port,
-                corePoolSize,
-                maxPoolSize,
-                null) : new ProviderConfig(providerOpen));
+factory.setRegister(new XxlConfRegister(address, accesstoken));
+factory.setInvokerConfig(new InvokerConfig(...));
+factory.setProviderConfig(new ProviderConfig(...);
 ```
 
 #### 2.1.4、业务代码开发

@@ -61,15 +61,6 @@ public class ProviderConfig {
 
     public ProviderConfig() {
     }
-    public ProviderConfig(Class<? extends Server> server,
-                          Class<? extends Serializer> serializer,
-                          List<String> serializerAllowPackageList,
-                          int port,
-                          int corePoolSize,
-                          int maxPoolSize,
-                          String address) {
-        this(true, server, serializer, serializerAllowPackageList, port, corePoolSize, maxPoolSize, address);
-    }
     public ProviderConfig(boolean enable,
                           Class<? extends Server> server,
                           Class<? extends Serializer> serializer,

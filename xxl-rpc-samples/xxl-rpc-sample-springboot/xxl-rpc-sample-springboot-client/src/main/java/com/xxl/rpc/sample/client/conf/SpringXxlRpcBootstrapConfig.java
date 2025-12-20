@@ -5,11 +5,16 @@ import com.xxl.rpc.core.boot.support.SpringXxlRpcBootstrap;
 import com.xxl.rpc.core.invoker.config.InvokerConfig;
 import com.xxl.rpc.core.provider.config.ProviderConfig;
 import com.xxl.rpc.core.register.impl.XxlConfRegister;
+import com.xxl.rpc.core.remoting.Client;
+import com.xxl.rpc.core.remoting.Server;
 import com.xxl.rpc.core.remoting.impl.netty.client.NettyClient;
+import com.xxl.rpc.core.serializer.Serializer;
 import com.xxl.rpc.core.serializer.impl.JsonbSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.Arrays;
 
 /**
  * xxl-rpc invoker config
@@ -19,23 +24,33 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SpringXxlRpcBootstrapConfig {
 
-    @Value("${xxl.conf.client.env}")
+    @Value("${xxl.rpc.base.env}")
     private String env;
 
-    @Value("${xxl.conf.client.appname}")
+    @Value("${xxl.rpc.base.appname}")
     private String appname;
 
     @Value("${xxl.conf.admin.address}")
-    private String address;
+    private String xxlConfAddress;
 
     @Value("${xxl.conf.admin.accesstoken}")
-    private String accesstoken;
+    private String xxlConfAccesstoken;
 
-    @Value("${xxl-rpc.invoker.open}")
-    private boolean invokerOpen;
+    @Value("${xxl.rpc.provider.enable}")
+    private boolean providerEnable;
 
-    @Value("${xxl-rpc.provider.open}")
-    private boolean providerOpen;
+    @Value("${xxl.rpc.invoker.enable}")
+    private boolean invokerEnable;
+
+    @Value("${xxl.rpc.invoker.client}")
+    private Class<? extends Client> client;
+
+    @Value("${xxl.rpc.invoker.serializer}")
+    private Class<? extends Serializer> serializer;
+
+    @Value("${xxl.rpc.invoker.serializerAllowPackageList}")
+    private String[] serializerAllowPackageList;
+
 
     @Bean
     public SpringXxlRpcBootstrap xxlRpcSpringFactory() {
@@ -43,9 +58,9 @@ public class SpringXxlRpcBootstrapConfig {
         // XxlRpc Bootstrap
         SpringXxlRpcBootstrap factory = new SpringXxlRpcBootstrap();
         factory.setBaseConfig(new BaseConfig(env, appname));
-        factory.setRegister(new XxlConfRegister(address, accesstoken));
-        factory.setInvokerConfig(new InvokerConfig(invokerOpen, NettyClient.class, JsonbSerializer.class, null));
-        factory.setProviderConfig(new ProviderConfig(providerOpen));
+        factory.setRegister(new XxlConfRegister(xxlConfAddress, xxlConfAccesstoken));
+        factory.setInvokerConfig(new InvokerConfig(invokerEnable, client, serializer, Arrays.asList(serializerAllowPackageList)));
+        factory.setProviderConfig(new ProviderConfig(providerEnable));
 
         return factory;
     }

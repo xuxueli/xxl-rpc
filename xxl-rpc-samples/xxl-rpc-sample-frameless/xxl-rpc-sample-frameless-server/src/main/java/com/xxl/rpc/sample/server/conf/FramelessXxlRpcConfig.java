@@ -26,7 +26,9 @@ public class FramelessXxlRpcConfig {
     }
 
 
-    // XxlMqSimpleBootstrap
+    /**
+     * xxl-rpc bootstrap
+     */
     private XxlRpcBootstrap rpcBootstrap;
 
     /**
@@ -42,7 +44,8 @@ public class FramelessXxlRpcConfig {
         XxlRpcBootstrap rpcBootstrap = new XxlRpcBootstrap();
         rpcBootstrap.setBaseConfig(new BaseConfig(
                 PropTool.getString(xxlRpcProp, "xxl.rpc.base.env"),
-                PropTool.getString(xxlRpcProp, "xxl.rpc.base.appname")));
+                PropTool.getString(xxlRpcProp, "xxl.rpc.base.appname")
+        ));
         rpcBootstrap.setProviderConfig(
                 new ProviderConfig(
                         PropTool.getBoolean(xxlRpcProp, "xxl.rpc.provider.enable"),

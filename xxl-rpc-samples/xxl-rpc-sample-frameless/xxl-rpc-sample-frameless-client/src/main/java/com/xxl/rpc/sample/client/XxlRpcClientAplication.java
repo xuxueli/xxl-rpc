@@ -1,20 +1,12 @@
 package com.xxl.rpc.sample.client;
 
-import com.xxl.rpc.core.boot.XxlRpcBootstrap;
-import com.xxl.rpc.core.boot.config.BaseConfig;
 import com.xxl.rpc.core.invoker.call.CallType;
 import com.xxl.rpc.core.invoker.call.XxlRpcInvokeCallback;
 import com.xxl.rpc.core.invoker.call.XxlRpcInvokeFuture;
-import com.xxl.rpc.core.invoker.config.InvokerConfig;
 import com.xxl.rpc.core.invoker.generic.XxlRpcGenericService;
-import com.xxl.rpc.core.invoker.reference.XxlRpcReferenceBean;
-import com.xxl.rpc.core.invoker.route.LoadBalance;
-import com.xxl.rpc.core.register.entity.RegisterInstance;
-import com.xxl.rpc.core.register.impl.LocalRegister;
-import com.xxl.rpc.core.remoting.impl.netty.client.NettyClient;
-import com.xxl.rpc.core.serializer.impl.JsonbSerializer;
 import com.xxl.rpc.sample.api.DemoService;
 import com.xxl.rpc.sample.api.dto.UserDTO;
+import com.xxl.rpc.sample.client.conf.FramelessXxlRpcConfig;
 import com.xxl.tool.core.MapTool;
 
 import java.util.concurrent.ExecutionException;
@@ -28,64 +20,32 @@ public class XxlRpcClientAplication {
 
 	public static void main(String[] args) throws Exception {
 
-		// 1、LocalRegister
-		LocalRegister localRegister = new LocalRegister();
-		localRegister.register(new RegisterInstance("test", "xxl-rpc-sample-frameless-server", "127.0.0.1", 7080, null));
+		// 1、XxlRpcBootstrap start
+		FramelessXxlRpcConfig.getInstance().start();
 
-		// 2、XxlRpcBootstrap
-		XxlRpcBootstrap rpcBootstrap = new XxlRpcBootstrap();
-		rpcBootstrap.setBaseConfig(new BaseConfig("test", "xxl-rpc-sample-frameless-client"));
-		rpcBootstrap.setRegister(localRegister);
-		rpcBootstrap.setInvokerConfig(
-				new InvokerConfig(
-						true,
-						NettyClient.class,
-						JsonbSerializer.class,
-						null)
-		);
+		// 2.1、build rpc referenceBean
+		DemoService demoService_SYNC = FramelessXxlRpcConfig.getInstance().buildReferenceBean(CallType.SYNC, DemoService.class);
+		DemoService demoService_FUTURE = FramelessXxlRpcConfig.getInstance().buildReferenceBean(CallType.FUTURE, DemoService.class);
+		DemoService demoService_CALLBACK = FramelessXxlRpcConfig.getInstance().buildReferenceBean(CallType.CALLBACK, DemoService.class);
+		DemoService demoService_ONEWAY = FramelessXxlRpcConfig.getInstance().buildReferenceBean(CallType.ONEWAY, DemoService.class);
+        // 2.2、build genericSerivce referenceBean
+        XxlRpcGenericService genericService_SYC = FramelessXxlRpcConfig.getInstance().buildReferenceBean(CallType.SYNC, XxlRpcGenericService.class);
+        XxlRpcGenericService genericService_FUTURE = FramelessXxlRpcConfig.getInstance().buildReferenceBean(CallType.FUTURE, XxlRpcGenericService.class);
 
-		// 3、start
-		rpcBootstrap.start();
-
-		// 4.1、XxlRpcReferenceBean build
-		DemoService demoService_SYNC = buildReferenceBean(rpcBootstrap, CallType.SYNC, DemoService.class);
-		DemoService demoService_FUTURE = buildReferenceBean(rpcBootstrap, CallType.FUTURE, DemoService.class);
-		DemoService demoService_CALLBACK = buildReferenceBean(rpcBootstrap, CallType.CALLBACK, DemoService.class);
-		DemoService demoService_ONEWAY = buildReferenceBean(rpcBootstrap, CallType.ONEWAY, DemoService.class);
-        // 4.2、genericSerivce build
-        XxlRpcGenericService genericService_SYC = buildReferenceBean(rpcBootstrap, CallType.SYNC, XxlRpcGenericService.class);
-        XxlRpcGenericService genericService_FUTURE = buildReferenceBean(rpcBootstrap, CallType.FUTURE, XxlRpcGenericService.class);
-
-		// 5.1、test rpc invoke
+		// 3.1、test rpc invoke
 		testSYNC(demoService_SYNC);
 		testFUTURE(demoService_FUTURE);
 		testCALLBACK(demoService_CALLBACK);
 		testONEWAY(demoService_ONEWAY);
-        // 5.2、test generic invoke
+        // 3.2、test generic invoke
         testGenericSYNC(genericService_SYC);
         testGenericFUTURE(genericService_FUTURE);
 
-		// 6、stop
+		// 4、XxlRpcBootstrap stop
         TimeUnit.SECONDS.sleep(5);
-		rpcBootstrap.stop();
+		FramelessXxlRpcConfig.getInstance().stop();
 	}
 
-
-    /**
-     * build referenceBean
-     */
-	private static <T> T buildReferenceBean(XxlRpcBootstrap rpcBootstrap, CallType callType, Class<T> serviceCLass) throws Exception {
-		XxlRpcReferenceBean referenceBean = new XxlRpcReferenceBean();
-		referenceBean.setCallType(callType);
-		referenceBean.setLoadBalance(LoadBalance.ROUND);
-		referenceBean.setIface(serviceCLass);
-		referenceBean.setVersion(null);
-		referenceBean.setTimeout(500);
-		referenceBean.setAppname("xxl-rpc-sample-frameless-server");
-		referenceBean.setRpcBootstrap(rpcBootstrap);
-
-        return (T) referenceBean.getObject();
-	}
 
 	/**
 	 * CallType.SYNC

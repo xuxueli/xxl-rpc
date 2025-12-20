@@ -5,11 +5,13 @@ import com.xxl.rpc.core.boot.support.SpringXxlRpcBootstrap;
 import com.xxl.rpc.core.invoker.config.InvokerConfig;
 import com.xxl.rpc.core.provider.config.ProviderConfig;
 import com.xxl.rpc.core.register.impl.XxlConfRegister;
-import com.xxl.rpc.core.remoting.impl.netty.server.NettyServer;
-import com.xxl.rpc.core.serializer.impl.JsonbSerializer;
+import com.xxl.rpc.core.remoting.Server;
+import com.xxl.rpc.core.serializer.Serializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.Arrays;
 
 /**
  * xxl-rpc provider config
@@ -19,32 +21,44 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SpringXxlRpcBootstrapConfig {
 
-    @Value("${xxl.conf.client.env}")
+    @Value("${xxl.rpc.base.env}")
     private String env;
 
-    @Value("${xxl.conf.client.appname}")
+    @Value("${xxl.rpc.base.appname}")
     private String appname;
 
     @Value("${xxl.conf.admin.address}")
-    private String address;
+    private String xxlConfAddress;
 
     @Value("${xxl.conf.admin.accesstoken}")
-    private String accesstoken;
+    private String xxlConfAccesstoken;
 
-    @Value("${xxl-rpc.invoker.open}")
-    private boolean invokerOpen;
+    @Value("${xxl.rpc.invoker.enable}")
+    private boolean invokerEnable;
 
-    @Value("${xxl-rpc.provider.open}")
-    private boolean providerOpen;
+    @Value("${xxl.rpc.provider.enable}")
+    private boolean providerEnable;
 
-    @Value("${xxl-rpc.provider.port}")
+    @Value("${xxl.rpc.provider.server}")
+    private Class<? extends Server> server;
+
+    @Value("${xxl.rpc.provider.serializer}")
+    private Class<? extends Serializer> serializer;
+
+    @Value("${xxl.rpc.provider.serializerAllowPackageList}")
+    private String[] serializerAllowPackageList;
+
+    @Value("${xxl.rpc.provider.port}")
     private int port;
 
-    @Value("${xxl-rpc.provider.corePoolSize}")
+    @Value("${xxl.rpc.provider.corePoolSize}")
     private int corePoolSize;
 
-    @Value("${xxl-rpc.provider.maxPoolSize}")
+    @Value("${xxl.rpc.provider.maxPoolSize}")
     private int maxPoolSize;
+
+    @Value("${xxl.rpc.provider.address}")
+    private String address;
 
     
     @Bean
@@ -53,17 +67,18 @@ public class SpringXxlRpcBootstrapConfig {
         // XxlRpc Bootstrap
         SpringXxlRpcBootstrap factory = new SpringXxlRpcBootstrap();
         factory.setBaseConfig(new BaseConfig(env, appname));
-        factory.setRegister(new XxlConfRegister(address, accesstoken));
-        factory.setInvokerConfig(new InvokerConfig(invokerOpen));
-        factory.setProviderConfig(providerOpen ?
+        factory.setRegister(new XxlConfRegister(xxlConfAddress, xxlConfAccesstoken));
+        factory.setInvokerConfig(new InvokerConfig(invokerEnable));
+        factory.setProviderConfig(
                 new ProviderConfig(
-                        NettyServer.class,
-                        JsonbSerializer.class,
-                        null,
+                        providerEnable,
+                        server,
+                        serializer,
+                        Arrays.asList(serializerAllowPackageList),
                         port,
                         corePoolSize,
                         maxPoolSize,
-                        null) : new ProviderConfig(providerOpen));
+                        address));
 
         return factory;
     }

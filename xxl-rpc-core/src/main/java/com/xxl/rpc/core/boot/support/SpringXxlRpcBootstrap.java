@@ -30,12 +30,13 @@ public class SpringXxlRpcBootstrap extends XxlRpcBootstrap implements Applicatio
         super.start();
 
         // 2、discovery referenceBean - instance
-        this.getInvoker().addAllReferenceBean(referenceBeanList);
-        this.getInvoker().discoveryReferenceBean();
+        if (getInvokerConfig()!=null && getInvokerConfig().isEnable()) {
+            this.getInvoker().addAllReferenceBean(referenceBeanList);
+            this.getInvoker().discoveryReferenceBean();
+        }
 
-        // provider open-switch
+        // 3、provider support：scan service
         if (getProviderConfig()!=null && getProviderConfig().isEnable()) {
-            // 3、provider support：scan service
             SpringProviderFactory.scanService(applicationContext, this);
         }
     }
