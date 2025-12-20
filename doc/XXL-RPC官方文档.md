@@ -573,10 +573,12 @@ String result = genericService.$invoke(
 - 2、【升级】框架日志优化，调整日志级别避免冗余日志输出；
 - 3、【升级】项目部分依赖升级，如netty、fastjson2、spring等；
 
-#### v2.2.0 Release Notes[迭代中]
-- 1、【升级】项目部分依赖升级，如netty、junit、fastjson2、spring等；
-- 2、【新增】泛化调用能力，支持服务调用方直接发起服务调用，不依赖服务方提供的API；
-- 3、【TODO】新增SimpleHttpServer，仅支持同步请求，简化CallType复杂度；
+#### v2.2.0 Release Notes[2025-12-21]
+- 1、【新增】泛化调用能力，支持服务调用方直接发起服务调用，不依赖服务方提供的API；
+- 2、【升级】项目部分依赖升级，如netty、junit、fastjson2、spring等；
+
+#### v2.2.1 Release Notes[ING]
+- 1、【TODO】新增SimpleHttpServer，仅支持同步请求，简化CallType复杂度；
 
 #### TODO LIST
 - 提高系统可用性，以部分功能暂时不可达为代价，防止服务整体缓慢或雪崩
