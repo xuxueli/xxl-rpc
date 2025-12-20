@@ -610,7 +610,9 @@ String result = genericService.$invoke(
 
 #### v2.2.0 Release Notes[2025-12-21]
 - 1、【新增】泛化调用能力，支持服务调用方直接发起服务调用，不依赖服务方提供的API；
-- 2、【升级】项目部分依赖升级，如netty、junit、fastjson2、spring等；
+- 2、【修复】Spring组件初始化逻辑调整，避免小概率情况下客户端初始化失败；
+- 3、【优化】Frameless无框架示例项目配置属性抽取至prop文件，提升配置可维护性及可读性；
+- 4、【升级】项目部分依赖升级，如netty、junit、fastjson2、spring等；
 
 #### v2.2.1 Release Notes[ING]
 - 1、【TODO】新增SimpleHttpServer，仅支持同步请求，简化CallType复杂度；
