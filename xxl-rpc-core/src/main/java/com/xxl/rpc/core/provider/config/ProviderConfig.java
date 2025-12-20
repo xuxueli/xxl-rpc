@@ -17,7 +17,7 @@ public class ProviderConfig {
     /**
      * provider switch
      */
-    private boolean open = true;
+    private boolean enable = true;
 
     /**
      * server, for network
@@ -68,7 +68,17 @@ public class ProviderConfig {
                           int corePoolSize,
                           int maxPoolSize,
                           String address) {
-        this.open = true;
+        this(true, server, serializer, serializerAllowPackageList, port, corePoolSize, maxPoolSize, address);
+    }
+    public ProviderConfig(boolean enable,
+                          Class<? extends Server> server,
+                          Class<? extends Serializer> serializer,
+                          List<String> serializerAllowPackageList,
+                          int port,
+                          int corePoolSize,
+                          int maxPoolSize,
+                          String address) {
+        this.enable = enable;
         this.server = server;
         this.serializer = serializer;
         this.serializerAllowPackageList = serializerAllowPackageList;
@@ -77,20 +87,21 @@ public class ProviderConfig {
         this.maxPoolSize = maxPoolSize;
         this.address = address;
     }
-    public ProviderConfig(boolean open){
-        this.open = open;
+
+    public ProviderConfig(boolean enable){
+        this.enable = enable;
     }
 
     public Class<? extends Server> getServer() {
         return server;
     }
 
-    public boolean isOpen() {
-        return open;
+    public boolean isEnable() {
+        return enable;
     }
 
-    public void setOpen(boolean open) {
-        this.open = open;
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 
     public void setServer(Class<? extends Server> server) {

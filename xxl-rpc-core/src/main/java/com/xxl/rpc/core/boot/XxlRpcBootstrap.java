@@ -130,7 +130,7 @@ public class XxlRpcBootstrap {
         }
 
         // 2、provider start, remoting-server run
-        if (providerConfig!=null && providerConfig.isOpen()) {
+        if (providerConfig!=null && providerConfig.isEnable()) {
             try {
                 provider = new ProviderFactory(this);
                 provider.start();

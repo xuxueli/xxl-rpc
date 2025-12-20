@@ -162,7 +162,7 @@ public class XxlRpcClientAplication {
                 new Object[]{
                         MapTool.newMap(
                                 "name", "jack2",
-                                "word", "[SYNC]jack - GenericS"
+                                "word", "[SYNC - Generic]jack"
                         )
                 });
         System.out.println(result);
@@ -179,7 +179,7 @@ public class XxlRpcClientAplication {
                 new Object[]{
                         MapTool.newMap(
                                 "name", "jack2",
-                                "word", "[FUTURE]jack - GenericF"
+                                "word", "[FUTURE - Generic]jack"
                         )
                 }
         );

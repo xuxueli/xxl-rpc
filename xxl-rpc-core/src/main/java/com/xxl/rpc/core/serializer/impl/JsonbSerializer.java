@@ -6,8 +6,6 @@ import com.alibaba.fastjson2.JSONWriter;
 import com.alibaba.fastjson2.filter.Filter;
 import com.xxl.rpc.core.serializer.Serializer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -26,7 +24,7 @@ public class JsonbSerializer extends Serializer {
     @Override
     public void allowPackageList(List<String> packageList) {
         if (packageList!=null && !packageList.isEmpty()) {
-            autoTypeBeforeHandler = JSONReader.autoTypeFilter((String[]) packageList.toArray());
+            autoTypeBeforeHandler = JSONReader.autoTypeFilter(packageList.toArray(new String[0]));
         }
     }
 

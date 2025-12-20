@@ -34,7 +34,7 @@ public class SpringXxlRpcBootstrap extends XxlRpcBootstrap implements Applicatio
         this.getInvoker().discoveryReferenceBean();
 
         // provider open-switch
-        if (getProviderConfig()!=null && getProviderConfig().isOpen()) {
+        if (getProviderConfig()!=null && getProviderConfig().isEnable()) {
             // 3、provider support：scan service
             SpringProviderFactory.scanService(applicationContext, this);
         }
