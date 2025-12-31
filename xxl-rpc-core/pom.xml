@@ -15,49 +15,40 @@
 
 	<dependencies>
 
-		<!-- ********************** remoting + serialize ********************** -->
 		<!-- xxl-rpc-netty-shade -->
 		<dependency>
 			<groupId>com.xuxueli</groupId>
 			<artifactId>xxl-rpc-netty-shade</artifactId>
-			<version>${xxl-rpc-netty-shade.version}</version>
 		</dependency>
 		<!-- fastjson2 -->
 		<dependency>
 			<groupId>com.alibaba.fastjson2</groupId>
 			<artifactId>fastjson2</artifactId>
-			<version>${fastjson2.version}</version>
 		</dependency>
 
-		<!-- ********************** base ********************** -->
 		<!-- slf4j -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j-api.version}</version>
 		</dependency>
 
 		<!-- junit -->
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
-			<version>${junit-jupiter.version}</version>
 			<scope>test</scope>
 		</dependency>
 
-		<!-- ********************** xxl-conf ********************** -->
+		<!-- xxl-conf (registry) -->
 		<dependency>
 			<groupId>com.xuxueli</groupId>
 			<artifactId>xxl-conf-core</artifactId>
-			<version>${xxl-conf.version}</version>
 		</dependency>
 
-		<!-- ********************** plugin ********************** -->
 		<!-- spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>${spring.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
