@@ -57,7 +57,7 @@ XXL-RPC 是一个RPC服务框架，提供一站式服务通信及运营能力。
 - 10、故障容错：支持自动巡检线上服务并摘除故障节点，消费方实时感知并移除失效节点将流量分发到其余节点，提高系统容错能力。
 - 11、高兼容性：得益于优良的兼容性与模块化设计，不限制技术栈；除 spring/springboot 技术栈之外，理论上支持运行在任何Java代码中，甚至main方法直接启动运行；
 - 12、泛化调用：支持服务调用方直接发起服务调用，不依赖服务方提供的API；
-- 13、服务安全：支持序列化安全空间机制，以及通讯token加密机制；
+- 13、服务安全：支持序列化安全空间机制，以及通讯token加密机制
 
 
 ## Contributing
@@ -65,8 +65,6 @@ Contributions are welcome! Open a pull request to fix a bug, or open an [Issue](
 
 欢迎参与项目贡献！比如提交PR修复一个bug，或者新建 [Issue](https://github.com/xuxueli/xxl-rpc/issues/) 讨论新特性或者变更。
 
-## 接入登记
-更多接入的公司，欢迎在 [登记地址](https://github.com/xuxueli/xxl-rpc/issues/2 ) 登记，登记仅仅为了产品推广。
 
 
 ## Copyright and License
@@ -78,7 +76,3 @@ This product is open source and free, and will continue to provide free communit
 产品开源免费，并且将持续提供免费的社区技术支持。个人或企业内部可自由的接入和使用。
 
 
-## Donate
-No matter how much the amount is enough to express your thought, thank you very much ：）     [To donate](https://www.xuxueli.com/page/donate.html )
-
-无论金额多少都足够表达您这份心意，非常感谢 ：）      [前往捐赠](https://www.xuxueli.com/page/donate.html )
