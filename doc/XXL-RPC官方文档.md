@@ -616,7 +616,8 @@ String result = genericService.$invoke(
 
 #### v2.2.1 Release Notes[ING]
 - 1、【优化】重构项目依赖管理，将依赖版本统一到父级pom；
-- 2、【TODO】新增SimpleHttpServer，仅支持同步请求，简化CallType复杂度；
+- 2、【升级】项目部分依赖升级，如junit、xxl-conf等；
+- 3、【TODO】新增SimpleHttpServer，仅支持同步请求，简化CallType复杂度；
 
 #### TODO LIST
 - 提高系统可用性，以部分功能暂时不可达为代价，防止服务整体缓慢或雪崩

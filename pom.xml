@@ -38,11 +38,11 @@
 		<!-- serialize -->
 		<fastjson2.version>2.0.60</fastjson2.version>
 		<!-- xxl-conf -->
-		<xxl-conf.version>2.1.0</xxl-conf.version>
-        <!-- spring -->
-        <spring-boot.version>4.0.1</spring-boot.version>
-        <spring.version>7.0.2</spring.version>
+		<xxl-conf.version>2.2.0</xxl-conf.version>
 
+		<!-- spring -->
+		<spring-boot.version>4.0.1</spring-boot.version>
+		<spring.version>7.0.2</spring.version>
 	</properties>
 
 	<dependencyManagement>

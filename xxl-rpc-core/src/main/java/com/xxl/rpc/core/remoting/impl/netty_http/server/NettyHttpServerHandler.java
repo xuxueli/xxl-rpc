@@ -10,7 +10,7 @@ import com.xxl.rpc.netty.shaded.io.netty.channel.ChannelHandlerContext;
 import com.xxl.rpc.netty.shaded.io.netty.channel.SimpleChannelInboundHandler;
 import com.xxl.rpc.netty.shaded.io.netty.handler.codec.http.*;
 import com.xxl.rpc.netty.shaded.io.netty.handler.timeout.IdleStateEvent;
-import com.xxl.tool.exception.ThrowableTool;
+import com.xxl.tool.error.ThrowableTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

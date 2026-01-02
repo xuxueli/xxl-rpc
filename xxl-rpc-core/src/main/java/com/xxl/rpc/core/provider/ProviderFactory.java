@@ -10,7 +10,7 @@ import com.xxl.rpc.core.remoting.entity.XxlRpcResponse;
 import com.xxl.rpc.core.serializer.Serializer;
 import com.xxl.rpc.core.util.ClassUtil;
 import com.xxl.rpc.core.util.XxlRpcException;
-import com.xxl.tool.exception.ThrowableTool;
+import com.xxl.tool.error.ThrowableTool;
 import com.xxl.tool.http.IPTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,7 +81,7 @@ public class ProviderFactory {
 			rpcBootstrap.getProviderConfig().setPort(7080);
 		}
 		if (rpcBootstrap.getProviderConfig().getAddress()==null || rpcBootstrap.getProviderConfig().getAddress().isEmpty()) {
-			String address = IPTool.toAddressString(IPTool.toAddress(ip, rpcBootstrap.getProviderConfig().getPort()));	//IpUtil.getIpPort(ip, rpcBootstrap.getProviderConfig().getPort());
+			String address = IPTool.toAddressString(ip, rpcBootstrap.getProviderConfig().getPort());
 			rpcBootstrap.getProviderConfig().setAddress(address);
 		}
 		if (IPTool.isPortInUsed(rpcBootstrap.getProviderConfig().getPort())) {		// NetUtil.isPortUsed(rpcBootstrap.getProviderConfig().getPort())
